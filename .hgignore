@@ -1,0 +1,15 @@
+syntax: glob
+bin
+target
+*.class
+*.log
+*.zip
+build.properties
+.settings
+.classpath
+doc/javadoc
+doc/doc
+.metadata
+.directory
+*/\${builder}
+doc/build.properties
