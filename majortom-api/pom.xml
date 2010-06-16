@@ -43,9 +43,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>topicmapslab-internal</id>
+			<id>topicmapslab-public</id>
 			<name>Topic Maps Lab Repositiory</name>
-			<url>scpexe://maven@topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/internal</url>
+			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
 		</repository>
 	</distributionManagement>
 </project>
