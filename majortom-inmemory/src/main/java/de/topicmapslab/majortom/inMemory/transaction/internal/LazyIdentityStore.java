@@ -294,15 +294,19 @@ public class LazyIdentityStore extends IdentityStore {
 	/**
 	 * Creates a lazy stub of the given construct
 	 * 
-	 * @param c the construct
+	 * @param c
+	 *            the construct
 	 * @return the lazy stub
-	 * @throws ConstructRemovedException thrown if the id of the given construct
-	 *             is marked as removed
+	 * @throws ConstructRemovedException
+	 *             thrown if the id of the given construct is marked as removed
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IConstruct> T createLazyStub(T c) throws ConstructRemovedException {
 		if (lazyStubs == null) {
 			lazyStubs = HashUtil.getHashMap();
+		}
+		if (c == null) {
+			return null;
 		}
 		if (removedIds != null && removedIds.contains(c.getId())) {
 			throw new ConstructRemovedException(c);
@@ -344,6 +348,19 @@ public class LazyIdentityStore extends IdentityStore {
 		}
 
 		return topics;
+	}
+
+	/**
+	 * Checks if the given construct was deleted by the current transaction
+	 * context.
+	 * 
+	 * @param c
+	 *            the construct
+	 * @return <code>true</code> if the construct was deleted by the current
+	 *         construct, <code>false</code> otherwise.
+	 */
+	public boolean isRemovedConstruct(IConstruct c) {
+		return removedIds != null && removedIds.contains(c.getId());
 	}
 
 }

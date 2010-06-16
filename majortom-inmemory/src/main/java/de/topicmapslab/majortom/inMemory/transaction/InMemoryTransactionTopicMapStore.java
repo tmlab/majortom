@@ -21,7 +21,9 @@ import java.util.Map;
 
 import de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inMemory.store.internal.IdentityStore;
+import de.topicmapslab.majortom.inMemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.inMemory.transaction.internal.LazyIdentityStore;
+import de.topicmapslab.majortom.inMemory.transaction.internal.LazyTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -44,6 +46,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	private final ITransaction transaction;
 
 	private LazyIdentityStore lazyIdentityStore;
+	private LazyTypedStore lazyTypedStore;
 
 	/**
 	 * constructor
@@ -108,6 +111,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 */
 	public synchronized void connect() throws TopicMapStoreException {
 		this.lazyIdentityStore = new LazyIdentityStore(this);
+		this.lazyTypedStore = new LazyTypedStore(this);
 		super.connect();
 	}
 
@@ -116,6 +120,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 */
 	public synchronized void close() throws TopicMapStoreException {
 		this.lazyIdentityStore.close();
+		this.lazyTypedStore.close();
 		super.close();
 	}
 
@@ -157,5 +162,12 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 */
 	public IdentityStore getIdentityStore() {
 		return lazyIdentityStore;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public TypedStore getTypedStore() {
+		return lazyTypedStore;
 	}
 }

@@ -28,6 +28,7 @@ public class TransactionSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.transaction");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(TestIdentityTransaction.class);
+		suite.addTestSuite(TestTypeTransaction.class);
 		// $JUnit-END$
 		return suite;
 	}

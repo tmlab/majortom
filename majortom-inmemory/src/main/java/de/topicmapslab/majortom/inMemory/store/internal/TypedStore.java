@@ -685,4 +685,13 @@ public class TypedStore implements IDataStore {
 		}
 		return HashUtil.getHashSet(typedOccurrences.keySet());
 	}
+	
+	/**
+	 * Return the internal stored store instance.
+	 * 
+	 * @return the store the store instance
+	 */
+	protected InMemoryTopicMapStore getStore() {
+		return store;
+	}
 }
