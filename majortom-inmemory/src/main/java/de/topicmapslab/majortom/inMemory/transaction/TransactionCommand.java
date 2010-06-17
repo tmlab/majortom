@@ -22,6 +22,7 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.transaction.ITransaction;
 
 /**
  * @author Sven Krosse
@@ -63,19 +64,22 @@ public class TransactionCommand {
 	/**
 	 * Commit the transaction store to the given topic map store.
 	 * 
-	 * @param store the topic map store
-	 * @param lazy a lazy map containing the mapping between the transaction
+	 * @param store
+	 *            the topic map store
+	 * @param lazy
+	 *            a lazy map containing the mapping between the transaction
 	 *            stubs and the real construct
 	 * @return the created item if operation is
 	 *         {@link TransactionOperation#CREATE}, <code>null</code> otherwise.
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	// TODO scope objects
 	public Object commit(ITopicMapStore store, Map<Object, Object> lazy) throws TopicMapStoreException {
-		IConstruct context_ = (IConstruct) cleanParameter(context, lazy);
+		IConstruct context_ = (IConstruct) cleanParameter(store, context, lazy);
 		Object[] parameters_ = new Object[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
-			parameters_[i] = cleanParameter(parameters[i], lazy);
+			parameters_[i] = cleanParameter(store, parameters[i], lazy);
 		}
 
 		switch (operation) {
@@ -110,9 +114,14 @@ public class TransactionCommand {
 		return result;
 	}
 
-	private final Object cleanParameter(Object parameter, Map<Object, Object> lazy) {
+	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {
 		if (lazy.containsKey(parameter)) {
 			return lazy.get(parameter);
+		}
+		if (parameter instanceof IConstruct) {
+			if (((IConstruct) parameter).getTopicMap() instanceof ITransaction) {
+				return store.doRead(store.getTopicMap(), TopicMapStoreParamterType.BY_ID, ((IConstruct) parameter).getId());
+			}
 		}
 		return parameter;
 	}

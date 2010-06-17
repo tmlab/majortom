@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.model.transaction;
 
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TransactionException;
 
@@ -37,5 +38,16 @@ public interface ITransaction extends ITopicMap {
 	 * @return the state
 	 */
 	public boolean isClose();
+
+	/**
+	 * Method move the current item to the transaction context.
+	 * 
+	 * @param <T>
+	 *            the type of the construct
+	 * @param construct
+	 *            the construct to move
+	 * @return the transaction item
+	 */
+	public <T extends IConstruct> T moveToTransactionContext(T construct);
 
 }

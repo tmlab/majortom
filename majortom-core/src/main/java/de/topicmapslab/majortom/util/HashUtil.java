@@ -40,6 +40,13 @@ public class HashUtil {
 	private static Class<?> mapClass = null;
 
 	/**
+	 * hidden constructor
+	 */
+	private HashUtil() {
+		// HIDDEN
+	}
+	
+	/**
 	 * Method try to initialize a gnu.trove.THashSet if the library is located
 	 * in the class path
 	 * 

@@ -21,25 +21,28 @@ public interface ITopicMapStore {
 
 	/**
 	 * Initializing method of the topic map store.
-	 * @param topicMapBaseLocator TODO
 	 * 
-	 * @throws TopicMapStoreException thrown if initialization failed
+	 * @param topicMapBaseLocator
+	 *            TODO
+	 * 
+	 * @throws TopicMapStoreException
+	 *             thrown if initialization failed
 	 */
 	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException;
 
 	/**
 	 * Open the connection to the topic map store.
 	 * 
-	 * @throws TopicMapStoreException thrown if the connection cannot be
-	 *             established
+	 * @throws TopicMapStoreException
+	 *             thrown if the connection cannot be established
 	 */
 	public void connect() throws TopicMapStoreException;
 
 	/**
 	 * Close the connection to the topic map data store.
 	 * 
-	 * @throws TopicMapStoreException thrown if the connection is currently
-	 *             used.
+	 * @throws TopicMapStoreException
+	 *             thrown if the connection is currently used.
 	 */
 	public void close() throws TopicMapStoreException;
 
@@ -72,56 +75,69 @@ public interface ITopicMapStore {
 	/**
 	 * Operation method to merge a set of constructs to one new construct
 	 * 
-	 * @param context the construct to merge
-	 * @param others the other constructs to merge in
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @param context
+	 *            the construct to merge
+	 * @param others
+	 *            the other constructs to merge in
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	<T extends Construct> void doMerge(final T context, final T... others) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to delete a construct from the store.
 	 * 
-	 * @param context the construct to remove
-	 * @param paramType the parameter specify the content to remove
-	 * @param params an array of arguments
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @param context
+	 *            the construct to remove
+	 * @param paramType
+	 *            the parameter specify the content to remove
+	 * @param params
+	 *            an array of arguments
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	void doRemove(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to delete a construct from the store.
 	 * 
-	 * @param context the construct to remove
-	 * @param cascade flag indicates if all dependent constructs should be
-	 *            removed too
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @param context
+	 *            the construct to remove
+	 * @param cascade
+	 *            flag indicates if all dependent constructs should be removed
+	 *            too
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	void doRemove(final IConstruct context, boolean cascade) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to read some informations form the store
 	 * 
-	 * @param context the context
-	 * @param paramType the parameter specify the content to read
-	 * @param params an array of arguments
+	 * @param context
+	 *            the context
+	 * @param paramType
+	 *            the parameter specify the content to read
+	 * @param params
+	 *            an array of arguments
 	 * @return the result of this operation
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	Object doRead(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to create a new information item
 	 * 
-	 * @param context the context
-	 * @param paramType the parameter specify the content to read
-	 * @param params an array of arguments
+	 * @param context
+	 *            the context
+	 * @param paramType
+	 *            the parameter specify the content to read
+	 * @param params
+	 *            an array of arguments
 	 * @return the create construct
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	Object doCreate(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
 
@@ -129,33 +145,40 @@ public interface ITopicMapStore {
 	 * Operation method to add or set some information items to a construct of
 	 * the store
 	 * 
-	 * @param context the context
-	 * @param paramType the parameter specify the content to modify
-	 * @param params an array of arguments
-	 * @throws TopicMapStoreException thrown if the operation fails or is not
-	 *             supported
+	 * @param context
+	 *            the context
+	 * @param paramType
+	 *            the parameter specify the content to modify
+	 * @param params
+	 *            an array of arguments
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails or is not supported
 	 */
 	void doModify(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Registers the listener to the topic map.
 	 * 
-	 * @param listener the listener to register
+	 * @param listener
+	 *            the listener to register
 	 */
 	public void addTopicMapListener(ITopicMapListener listener);
 
 	/**
 	 * Removes the listener to the topic map.
 	 * 
-	 * @param listener the listener to remove
+	 * @param listener
+	 *            the listener to remove
 	 */
 	public void removeTopicMapListener(ITopicMapListener listener);
 
 	/**
 	 * Returns the internal index instance for the given class attribute.
 	 * 
-	 * @param <I> the index type
-	 * @param clazz the class of the index
+	 * @param <I>
+	 *            the index type
+	 * @param clazz
+	 *            the class of the index
 	 * @return the index instance and never null
 	 */
 	public <I extends Index> I getIndex(Class<I> clazz);
@@ -163,8 +186,10 @@ public interface ITopicMapStore {
 	/**
 	 * Set the topic map of the store.
 	 * 
-	 * @param topicMap the topic map
-	 * @throws TopicMapStoreException thrown if internal topic map already set
+	 * @param topicMap
+	 *            the topic map
+	 * @throws TopicMapStoreException
+	 *             thrown if internal topic map already set
 	 */
 	public void setTopicMap(ITopicMap topicMap) throws TopicMapStoreException;
 
@@ -185,7 +210,15 @@ public interface ITopicMapStore {
 	/**
 	 * Setting the internal reference of the topic map system.
 	 * 
-	 * @param topicMapSystem the topic map system
+	 * @param topicMapSystem
+	 *            the topic map system
 	 */
 	public void setTopicMapSystem(ITopicMapSystem topicMapSystem);
+
+	/**
+	 * Return the internal topic map instance of this store.
+	 * 
+	 * @return the topic map
+	 */
+	public ITopicMap getTopicMap();
 }

@@ -29,6 +29,7 @@ public class TransactionSuite {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(TestIdentityTransaction.class);
 		suite.addTestSuite(TestTypeTransaction.class);
+		suite.addTestSuite(TestAssociationTransaction.class);
 		// $JUnit-END$
 		return suite;
 	}

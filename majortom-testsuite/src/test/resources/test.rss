@@ -3,144 +3,144 @@
   <channel>
     <title>MaJorToM Update Feed</title>
     <link>majortom.topicmapslab.de</link>
-    <description>MaJorToM Update Feed of content type TEXT of topic 4996e8d6-f179-4772-89fd-3b3dad1e4588</description>
+    <description>MaJorToM Update Feed of content type TEXT of topic f51fb514-1608-4869-8c8f-a24e5cfb2f3b</description>
     <item>
       <title>TEXT</title>
       <content:encoded>The topic 'http://psi.example.org/topic' was added.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-1</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The name 'Topic name: Name ( http://psi.example.org/topic )' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-2</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The value of the construct 'Topic name: Name ( http://psi.example.org/topic )' was changed form 'null' to 'Name'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-3</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The scope of the construct 'Topic name: Name ( http://psi.example.org/topic )' was modified.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-4</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The occurrence 'Occurrence: Occurrence ( http://psi.example.org/topic )' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-5</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The value of the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )' was changed form 'null' to 'Occurrence'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-6</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The datatype 'http://www.w3.org/2001/XMLSchema#string' was set to the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-7</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The scope of the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )' was modified.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-8</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The player of the role was changed form 'http://psi.example.org/topic' to 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">20-9</guid>
     </item>
     <item>
       <title>TEXT</title>
-      <content:encoded>The type 'http://majortom/add178a5-fa1a-4c09-8640-e2ca2f6448bf' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <content:encoded>The type 'http://majortom/33994db1-c6d4-45a6-a9a3-c9cac170b3d4' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-10</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The subject-identifier 'http://psi.example.org/topic' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-11</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The name 'Topic name: Name 2 ( http://psi.example.org/topic )' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-12</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The value of the construct 'Topic name: Name 2 ( http://psi.example.org/topic )' was changed form 'null' to 'Name 2'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-13</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The scope of the construct 'Topic name: Name 2 ( http://psi.example.org/topic )' was modified.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-14</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The occurrence 'Occurrence: Occurrence ( http://psi.example.org/topic )' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-15</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The value of the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )' was changed form 'null' to 'Occurrence'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-16</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The datatype 'http://www.w3.org/2001/XMLSchema#string' was set to the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-17</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The scope of the construct 'Occurrence: Occurrence ( http://psi.example.org/topic )' was modified.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-18</guid>
     </item>
     <item>
       <title>TEXT</title>
-      <content:encoded>The reifier 'http://psi.example.org/topic' was set to the construct 'Topic name: Name 3 ( http://majortom/6dd239eb-7c7a-4fd9-b90c-4daf6c57e903 )'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <content:encoded>The reifier 'http://psi.example.org/topic' was set to the construct 'Topic name: Name 3 ( http://majortom/2ea9338f-8a87-4f6a-a5c6-dcf73288fa76 )'.</content:encoded>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-19</guid>
     </item>
     <item>
       <title>TEXT</title>
       <content:encoded>The subject-locator 'http://psi.example.org/topic' was added to the topic 'http://psi.example.org/topic'.</content:encoded>
-      <pubDate>Thu, 10 Jun 2010 15:59:43 GMT</pubDate>
+      <pubDate>Thu, 17 Jun 2010 08:27:46 GMT</pubDate>
       <author>majortom.topicmapslab.de</author>
       <guid isPermaLink="false">19-20</guid>
     </item>

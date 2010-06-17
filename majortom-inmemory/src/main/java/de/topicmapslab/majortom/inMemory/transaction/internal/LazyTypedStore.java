@@ -359,36 +359,80 @@ public class LazyTypedStore extends TypedStore {
 	 * {@inheritDoc}
 	 */
 	public ITopic removeType(IAssociation typed) {
-		// NOTHING TO DO HERE -> method only called by modify type to change
-		// type
-		return getType(typed);
+		ITopic type = null;
+		try {
+			type = super.getType(typed);
+			if ( type != null ){
+				return super.removeType(typed);
+			}
+			type = super.getType(typed);
+			if (type == null) {
+				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParamterType.TYPE);
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}		
+		return getLazyIdentityStore().createLazyStub(type);		
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ITopic removeType(IAssociationRole typed) {
-		// NOTHING TO DO HERE -> method only called by modify type to change
-		// type
-		return getType(typed);
+		ITopic type = null;
+		try {
+			type = super.getType(typed);
+			if ( type != null ){
+				return super.removeType(typed);
+			}
+			type = super.getType(typed);
+			if (type == null) {
+				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParamterType.TYPE);
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}		
+		return getLazyIdentityStore().createLazyStub(type);		
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ITopic removeType(IName typed) {
-		// NOTHING TO DO HERE -> method only called by modify type to change
-		// type
-		return getType(typed);
+		ITopic type = null;
+		try {
+			type = super.getType(typed);
+			if ( type != null ){
+				return super.removeType(typed);
+			}
+			type = super.getType(typed);
+			if (type == null) {
+				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParamterType.TYPE);
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}		
+		return getLazyIdentityStore().createLazyStub(type);		
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ITopic removeType(IOccurrence typed) {
-		// NOTHING TO DO HERE -> method only called by modify type to change
-		// type
-		return getType(typed);
+		ITopic type = null;
+		try {
+			type = super.getType(typed);
+			if ( type != null ){
+				return super.removeType(typed);
+			}
+			type = super.getType(typed);
+			if (type == null) {
+				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParamterType.TYPE);
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}		
+		return getLazyIdentityStore().createLazyStub(type);		
 	}
 
 	/**

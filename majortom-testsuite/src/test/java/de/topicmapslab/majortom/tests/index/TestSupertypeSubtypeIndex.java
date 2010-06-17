@@ -394,9 +394,8 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		assertEquals(1, index.getTopics(type).size());
 		assertEquals(1, index.getTopics(otherType).size());
 				
-		assertEquals(2, instance.getTypes().size());
+		assertEquals(1, instance.getTypes().size());
 		assertTrue(instance.getTypes().contains(type));
-		assertTrue(instance.getTypes().contains(otherType));
 		
 		ITopic anotherType = createTopic();
 		anotherType.addSupertype(type);

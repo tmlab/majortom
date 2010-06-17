@@ -188,35 +188,6 @@ public class AssociationStore implements IDataStore {
 	}
 
 	/**
-	 * Remove a player from the internal store and remove all dependent roles
-	 * and associations too.
-	 * 
-	 * @param player the player
-	 * @return all removed associations
-	 */
-	public Set<IAssociation> removePlayer(ITopic player) {
-		Set<IAssociation> removed = HashUtil.getHashSet();
-		/*
-		 * check if topic known as player
-		 */
-		if (playedRoles != null && playedRoles.containsKey(player)) {
-			/*
-			 * remove all played roles and parent associations
-			 */
-			for (IAssociationRole role : playedRoles.get(player)) {
-				rolePlayers.remove(role);
-				removed.add(role.getParent());
-				associations.remove(role.getParent());
-			}
-			/*
-			 * remove player
-			 */
-			playedRoles.remove(player);
-		}
-		return removed;
-	}
-
-	/**
 	 * Register a new association item.
 	 * 
 	 * @param association the association item

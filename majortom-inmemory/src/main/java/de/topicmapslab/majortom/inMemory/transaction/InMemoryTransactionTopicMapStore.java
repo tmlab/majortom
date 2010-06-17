@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore;
+import de.topicmapslab.majortom.inMemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inMemory.store.internal.IdentityStore;
 import de.topicmapslab.majortom.inMemory.store.internal.TypedStore;
+import de.topicmapslab.majortom.inMemory.transaction.internal.LazyAssociationStore;
 import de.topicmapslab.majortom.inMemory.transaction.internal.LazyIdentityStore;
 import de.topicmapslab.majortom.inMemory.transaction.internal.LazyTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
@@ -47,12 +49,15 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 
 	private LazyIdentityStore lazyIdentityStore;
 	private LazyTypedStore lazyTypedStore;
+	private LazyAssociationStore lazyAssociationStore;
 
 	/**
 	 * constructor
 	 * 
-	 * @param topicMapSystem the topic map system
-	 * @param store the real store
+	 * @param topicMapSystem
+	 *            the topic map system
+	 * @param store
+	 *            the real store
 	 */
 	public InMemoryTransactionTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store, ITransaction transaction) {
 		super(topicMapSystem);
@@ -112,6 +117,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	public synchronized void connect() throws TopicMapStoreException {
 		this.lazyIdentityStore = new LazyIdentityStore(this);
 		this.lazyTypedStore = new LazyTypedStore(this);
+		this.lazyAssociationStore = new LazyAssociationStore(this);
 		super.connect();
 	}
 
@@ -121,6 +127,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	public synchronized void close() throws TopicMapStoreException {
 		this.lazyIdentityStore.close();
 		this.lazyTypedStore.close();
+		this.lazyAssociationStore.close();
 		super.close();
 	}
 
@@ -139,7 +146,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 		commands.add(new TransactionCommand(null, TransactionOperation.REMOVE, context, paramType, params));
 		super.doRemove(context, paramType, params);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -163,11 +170,25 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	public IdentityStore getIdentityStore() {
 		return lazyIdentityStore;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public TypedStore getTypedStore() {
 		return lazyTypedStore;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public AssociationStore getAssociationStore() {
+		return lazyAssociationStore;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean supportRevisions() {
+		return false;
 	}
 }

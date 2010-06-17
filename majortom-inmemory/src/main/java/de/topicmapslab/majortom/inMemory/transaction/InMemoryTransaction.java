@@ -15,6 +15,8 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inMemory.transaction;
 
+import de.topicmapslab.majortom.inMemory.transaction.internal.LazyIdentityStore;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TransactionException;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -29,12 +31,13 @@ import de.topicmapslab.majortom.transaction.TransactionImpl;
  */
 public class InMemoryTransaction extends TransactionImpl {
 
-	private final ITransactionTopicMapStore transactionTopicMapStore;
+	private final InMemoryTransactionTopicMapStore transactionTopicMapStore;
 
 	/**
 	 * constructor
 	 * 
-	 * @param parent the parent topic map
+	 * @param parent
+	 *            the parent topic map
 	 */
 	public InMemoryTransaction(ITopicMap parent) {
 		super(parent);
@@ -61,7 +64,12 @@ public class InMemoryTransaction extends TransactionImpl {
 		this.transactionTopicMapStore.close();
 		super.close();
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends IConstruct> T moveToTransactionContext(T construct) {
+		return ((LazyIdentityStore) transactionTopicMapStore.getIdentityStore()).createLazyStub(construct);
+	}
 
 }
