@@ -54,7 +54,7 @@ public class LazyTypedStore extends TypedStore {
 	public LazyTypedStore(InMemoryTopicMapStore store) {
 		super(store);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

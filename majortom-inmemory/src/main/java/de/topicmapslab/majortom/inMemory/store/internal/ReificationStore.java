@@ -172,4 +172,13 @@ public class ReificationStore implements IDataStore {
 			store.storeRevision(revision, TopicMapEventType.REIFIER_SET, reifiable, replacement, topic);
 		}
 	}
+	
+	/**
+	 * Return the internal stored store instance.
+	 * 
+	 * @return the store the store instance
+	 */
+	protected InMemoryTopicMapStore getStore() {
+		return store;
+	}
 }

@@ -237,4 +237,14 @@ public class LazyAssociationStore extends AssociationStore {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() {
+		if (changedPlayers != null ) {
+			changedPlayers.clear();
+		}
+		super.close();
+	}
+	
 }
