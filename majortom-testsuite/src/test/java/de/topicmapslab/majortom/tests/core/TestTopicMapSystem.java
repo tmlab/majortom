@@ -9,7 +9,9 @@ import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemImpl;
+import de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 
 /*******************************************************************************
@@ -41,6 +43,8 @@ public class TestTopicMapSystem extends TestCase {
 		assertNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
 		TopicMapSystem system = factory.newTopicMapSystem();
+		ITopicMapSystem system_ = (ITopicMapSystem)system;
+		TopicMap map = system_.createTopicMap("http://engine.topicmapslab.de/", new InMemoryTopicMapStore(system_));
 		Assert.assertTrue(system instanceof TopicMapSystemImpl);
 		TopicMap topicMap = system.createTopicMap("http://engine.topicmapslab.de/");
 		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
