@@ -21,7 +21,7 @@
 	<repositories>
 		<repository>
 			<id>de.topicmapslab</id>
-			<url>http://maven.topicmapslab.de/internal</url>
+			<url>http://maven.topicmapslab.de/public</url>
 		</repository>
 		<repository>
 			<id>JBoss</id>
