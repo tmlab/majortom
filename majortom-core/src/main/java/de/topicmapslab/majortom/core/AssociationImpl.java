@@ -26,7 +26,7 @@ import org.tmapi.core.Topic;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Base implementation of {@link IAssociation}
@@ -62,7 +62,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 		if (!player.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(player, "Player has to be a topic of the same topic map.");
 		}
-		return (Role) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.ROLE, type, player);
+		return (Role) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.ROLE, type, player);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Topic> getRoleTypes() {
-		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE_TYPES));
+		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE_TYPES));
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Role> getRoles() {
-		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE));
+		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE));
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 		if (type == null) {
 			throw new IllegalArgumentException("Type cannot be null.");
 		}
-		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE, type));
+		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE, type));
 	}
 
 	/**
@@ -109,14 +109,14 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 		if (!type.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.TYPE, type);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.TYPE);
+		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
 	}
 
 }

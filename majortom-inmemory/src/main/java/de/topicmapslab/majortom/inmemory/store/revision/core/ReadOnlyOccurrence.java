@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package de.topicmapslab.majortom.inmemory.store.revision.core;
 
-package de.topicmapslab.majortom.core;
-
-import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
- * Base implementation of {@link IOccurrence}
- * 
  * @author Sven Krosse
  * 
  */
-public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
+public class ReadOnlyOccurrence extends ReadOnlyDatatypeAware implements IOccurrence {
+
+	private final String typeId;
+	
+	/*
+	 * cached values
+	 */
+	private Topic cachedType;
 
 	/**
-	 * constructor
-	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param parent the parent topic
+	 * @param clone
 	 */
-	public OccurrenceImpl(ITopicMapStoreIdentity identity, ITopic parent) {
-		super(identity, parent.getTopicMap(), parent);
+	public ReadOnlyOccurrence(IOccurrence clone) {
+		super(clone);
+		typeId = clone.getType().getId();
 	}
 
 	/**
@@ -52,20 +51,22 @@ public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setType(Topic type) {
-		if ( type == null ){
-			throw new ModelConstraintException(this,"Type cannot be null.");
+	public Topic getType() {
+		if (cachedType != null) {
+			return cachedType;
 		}
-		if ( !type.getTopicMap().equals(getTopicMap())){
-			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
+		Topic type = (Topic) getTopicMap().getConstructById(typeId);
+		if (type instanceof ReadOnlyTopic) {
+			cachedType = type;
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
+		return type;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic getType() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
+	public void setType(Topic arg0) {
+		throw new UnsupportedOperationException("Construct is read only!");
 	}
+
 }

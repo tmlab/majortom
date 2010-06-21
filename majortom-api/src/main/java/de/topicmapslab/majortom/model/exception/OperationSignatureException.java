@@ -2,7 +2,7 @@ package de.topicmapslab.majortom.model.exception;
 
 import org.tmapi.core.Construct;
 
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Topic map store exception thrown if the calling signature does not matching to any internal operation.
@@ -25,7 +25,7 @@ public class OperationSignatureException extends TopicMapStoreException {
 	/**
 	 * the parameter type of the operation
 	 */
-	private final TopicMapStoreParamterType paramType;
+	private final TopicMapStoreParameterType paramType;
 
 	/**
 	 * constructor
@@ -37,7 +37,7 @@ public class OperationSignatureException extends TopicMapStoreException {
 	 * @param params
 	 *            an array of arguments given to the topic map store
 	 */
-	public OperationSignatureException(Construct context, TopicMapStoreParamterType paramType, Object... params) {
+	public OperationSignatureException(Construct context, TopicMapStoreParameterType paramType, Object... params) {
 		super("");
 		this.context = context.getClass();
 		this.paramType = paramType;

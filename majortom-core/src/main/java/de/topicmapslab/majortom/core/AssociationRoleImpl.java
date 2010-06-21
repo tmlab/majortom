@@ -22,7 +22,7 @@ import org.tmapi.core.Topic;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Base implementation of {@link IAssociationRole}
@@ -53,7 +53,7 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 * {@inheritDoc}
 	 */
 	public Topic getPlayer() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.PLAYER);
+		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.PLAYER);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 		if ( !player.getTopicMap().equals(getTopicMap())){
 			throw new ModelConstraintException(player, "Player has to be a topic of the same topic map.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.PLAYER, player);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.PLAYER, player);
 	}
 
 	/**
@@ -79,14 +79,14 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 		if ( !type.getTopicMap().equals(getTopicMap())){
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.TYPE, type);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.TYPE);
+		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
 	}
 
 }

@@ -27,7 +27,7 @@ import de.topicmapslab.majortom.model.core.IScopable;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -53,7 +53,7 @@ public abstract class ScopeableImpl extends ReifiableImpl implements IScopable {
 	 * {@inheritDoc}
 	 */
 	public IScope getScopeObject() {
-		return (IScope) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.SCOPE);
+		return (IScope) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SCOPE);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public abstract class ScopeableImpl extends ReifiableImpl implements IScopable {
 		if (!theme.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.SCOPE, theme);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.SCOPE, theme);
 	}
 
 	/**
@@ -88,6 +88,6 @@ public abstract class ScopeableImpl extends ReifiableImpl implements IScopable {
 		if (theme == null) {
 			throw new ModelConstraintException(this, "Theme cannot be null.");
 		}
-		getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.SCOPE, theme);
+		getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.SCOPE, theme);
 	}
 }

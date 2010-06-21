@@ -25,7 +25,7 @@ import org.w3c.dom.Node;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Base implementation of {@link IRevision}
@@ -50,35 +50,35 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 	 * {@inheritDoc}
 	 */
 	public Calendar getBegin() {
-		return (Calendar) store.doRead(null, TopicMapStoreParamterType.REVISION_BEGIN, this);
+		return (Calendar) store.doRead(null, TopicMapStoreParameterType.REVISION_BEGIN, this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Calendar getEnd() {
-		return (Calendar) store.doRead(null, TopicMapStoreParamterType.REVISION_END, this);
+		return (Calendar) store.doRead(null, TopicMapStoreParameterType.REVISION_END, this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision getFuture() {
-		return (IRevision) store.doRead(null, TopicMapStoreParamterType.NEXT_REVISION, this);
+		return (IRevision) store.doRead(null, TopicMapStoreParameterType.NEXT_REVISION, this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision getPrevious() {
-		return (IRevision) store.doRead(null, TopicMapStoreParamterType.PREVIOUS_REVISION, this);
+		return (IRevision) store.doRead(null, TopicMapStoreParameterType.PREVIOUS_REVISION, this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Changeset getChangeset() {
-		return (Changeset) store.doRead(null, TopicMapStoreParamterType.CHANGESET, this);
+		return (Changeset) store.doRead(null, TopicMapStoreParameterType.CHANGESET, this);
 	}
 
 	/**

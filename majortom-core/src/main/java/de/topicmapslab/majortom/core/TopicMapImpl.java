@@ -38,7 +38,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -84,7 +84,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (name == null) {
 			throw new IllegalArgumentException("Name attribute cannot be null.");
 		}
-		getStore().doModify(this, TopicMapStoreParamterType.TAG, name);
+		getStore().doModify(this, TopicMapStoreParameterType.TAG, name);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (timestamp == null) {
 			throw new IllegalArgumentException("Timestamp attribute cannot be null.");
 		}
-		getStore().doModify(this, TopicMapStoreParamterType.TAG, name, timestamp);
+		getStore().doModify(this, TopicMapStoreParameterType.TAG, name, timestamp);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (type == null) {
 			throw new IllegalArgumentException("Association type filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, type));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type));
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, scope));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, scope));
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, type, scope));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type, scope));
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (type == null) {
 			throw new IllegalArgumentException("Topic type filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParamterType.TOPIC, type));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.TOPIC, type));
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (Association) getStore().doCreate(this, TopicMapStoreParamterType.ASSOCIATION, type, themes);
+		return (Association) getStore().doCreate(this, TopicMapStoreParameterType.ASSOCIATION, type, themes);
 	}
 
 	/**
@@ -236,21 +236,21 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (Association) getStore().doCreate(this, TopicMapStoreParamterType.ASSOCIATION, type, themes);
+		return (Association) getStore().doCreate(this, TopicMapStoreParameterType.ASSOCIATION, type, themes);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Locator createLocator(String ref) throws MalformedIRIException {
-		return (Locator) getStore().doCreate(this, TopicMapStoreParamterType.LOCATOR, ref);
+		return (Locator) getStore().doCreate(this, TopicMapStoreParameterType.LOCATOR, ref);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic createTopic() {
-		return (Topic) getStore().doCreate(this, TopicMapStoreParamterType.TOPIC);
+		return (Topic) getStore().doCreate(this, TopicMapStoreParameterType.TOPIC);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (c == null) {
 			Topic topic = getTopicBySubjectIdentifier(identifier);
 			if (topic == null) {
-				return (Topic) getStore().doCreate(this, TopicMapStoreParamterType.BY_ITEM_IDENTIFER, identifier);
+				return (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_ITEM_IDENTIFER, identifier);
 			}
 			topic.addItemIdentifier(identifier);
 			return topic;
@@ -288,7 +288,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		}
 		Construct c = getConstructByItemIdentifier(identifier);
 		if (c == null) {
-			return (Topic) getStore().doCreate(this, TopicMapStoreParamterType.BY_SUBJECT_IDENTIFER, identifier);
+			return (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, identifier);
 		} else if (c instanceof Topic) {
 			topic = (Topic) c;
 			topic.addSubjectIdentifier(identifier);
@@ -305,7 +305,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			throw new ModelConstraintException(this, "Subject-locator cannot be null");
 		}
 		Topic topic = getTopicBySubjectLocator(locator);
-		return topic != null ? topic : (Topic) getStore().doCreate(this, TopicMapStoreParamterType.BY_SUBJECT_LOCATOR, locator);
+		return topic != null ? topic : (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, locator);
 	}
 
 	/**
@@ -313,7 +313,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Association> getAssociations() {
-		return Collections.unmodifiableSet((Set<Association>) getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION));
+		return Collections.unmodifiableSet((Set<Association>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION));
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (id == null) {
 			throw new IllegalArgumentException("Id cannot be null.");
 		}
-		return (Construct) getStore().doRead(this, TopicMapStoreParamterType.BY_ID, id);
+		return (Construct) getStore().doRead(this, TopicMapStoreParameterType.BY_ID, id);
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (identifier == null) {
 			throw new IllegalArgumentException("Item-identifier cannot be null.");
 		}
-		return (Construct) getStore().doRead(this, TopicMapStoreParamterType.BY_ITEM_IDENTIFER, identifier);
+		return (Construct) getStore().doRead(this, TopicMapStoreParameterType.BY_ITEM_IDENTIFER, identifier);
 	}
 
 	/**
@@ -350,7 +350,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public Locator getLocator() {
-		return locator == null ? (Locator) getStore().doRead(this, TopicMapStoreParamterType.LOCATOR) : locator;
+		return locator == null ? (Locator) getStore().doRead(this, TopicMapStoreParameterType.LOCATOR) : locator;
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (identifier == null) {
 			throw new IllegalArgumentException("Subject-identifier cannot be null.");
 		}
-		return (Topic) getStore().doRead(this, TopicMapStoreParamterType.BY_SUBJECT_IDENTIFER, identifier);
+		return (Topic) getStore().doRead(this, TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, identifier);
 	}
 
 	/**
@@ -370,7 +370,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (locator == null) {
 			throw new IllegalArgumentException("Subject-locator cannot be null.");
 		}
-		return (Topic) getStore().doRead(this, TopicMapStoreParamterType.BY_SUBJECT_LOCATOR, locator);
+		return (Topic) getStore().doRead(this, TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, locator);
 	}
 
 	/**
@@ -378,7 +378,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Topic> getTopics() {
-		return Collections.unmodifiableSet((Set<Topic>) getStore().doRead(this, TopicMapStoreParamterType.TOPIC));
+		return Collections.unmodifiableSet((Set<Topic>) getStore().doRead(this, TopicMapStoreParameterType.TOPIC));
 	}
 
 	/**
@@ -410,7 +410,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public String getId() {
-		return (String) getStore().doRead(this, TopicMapStoreParamterType.ID);
+		return (String) getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
 
 	/**
@@ -442,7 +442,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 				throw new IllegalArgumentException("At least one theme is not a topic of this topic map.");
 			}
 		}
-		return (IScope) getStore().doCreate(this, TopicMapStoreParamterType.SCOPE, topics);
+		return (IScope) getStore().doCreate(this, TopicMapStoreParameterType.SCOPE, topics);
 	}
 
 	/**
@@ -460,6 +460,6 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 				throw new IllegalArgumentException("At least one theme is not a topic of this topic map.");
 			}
 		}
-		return (IScope) getStore().doCreate(this, TopicMapStoreParamterType.SCOPE, topics);
+		return (IScope) getStore().doCreate(this, TopicMapStoreParameterType.SCOPE, topics);
 	}
 }

@@ -30,7 +30,7 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -73,7 +73,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (cleanedThemes.isEmpty()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, themes);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (cleanedThemes.isEmpty()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, themes);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (cleanedThemes.isEmpty()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, themes);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (cleanedThemes.isEmpty()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, themes);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (cleanedThemes.isEmpty()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, datatype, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, datatype, themes);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (!themes.containsAll(parentThemes) || parentThemes.size() >= themes.size()) {
 			throw new ModelConstraintException(this, "Variant will be in the same scope than the variant!");
 		}
-		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.VARIANT, value, datatype, themes);
+		return (Variant) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.VARIANT, value, datatype, themes);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Variant> getVariants() {
-		return (Set<Variant>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VARIANT);
+		return (Set<Variant>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VARIANT);
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (scope == null) {
 			throw new IllegalArgumentException("Scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<Variant>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VARIANT, scope));
+		return Collections.unmodifiableSet((Set<Variant>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VARIANT, scope));
 	}
 
 	/**
@@ -229,14 +229,14 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (!type.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.TYPE, type);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.TYPE);
+		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
 	}
 
 	/**
@@ -253,13 +253,13 @@ public class NameImpl extends ScopeableImpl implements IName {
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getValue() {
-		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE);
+		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE);
 	}
 }

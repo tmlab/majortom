@@ -33,7 +33,7 @@ import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Sven Krosse
@@ -59,7 +59,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public Boolean booleanValue() throws ParseException {
 		try {
-			return (Boolean) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Boolean.class);
+			return (Boolean) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Boolean.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -73,7 +73,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public IGeoCoordinate coordinateValue() throws ParseException {
 		try {
-			return (IGeoCoordinate) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, IGeoCoordinate.class);
+			return (IGeoCoordinate) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, IGeoCoordinate.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -87,7 +87,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public Calendar dateTimeValue() throws ParseException {
 		try {
-			return (Calendar) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Calendar.class);
+			return (Calendar) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Calendar.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -101,7 +101,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public Double doubleValue() throws NumberFormatException {
 		try {
-			return (Double) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Double.class);
+			return (Double) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Double.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -117,7 +117,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public URI uriValue() throws URISyntaxException {
 		try {
-			return (URI) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, URI.class);
+			return (URI) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, URI.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof URISyntaxException) {
 				throw (URISyntaxException) e.getCause();
@@ -179,7 +179,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public BigDecimal decimalValue() {
 		try {
-			return (BigDecimal) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, BigDecimal.class);
+			return (BigDecimal) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, BigDecimal.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -193,7 +193,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public float floatValue() {
 		try {
-			return (Float) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Float.class);
+			return (Float) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Float.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -206,14 +206,14 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 * {@inheritDoc}
 	 */
 	public Locator getDatatype() {
-		return (Locator) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.DATATYPE);
+		return (Locator) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.DATATYPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getValue() {
-		return getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE).toString();
+		return getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE).toString();
 	}
 
 	/**
@@ -221,7 +221,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public int intValue() {
 		try {
-			return (Integer) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Integer.class);
+			return (Integer) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Integer.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -235,7 +235,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public BigInteger integerValue() {
 		try {
-			return (BigInteger) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, BigInteger.class);
+			return (BigInteger) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, BigInteger.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -249,7 +249,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public Locator locatorValue() {
 		try {
-			return (Locator) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Locator.class);
+			return (Locator) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Locator.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -263,7 +263,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public long longValue() {
 		try {
-			return (Long) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, Long.class);
+			return (Long) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Long.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof NumberFormatException) {
 				throw (NumberFormatException) e.getCause();
@@ -277,7 +277,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 */
 	public IGeoSurface<?> surfaceValue() throws ParseException {
 		try {
-			return (IGeoSurface<?>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.VALUE, IGeoSurface.class);
+			return (IGeoSurface<?>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, IGeoSurface.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -293,7 +293,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -313,7 +313,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -323,28 +323,28 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setValue(long value) {
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setValue(float value) {
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setValue(int value) {
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 	}
 
 	/**
@@ -354,7 +354,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value);
 
 	}
 
@@ -368,7 +368,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 		if (locator == null) {
 			throw new ModelConstraintException(this, "Locator cannot be null.");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.VALUE, value, locator);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.VALUE, value, locator);
 	}
 
 }

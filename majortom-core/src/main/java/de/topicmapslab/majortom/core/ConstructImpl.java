@@ -28,7 +28,7 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Base implementation of {@link IConstruct}.
@@ -88,7 +88,7 @@ public abstract class ConstructImpl implements IConstruct {
 			throw new ModelConstraintException(this, "Item identifier cannot be null.");
 		}
 		if (!getItemIdentifiers().contains(identifier)) {
-			getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.ITEM_IDENTIFIER, identifier);
+			getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);
 		}
 	}
 
@@ -96,7 +96,7 @@ public abstract class ConstructImpl implements IConstruct {
 	 * {@inheritDoc}
 	 */
 	public String getId() {		
-		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ID);
+		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public abstract class ConstructImpl implements IConstruct {
 		if (isRemoved()) {
 			throw new ConstructRemovedException(this);
 		}
-		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ITEM_IDENTIFIER));
+		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 	}
 
 	/**
@@ -138,7 +138,7 @@ public abstract class ConstructImpl implements IConstruct {
 			throw new ConstructRemovedException(this);
 		}
 		if (identifier != null && getItemIdentifiers().contains(identifier)) {
-			getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.ITEM_IDENTIFIER, identifier);			
+			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);			
 		}
 	}
 

@@ -13,55 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-package de.topicmapslab.majortom.core;
+package de.topicmapslab.majortom.inmemory.store.revision.core;
 
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IReifiable;
-import de.topicmapslab.majortom.model.core.ITopicMap;
-import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
- * Base implementation of {@link IReifiable}
+ * Read only implementation of {@link IReifiable}
  * 
  * @author Sven Krosse
  * 
  */
-public abstract class ReifiableImpl extends ConstructImpl implements IReifiable {
+public class ReadOnlyReifiable extends ReadOnlyConstruct implements IReifiable {
+
+	private final String reifierId;
+
+	/*
+	 * cached values
+	 */
+	private Topic cachedReifier;
 
 	/**
 	 * constructor
 	 * 
-	 * @param identity
-	 *            the {@link ITopicMapStoreIdentity}
-	 * @param topicMap
-	 *            the topic map
-	 * @param parent
-	 *            the parent construct
+	 * @param clone the construct to clone
 	 */
-	public ReifiableImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
-		super(identity, topicMap, parent);
+	public ReadOnlyReifiable(IReifiable clone) {
+		super(clone);
+		if (clone.getReifier() != null) {
+			reifierId = clone.getReifier().getId();
+		} else {
+			reifierId = null;
+		}
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getReifier() {
-		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.REIFICATION);
+		if (reifierId == null) {
+			return null;
+		}
+		if (cachedReifier != null) {
+			return cachedReifier;
+		}
+		Topic reifier = (Topic) getTopicMap().getStore().doRead(getTopicMap(), TopicMapStoreParameterType.BY_ID, reifierId);
+		if (reifier instanceof ReadOnlyTopic) {
+			cachedReifier = reifier;
+		}
+		return reifier;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setReifier(Topic reifier) throws ModelConstraintException {
-		if ( reifier != null && !reifier.getTopicMap().equals(getTopicMap())){
-			throw new ModelConstraintException(reifier, "Reifier has to be a topic of the same topic map.");
-		}		
-		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.REIFICATION, reifier);
+	public void setReifier(Topic arg0) throws ModelConstraintException {
+		throw new UnsupportedOperationException("Construct is read only.");
 	}
 
 }

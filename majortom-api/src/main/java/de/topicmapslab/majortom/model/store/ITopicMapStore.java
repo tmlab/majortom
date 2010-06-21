@@ -96,7 +96,7 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	void doRemove(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
+	void doRemove(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to delete a construct from the store.
@@ -124,7 +124,7 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	Object doRead(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
+	Object doRead(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to create a new information item
@@ -139,7 +139,7 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	Object doCreate(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
+	Object doCreate(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Operation method to add or set some information items to a construct of
@@ -154,7 +154,7 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	void doModify(final IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException;
+	void doModify(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
 	 * Registers the listener to the topic map.

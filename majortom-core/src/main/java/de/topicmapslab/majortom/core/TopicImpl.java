@@ -37,7 +37,7 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Base implementation of {@link ITopic}
@@ -62,7 +62,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Association> Collection<T> getAssociationsPlayed() {
-		return (Collection<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION);
+		return (Collection<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, type));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type));
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, scope));
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ASSOCIATION, type, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type, scope));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Collection<ICharacteristics> getCharacteristics() {
-		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.CHARACTERISTICS));
+		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.CHARACTERISTICS));
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.CHARACTERISTICS, type));
+		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.CHARACTERISTICS, type));
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (scope == null) {
 			throw new IllegalArgumentException("Characteristic scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.CHARACTERISTICS, scope));
+		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.CHARACTERISTICS, scope));
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
 		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore()
-				.doRead(this, TopicMapStoreParamterType.CHARACTERISTICS, type, scope));
+				.doRead(this, TopicMapStoreParameterType.CHARACTERISTICS, type, scope));
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.NAME, type, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, type, scope));
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (scope == null) {
 			throw new IllegalArgumentException("Name scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.NAME, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, scope));
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.OCCURRENCE, type, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, type, scope));
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (scope == null) {
 			throw new IllegalArgumentException("Occurrence scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.OCCURRENCE, scope));
+		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, scope));
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Collection<Topic> getSupertypes() {
-		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.SUPERTYPE));
+		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUPERTYPE));
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map!");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.SUPERTYPE, type);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.SUPERTYPE, type);
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 			throw new ModelConstraintException(this, "Type cannot be null.");
 		}
 		if (getSupertypes().contains(type)) {
-			getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.SUPERTYPE, type);
+			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.SUPERTYPE, type);
 		}
 	}
 
@@ -254,7 +254,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (identifier == null) {
 			throw new ModelConstraintException(this, "Subject-identifier cannot be null!");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.SUBJECT_IDENTIFIER, identifier);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.SUBJECT_IDENTIFIER, identifier);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (locator == null) {
 			throw new ModelConstraintException(this, "Subject-locator cannot be null!");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.SUBJECT_LOCATOR, locator);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.SUBJECT_LOCATOR, locator);
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.NAME, value, themes);
+		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.NAME, value, themes);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.NAME, value, themes);
+		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.NAME, value, themes);
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.NAME, type, value, themes);
+		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.NAME, type, value, themes);
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.NAME, type, value, themes);
+		return (IName) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.NAME, type, value, themes);
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, themes);
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, themes);
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, themes);
 	}
 
 	/**
@@ -444,7 +444,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, themes);
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, datatype, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, datatype, themes);
 	}
 
 	/**
@@ -498,7 +498,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
 			}
 		}
-		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParamterType.OCCURRENCE, type, value, datatype, themes);
+		return (IOccurrence) getTopicMap().getStore().doCreate(this, TopicMapStoreParameterType.OCCURRENCE, type, value, datatype, themes);
 	}
 
 	/**
@@ -506,7 +506,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Name> getNames() {
-		return Collections.unmodifiableSet((Set<Name>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.NAME));
+		return Collections.unmodifiableSet((Set<Name>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME));
 	}
 
 	/**
@@ -520,7 +520,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<Name>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.NAME, type));
+		return Collections.unmodifiableSet((Set<Name>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, type));
 	}
 
 	/**
@@ -528,7 +528,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Occurrence> getOccurrences() {
-		return Collections.unmodifiableSet((Set<Occurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.OCCURRENCE));
+		return Collections.unmodifiableSet((Set<Occurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE));
 	}
 
 	/**
@@ -542,7 +542,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<Occurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.OCCURRENCE, type));
+		return Collections.unmodifiableSet((Set<Occurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, type));
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 * {@inheritDoc}
 	 */
 	public Reifiable getReified() {
-		return (Reifiable) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.REIFICATION);
+		return (Reifiable) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.REIFICATION);
 	}
 
 	/**
@@ -564,7 +564,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Role> getRolesPlayed() {
-		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE));
+		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE));
 	}
 
 	/**
@@ -578,7 +578,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!roleType.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE, roleType));
+		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE, roleType));
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!associtaionType.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.ROLE, roleType, associtaionType));
+		return Collections.unmodifiableSet((Set<Role>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ROLE, roleType, associtaionType));
 	}
 
 	/**
@@ -606,7 +606,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Locator> getSubjectIdentifiers() {
-		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.SUBJECT_IDENTIFIER));
+		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUBJECT_IDENTIFIER));
 	}
 
 	/**
@@ -614,7 +614,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Locator> getSubjectLocators() {
-		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.SUBJECT_LOCATOR));
+		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUBJECT_LOCATOR));
 	}
 
 	/**
@@ -622,7 +622,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Topic> getTypes() {
-		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParamterType.TYPE));
+		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE));
 	}
 
 	/**
@@ -635,7 +635,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map!");
 		}
-		getTopicMap().getStore().doModify(this, TopicMapStoreParamterType.TYPE, type);
+		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
 	}
 
 	/**
@@ -645,7 +645,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (type == null) {
 			throw new ModelConstraintException(this, "Type cannot be null!");
 		}
-		getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.TYPE, type);
+		getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.TYPE, type);
 	}
 
 	/**
@@ -668,7 +668,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 			throw new ModelConstraintException(this, "Subject-identifier cannot be null!");
 		}
 		if (getSubjectIdentifiers().contains(identifier)) {
-			getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.SUBJECT_IDENTIFIER, identifier);
+			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.SUBJECT_IDENTIFIER, identifier);
 		}
 	}
 
@@ -680,7 +680,7 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 			throw new ModelConstraintException(this, "Subject-locator cannot be null!");
 		}
 		if (getSubjectLocators().contains(locator)) {
-			getTopicMap().getStore().doRemove(this, TopicMapStoreParamterType.SUBJECT_LOCATOR, locator);
+			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.SUBJECT_LOCATOR, locator);
 		}
 	}
 

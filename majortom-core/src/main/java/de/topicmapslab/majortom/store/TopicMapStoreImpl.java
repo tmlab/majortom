@@ -51,7 +51,7 @@ import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParamterType;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -108,11 +108,11 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Object doCreate(IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException {
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
-		if (isReadOnly() && paramType != TopicMapStoreParamterType.LOCATOR && paramType != TopicMapStoreParamterType.SCOPE) {
+		if (isReadOnly() && paramType != TopicMapStoreParameterType.LOCATOR && paramType != TopicMapStoreParameterType.SCOPE) {
 			throw new UnmodifyableStoreException("Creation not supported by read-only stores!");
 		}
 		switch (paramType) {
@@ -585,7 +585,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException {
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -889,7 +889,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doRead(IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException {
+	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -1681,7 +1681,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParamterType paramType, Object... params) throws TopicMapStoreException {
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -1809,7 +1809,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else if (context instanceof IOccurrence) {
 			doRemoveOccurrence((IOccurrence) context, cascade);
 		} else if (context instanceof IAssociation) {
-			doRemoveAssocaition((IAssociation) context, cascade);
+			doRemoveAssociation((IAssociation) context, cascade);
 		} else if (context instanceof IAssociationRole) {
 			doRemoveRole((IAssociationRole) context, cascade);
 		} else if (context instanceof IVariant) {
@@ -1867,7 +1867,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            too
 	 * @throws TopicMapStoreException
 	 */
-	protected abstract void doRemoveAssocaition(IAssociation association, boolean cascade) throws TopicMapStoreException;
+	protected abstract void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException;
 
 	/**
 	 * Remove the association role.
