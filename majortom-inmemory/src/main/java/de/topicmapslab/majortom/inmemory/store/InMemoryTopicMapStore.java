@@ -111,7 +111,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * constructor
 	 * 
-	 * @param topicMapSystem the topic map system
+	 * @param topicMapSystem
+	 *            the topic map system
 	 */
 	public InMemoryTopicMapStore(ITopicMapSystem topicMapSystem) {
 		super(topicMapSystem);
@@ -134,10 +135,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal creation method for associations.
 	 * 
-	 * @param topicMap the topic map
-	 * @param revision the revision
+	 * @param topicMap
+	 *            the topic map
+	 * @param revision
+	 *            the revision
 	 * @return the association
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	IAssociation createAssociation(ITopicMap topicMap, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -198,12 +202,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to create an association
 	 * 
-	 * @param topicMap the topic map
-	 * @param type the type
-	 * @param themes the themes
-	 * @param revision the revision
+	 * @param topicMap
+	 *            the topic map
+	 * @param type
+	 *            the type
+	 * @param themes
+	 *            the themes
+	 * @param revision
+	 *            the revision
 	 * @return the created association
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	IAssociation createAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -447,13 +456,19 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to create a new name item to a topic item.
 	 * 
-	 * @param topic the topic
-	 * @param type the name type
-	 * @param value the value
-	 * @param themes the themes
-	 * @param revision the revision
+	 * @param topic
+	 *            the topic
+	 * @param type
+	 *            the name type
+	 * @param value
+	 *            the value
+	 * @param themes
+	 *            the themes
+	 * @param revision
+	 *            the revision
 	 * @return the created name
-	 * @throws TopicMapStoreException thrown if opteration fails
+	 * @throws TopicMapStoreException
+	 *             thrown if opteration fails
 	 */
 	IName createName(ITopic topic, ITopic type, String value, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -747,14 +762,21 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Internal modification method to create a new occurrence for the given
 	 * topic item.
 	 * 
-	 * @param topic the topic item
-	 * @param type the type
-	 * @param value the value
-	 * @param datatype the datatype
-	 * @param themes the themes
-	 * @param revision the revision
+	 * @param topic
+	 *            the topic item
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the datatype
+	 * @param themes
+	 *            the themes
+	 * @param revision
+	 *            the revision
 	 * @return the created occurrence
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	IOccurrence createOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision)
 			throws TopicMapStoreException {
@@ -807,12 +829,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal creation method for roles.
 	 * 
-	 * @param association the association
-	 * @param type the type
-	 * @param player the player
-	 * @param revision the revision
+	 * @param association
+	 *            the association
+	 * @param type
+	 *            the type
+	 * @param player
+	 *            the player
+	 * @param revision
+	 *            the revision
 	 * @return the created role
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	IAssociationRole createRole(IAssociation association, ITopic type, ITopic player, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -858,8 +885,10 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal creation method for a topic
 	 * 
-	 * @param topicMap the topic map
-	 * @param revision the revision
+	 * @param topicMap
+	 *            the topic map
+	 * @param revision
+	 *            the revision
 	 * @return the create topic
 	 * @throws TopicMapStoreException
 	 */
@@ -1019,13 +1048,19 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to create a variant of the given name
 	 * 
-	 * @param name the name
-	 * @param value the value
-	 * @param datatype the datatype
-	 * @param themes the themes
-	 * @param revision the revision
+	 * @param name
+	 *            the name
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the datatype
+	 * @param themes
+	 *            the themes
+	 * @param revision
+	 *            the revision
 	 * @return the created variant
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	IVariant createVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -1081,10 +1116,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to merge two topics
 	 * 
-	 * @param context the context
-	 * @param other the topic to merge in the other one
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param context
+	 *            the context
+	 * @param other
+	 *            the topic to merge in the other one
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void mergeTopics(ITopic context, ITopic other, IRevision revision) throws TopicMapStoreException {
 		if (!context.equals(other)) {
@@ -1113,10 +1152,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to add a item-identifier
 	 * 
-	 * @param c the construct
-	 * @param itemIdentifier the item identifier
-	 * @param revision the revision to store dependent changes
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier
+	 * @param revision
+	 *            the revision to store dependent changes
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
 
@@ -1173,10 +1216,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to modify the player of an association role
 	 * 
-	 * @param role the role
-	 * @param player the player
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param role
+	 *            the role
+	 * @param player
+	 *            the player
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyPlayer(IAssociationRole role, ITopic player, IRevision revision) throws TopicMapStoreException {
 		ITopic oldValue = getAssociationStore().setPlayer(role, player);
@@ -1201,10 +1248,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Internal modification method to change the reification of the given
 	 * construct.
 	 * 
-	 * @param r the construct
-	 * @param reifier the reifier
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param r
+	 *            the construct
+	 * @param reifier
+	 *            the reifier
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyReifier(IReifiable r, ITopic reifier, IRevision revision) throws TopicMapStoreException {
 		ITopic oldValue = getReificationStore().setReifier(r, reifier);
@@ -1258,10 +1309,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to add a new subject-identifier
 	 * 
-	 * @param t the topic
-	 * @param subjectIdentifier the subject-identifier
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectIdentifier
+	 *            the subject-identifier
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifySubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -1310,10 +1365,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to add a new subject-locator.
 	 * 
-	 * @param t the topic
-	 * @param subjectLocator the subject-locator
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if the operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectLocator
+	 *            the subject-locator
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if the operation fails
 	 */
 	void modifySubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
 		ITopic mergeCandidate = getIdentityStore().bySubjectLocator(subjectLocator);
@@ -1348,9 +1407,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to add a new super type to a topic type
 	 * 
-	 * @param t the topic type
-	 * @param type the super type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic type
+	 * @param type
+	 *            the super type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifySupertype(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		if (!getTopicTypeStore().getSupertypes(t).contains(type)) {
@@ -1393,10 +1455,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to modify type
 	 * 
-	 * @param t the typed item
-	 * @param type the type
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the typed item
+	 * @param type
+	 *            the type
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyType(ITypeable t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -1410,8 +1476,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);			
-		
+		notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);
+
 		/*
 		 * store revision
 		 */
@@ -1428,10 +1494,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to add a new type to a topic item.
 	 * 
-	 * @param t the topic item
-	 * @param type the new type
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic item
+	 * @param type
+	 *            the new type
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		if (!getTopicTypeStore().getTypes(t).contains(type)) {
@@ -1461,11 +1531,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Internal modification method to modify the value and the data type of a
 	 * {@link IDatatypeAware}.
 	 * 
-	 * @param c the {@link IDatatypeAware}
-	 * @param value the value
-	 * @param datatype the data type
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param c
+	 *            the {@link IDatatypeAware}
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the data type
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void modifyValue(IDatatypeAware c, Object value, ILocator datatype, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -1520,9 +1595,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal modification method to modify the value of a name
 	 * 
-	 * @param n the name
-	 * @param value the value
-	 * @param revision the revision
+	 * @param n
+	 *            the name
+	 * @param value
+	 *            the value
+	 * @param revision
+	 *            the revision
 	 * @throws TopicMapStoreException
 	 */
 	void modifyValue(IName n, String value, IRevision revision) throws TopicMapStoreException {
@@ -2346,10 +2424,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove an association
 	 * 
-	 * @param association the association
-	 * @param cascade cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param association
+	 *            the association
+	 * @param cascade
+	 *            cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeAssocaition(IAssociation association, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -2407,10 +2489,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove a construct
 	 * 
-	 * @param construct the construct
-	 * @param cascade cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param construct
+	 *            the construct
+	 * @param cascade
+	 *            cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeConstruct(IConstruct construct, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		if (construct instanceof ITopic) {
@@ -2433,10 +2519,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove a topic name
 	 * 
-	 * @param name the name
-	 * @param cascade cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param name
+	 *            the name
+	 * @param cascade
+	 *            cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeName(IName name, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -2493,10 +2583,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove a occurrence
 	 * 
-	 * @param occurrence the occurrence
-	 * @param cascade cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param occurrence
+	 *            the occurrence
+	 * @param cascade
+	 *            cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -2547,10 +2641,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove an association role
 	 * 
-	 * @param role the role
-	 * @param cascade the cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param role
+	 *            the role
+	 * @param cascade
+	 *            the cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -2610,10 +2708,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove a variant
 	 * 
-	 * @param variant the variant
-	 * @param cascade cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param variant
+	 *            the variant
+	 * @param cascade
+	 *            cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeVariant(IVariant variant, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
@@ -2660,10 +2762,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to return a topic.
 	 * 
-	 * @param topic the topic
-	 * @param cascade the cascading flag
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param topic
+	 *            the topic
+	 * @param cascade
+	 *            the cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeTopic(ITopic topic, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		Set<String> topicIds = HashUtil.getHashSet();
@@ -2673,11 +2779,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to return a topic.
 	 * 
-	 * @param topic the topic
-	 * @param cascade the cascading flag
-	 * @param revision the revision
-	 * @param topicIds a set containing all topic id to avoid cycle deletion
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param topic
+	 *            the topic
+	 * @param cascade
+	 *            the cascading flag
+	 * @param revision
+	 *            the revision
+	 * @param topicIds
+	 *            a set containing all topic id to avoid cycle deletion
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	private void removeTopic(ITopic topic, boolean cascade, IRevision revision, final Set<String> topicIds) throws TopicMapStoreException {
 		if (!cascade && isTopicInUse(topic)) {
@@ -2795,7 +2906,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Method checks if the topic is used by any topic map relation.
 	 * 
-	 * @param topic the topic to check
+	 * @param topic
+	 *            the topic to check
 	 * @return <code>true</code> if the topic is used as type, reifier etc. ,
 	 *         <code>false</code> otherwise.
 	 */
@@ -2864,10 +2976,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove an item identifier
 	 * 
-	 * @param c the construct
-	 * @param itemIdentifier the item identifier
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeItemIdentifer(c, itemIdentifier);
@@ -2922,10 +3038,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove an subject identifier
 	 * 
-	 * @param t the topic
-	 * @param subjectIdentifier the subject identifier
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectIdentifier
+	 *            the subject identifier
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeSubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);
@@ -2946,10 +3066,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Internal method to remove an subject locator
 	 * 
-	 * @param t the topic
-	 * @param subjectLocator the subject locator
-	 * @param revision the revision
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectLocator
+	 *            the subject locator
+	 * @param revision
+	 *            the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	void removeSubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeSubjectLocator(t, subjectLocator);
@@ -3032,14 +3156,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	public synchronized void connect() throws TopicMapStoreException {
 		super.connect();
-		this.identityStore = new IdentityStore(this);
-		this.characteristicsStore = new CharacteristicsStore(getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
-		this.typedStore = new TypedStore(this);
-		this.scopeStore = new ScopeStore();
-		this.topicTypeStore = new TopicTypeStore(this);
-		this.reificationStore = new ReificationStore(this);
-		this.associationStore = new AssociationStore();
-		this.revisionStore = new RevisionStore(this);
+		this.identityStore = createIdentityStore(this);
+		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.typedStore = createTypedStore(this);
+		this.scopeStore = createScopeStore(this);
+		this.topicTypeStore = createTopicTypeStore(this);
+		this.reificationStore = createReificationStore(this);
+		this.associationStore = createAssociationStore(this);
+		this.revisionStore = createRevisionStore(this);
 
 		this.identity = new InMemoryIdentity(UUID.randomUUID().toString());
 	}
@@ -3093,7 +3217,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Create the default name type if not exists.
 	 * 
-	 * @param topicMap the topic map
+	 * @param topicMap
+	 *            the topic map
 	 * @return the default name type
 	 */
 	private ITopic createDefaultNameType(ITopicMap topicMap) {
@@ -3112,7 +3237,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * Add the given type as name type.
 	 * 
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 */
 	private void registerAsNameType(ITopic type) {
 		/*
@@ -3133,8 +3259,10 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Create the specific association of the topic maps data model representing
 	 * a type-instance relation between the given topics.
 	 * 
-	 * @param instance the instance
-	 * @param type the type
+	 * @param instance
+	 *            the instance
+	 * @param type
+	 *            the type
 	 */
 	private void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
 		IAssociation association = createAssociation(getTopicMap(), revision);
@@ -3147,8 +3275,10 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Create the specific association of the topic maps data model representing
 	 * a supertype-subtype relation between the given topics.
 	 * 
-	 * @param type the type
-	 * @param supertype the supertype
+	 * @param type
+	 *            the type
+	 * @param supertype
+	 *            the supertype
 	 */
 	private void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
 		IAssociation association = createAssociation(getTopicMap(), revision);
@@ -3161,9 +3291,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Removes the corresponding association of the supertype-subtype relation
 	 * between the given topics.
 	 * 
-	 * @param type the type
-	 * @param supertype the supertype
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param type
+	 *            the type
+	 * @param supertype
+	 *            the supertype
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	private void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = type.getAssociationsPlayed(getTmdmSupertypeSubtypeAssociationType());
@@ -3184,11 +3317,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Removes the corresponding association of the type-instance relation
 	 * between the given topics.
 	 * 
-	 * @param instance the instance
-	 * @param type the type
+	 * @param instance
+	 *            the instance
+	 * @param type
+	 *            the type
 	 * @return <code>true</code> if an association was removed,
 	 *         <code>false</code> otherwise.
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	private boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = type.getAssociationsPlayed(getTmdmTypeInstanceAssociationType());
@@ -3211,7 +3347,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * the topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
@@ -3227,7 +3364,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
@@ -3243,7 +3381,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * the topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
@@ -3259,7 +3398,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * type of the topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
@@ -3275,7 +3415,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * of the topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
@@ -3291,7 +3432,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * the topic map data model.
 	 * 
 	 * @return the topic type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
@@ -3308,7 +3450,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 *@return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
@@ -3321,7 +3464,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
@@ -3334,7 +3478,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
@@ -3347,7 +3492,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
@@ -3360,7 +3506,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
@@ -3373,11 +3520,134 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * 
 	 *@return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
+	}
+
+	/**
+	 * Creates the internal characteristic store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * @param xsdString
+	 *            the locator of datatype xsd:string
+	 * 
+	 * @return the characteristicsStore
+	 */
+	protected CharacteristicsStore createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
+		if (this.characteristicsStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new CharacteristicsStore(xsdString);
+	}
+
+	/**
+	 * Creates the internal scope store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the scopeStore
+	 */
+	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
+		if (this.scopeStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new ScopeStore();
+	}
+
+	/**
+	 * Creates the internal association store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the associationStore
+	 */
+	protected AssociationStore createAssociationStore(InMemoryTopicMapStore store) {
+		if (this.associationStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new AssociationStore();
+	}
+
+	/**
+	 * Creates the internal identity store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the identityStore
+	 */
+	protected IdentityStore createIdentityStore(InMemoryTopicMapStore store) {
+		if (this.identityStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new IdentityStore(store);
+	}
+
+	/**
+	 * Creates the internal reification store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the reificationStore
+	 */
+	protected ReificationStore createReificationStore(InMemoryTopicMapStore store) {
+		if (this.reificationStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new ReificationStore(store);
+	}
+
+	/**
+	 * Creates the internal topic-type hierarchy store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the topicTypeStore
+	 */
+	protected TopicTypeStore createTopicTypeStore(InMemoryTopicMapStore store) {
+		if (this.topicTypeStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new TopicTypeStore(store);
+	}
+
+	/**
+	 * Creates the internal types store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the typedStore
+	 */
+	protected TypedStore createTypedStore(InMemoryTopicMapStore store) {
+		if (this.typedStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new TypedStore(store);
+	}
+
+	/**
+	 * Creates the internal revision store reference.
+	 * 
+	 * @param store
+	 *            the calling store instance
+	 * 
+	 * @return the revision store
+	 */
+	protected RevisionStore createRevisionStore(InMemoryTopicMapStore store) {
+		if (this.revisionStore != null) {
+			throw new TopicMapStoreException("Store already initialized!");
+		}
+		return new RevisionStore(store);
 	}
 
 	/**
@@ -3470,11 +3740,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * Store a change set for the given revision. The change set will be created
 	 * by the given arguments.
 	 * 
-	 * @param revision the revision the change set should add to
-	 * @param type the type of change
-	 * @param context the context of change
-	 * @param newValue the new value after change
-	 * @param oldValue the old value before change
+	 * @param revision
+	 *            the revision the change set should add to
+	 * @param type
+	 *            the type of change
+	 * @param context
+	 *            the context of change
+	 * @param newValue
+	 *            the new value after change
+	 * @param oldValue
+	 *            the old value before change
 	 */
 	public final void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
 		if (supportRevisions()) {

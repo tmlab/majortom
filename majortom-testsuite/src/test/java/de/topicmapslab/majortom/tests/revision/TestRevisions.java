@@ -78,18 +78,18 @@ public class TestRevisions extends MaJorToMTestCase {
 
 			topic.addType(type);
 			assertEquals(3, index.getRevisions(topic).size());
-			assertEquals(6, index.getRevisions(topic).get(2).getChangeset().size());
+			assertEquals(9, index.getRevisions(topic).get(2).getChangeset().size());
 			assertEquals(5, index.getChangeset(topic).size());
 			assertEquals(2, index.getRevisions(type).size());
-			assertEquals(6, index.getRevisions(type).get(1).getChangeset().size());
+			assertEquals(9, index.getRevisions(type).get(1).getChangeset().size());
 			assertEquals(4, index.getChangeset(type).size());
 
 			File file = new File("src/test/resources/history.xml");
 			index.toXml(file);
 
 			topic.createName(type, "Name", new Topic[0]);
-			assertEquals(4, index.getChangeset(type).size());
-			assertEquals(8, index.getChangeset(topic).size());
+			assertEquals(5, index.getChangeset(type).size());
+			assertEquals(9, index.getChangeset(topic).size());
 		}
 	}
 
@@ -157,7 +157,6 @@ public class TestRevisions extends MaJorToMTestCase {
 		Role otherRole = association.createRole(otherType, otherPlayer);
 
 		Changeset set = index.getAssociationChangeset(assoicationType);
-		System.out.println(set);
 		assertEquals(5, set.size());
 
 		IAssociation other = createAssociation(assoicationType);
@@ -233,6 +232,6 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(n, topic.getReified());
 
 		IRevision revision = index.getLastRevision();
-		assertEquals(28, revision.getChangeset().size());
+		assertEquals(32, revision.getChangeset().size());
 	}
 }

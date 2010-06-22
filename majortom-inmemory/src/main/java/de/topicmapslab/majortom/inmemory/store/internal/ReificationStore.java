@@ -117,7 +117,7 @@ public class ReificationStore implements IDataStore {
 		 * remove old reification
 		 */
 		ITopic r = getReifier(reifiable);
-		if (reifiable != null) {
+		if (r != null) {
 			reification.removeValue(reifiable);
 		}
 		/*

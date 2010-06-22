@@ -360,7 +360,7 @@ public class LazyIdentityStore extends IdentityStore {
 	 *         construct, <code>false</code> otherwise.
 	 */
 	public boolean isRemovedConstruct(IConstruct c) {
-		return removedIds != null && removedIds.contains(c.getId());
+		return c != null && removedIds != null && removedIds.contains(c.getId());
 	}
 
 }

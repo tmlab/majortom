@@ -41,9 +41,12 @@ public class LazyStubCreator {
 	/**
 	 * Creating a lazy stub of the given construct
 	 * 
-	 * @param <T> the construct type
-	 * @param construct the construct
-	 * @param transaction the new topic map
+	 * @param <T>
+	 *            the construct type
+	 * @param construct
+	 *            the construct
+	 * @param transaction
+	 *            the new topic map
 	 * @return the lazy stub
 	 */
 	@SuppressWarnings("unchecked")
@@ -66,42 +69,42 @@ public class LazyStubCreator {
 		throw new IllegalArgumentException("Unknown construct type.");
 	}
 
-	private static final ITopic createLazyStub(ITopic construct, ITransaction transaction) {
+	private static final ITopic createLazyStub(ITopic construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new TopicImpl(((ConstructImpl) construct).getIdentity(), transaction);
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
-	private static final IOccurrence createLazyStub(IOccurrence construct, ITransaction transaction) {
+	private static final IOccurrence createLazyStub(IOccurrence construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new OccurrenceImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
-	private static final IName createLazyStub(IName construct, ITransaction transaction) {
+	private static final IName createLazyStub(IName construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new NameImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
-	private static final IVariant createLazyStub(IVariant construct, ITransaction transaction) {
+	private static final IVariant createLazyStub(IVariant construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new VariantImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
-	private static final IAssociation createLazyStub(IAssociation construct, ITransaction transaction) {
+	private static final IAssociation createLazyStub(IAssociation construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new AssociationImpl(((ConstructImpl) construct).getIdentity(), transaction);
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
-	private static final IAssociationRole createLazyStub(IAssociationRole construct, ITransaction transaction) {
+	private static final IAssociationRole createLazyStub(IAssociationRole construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
 			return new AssociationRoleImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
 		}

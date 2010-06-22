@@ -15,9 +15,13 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.transaction;
 
+import org.tmapi.core.ModelConstraintException;
+import org.tmapi.core.Topic;
+
 import de.topicmapslab.majortom.core.TopicMapImpl;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TransactionException;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.model.transaction.ITransactionTopicMapStore;
 
@@ -40,7 +44,8 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 	/**
 	 * constructor
 	 * 
-	 * @param parent the parent topic map
+	 * @param parent
+	 *            the parent topic map
 	 */
 	public TransactionImpl(ITopicMap parent) {
 		super(parent.getTopicMapSystem(), parent.getLocator());
@@ -50,7 +55,7 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 	/**
 	 * {@inheritDoc}
 	 */
-	public void commit() throws TransactionException {		
+	public void commit() throws TransactionException {
 		getStore().commit();
 		close = true;
 	}
@@ -83,4 +88,21 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 		return close;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setReifier(Topic reifier) throws ModelConstraintException {
+		if (reifier != null && !reifier.getTopicMap().equals(this)) {
+			throw new ModelConstraintException(reifier, "Reifier has to be a topic of the same topic map.");
+		}
+		getStore().doModify(this, TopicMapStoreParameterType.REIFICATION, reifier);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Topic getReifier() {
+		return (Topic) getStore().doRead(this, TopicMapStoreParameterType.REIFICATION);
+	}
+	
 }

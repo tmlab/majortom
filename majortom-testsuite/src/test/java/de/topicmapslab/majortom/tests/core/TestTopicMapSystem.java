@@ -42,9 +42,7 @@ public class TestTopicMapSystem extends TestCase {
 		// InMemoryTopicMapStore.class.getCanonicalName());
 		assertNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
-		TopicMapSystem system = factory.newTopicMapSystem();
-		ITopicMapSystem system_ = (ITopicMapSystem) system;
-		TopicMap map = system_.createTopicMap("http://engine.topicmapslab.de/", new InMemoryTopicMapStore(system_));
+		TopicMapSystem system = factory.newTopicMapSystem();		
 		Assert.assertTrue(system instanceof TopicMapSystemImpl);
 		TopicMap topicMap = system.createTopicMap("http://engine.topicmapslab.de/");
 		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));

@@ -42,7 +42,7 @@ public class EventNotifier implements Runnable {
 		this.event = event;
 		this.notifier = notifier;
 		this.newValue = newValue;
-		this.oldValue = oldValue;
+		this.oldValue = oldValue;		
 	}
 
 	/**

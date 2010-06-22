@@ -22,9 +22,11 @@ import java.util.Map;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
+import de.topicmapslab.majortom.inmemory.store.internal.ReificationStore;
 import de.topicmapslab.majortom.inmemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyAssociationStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyIdentityStore;
+import de.topicmapslab.majortom.inmemory.transaction.internal.LazyReificationStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
@@ -46,10 +48,6 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	private List<TransactionCommand> commited = new LinkedList<TransactionCommand>();
 	private final ITopicMapStore store;
 	private final ITransaction transaction;
-
-	private LazyIdentityStore lazyIdentityStore;
-	private LazyTypedStore lazyTypedStore;
-	private LazyAssociationStore lazyAssociationStore;
 
 	/**
 	 * constructor
@@ -114,26 +112,6 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public synchronized void connect() throws TopicMapStoreException {
-		this.lazyIdentityStore = new LazyIdentityStore(this);
-		this.lazyTypedStore = new LazyTypedStore(this);
-		this.lazyAssociationStore = new LazyAssociationStore(this);
-		super.connect();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public synchronized void close() throws TopicMapStoreException {
-		this.lazyIdentityStore.close();
-		this.lazyTypedStore.close();
-		this.lazyAssociationStore.close();
-		super.close();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		commands.add(new TransactionCommand(null, TransactionOperation.MODIFY, context, paramType, params));
 		super.doModify(context, paramType, params);
@@ -167,22 +145,29 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public IdentityStore getIdentityStore() {
-		return lazyIdentityStore;
+	protected IdentityStore createIdentityStore(InMemoryTopicMapStore store) {
+		return new LazyIdentityStore(this);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public TypedStore getTypedStore() {
-		return lazyTypedStore;
+	protected AssociationStore createAssociationStore(InMemoryTopicMapStore store) {
+		return new LazyAssociationStore(this);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public AssociationStore getAssociationStore() {
-		return lazyAssociationStore;
+	protected ReificationStore createReificationStore(InMemoryTopicMapStore store) {
+		return new LazyReificationStore(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected TypedStore createTypedStore(InMemoryTopicMapStore store) {
+		return new LazyTypedStore(this);
 	}
 
 	/**
