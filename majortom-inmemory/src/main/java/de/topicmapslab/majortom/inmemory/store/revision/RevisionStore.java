@@ -65,6 +65,8 @@ public class RevisionStore implements IDataStore {
 
 	private Map<String, LinkedList<IRevision>> associationRevisions;
 
+	private Map<IAssociation, IRevisionChange> associationCreations;
+
 	private Map<IRevision, Changeset> changesets;
 
 	private Map<String, Changeset> topicChangesets;
@@ -88,7 +90,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param store the parent store
+	 * @param store
+	 *            the parent store
 	 */
 	public RevisionStore(ITopicMapStore store) {
 		this.store = store;
@@ -129,12 +132,17 @@ public class RevisionStore implements IDataStore {
 		if (associationRevisions != null) {
 			associationRevisions.clear();
 		}
+
+		if (associationCreations != null) {
+			associationCreations.clear();
+		}
 	}
 
 	/**
 	 * Adding a new revision to the internal history
 	 * 
-	 * @param revision the new revision
+	 * @param revision
+	 *            the new revision
 	 */
 	protected void addRevision(IRevision revision) {
 		if (revisions == null) {
@@ -161,11 +169,16 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Adding a new atomic change to the change set of the given revision
 	 * 
-	 * @param revision the revision
-	 * @param type the kind of change
-	 * @param context the context of change
-	 * @param newValue the new value
-	 * @param oldValue the old value
+	 * @param revision
+	 *            the revision
+	 * @param type
+	 *            the kind of change
+	 * @param context
+	 *            the context of change
+	 * @param newValue
+	 *            the new value
+	 * @param oldValue
+	 *            the old value
 	 */
 	public void addChange(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
 		addChange(revision, new RevisionChangeImpl(revision, type, context, newValue, oldValue) {
@@ -207,8 +220,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Adding a new atomic change to the change set of the given revision
 	 * 
-	 * @param revision the revision
-	 * @param change the atomic change
+	 * @param revision
+	 *            the revision
+	 * @param change
+	 *            the atomic change
 	 */
 	private void addChange(IRevision revision, IRevisionChange change) {
 		if (revisions == null || !revisions.contains(revision)) {
@@ -231,7 +246,9 @@ public class RevisionStore implements IDataStore {
 			storeDependentRevisionChanges((ITopic) change.getContext().getParent().getParent(), change);
 		} else if (change.getContext() instanceof IAssociation) {
 			storeDependentRevision((IAssociation) change.getContext(), revision);
-			storeDependentRevisionChanges((IAssociation) change.getContext(), change);
+			storeDependentRevisionChanges((IAssociation) change.getContext(), change);			
+			storeDependentRevision((IAssociation) change.getContext(), revision);
+			storeDependentRevisionChanges((IAssociation) change.getContext(), change);			
 		}
 		/*
 		 * check if old value is a topic
@@ -255,7 +272,7 @@ public class RevisionStore implements IDataStore {
 		/*
 		 * check if old value is an association item
 		 */
-		else if (change.getOldValue() instanceof IAssociation){
+		else if (change.getOldValue() instanceof IAssociation) {
 			storeDependentRevision((IAssociation) change.getOldValue(), revision);
 			storeDependentRevisionChanges((IAssociation) change.getOldValue(), change);
 		}
@@ -266,6 +283,17 @@ public class RevisionStore implements IDataStore {
 		if (change.getNewValue() instanceof ITopic) {
 			storeDependentRevision((ITopic) change.getNewValue(), revision);
 			storeDependentRevisionChanges((ITopic) change.getNewValue(), change);
+		}
+		/*
+		 * check if new value is an association
+		 */
+		else if ( change.getNewValue() instanceof IAssociation){
+			if (change.getType() == TopicMapEventType.ASSOCIATION_ADDED) {
+				if ( associationCreations == null ){
+					associationCreations = HashUtil.getHashMap();
+				}
+				associationCreations.put((IAssociation)change.getNewValue(), change);
+			}
 		}
 		/*
 		 * check if new value is a role indicates the deletion of a role item
@@ -283,8 +311,10 @@ public class RevisionStore implements IDataStore {
 	 * Store the given revision as a change-set containing at least one change
 	 * of the given topic.
 	 * 
-	 * @param topic the topic
-	 * @param revision the revision
+	 * @param topic
+	 *            the topic
+	 * @param revision
+	 *            the revision
 	 */
 	public void storeDependentRevision(ITopic topic, IRevision revision) {
 		if (topicRevisions == null) {
@@ -304,8 +334,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store the given revision change to the change set of the given topic.
 	 * 
-	 * @param topic the topic
-	 * @param change the revision change
+	 * @param topic
+	 *            the topic
+	 * @param change
+	 *            the revision change
 	 */
 	public void storeDependentRevisionChanges(ITopic topic, IRevisionChange change) {
 		if (topicChangesets == null) {
@@ -326,8 +358,10 @@ public class RevisionStore implements IDataStore {
 	 * Store the given revision as a change-set containing at least one change
 	 * of the given association.
 	 * 
-	 * @param association the association
-	 * @param revision the revision
+	 * @param association
+	 *            the association
+	 * @param revision
+	 *            the revision
 	 */
 	public void storeDependentRevision(IAssociation association, IRevision revision) {
 		if (associationRevisions == null) {
@@ -337,7 +371,8 @@ public class RevisionStore implements IDataStore {
 		LinkedList<IRevision> revisions = associationRevisions.get(association.getType().getId());
 		if (revisions == null) {
 			revisions = new LinkedList<IRevision>();
-		}
+		}		
+		
 		if (!revisions.contains(revision)) {
 			revisions.add(revision);
 			associationRevisions.put(association.getType().getId(), revisions);
@@ -348,8 +383,10 @@ public class RevisionStore implements IDataStore {
 	 * Store the given revision change to the change set of the given
 	 * association.
 	 * 
-	 * @param association the association
-	 * @param change the revision change
+	 * @param association
+	 *            the association
+	 * @param change
+	 *            the revision change
 	 */
 	public void storeDependentRevisionChanges(IAssociation association, IRevisionChange change) {
 		if (associationChangesets == null) {
@@ -360,6 +397,18 @@ public class RevisionStore implements IDataStore {
 		if (changeset == null) {
 			changeset = new Changeset();
 		}
+		
+		/*
+		 * add creation if exists
+		 */
+		if ( associationCreations != null && associationCreations.containsKey(association)){
+			changeset.add(associationCreations.get(association));
+			associationCreations.remove(association);
+			if ( associationCreations.isEmpty()){
+				associationCreations = null;
+			}
+		}
+		
 		if (!changeset.contains(change)) {
 			changeset.add(change);
 			associationChangesets.put(association.getType().getId(), changeset);
@@ -369,7 +418,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Return the time stamp representing the beginning of the given revision
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            the revision
 	 * @return the time stamp
 	 */
 	public Calendar getRevisionBegin(IRevision revision) {
@@ -383,7 +433,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Return the time stamp representing the end of the given revision
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            the revision
 	 * @return the time stamp or <code>null</code> if this is the last revision
 	 */
 	public Calendar getRevisionEnd(IRevision revision) {
@@ -397,7 +448,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Return the following revision of the given revision
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            the revision
 	 * @return the following revision or <code>null</code> if this is the last
 	 *         revision
 	 */
@@ -415,7 +467,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Return the previous revision of the given revision
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            the revision
 	 * @return the previous revision or <code>null</code> if this is the first
 	 *         revision
 	 */
@@ -440,7 +493,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Adding a new tag for the current time stamp
 	 * 
-	 * @param name the tag name
+	 * @param name
+	 *            the tag name
 	 */
 	public void addTag(final String name) {
 		addTag(name, new GregorianCalendar());
@@ -449,8 +503,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Adding a new tag for the given time stamp.
 	 * 
-	 * @param name the tag name
-	 * @param calendar the time stamp
+	 * @param name
+	 *            the tag name
+	 * @param calendar
+	 *            the time stamp
 	 */
 	public void addTag(final String name, final Calendar calendar) {
 		if (tags == null) {
@@ -472,7 +528,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns a time stamp representing the last change of the given topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return the lastChange
 	 */
 	public Calendar getLastModification(ITopic topic) {
@@ -485,7 +542,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns the change set of the given revision
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            the revision
 	 * @return the change set
 	 */
 	public Changeset getChangeset(IRevision revision) {
@@ -522,7 +580,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns the revision of the given time stamp.
 	 * 
-	 * @param timestamp the time stamp
+	 * @param timestamp
+	 *            the time stamp
 	 * @return the revision
 	 */
 	public IRevision getRevision(Calendar timestamp) {
@@ -540,7 +599,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns the revision of the given tag.
 	 * 
-	 * @param tag the tag name
+	 * @param tag
+	 *            the tag name
 	 * @return the revision
 	 */
 	public IRevision getRevision(final String tag) {
@@ -553,7 +613,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns the revision of the given id.
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the revision
 	 */
 	public IRevision getRevision(final long id) {
@@ -568,20 +629,23 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns all revisions of the topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return the revisions
 	 */
 	public List<IRevision> getRevisions(ITopic topic) {
 		if (revisions == null || topicRevisions == null || !topicRevisions.containsKey(topic.getId())) {
 			return new LinkedList<IRevision>();
 		}
-		return topicRevisions.get(topic.getId());
+		List<IRevision> revisions = new LinkedList<IRevision>(topicRevisions.get(topic.getId()));
+		return revisions;
 	}
 
 	/**
 	 * Returns the changes set of the topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return the changes set
 	 */
 	public Changeset getChangeset(ITopic topic) {
@@ -595,7 +659,8 @@ public class RevisionStore implements IDataStore {
 	 * Returns the changes set of all association items typed by the association
 	 * type
 	 * 
-	 * @param associationType the association type
+	 * @param associationType
+	 *            the association type
 	 * @return the changes set
 	 */
 	public Changeset getAssociationChangeset(ITopic associationType) {
@@ -609,14 +674,16 @@ public class RevisionStore implements IDataStore {
 	 * Returns all revisions of all association items typed by the association
 	 * type
 	 * 
-	 * @param associationType the association type
+	 * @param associationType
+	 *            the association type
 	 * @return the revisions
 	 */
 	public List<IRevision> getAssociationRevisions(ITopic associationType) {
 		if (revisions == null || associationRevisions == null || !associationRevisions.containsKey(associationType.getId())) {
 			return new LinkedList<IRevision>();
 		}
-		return associationRevisions.get(associationType.getId());
+		List<IRevision> revisions = new LinkedList<IRevision>(associationRevisions.get(associationType.getId()));
+		return revisions;
 	}
 
 	/**
@@ -655,8 +722,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given topic
 	 * 
-	 * @param topic the topic
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param topic
+	 *            the topic
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(ITopic topic) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -668,8 +737,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given occurrence
 	 * 
-	 * @param occurrence the occurrence
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param occurrence
+	 *            the occurrence
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(IOccurrence occurrence) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -681,8 +752,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given name
 	 * 
-	 * @param name the name
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param name
+	 *            the name
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(IName name) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -694,8 +767,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given variant
 	 * 
-	 * @param variant the variant
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param variant
+	 *            the variant
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(IVariant variant) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -707,8 +782,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given association
 	 * 
-	 * @param association the association
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param association
+	 *            the association
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(IAssociation association) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -720,8 +797,10 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Store a lazy copy of the given association role
 	 * 
-	 * @param role the association role
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param role
+	 *            the association role
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	public void createLazyCopy(IAssociationRole role) throws TopicMapStoreException {
 		if (lazyCopies == null) {
@@ -733,7 +812,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Checks if there is a lazy copy stored for this id by the internal store.
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return <code>true</code> if there is a lazy copy, <code>false</code>
 	 *         otherwise.
 	 */
@@ -747,7 +827,8 @@ public class RevisionStore implements IDataStore {
 	/**
 	 * Returns the lazy copy of the identified by the given id.
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the lazy copy or <code>null</code> if there is no lazy copy
 	 *         stored
 	 */

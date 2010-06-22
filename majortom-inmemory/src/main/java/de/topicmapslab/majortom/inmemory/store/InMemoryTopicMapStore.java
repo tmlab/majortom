@@ -1410,13 +1410,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		if (oldType != null) {
-			notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);
-			/*
-			 * store revision
-			 */
-			storeRevision(revision, TopicMapEventType.TYPE_SET, t, type, oldType);
-		}
+		notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);			
+		
+		/*
+		 * store revision
+		 */
+		storeRevision(revision, TopicMapEventType.TYPE_SET, t, type, oldType);
 	}
 
 	/**

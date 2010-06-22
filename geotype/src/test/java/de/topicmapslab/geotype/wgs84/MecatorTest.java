@@ -16,7 +16,7 @@ public class MecatorTest extends TestCase {
 				Orientation.E));
 		System.out.println(m2);
 
-		System.out.println(m1.getDistance(m2));
+//		System.out.println(m1.getDistance(m2));
 	}
 
 }

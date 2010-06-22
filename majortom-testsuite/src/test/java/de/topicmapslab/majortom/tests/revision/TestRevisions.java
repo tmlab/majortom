@@ -157,14 +157,15 @@ public class TestRevisions extends MaJorToMTestCase {
 		Role otherRole = association.createRole(otherType, otherPlayer);
 
 		Changeset set = index.getAssociationChangeset(assoicationType);
-		assertEquals(3, set.size());
+		System.out.println(set);
+		assertEquals(5, set.size());
 
 		IAssociation other = createAssociation(assoicationType);
 		set = index.getAssociationChangeset(assoicationType);
-		assertEquals(4, set.size());
+		assertEquals(8, set.size());
 		other.createRole(createTopic(), createTopic());
 		set = index.getAssociationChangeset(assoicationType);
-		assertEquals(5, set.size());
+		assertEquals(9, set.size());
 
 		association.remove();
 
