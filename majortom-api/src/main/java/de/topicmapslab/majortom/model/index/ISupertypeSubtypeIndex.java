@@ -24,20 +24,34 @@ public interface ISupertypeSubtypeIndex extends Index {
 
 	/**
 	 * Returns all topic types being a supertype of the given topic type.If the
-	 * type is <code>null</code> the method returns all topics which has no
+	 * type is <code>null</code> the method returns all topics which have no
 	 * super-types.
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * 
 	 * @return a collection of all supertypes of the given type
 	 */
 	public Collection<Topic> getSupertypes(Topic type);
 
 	/**
+	 * Returns all topic types being a direct supertype of the given topic type.
+	 * If the type is <code>null</code> the method returns all topics which have
+	 * no super-types.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * 
+	 * @return a collection of all supertypes of the given type
+	 */
+	public Collection<Topic> getDirectSupertypes(Topic type);
+
+	/**
 	 * Returns all topic types being a supertype of at least one given topic
 	 * type.
 	 * 
-	 * @param types the topic types
+	 * @param types
+	 *            the topic types
 	 * @return a collection of all supertypes of at least one given type
 	 */
 	public Collection<Topic> getSupertypes(Topic... types);
@@ -46,7 +60,8 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 * Returns all topic types being a supertype of at least one given topic
 	 * type.
 	 * 
-	 * @param types the topic types
+	 * @param types
+	 *            the topic types
 	 * @return a collection of all supertypes of at least one given type
 	 */
 	public Collection<Topic> getSupertypes(Collection<? extends Topic> types);
@@ -55,8 +70,10 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 * Returns all topic types being a supertype of at least one given type or
 	 * of every given topic type.
 	 * 
-	 * @param types the topic types
-	 * @param all flag indicates if the found topic types should be an supertype
+	 * @param types
+	 *            the topic types
+	 * @param all
+	 *            flag indicates if the found topic types should be an supertype
 	 *            of every given type
 	 * @return a collection of all supertypes of at least one of the given type
 	 */
@@ -75,16 +92,30 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 * type is <code>null</code> the method returns all topics which has no
 	 * sub-types.
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * 
 	 * @return a collection of all subtypes of the given type
 	 */
 	public Collection<Topic> getSubtypes(Topic type);
 
 	/**
+	 * Returns all topic types being a direct subtype of the given topic type.
+	 * If the type is <code>null</code> the method returns all topics which has
+	 * no sub-types.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * 
+	 * @return a collection of all subtypes of the given type
+	 */
+	public Collection<Topic> getDirectSubtypes(Topic type);
+
+	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
 	 * 
-	 * @param types the topic types
+	 * @param types
+	 *            the topic types
 	 * @return a collection of all subtypes of at least one given type
 	 */
 	public Collection<Topic> getSubtypes(Topic... types);
@@ -92,7 +123,8 @@ public interface ISupertypeSubtypeIndex extends Index {
 	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
 	 * 
-	 * @param types the topic types
+	 * @param types
+	 *            the topic types
 	 * @return a collection of all subtypes of at least one given type
 	 */
 	public Collection<Topic> getSubtypes(Collection<? extends Topic> types);
@@ -101,8 +133,10 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 * Returns all topic types being a subtype of at least one given type or of
 	 * every given topic type.
 	 * 
-	 * @param types the topic types
-	 * @param all flag indicates if the found topic types should be an subtype
+	 * @param types
+	 *            the topic types
+	 * @param all
+	 *            flag indicates if the found topic types should be an subtype
 	 *            of every given type
 	 * @return a collection of all subtypes of at least one of the given type
 	 */

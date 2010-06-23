@@ -38,7 +38,8 @@ public class InMemorySupertypeSubtypeIndex extends InMemoryIndex implements ISup
 	/**
 	 * constructor
 	 * 
-	 * @param store the in-memory store
+	 * @param store
+	 *            the in-memory store
 	 */
 	public InMemorySupertypeSubtypeIndex(InMemoryTopicMapStore store) {
 		super(store);
@@ -53,6 +54,23 @@ public class InMemorySupertypeSubtypeIndex extends InMemoryIndex implements ISup
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		set.addAll(getStore().getTopicTypeStore().getSubtypes());
+		return Collections.unmodifiableCollection(set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getDirectSubtypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Set<Topic> set = HashUtil.getHashSet();
+		if (type == null) {
+			set.addAll(getStore().getIdentityStore().getTopics());
+			set.removeAll(getSupertypes());
+		} else {
+			set.addAll(getStore().getTopicTypeStore().getDirectSubtypes((ITopic) type));
+		}
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -136,6 +154,23 @@ public class InMemorySupertypeSubtypeIndex extends InMemoryIndex implements ISup
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		set.addAll(getStore().getTopicTypeStore().getSupertypes());
+		return Collections.unmodifiableCollection(set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getDirectSupertypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Set<Topic> set = HashUtil.getHashSet();
+		if (type == null) {
+			set.addAll(getStore().getIdentityStore().getTopics());
+			set.removeAll(getSubtypes());
+		} else {
+			set.addAll(getStore().getTopicTypeStore().getDirectSupertypes((ITopic) type));
+		}
 		return Collections.unmodifiableCollection(set);
 	}
 

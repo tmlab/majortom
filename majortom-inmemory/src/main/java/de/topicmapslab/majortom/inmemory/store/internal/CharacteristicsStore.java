@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
@@ -66,7 +67,7 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * storage map of characteristics-value mapping
 	 */
-	private Map<Object, Object> values;
+	private Map<IConstruct, Object> values;
 
 	/**
 	 * the xsd:any locator
@@ -76,7 +77,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param xsdString the xsd:string locator
+	 * @param xsdString
+	 *            the xsd:string locator
 	 */
 	public CharacteristicsStore(ILocator xsdString) {
 		this.xsdString = xsdString;
@@ -109,7 +111,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the characteristics of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the characteristics
 	 */
 	public Set<ICharacteristics> getCharacteristics(ITopic t) {
@@ -134,7 +137,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the names of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the names
 	 */
 	public Set<IName> getNames(ITopic t) {
@@ -162,7 +166,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the occurrences of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the occurrences
 	 */
 	public Set<IOccurrence> getOccurrences(ITopic t) {
@@ -190,7 +195,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the variants of the given name.
 	 * 
-	 * @param n the name
+	 * @param n
+	 *            the name
 	 * @return the variants
 	 */
 	public Set<IVariant> getVariants(IName n) {
@@ -218,7 +224,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Remove the given name from the internal data store.
 	 * 
-	 * @param n the name
+	 * @param n
+	 *            the name
 	 */
 	public void removeName(IName n) {
 		if (names == null) {
@@ -250,7 +257,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Remove the given occurrence from the internal data store.
 	 * 
-	 * @param o the occurrence
+	 * @param o
+	 *            the occurrence
 	 */
 	public void removeOccurrence(IOccurrence o) {
 		if (occurrences == null) {
@@ -289,7 +297,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Remove the given occurrence from the internal data store.
 	 * 
-	 * @param v the variant
+	 * @param v
+	 *            the variant
 	 */
 	public void removeVariant(IVariant v) {
 		if (variants == null) {
@@ -328,8 +337,10 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Add the given name to the internal data store.
 	 * 
-	 * @param t the parent topic
-	 * @param n the name
+	 * @param t
+	 *            the parent topic
+	 * @param n
+	 *            the name
 	 */
 	public void addName(ITopic t, IName n) {
 		if (names == null) {
@@ -347,8 +358,10 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Add the given occurrence to the internal data store.
 	 * 
-	 * @param t the parent topic
-	 * @param n the occurrence
+	 * @param t
+	 *            the parent topic
+	 * @param n
+	 *            the occurrence
 	 */
 	public void addOccurrence(ITopic t, IOccurrence o) {
 		if (occurrences == null) {
@@ -368,8 +381,10 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Add the given variant to the internal data store.
 	 * 
-	 * @param n the name
-	 * @param v the variant
+	 * @param n
+	 *            the name
+	 * @param v
+	 *            the variant
 	 */
 	public void addVariant(IName n, IVariant v) {
 		if (variants == null) {
@@ -388,7 +403,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the data type of the given data-type-aware
 	 * 
-	 * @param dataTypeAware the data-type-aware
+	 * @param dataTypeAware
+	 *            the data-type-aware
 	 * @return the data type
 	 */
 	public ILocator getDatatype(IDatatypeAware dataTypeAware) {
@@ -401,8 +417,10 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Modify the data type of the given data-type-aware
 	 * 
-	 * @param dataTypeAware the data-type-aware
-	 * @param dataType the new data type
+	 * @param dataTypeAware
+	 *            the data-type-aware
+	 * @param dataType
+	 *            the new data type
 	 * @return the old data type
 	 */
 	public ILocator setDatatype(IDatatypeAware dataTypeAware, ILocator dataType) {
@@ -446,10 +464,11 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the value of the given object
 	 * 
-	 * @param obj the object
+	 * @param obj
+	 *            the object
 	 * @return the value
 	 */
-	public Object getValue(Object obj) {
+	public Object getValue(IConstruct obj) {
 		if (values == null || !values.containsKey(obj)) {
 			throw new TopicMapStoreException("Unknown object!");
 		}
@@ -459,10 +478,11 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns the value of the given object
 	 * 
-	 * @param obj the object
+	 * @param obj
+	 *            the object
 	 * @return the value
 	 */
-	public String getValueAsString(Object obj) {
+	public String getValueAsString(IConstruct obj) {
 		Object value = getValue(obj);
 		if (obj instanceof IName) {
 			return value.toString();
@@ -473,11 +493,13 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Modify the value of the given object
 	 * 
-	 * @param obj the object
-	 * @param value the new value
+	 * @param obj
+	 *            the object
+	 * @param value
+	 *            the new value
 	 * @return the old value
 	 */
-	public Object setValue(Object obj, Object value) {
+	public Object setValue(IConstruct obj, Object value) {
 		Object oldValue = null;
 		if (values == null) {
 			values = HashUtil.getHashMap();
@@ -491,7 +513,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Remove the given topic as parent from the internal store
 	 * 
-	 * @param topic the topic to remove
+	 * @param topic
+	 *            the topic to remove
 	 */
 	public void removeTopic(final ITopic topic) {
 		if (names != null) {
@@ -512,7 +535,8 @@ public class CharacteristicsStore implements IDataStore {
 	/**
 	 * Returns all data-typed items with the given data type.
 	 * 
-	 * @param locator the data type
+	 * @param locator
+	 *            the data type
 	 * @return a set
 	 */
 	public Set<IDatatypeAware> getDatatypeAwares(ILocator locator) {
@@ -520,6 +544,19 @@ public class CharacteristicsStore implements IDataStore {
 			return HashUtil.getHashSet();
 		}
 		return dataTyped.get(locator);
+	}
+
+	/**
+	 * Checks if the store contains any locator of the given
+	 * {@link IDatatypeAware}.
+	 * 
+	 * @param aware
+	 *            the {@link IDatatypeAware}
+	 * @return <code>true</code> if any locator of the given
+	 *         {@link IDatatypeAware} is stored, <code>false</code> otherwise.
+	 */
+	protected final boolean containsDatatype(IDatatypeAware aware) {
+		return dataTypes != null && dataTypes.containsKey(aware);
 	}
 
 }

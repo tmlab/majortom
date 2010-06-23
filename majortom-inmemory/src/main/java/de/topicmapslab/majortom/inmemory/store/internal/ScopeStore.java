@@ -125,7 +125,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope instance for the given themes
 	 * 
-	 * @param themes the themes
+	 * @param themes
+	 *            the themes
 	 * @return the scope instance
 	 */
 	public IScope getScope(ITopic... themes) {
@@ -135,7 +136,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope instance for the given themes
 	 * 
-	 * @param themes the themes
+	 * @param themes
+	 *            the themes
 	 * @return the scope instance
 	 */
 	public IScope getScope(Collection<ITopic> themes) {
@@ -160,7 +162,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns all scoped items of the given scope.
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the scoped construct
 	 */
 	public Set<IScopable> getScoped(IScope scope) {
@@ -175,7 +178,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns all scoped occurrences of the given scope.
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the scoped occurrences
 	 */
 	public Set<IOccurrence> getScopedOccurrences(IScope scope) {
@@ -188,7 +192,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns all scoped name items of the given scope.
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the scoped names
 	 */
 	public Set<IName> getScopedNames(IScope scope) {
@@ -201,7 +206,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns all scoped variant items of the given scope.
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the scoped variant items
 	 */
 	public Set<IVariant> getScopedVariants(IScope scope) {
@@ -222,7 +228,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns all scoped association items of the given scope.
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the scoped association items
 	 */
 	public Set<IAssociation> getScopedAssociations(IScope scope) {
@@ -235,7 +242,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the scope and never <code>null</code>
 	 */
 	public IScope getScope(IScopable scoped) {
@@ -255,7 +263,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the scope and never <code>null</code>
 	 */
 	public IScope getScope(IAssociation scoped) {
@@ -268,7 +277,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the scope and never <code>null</code>
 	 */
 	public IScope getScope(IOccurrence scoped) {
@@ -281,7 +291,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the scope and never <code>null</code>
 	 */
 	public IScope getScope(IName scoped) {
@@ -294,7 +305,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the scope and never <code>null</code>
 	 */
 	public IScope getScope(IVariant scoped) {
@@ -309,7 +321,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the old scope
 	 */
 	public IScope removeScope(IScopable scoped) {
@@ -329,7 +342,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the old scope
 	 */
 	public IScope removeScope(IAssociation scoped) {
@@ -350,7 +364,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the old scope
 	 */
 	public IScope removeScope(IOccurrence scoped) {
@@ -371,7 +386,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the old scope
 	 */
 	public IScope removeScope(IName scoped) {
@@ -392,7 +408,8 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
-	 * @param scoped the scoped construct
+	 * @param scoped
+	 *            the scoped construct
 	 * @return the old scope
 	 */
 	public IScope removeScope(IVariant scoped) {
@@ -413,8 +430,10 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
-	 * @param scoped the scoped construct
-	 * @param s the scope
+	 * @param scoped
+	 *            the scoped construct
+	 * @param s
+	 *            the scope
 	 */
 	public void setScope(IScopable scoped, IScope s) {
 		if (scoped instanceof IAssociation) {
@@ -433,8 +452,10 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
-	 * @param scoped the scoped construct
-	 * @param s the scope
+	 * @param scoped
+	 *            the scoped construct
+	 * @param s
+	 *            the scope
 	 */
 	public void setScope(IAssociation scoped, IScope s) {
 		if (associationScopes == null) {
@@ -455,8 +476,10 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
-	 * @param scoped the scoped construct
-	 * @param s the scope
+	 * @param scoped
+	 *            the scoped construct
+	 * @param s
+	 *            the scope
 	 */
 	public void setScope(IOccurrence scoped, IScope s) {
 		if (occurrenceScopes == null) {
@@ -477,8 +500,10 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
-	 * @param scoped the scoped construct
-	 * @param s the scope
+	 * @param scoped
+	 *            the scoped construct
+	 * @param s
+	 *            the scope
 	 */
 	public void setScope(IName scoped, IScope s) {
 		if (nameScopes == null) {
@@ -499,8 +524,10 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
-	 * @param scoped the scoped construct
-	 * @param s the scope
+	 * @param scoped
+	 *            the scoped construct
+	 * @param s
+	 *            the scope
 	 */
 	public void setScope(IVariant scoped, IScope s) {
 		// IScope parent = getScope(scoped.getParent());
@@ -549,16 +576,14 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Method checks if the given topic is used as theme.
 	 * 
-	 * @param theme the theme
+	 * @param theme
+	 *            the theme
 	 * @return <code>true</code> if the topic is used as theme,
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean usedAsTheme(ITopic theme) {
-		if (scopes == null) {
-			return false;
-		}
-		for (Entry<IScope, Set<ITopic>> entry : this.scopes.entrySet()) {
-			if (entry.getValue().contains(theme) && !getScoped(entry.getKey()).isEmpty()) {
+		for ( IScope scope : getScopes(theme)){
+			if ( !getScoped(scope).isEmpty()){
 				return true;
 			}
 		}
@@ -568,63 +593,67 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Removing the theme and all dependent scopes and scoped objects.
 	 * 
-	 * @param theme the theme
+	 * @param theme
+	 *            the theme
 	 * @return the removed scoped objects
 	 */
 	public Set<IScopable> removeScopes(ITopic theme) {
-
 		Set<IScopable> removed = HashUtil.getHashSet();
-		if (scopes != null) {
-			Map<IScope, Set<ITopic>> copy = HashUtil.getHashMap(this.scopes);
-			for (Entry<IScope, Set<ITopic>> entry : copy.entrySet()) {
-				if (entry.getValue().contains(theme)) {
-					IScope scope = entry.getKey();
-					/*
-					 * remove scoped associations
-					 */
-					for (IAssociation a : getScopedAssociations(scope)) {
-						associationScopes.remove(a);
-						removed.add(a);
-					}
-					if (scopedAssociations != null) {
-						scopedAssociations.remove(scope);
-					}
-					/*
-					 * remove scoped occurrences
-					 */
-					for (IOccurrence o : getScopedOccurrences(scope)) {
-						occurrenceScopes.remove(o);
-						removed.add(o);
-					}
-					if (scopedOccurrences != null) {
-						scopedOccurrences.remove(scope);
-					}
-					/*
-					 * remove scoped names
-					 */
-					for (IName n : getScopedNames(scope)) {
-						nameScopes.remove(n);
-						removed.add(n);
-					}
-					if (scopedNames != null) {
-						scopedNames.remove(scope);
-					}
-					/*
-					 * remove scoped variants
-					 */
-					for (IVariant v : getScopedVariants(scope)) {
-						variantScopes.remove(v);
-						removed.add(v);
-					}
-					if (scopedVariants != null) {
-						scopedVariants.remove(scope);
-					}
-
-					/*
-					 * remove scope
-					 */
-					scopes.remove(scope);
+		for (IScope scope : getScopes(theme)) {
+			/*
+			 * remove scoped associations
+			 */
+			for (IAssociation a : getScopedAssociations(scope)) {
+				if (containsScopeable(a)) {
+					associationScopes.remove(a);
 				}
+				removed.add(a);
+			}
+			if (scopedAssociations != null) {
+				scopedAssociations.remove(scope);
+			}
+			/*
+			 * remove scoped occurrences
+			 */
+			for (IOccurrence o : getScopedOccurrences(scope)) {
+				if (containsScopeable(o)) {
+					occurrenceScopes.remove(o);
+				}
+				removed.add(o);
+			}
+			if (scopedOccurrences != null) {
+				scopedOccurrences.remove(scope);
+			}
+			/*
+			 * remove scoped names
+			 */
+			for (IName n : getScopedNames(scope)) {
+				if (containsScopeable(n)) {
+					nameScopes.remove(n);
+				}
+				removed.add(n);
+			}
+			if (scopedNames != null) {
+				scopedNames.remove(scope);
+			}
+			/*
+			 * remove scoped variants
+			 */
+			for (IVariant v : getScopedVariants(scope)) {
+				if (containsScopeable(v)) {
+					variantScopes.remove(v);
+				}
+				removed.add(v);
+			}
+			if (scopedVariants != null) {
+				scopedVariants.remove(scope);
+			}
+
+			/*
+			 * remove scope
+			 */
+			if (scopes != null) {
+				scopes.remove(scope);
 			}
 		}
 		return removed;
@@ -634,67 +663,41 @@ public class ScopeStore implements IDataStore {
 	 * {@inheritDoc}
 	 */
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
-		if (scopes != null) {
-			Set<IScope> scopes = HashUtil.getHashSet(this.scopes.keySet());
-			for (IScope s : scopes) {
-				if (s instanceof ScopeImpl && s.containsTheme(topic)) {
-					Set<ITopic> themes = HashUtil.getHashSet();
-					themes.addAll(s.getThemes());
-					themes.remove(topic);
-					themes.add(replacement);
-					IScope newScope = getScope(themes);
-					/*
-					 * replace as association scope
-					 */
-					if (scopedAssociations != null && scopedAssociations.containsKey(s)) {
-						Set<IAssociation> set = HashUtil.getHashSet(scopedAssociations.get(s));
-						for (IAssociation a : set) {
-							associationScopes.put(a, newScope);
-						}
-						if (scopedAssociations.containsKey(newScope)) {
-							set.addAll(scopedAssociations.get(newScope));
-						}
-						scopedAssociations.put(newScope, set);
-					}
-					/*
-					 * replace as name scope
-					 */
-					if (scopedNames != null && scopedNames.containsKey(s)) {
-						Set<IName> set = HashUtil.getHashSet(scopedNames.get(s));
-						for (IName n : set) {
-							nameScopes.put(n, newScope);
-						}
-						if (scopedNames.containsKey(newScope)) {
-							set.addAll(scopedNames.get(newScope));
-						}
-						scopedNames.put(newScope, set);
-					}
-					/*
-					 * replace as occurrence scope
-					 */
-					if (scopedOccurrences != null && scopedOccurrences.containsKey(s)) {
-						Set<IOccurrence> set = HashUtil.getHashSet(scopedOccurrences.get(s));
-						for (IOccurrence o : set) {
-							occurrenceScopes.put(o, newScope);
-						}
-						if (scopedOccurrences.containsKey(newScope)) {
-							set.addAll(scopedOccurrences.get(newScope));
-						}
-						scopedOccurrences.put(newScope, set);
-					}
-					/*
-					 * replace as variant scope
-					 */
-					if (scopedVariants != null && scopedVariants.containsKey(s)) {
-						Set<IVariant> set = HashUtil.getHashSet(scopedVariants.get(s));
-						for (IVariant v : set) {
-							variantScopes.put(v, newScope);
-						}
-						if (scopedVariants.containsKey(newScope)) {
-							set.addAll(scopedVariants.get(newScope));
-						}
-						scopedVariants.put(newScope, set);
-					}
+		Set<IScope> scopes = getScopes(topic);
+		for (IScope s : scopes) {
+			if (s instanceof ScopeImpl && s.containsTheme(topic)) {
+				Set<ITopic> themes = HashUtil.getHashSet();
+				themes.addAll(s.getThemes());
+				themes.remove(topic);
+				themes.add(replacement);
+				IScope newScope = getScope(themes);
+				/*
+				 * replace as association scope
+				 */
+				Set<IAssociation> associations = HashUtil.getHashSet(getScopedAssociations(s));
+				for (IAssociation a : associations) {
+					setScope(a, newScope);
+				}
+				/*
+				 * replace as name scope
+				 */
+				Set<IName> names = HashUtil.getHashSet(getScopedNames(s));
+				for (IName n : names) {
+					setScope(n, newScope);
+				}
+				/*
+				 * replace as occurrence scope
+				 */
+				Set<IOccurrence> occurrences = HashUtil.getHashSet(getScopedOccurrences(s));
+				for (IOccurrence o : occurrences) {
+					setScope(o, newScope);
+				}
+				/*
+				 * replace as variant scope
+				 */
+				Set<IVariant> variants = HashUtil.getHashSet(getScopedVariants(s));
+				for (IVariant v : variants) {
+					setScope(v, newScope);
 				}
 			}
 		}
@@ -703,14 +706,15 @@ public class ScopeStore implements IDataStore {
 	/**
 	 * Return all scopes containing the given theme
 	 * 
-	 * @param theme the theme
+	 * @param theme
+	 *            the theme
 	 * @return a collection of all themes
 	 */
 	public Set<IScope> getScopes(ITopic theme) {
 		Set<IScope> set = HashUtil.getHashSet();
 		if (scopes != null) {
 			for (IScope s : scopes.keySet()) {
-				if (s instanceof ScopeImpl && s.containsTheme(theme)) {
+				if (s instanceof ScopeImpl && s.containsTheme(theme) ) {
 					set.add(s);
 				}
 			}
@@ -770,5 +774,24 @@ public class ScopeStore implements IDataStore {
 			set.add(getScope(themes));
 		}
 		return set;
+	}
+
+	/**
+	 * Method checks if the given object is stored by the current data store.
+	 * 
+	 * @param scopable
+	 *            the object to check
+	 * @return <code>true</code> if the data store contains a scope relation for
+	 *         the given object, <code>false</code> otherwise.
+	 */
+	protected final boolean containsScopeable(IScopable scopable) {
+		if (scopable instanceof IAssociation) {
+			return associationScopes != null && associationScopes.containsKey(scopable);
+		} else if (scopable instanceof IName) {
+			return nameScopes != null && nameScopes.containsKey(scopable);
+		} else if (scopable instanceof IOccurrence) {
+			return occurrenceScopes != null && occurrenceScopes.containsKey(scopable);
+		}
+		return variantScopes != null && variantScopes.containsKey(scopable);
 	}
 }

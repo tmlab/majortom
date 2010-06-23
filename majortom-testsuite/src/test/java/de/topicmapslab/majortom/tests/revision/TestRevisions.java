@@ -156,7 +156,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic otherType = createTopic();
 		Role otherRole = association.createRole(otherType, otherPlayer);
 
-		Changeset set = index.getAssociationChangeset(assoicationType);
+		Changeset set = index.getAssociationChangeset(assoicationType);		
 		assertEquals(5, set.size());
 
 		IAssociation other = createAssociation(assoicationType);
@@ -190,6 +190,9 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(2, association.getRoles().size());
 		assertTrue(association.getRoles().contains(otherRole));
 		assertTrue(association.getRoles().contains(role));
+		
+		set = index.getAssociationChangeset(assoicationType);		
+		System.out.println(set);
 	}
 
 	public void testMergingRevisions() throws Exception {

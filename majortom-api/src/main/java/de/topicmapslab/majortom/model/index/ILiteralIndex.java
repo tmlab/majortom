@@ -10,6 +10,11 @@ import org.tmapi.index.LiteralIndex;
 
 import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
+import de.topicmapslab.majortom.model.core.IDatatypeAware;
+import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.IName;
+import de.topicmapslab.majortom.model.core.IOccurrence;
+import de.topicmapslab.majortom.model.core.IVariant;
 
 /**
  * Interface definition of an index for characteristics of topic items.
@@ -22,7 +27,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	/**
 	 * Returns all characteristics with the given value.
 	 * 
-	 * @param value the value of the characteristics
+	 * @param value
+	 *            the value of the characteristics
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getCharacteristics(final String value);
@@ -30,7 +36,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	/**
 	 * Returns all characteristics with the given datatype.
 	 * 
-	 * @param datatype the datatype
+	 * @param datatype
+	 *            the datatype
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getCharacteristics(final Locator datatype);
@@ -38,8 +45,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	/**
 	 * Returns all characteristics with the given value and the given datatype.
 	 * 
-	 * @param value the value of the characteristics
-	 * @param datatype the datatype
+	 * @param value
+	 *            the value of the characteristics
+	 * @param datatype
+	 *            the datatype
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getCharacteristics(final String value, final Locator datatype);
@@ -48,7 +57,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics which has a value matches the given regular
 	 * expression.
 	 * 
-	 * @param regExp the regular expression
+	 * @param regExp
+	 *            the regular expression
 	 * @return the characteristics with matching values
 	 */
 	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp);
@@ -57,8 +67,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics which has a value matches the given regular
 	 * expression and has the datatype.
 	 * 
-	 * @param regExp the regular expression
-	 * @param datatype the datatype
+	 * @param regExp
+	 *            the regular expression
+	 * @param datatype
+	 *            the datatype
 	 * @return the characteristics with matching values
 	 */
 	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp, final Locator datatype);
@@ -67,7 +79,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics which has a value matches the given regular
 	 * expression.
 	 * 
-	 * @param regExp the regular expression
+	 * @param regExp
+	 *            the regular expression
 	 * @return the characteristics with matching values
 	 */
 	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp);
@@ -76,8 +89,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics which has a value matches the given regular
 	 * expression and has the datatype.
 	 * 
-	 * @param regExp the regular expression
-	 * @param datatype the datatype
+	 * @param regExp
+	 *            the regular expression
+	 * @param datatype
+	 *            the datatype
 	 * @return the characteristics with matching values
 	 */
 	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, final Locator datatype);
@@ -86,7 +101,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:anyURI.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the URI value
 	 */
 	public Collection<ICharacteristics> getUris(final URI value);
@@ -95,7 +111,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:integer.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the integer value
 	 */
 	public Collection<ICharacteristics> getIntegers(final int value);
@@ -104,8 +121,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the datatype xsd:integer and a value
 	 * contained by the given range [value - deviance, value + deviance].
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum difference
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum difference
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getIntegers(final int value, final double deviance);
@@ -114,7 +133,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:long.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the long value
 	 */
 	public Collection<ICharacteristics> getLongs(final long value);
@@ -123,8 +143,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the datatype xsd:long and a value
 	 * contained by the given range [value - deviance, value + deviance].
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum difference
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum difference
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getLongs(final long value, final double deviance);
@@ -133,7 +155,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:float.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the float value
 	 */
 	public Collection<ICharacteristics> getFloats(final float value);
@@ -142,8 +165,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the datatype xsd:float and a value
 	 * contained by the given range [value - deviance, value + deviance].
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum difference
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum difference
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getFloats(final float value, final double deviance);
@@ -152,7 +177,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:double.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the double value
 	 */
 	public Collection<ICharacteristics> getDoubles(final double value);
@@ -161,8 +187,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the datatype xsd:double and a value
 	 * contained by the given range [value - deviance, value + deviance].
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum difference
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum difference
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getDoubles(final double value, final double deviance);
@@ -171,7 +199,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:dateTime.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the dateTime value
 	 */
 	public Collection<ICharacteristics> getDateTime(final Calendar value);
@@ -185,8 +214,10 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * one hour and 10 minutes the dateTime literal should be
 	 * <code>0000-00-01T01:10:00</code>.
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum difference
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum difference
 	 * @return the characteristics with the time value
 	 */
 	public Collection<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance);
@@ -195,7 +226,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * Returns all characteristics with the given value and the datatype
 	 * xsd:boolean.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the boolean value
 	 */
 	public Collection<ICharacteristics> getBooleans(final boolean value);
@@ -203,7 +235,8 @@ public interface ILiteralIndex extends LiteralIndex {
 	/**
 	 * Returns all characteristics with the given value and the datatype tm:geo.
 	 * 
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the characteristics with the geographic coordinates
 	 */
 	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value);
@@ -213,10 +246,41 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * geographical coordinate which has a lower or equal distance to the given
 	 * coordinate like the given deviance.
 	 * 
-	 * @param value the value
-	 * @param deviance the maximum distance
+	 * @param value
+	 *            the value
+	 * @param deviance
+	 *            the maximum distance
 	 * @return the characteristics
 	 */
 	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance);
 
+	/**
+	 * Returns all variants and occurrences with the given data-type.
+	 * 
+	 * @param dataType
+	 *            the data type
+	 * @return a collection of all matching variants and occurrences
+	 */
+	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType);
+
+	/**
+	 * Return all names contained by the current topic map.
+	 * 
+	 * @return all names of the topic map
+	 */
+	public Collection<IName> getNames();
+	
+	/**
+	 * Return all occurrences contained by the current topic map.
+	 * 
+	 * @return all occurrences of the topic map
+	 */
+	public Collection<IOccurrence> getOccurrences();
+	
+	/**
+	 * Return all variants contained by the current topic map.
+	 * 
+	 * @return all variants of the topic map
+	 */
+	public Collection<IVariant> getVariants();
 }

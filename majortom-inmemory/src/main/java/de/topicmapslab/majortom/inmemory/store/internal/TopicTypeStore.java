@@ -27,6 +27,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -62,7 +63,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param store the parent store
+	 * @param store
+	 *            the parent store
 	 */
 	public TopicTypeStore(final InMemoryTopicMapStore store) {
 		this.store = store;
@@ -89,7 +91,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all direct-instances of the given topic type
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the direct instances
 	 */
 	public Set<ITopic> getDirectInstances(ITopic type) {
@@ -109,7 +112,8 @@ public class TopicTypeStore implements IDataStore {
 	 * Return all direct-instances of the given topic type by using the internal
 	 * topic map data model associations
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the direct instances
 	 */
 	private Set<ITopic> getDirectInstancesByAssociation(ITopic type) {
@@ -132,7 +136,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all direct-types of the given topic item
 	 * 
-	 * @param instance the topic item
+	 * @param instance
+	 *            the topic item
 	 * @return the direct types
 	 */
 	public Set<ITopic> getDirectTypes(ITopic instance) {
@@ -150,7 +155,8 @@ public class TopicTypeStore implements IDataStore {
 	 * Return all direct-types of the given topic type by using the internal
 	 * topic map data model associations
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the direct types
 	 */
 	private Set<ITopic> getDirectTypesByAssociation(ITopic instance) {
@@ -172,7 +178,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all transitive instances of the given topic type.
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the instances
 	 */
 	public Set<ITopic> getInstances(ITopic type) {
@@ -232,7 +239,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all transitive types of the given topic item.
 	 * 
-	 * @param instance the topic item
+	 * @param instance
+	 *            the topic item
 	 * @return the types
 	 */
 	public Set<ITopic> getTypes(ITopic instance) {
@@ -293,7 +301,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all direct super types of the given topic type
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the super types
 	 */
 	public Set<ITopic> getDirectSupertypes(ITopic type) {
@@ -315,7 +324,8 @@ public class TopicTypeStore implements IDataStore {
 	 * Return all direct-supertypes of the given topic type by using the
 	 * internal topic map data model associations
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the direct supertypes
 	 */
 	private Set<ITopic> getDirectSupertypesByAssociation(ITopic type) {
@@ -337,19 +347,22 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all super types of the given topic type
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the super types
 	 */
 	public Set<ITopic> getSupertypes(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		return getSupertypes(type, set);
 	}
-	
+
 	/**
 	 * Return all super types of the given topic type
 	 * 
-	 * @param type the topic type
-	 * @param known a set containing all known type to enable cycle detection
+	 * @param type
+	 *            the topic type
+	 * @param known
+	 *            a set containing all known type to enable cycle detection
 	 * @return the super types
 	 */
 	protected Set<ITopic> getSupertypes(ITopic type, Set<ITopic> known) {
@@ -373,7 +386,7 @@ public class TopicTypeStore implements IDataStore {
 			 * iterate over new added super types
 			 */
 			for (ITopic t : newAdded) {
-				if ( known.contains(t)){
+				if (known.contains(t)) {
 					continue;
 				}
 				known.add(t);
@@ -437,7 +450,8 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all direct sub types of the given topic type
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the super types
 	 */
 	public Set<ITopic> getDirectSubtypes(ITopic type) {
@@ -459,7 +473,8 @@ public class TopicTypeStore implements IDataStore {
 	 * Return all direct-subtypes of the given topic type by using the internal
 	 * topic map data model associations
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the direct subtypes
 	 */
 	private Set<ITopic> getDirectSubtypesByAssociation(ITopic type) {
@@ -481,19 +496,22 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Return all sub types of the given topic type.
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the sub types
 	 */
 	public Set<ITopic> getSubtypes(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		return getSubtypes(type, set);
 	}
-	
+
 	/**
 	 * Return all sub types of the given topic type.
 	 * 
-	 * @param type the topic type
-	 * @param known a set containing all known types, to enable cycle detection
+	 * @param type
+	 *            the topic type
+	 * @param known
+	 *            a set containing all known types, to enable cycle detection
 	 * @return the sub types
 	 */
 	protected Set<ITopic> getSubtypes(ITopic type, Set<ITopic> known) {
@@ -517,20 +535,20 @@ public class TopicTypeStore implements IDataStore {
 			 * iterate over new added sub types
 			 */
 			for (ITopic t : newAdded) {
-				if ( known.contains(t)){
+				if (known.contains(t)) {
 					continue;
 				}
 				known.add(t);
 				/*
 				 * get sub types of current type
 				 */
-				for (ITopic t_ : getSubtypes(t,known)) {
+				for (ITopic t_ : getSubtypes(t, known)) {
 					/*
 					 * is already known as sub type?
 					 */
 					if (!set.contains(t_)) {
 						temp.add(t_);
-						set.add(t_);						
+						set.add(t_);
 					}
 				}
 			}
@@ -581,8 +599,10 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Removing a type-instance-relation between the given topics.
 	 * 
-	 * @param t the topic item
-	 * @param type the type
+	 * @param t
+	 *            the topic item
+	 * @param type
+	 *            the type
 	 */
 	public void removeType(ITopic t, ITopic type) {
 		/*
@@ -620,8 +640,10 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Removing a super-type-sub-type-relation between the given types.
 	 * 
-	 * @param type the topic type
-	 * @param supertype the super type
+	 * @param type
+	 *            the topic type
+	 * @param supertype
+	 *            the super type
 	 */
 	public void removeSupertype(ITopic type, ITopic supertype) {
 		/*
@@ -657,8 +679,10 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Add a type-instance-relation between the given topics.
 	 * 
-	 * @param t the topic item
-	 * @param type the type
+	 * @param t
+	 *            the topic item
+	 * @param type
+	 *            the type
 	 */
 	public void addType(ITopic t, ITopic type) {
 		/*
@@ -707,8 +731,10 @@ public class TopicTypeStore implements IDataStore {
 	/**
 	 * Removing a super-type-sub-type-relation between the given types.
 	 * 
-	 * @param type the topic type
-	 * @param supertype the super type
+	 * @param type
+	 *            the topic type
+	 * @param supertype
+	 *            the super type
 	 */
 	public void addSupertype(ITopic type, ITopic supertype) {
 		/*
@@ -758,7 +784,8 @@ public class TopicTypeStore implements IDataStore {
 	 * Removing the given topic from the internal store and all dependent
 	 * relations.
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return the removed dependent topics
 	 */
 	public Set<ITopic> removeTopic(ITopic topic) {
@@ -766,60 +793,53 @@ public class TopicTypeStore implements IDataStore {
 		/*
 		 * remove as instance
 		 */
-		if (types != null && types.containsKey(topic)) {
-			Set<ITopic> types = HashUtil.getHashSet(this.types.get(topic));
-			for (ITopic type : types) {
-				removeType(topic, type);
-			}
+		Set<ITopic> types = HashUtil.getHashSet(getTypes(topic));
+		for (ITopic type : types) {
+			removeType(topic, type);
 		}
 		/*
 		 * remove as type
 		 */
-		if (instances != null && instances.containsKey(topic)) {
-			Set<ITopic> instances = HashUtil.getHashSet(this.instances.get(topic));
-			for (ITopic instance : instances) {
-				/*
-				 * remove instance and all typed topics
-				 */
-				removed.addAll(removeTopic(instance));
-			}
+		Set<ITopic> instances = HashUtil.getHashSet(getInstances(topic));
+		for (ITopic instance : instances) {
+			/*
+			 * remove instance and all typed topics
+			 */
+			removed.addAll(removeTopic(instance));
 		}
 
 		/*
 		 * remove all sub-types
 		 */
-		if (subtypes != null && subtypes.containsKey(topic)) {
-			Set<ITopic> subtypes = HashUtil.getHashSet(this.subtypes.get(topic));
-			for (ITopic subtype : subtypes) {
-				/*
-				 * remove sub-type and all instances
-				 */
-				removed.addAll(removeTopic(subtype));
-			}
+		Set<ITopic> subtypes = HashUtil.getHashSet(getSubtypes(topic));
+		for (ITopic subtype : subtypes) {
+			/*
+			 * remove sub-type and all instances
+			 */
+			removed.addAll(removeTopic(subtype));
 		}
+
 		/*
 		 * remove as sub-type
 		 */
-		if (supertypes != null && supertypes.containsKey(topic)) {
-			Set<ITopic> supertypes = HashUtil.getHashSet(this.supertypes.get(topic));
-			for (ITopic supertype : supertypes) {
-				removeSupertype(topic, supertype);
-			}
+		Set<ITopic> supertypes = HashUtil.getHashSet(getSupertypes(topic));
+		for (ITopic supertype : supertypes) {
+			removeSupertype(topic, supertype);
 		}
 
 		/*
 		 * remove topic itself
 		 */
-		if (subtypes != null) {
+		if (this.subtypes != null) {
 			this.subtypes.remove(topic);
 		}
-		if (supertypes != null) {
+		if (this.supertypes != null) {
 			this.supertypes.remove(topic);
 		}
-		if (instances != null) {
+		if (this.instances != null) {
 			this.instances.remove(topic);
 		}
-		if (types != null) {
+		if (this.types != null) {
 			this.types.remove(topic);
 		}
 		/*
@@ -835,85 +855,83 @@ public class TopicTypeStore implements IDataStore {
 		/*
 		 * replace as type
 		 */
-		if (instances != null && instances.containsKey(topic)) {
-			Set<ITopic> set = instances.get(topic);
-			for (ITopic t : set) {
-				types.get(t).remove(topic);
-				types.get(t).add(replacement);
-				/*
-				 * store revision
-				 */
-				store.storeRevision(revision, TopicMapEventType.TYPE_REMOVED, t, null, topic);
-				store.storeRevision(revision, TopicMapEventType.TYPE_ADDED, t, replacement, null);
+		for (ITopic instance : getInstances(topic)) {
+			removeType(instance, topic);
+			addType(instance, replacement);
+			/*
+			 * store revision
+			 */
+			if (revision != null) {
+				store.storeRevision(revision, TopicMapEventType.TYPE_REMOVED, instance, null, topic);
+				store.storeRevision(revision, TopicMapEventType.TYPE_ADDED, instance, replacement, null);
 			}
-			if (instances.containsKey(replacement)) {
-				set.addAll(instances.get(replacement));
-			}
-			instances.put(replacement, set);
+		}
+		if (instances != null) {
 			instances.remove(topic);
 		}
 
 		/*
 		 * replace as instances
 		 */
-		if (types != null && types.containsKey(topic)) {
-			Set<ITopic> set = types.get(topic);
-			for (ITopic t : set) {
-				instances.get(t).remove(topic);
-				instances.get(t).add(replacement);
-				/*
-				 * store revision
-				 */
-				store.storeRevision(revision, TopicMapEventType.TYPE_REMOVED, topic, null, t);
-				store.storeRevision(revision, TopicMapEventType.TYPE_ADDED, replacement, t, null);
+		for (ITopic type : getTypes(topic)) {
+			removeType(topic, type);
+			addType(replacement, type);
+			/*
+			 * store revision
+			 */
+			if (revision != null) {
+				store.storeRevision(revision, TopicMapEventType.TYPE_REMOVED, topic, null, type);
+				store.storeRevision(revision, TopicMapEventType.TYPE_ADDED, replacement, type, null);
 			}
-			if (types.containsKey(replacement)) {
-				set.addAll(types.get(replacement));
-			}
-			types.put(replacement, set);
+		}
+		if (types != null) {
 			types.remove(topic);
 		}
 
 		/*
 		 * replace as sub type
 		 */
-		if (supertypes != null && supertypes.containsKey(topic)) {
-			Set<ITopic> set = supertypes.get(topic);
-			for (ITopic t : set) {
-				subtypes.get(t).remove(topic);
-				subtypes.get(t).add(replacement);
-				/*
-				 * store revision
-				 */
-				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_REMOVED, topic, null, t);
-				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_ADDED, replacement, t, null);
+		for (ITopic supertype : getSupertypes(topic)) {
+			removeSupertype(topic, supertype);
+			addSupertype(replacement, supertype);
+			/*
+			 * store revision
+			 */
+			if (revision != null) {
+				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_REMOVED, topic, null, supertype);
+				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_ADDED, replacement, supertype, null);
 			}
-			if (supertypes.containsKey(replacement)) {
-				set.addAll(supertypes.get(replacement));
-			}
-			supertypes.put(replacement, set);
+		}
+		if (supertypes != null) {
 			supertypes.remove(topic);
 		}
 
 		/*
 		 * replace as super type
 		 */
-		if (subtypes != null && subtypes.containsKey(topic)) {
-			Set<ITopic> set = subtypes.get(topic);
-			for (ITopic t : set) {
-				supertypes.get(t).remove(topic);
-				supertypes.get(t).add(replacement);
-				/*
-				 * store revision
-				 */
+		for (ITopic t : getSubtypes(topic)) {
+			removeSupertype(t, topic);
+			addSupertype(t, replacement);
+			/*
+			 * store revision
+			 */
+			if (revision != null) {
 				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_REMOVED, t, null, topic);
 				store.storeRevision(revision, TopicMapEventType.SUPERTYPE_ADDED, t, replacement, null);
 			}
-			if (subtypes.containsKey(replacement)) {
-				set.addAll(subtypes.get(replacement));
-			}
-			subtypes.put(replacement, set);
+		}
+		if (subtypes != null) {
 			subtypes.remove(topic);
 		}
+
+	}
+
+	/**
+	 * Returns the internal reference of the topic map store.
+	 * 
+	 * @return the topic map store
+	 */
+	protected ITopicMapStore getStore() {
+		return store;
 	}
 }

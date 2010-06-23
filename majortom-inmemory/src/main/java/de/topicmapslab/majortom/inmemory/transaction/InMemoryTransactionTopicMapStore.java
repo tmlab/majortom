@@ -21,14 +21,21 @@ import java.util.Map;
 
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
+import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
 import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
 import de.topicmapslab.majortom.inmemory.store.internal.ReificationStore;
+import de.topicmapslab.majortom.inmemory.store.internal.ScopeStore;
+import de.topicmapslab.majortom.inmemory.store.internal.TopicTypeStore;
 import de.topicmapslab.majortom.inmemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyAssociationStore;
+import de.topicmapslab.majortom.inmemory.transaction.internal.LazyCharacteristicsStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyIdentityStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyReificationStore;
+import de.topicmapslab.majortom.inmemory.transaction.internal.LazyScopeStore;
+import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTopicTypeStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.TransactionException;
@@ -148,21 +155,21 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	protected IdentityStore createIdentityStore(InMemoryTopicMapStore store) {
 		return new LazyIdentityStore(this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	protected AssociationStore createAssociationStore(InMemoryTopicMapStore store) {
 		return new LazyAssociationStore(this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	protected ReificationStore createReificationStore(InMemoryTopicMapStore store) {
 		return new LazyReificationStore(this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -173,7 +180,29 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
+	protected CharacteristicsStore createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
+		return new LazyCharacteristicsStore(this, xsdString);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
+		return new LazyScopeStore(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected TopicTypeStore createTopicTypeStore(InMemoryTopicMapStore store) {
+		return new LazyTopicTypeStore(store);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean supportRevisions() {
 		return false;
 	}
+
 }

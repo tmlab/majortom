@@ -19,10 +19,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
 import de.topicmapslab.majortom.inmemory.transaction.InMemoryTransactionTopicMapStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
@@ -36,6 +38,7 @@ public class LazyIdentityStore extends IdentityStore {
 
 	private Set<String> removedIds;
 	private Map<String, IConstruct> lazyStubs;
+	private Set<IScope> lazyScopes;
 
 	/**
 	 * @param store
@@ -320,6 +323,32 @@ public class LazyIdentityStore extends IdentityStore {
 	}
 
 	/**
+	 * Creates a lazy stub of the given scope
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return the lazy stub
+	 * @throws ConstructRemovedException
+	 *             thrown if at least one contained theme is marked as removed
+	 */
+	public IScope createLazyStub(IScope scope) throws ConstructRemovedException {
+		if (lazyScopes == null) {
+			lazyScopes = HashUtil.getHashSet();
+		}
+		if (scope == null) {
+			return null;
+		}
+		if (!lazyScopes.contains(scope)) {
+			Set<ITopic> themes = HashUtil.getHashSet();
+			for (ITopic theme : scope.getThemes()) {
+				themes.add(createLazyStub(theme));
+			}
+			return new ScopeImpl(themes);
+		}
+		return scope;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public void close() {
@@ -357,10 +386,30 @@ public class LazyIdentityStore extends IdentityStore {
 	 * @param c
 	 *            the construct
 	 * @return <code>true</code> if the construct was deleted by the current
-	 *         construct, <code>false</code> otherwise.
+	 *         transaction, <code>false</code> otherwise.
 	 */
 	public boolean isRemovedConstruct(IConstruct c) {
 		return c != null && removedIds != null && removedIds.contains(c.getId());
+	}
+
+	/**
+	 * Checks if at least one theme of the given scope was deleted by the
+	 * current transaction context.
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return <code>true</code> if at least one theme of the given scope was
+	 *         deleted by the current transaction, <code>false</code> otherwise.
+	 */
+	public boolean isRemovedScope(IScope scope) {
+		if (scope != null) {
+			for (ITopic theme : scope.getThemes()) {
+				if (isRemovedConstruct(theme)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

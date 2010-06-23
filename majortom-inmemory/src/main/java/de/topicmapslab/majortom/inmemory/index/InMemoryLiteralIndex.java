@@ -39,7 +39,8 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 	/**
 	 * constructor
 	 * 
-	 * @param store the in-memory store
+	 * @param store
+	 *            the in-memory store
 	 */
 	public InMemoryLiteralIndex(InMemoryTopicMapStore store) {
 		super(store);
@@ -659,6 +660,49 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 			}
 		}
 		return Collections.unmodifiableCollection(set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IDatatypeAware> getDatatypeAwares(ILocator dataType) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (dataType == null) {
+			throw new IllegalArgumentException("Datatype cannot be null.");
+		}
+		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getDatatypeAwares(dataType));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNames() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getNames());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrences() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getOccurrences());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariants() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getVariants());
 	}
 
 }
