@@ -90,6 +90,20 @@ public class AssociationStore implements IDataStore {
 		}
 		return playedRoles.get(player);
 	}
+	
+	/**
+	 * Return the played associations of the given role player.
+	 * 
+	 * @param player the player
+	 * @return the associations
+	 */
+	public Set<IAssociation> getAssocaitionsPlayed(ITopic player){
+		Set<IAssociation> associations = HashUtil.getHashSet();
+		for ( IAssociationRole role : getRoles(player)){
+			associations.add(role.getParent());
+		}
+		return associations;
+	}
 
 	/**
 	 * Return all stored associations

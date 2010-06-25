@@ -15,34 +15,46 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.model.exception;
 
-import org.tmapi.core.Construct;
-import org.tmapi.core.TMAPIRuntimeException;
-
 /**
- * Exception indicates that an construct was removed
+ * Exception thrown if a thread try to access a thread-blocked method.
  * 
  * @author Sven Krosse
  * 
  */
-public class ConstructRemovedException extends TopicMapStoreException {
+public class ConcurrentThreadsException extends TopicMapStoreException {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Construct construct;
-
 	/**
-	 * @param arg0
+	 * constructor
+	 * 
+	 * @param msg
+	 *            message containing additional information about the cause
 	 */
-	public ConstructRemovedException(Construct construct) {
-		super("The construct was removed!");
-		this.construct = construct;
+	public ConcurrentThreadsException(String msg) {
+		super(msg);
 	}
 
 	/**
-	 * @return the construct
+	 * constructor
+	 * 
+	 * @param cause
+	 *            the cause of the exception
 	 */
-	public Construct getConstruct() {
-		return construct;
+	public ConcurrentThreadsException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param msg
+	 *            message containing additional information about the cause
+	 * @param cause
+	 *            the cause of the exception
+	 */
+	public ConcurrentThreadsException(String msg, Throwable cause) {
+		super(msg, cause);
 	}
 
 }

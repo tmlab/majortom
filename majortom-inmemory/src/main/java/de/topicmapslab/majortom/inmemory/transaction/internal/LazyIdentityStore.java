@@ -60,6 +60,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void addSubjectLocator(ITopic t, ILocator locator) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -71,6 +74,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void removeSubjectLocator(ITopic t, ILocator identifier) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -83,6 +89,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getSubjectLocators(ITopic t) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * check if already copied to internal cache
 		 */
@@ -107,9 +116,14 @@ public class LazyIdentityStore extends IdentityStore {
 		ITopic topic = super.bySubjectLocator(l);
 		if (topic == null) {
 			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
-			if (topic != null) {
+			if (topic != null && !isRemovedConstruct(topic)) {
 				topic = createLazyStub(topic);
+			} else {
+				return null;
 			}
+		}
+		if ( isRemovedConstruct(topic)){
+			return null;
 		}
 		return topic;
 	}
@@ -120,6 +134,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void addSubjectIdentifier(ITopic t, ILocator identifier) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -131,6 +148,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void removeSubjectIdentifier(ITopic t, ILocator identifier) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -143,6 +163,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getSubjectIdentifiers(ITopic t) {
+		if ( isRemovedConstruct(t)){
+			throw new ConstructRemovedException(t);
+		}
 		/*
 		 * check if already copied to internal cache
 		 */
@@ -167,9 +190,13 @@ public class LazyIdentityStore extends IdentityStore {
 		ITopic topic = super.bySubjectIdentifier(l);
 		if (topic == null) {
 			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
-			if (topic != null) {
+			if (topic != null && !isRemovedConstruct(topic)) {
 				topic = createLazyStub(topic);
+			} else {
+				return null;
 			}
+		}if ( isRemovedConstruct(topic)){
+			return null;
 		}
 		return topic;
 	}
@@ -180,6 +207,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void addItemIdentifer(IConstruct c, ILocator identifier) {
+		if ( isRemovedConstruct(c)){
+			throw new ConstructRemovedException(c);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -191,6 +221,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void removeItemIdentifer(IConstruct c, ILocator identifier) {
+		if ( isRemovedConstruct(c)){
+			throw new ConstructRemovedException(c);
+		}
 		/*
 		 * copy lazy to internal store if not done before
 		 */
@@ -203,6 +236,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getItemIdentifiers(IConstruct c) {
+		if ( isRemovedConstruct(c)){
+			throw new ConstructRemovedException(c);
+		}
 		/*
 		 * check if already copied to internal cache
 		 */
@@ -226,10 +262,16 @@ public class LazyIdentityStore extends IdentityStore {
 		 */
 		IConstruct construct = super.byItemIdentifier(l);
 		if (construct == null) {
+
 			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
-			if (construct != null) {
+			if (construct != null && !isRemovedConstruct(construct)) {
 				construct = createLazyStub(construct);
+			} else {
+				return null;
 			}
+		}
+		if ( isRemovedConstruct(construct)){
+			return null;
 		}
 		return construct;
 	}
@@ -251,7 +293,9 @@ public class LazyIdentityStore extends IdentityStore {
 	 * {@inheritDoc}
 	 */
 	public void removeConstruct(IConstruct c) {
-		super.removeConstruct(c);
+		if (containsConstruct(c)) {
+			super.removeConstruct(c);
+		}
 		if (removedIds == null) {
 			removedIds = HashUtil.getHashSet();
 		}
@@ -265,20 +309,18 @@ public class LazyIdentityStore extends IdentityStore {
 	 */
 	public IConstruct byId(String id) {
 		/*
-		 * check if construct is already removed
-		 */
-		if (removedIds != null && removedIds.contains(id)) {
-			return null;
-		}
-		/*
 		 * check if construct is part of this
 		 */
 		IConstruct construct = super.byId(id);
 		if (construct == null) {
 			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_ID, id);
-			if (construct != null) {
-				construct = LazyStubCreator.createLazyStub(construct, getStore().getTransaction());
+			if (construct != null && !isRemovedConstruct(construct)) {
+				construct = createLazyStub(construct);
+			} else {
+				return null;
 			}
+		}else if ( isRemovedConstruct(construct)){
+			return null;
 		}
 		return construct;
 	}

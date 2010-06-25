@@ -23,11 +23,13 @@ import org.tmapi.core.Association;
 
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
+import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -116,11 +118,13 @@ public class TopicTypeStore implements IDataStore {
 	 *            the topic type
 	 * @return the direct instances
 	 */
+	@SuppressWarnings("unchecked")
 	private Set<ITopic> getDirectInstancesByAssociation(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		if (store.existsTmdmTypeInstanceAssociationType()) {
 			ITopic assocType = store.getTmdmTypeInstanceAssociationType();
-			for (Association association : type.getAssociationsPlayed(assocType)) {
+			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION, assocType);
+			for (Association association : associations) {
 				try {
 					if (association.getRoles(store.getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
 						set.add((ITopic) association.getRoles(store.getTmdmInstanceRoleType()).iterator().next().getPlayer());
@@ -159,10 +163,13 @@ public class TopicTypeStore implements IDataStore {
 	 *            the topic type
 	 * @return the direct types
 	 */
+	@SuppressWarnings("unchecked")
 	private Set<ITopic> getDirectTypesByAssociation(ITopic instance) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		if (store.existsTmdmTypeInstanceAssociationType()) {
-			for (Association association : instance.getAssociationsPlayed(store.getTmdmTypeInstanceAssociationType())) {
+			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(instance, TopicMapStoreParameterType.ASSOCIATION,
+					store.getTmdmTypeInstanceAssociationType());
+			for (Association association : associations) {
 				try {
 					if (association.getRoles(store.getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)) {
 						set.add((ITopic) association.getRoles(store.getTmdmTypeRoleType()).iterator().next().getPlayer());
@@ -328,10 +335,13 @@ public class TopicTypeStore implements IDataStore {
 	 *            the topic type
 	 * @return the direct supertypes
 	 */
+	@SuppressWarnings("unchecked")
 	private Set<ITopic> getDirectSupertypesByAssociation(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		if (store.existsTmdmSupertypeSubtypeAssociationType()) {
-			for (Association association : type.getAssociationsPlayed(store.getTmdmSupertypeSubtypeAssociationType())) {
+			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
+					store.getTmdmSupertypeSubtypeAssociationType());
+			for (Association association : associations) {
 				try {
 					if (association.getRoles(store.getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)) {
 						set.add((ITopic) association.getRoles(store.getTmdmSupertypeRoleType()).iterator().next().getPlayer());
@@ -477,10 +487,13 @@ public class TopicTypeStore implements IDataStore {
 	 *            the topic type
 	 * @return the direct subtypes
 	 */
+	@SuppressWarnings("unchecked")
 	private Set<ITopic> getDirectSubtypesByAssociation(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		if (store.existsTmdmSupertypeSubtypeAssociationType()) {
-			for (Association association : type.getAssociationsPlayed(store.getTmdmSupertypeSubtypeAssociationType())) {
+			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
+					store.getTmdmSupertypeSubtypeAssociationType());
+			for (Association association : associations) {
 				try {
 					if (association.getRoles(store.getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(type)) {
 						set.add((ITopic) association.getRoles(store.getTmdmSubtypeRoleType()).iterator().next().getPlayer());

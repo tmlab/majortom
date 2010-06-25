@@ -15,6 +15,10 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.transaction;
 
+import java.util.Collections;
+import java.util.Set;
+
+import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
@@ -103,6 +107,35 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 	 */
 	public Topic getReifier() {
 		return (Topic) getStore().doRead(this, TopicMapStoreParameterType.REIFICATION);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addItemIdentifier(Locator identifier) throws ModelConstraintException {
+		if (identifier == null) {
+			throw new ModelConstraintException(this, "Item identifier cannot be null.");
+		}
+		if (!getItemIdentifiers().contains(identifier)) {
+			getStore().doModify(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeItemIdentifier(Locator identifier) {
+		if (identifier != null && getItemIdentifiers().contains(identifier)) {
+			getStore().doRemove(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<Locator> getItemIdentifiers() {
+		return Collections.unmodifiableSet((Set<Locator>) getStore().doRead(this, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 	}
 	
 }

@@ -64,13 +64,16 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);
-			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-			}
+			type = super.getType(typed);			
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}		
+			try{
+				if (type == null) {
+					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				}
+			}catch(TopicMapStoreException e2){
+				//NOTHING TO DO
+			}
+		}			
 		return getLazyIdentityStore().createLazyStub(type);
 	}
 
@@ -83,12 +86,15 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);
-			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-			}
+			type = super.getType(typed);			
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
+			try{
+				if (type == null) {
+					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				}
+			}catch(TopicMapStoreException e2){
+				//NOTHING TO DO
+			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
 	}
@@ -102,12 +108,15 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);
-			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-			}
+			type = super.getType(typed);			
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
+			try{
+				if (type == null) {
+					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				}
+			}catch(TopicMapStoreException e2){
+				//NOTHING TO DO
+			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
 	}
@@ -121,12 +130,15 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);
-			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-			}
+			type = super.getType(typed);			
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
+			try{
+				if (type == null) {
+					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				}
+			}catch(TopicMapStoreException e2){
+				//NOTHING TO DO
+			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
 	}

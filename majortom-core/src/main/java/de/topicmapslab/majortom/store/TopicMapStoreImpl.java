@@ -18,8 +18,8 @@ package de.topicmapslab.majortom.store;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.FeatureNotRecognizedException;
@@ -68,7 +68,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	private Set<ITopicMapListener> listeners = null;
 	private ITopicMapSystem topicMapSystem;
 	private ITopicMap topicMap;
-	private ExecutorService threadPool;
+	private ThreadPoolExecutor threadPool;
 
 	/**
 	 * constructor
@@ -79,7 +79,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * constructor
 	 * 
-	 * @param topicMapSystem the parent system
+	 * @param topicMapSystem
+	 *            the parent system
 	 */
 	public TopicMapStoreImpl(final ITopicMapSystem topicMapSystem) {
 		setTopicMapSystem(topicMapSystem);
@@ -332,7 +333,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Creates an internal item-identifier for a construct.
 	 * 
-	 * @param topicMap the topic map
+	 * @param topicMap
+	 *            the topic map
 	 * @return the created item-identifier
 	 */
 	protected abstract ILocator doCreateItemIdentifier(ITopicMap topicMap);
@@ -340,136 +342,188 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Create a new association item.
 	 * 
-	 * @param topicMap the topic map
-	 * @param type the type
+	 * @param topicMap
+	 *            the topic map
+	 * @param type
+	 *            the type
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Create a new association item.
 	 * 
-	 * @param topicMap the topic map
-	 * @param type the type
-	 * @param themes the scoping themes
+	 * @param topicMap
+	 *            the topic map
+	 * @param type
+	 *            the type
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param value the characteristics value
+	 * @param topic
+	 *            the parent topic
+	 * @param value
+	 *            the characteristics value
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IName doCreateName(ITopic topic, String value) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param value the characteristics value
-	 * @param themes the scoping themes
+	 * @param topic
+	 *            the parent topic
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IName doCreateName(ITopic topic, ITopic type, String value) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
-	 * @param themes the scoping themes
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
-	 * @param themes the scoping themes
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
-	 * @param themes the scoping themes
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
-	 * @param datatype the data type
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param datatype
+	 *            the data type
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
 	 * 
-	 * @param topic the parent topic
-	 * @param type the type
-	 * @param value the characteristics value
-	 * @param datatype the data type
-	 * @param themes the scoping themes
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param datatype
+	 *            the data type
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException;
@@ -477,104 +531,138 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Create a new association role item.
 	 * 
-	 * @param association the parent association
-	 * @param type the type
-	 * @param player the role player
+	 * @param association
+	 *            the parent association
+	 * @param type
+	 *            the type
+	 * @param player
+	 *            the role player
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException;
 
 	/**
 	 * Create the internal scope object representing the collection of themes
 	 * 
-	 * @param topicMap the topic map
-	 * @param themes the themes collection
+	 * @param topicMap
+	 *            the topic map
+	 * @param themes
+	 *            the themes collection
 	 * @return the scope object
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
 	 * 
-	 * @param topicMap the topic map
+	 * @param topicMap
+	 *            the topic map
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doCreateTopic(ITopicMap topicMap) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
 	 * 
-	 * @param topicMap the topic map
-	 * @param itemIdentifier the item-identifier
+	 * @param topicMap
+	 *            the topic map
+	 * @param itemIdentifier
+	 *            the item-identifier
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
 	 * 
-	 * @param topicMap the topic map
-	 * @param subjectIdentifier the subject-identifier
+	 * @param topicMap
+	 *            the topic map
+	 * @param subjectIdentifier
+	 *            the subject-identifier
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
 	 * 
-	 * @param topicMap the topic map
-	 * @param subjectLocator the subject-locator
+	 * @param topicMap
+	 *            the topic map
+	 * @param subjectLocator
+	 *            the subject-locator
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Create a locator instance.
 	 * 
-	 * @param topicMap the topic map
-	 * @param reference the string reference
+	 * @param topicMap
+	 *            the topic map
+	 * @param reference
+	 *            the string reference
 	 * @return the created construct
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
 	 * 
-	 * @param name the parent name
-	 * @param value the value
-	 * @param themes the scoping themes
+	 * @param name
+	 *            the parent name
+	 * @param value
+	 *            the value
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created variant
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
 	 * 
-	 * @param name the parent name
-	 * @param datatype the data type
-	 * @param themes the scoping themes
+	 * @param name
+	 *            the parent name
+	 * @param datatype
+	 *            the data type
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created variant
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IVariant doCreateVariant(IName name, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
 	 * 
-	 * @param name the parent name
-	 * @param value the value
-	 * @param datatype the data type
-	 * @param themes the scoping themes
+	 * @param name
+	 *            the parent name
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the data type
+	 * @param themes
+	 *            the scoping themes
 	 * @return the created variant
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
 
@@ -695,137 +783,182 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Add a new item-identifier to the given construct
 	 * 
-	 * @param c the construct
-	 * @param itemIdentifier the item identifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Modify the player of the given role.
 	 * 
-	 * @param role the role
-	 * @param player the new player
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param role
+	 *            the role
+	 * @param player
+	 *            the new player
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyPlayer(IAssociationRole role, ITopic player) throws TopicMapStoreException;
 
 	/**
 	 * Modify the reifier of the given reified item.
 	 * 
-	 * @param r the reified item
-	 * @param reifier the reifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param r
+	 *            the reified item
+	 * @param reifier
+	 *            the reifier
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyReifier(IReifiable r, ITopic reifier) throws TopicMapStoreException;
 
 	/**
 	 * Add a new theme to the given scoped item.
 	 * 
-	 * @param s the scoped item
-	 * @param theme the theme
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param s
+	 *            the scoped item
+	 * @param theme
+	 *            the theme
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException;
 
 	/**
 	 * Add a new subject-identifier to the given topic
 	 * 
-	 * @param t the topic
-	 * @param subjectIdentifier the subject-identifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectIdentifier
+	 *            the subject-identifier
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Add a new subject-locator to the given topic
 	 * 
-	 * @param t the topic
-	 * @param subjectLocator the subject-locator
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectLocator
+	 *            the subject-locator
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Add a new super type to the given topic
 	 * 
-	 * @param t the topic
-	 * @param type the super type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the super type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifySupertype(ITopic t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Add a new tag to the given topic map for the current time stamp
 	 * 
-	 * @param tm the topic map
-	 * @param tag the tag
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param tm
+	 *            the topic map
+	 * @param tag
+	 *            the tag
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyTag(ITopicMap tm, String tag) throws TopicMapStoreException;
 
 	/**
 	 * Add a new tag to the given topic map for the given time stamp
 	 * 
-	 * @param tm the topic map
-	 * @param tag the tag
-	 * @param timestamp the time stamp
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param tm
+	 *            the topic map
+	 * @param tag
+	 *            the tag
+	 * @param timestamp
+	 *            the time stamp
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyTag(ITopicMap tm, String tag, Calendar timestamp) throws TopicMapStoreException;
 
 	/**
 	 * Modify the type of the given typed item.
 	 * 
-	 * @param t the typed item
-	 * @param type the type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the typed item
+	 * @param type
+	 *            the type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyType(ITypeable t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Add a new type to the given topic.
 	 * 
-	 * @param t the topic
-	 * @param type the type to add
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type to add
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyType(ITopic t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value of the given name.
 	 * 
-	 * @param n the name
+	 * @param n
+	 *            the name
 	 * @param value
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyValue(IName n, String value) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value of the given data-type-aware.
 	 * 
-	 * @param t data-type-aware
+	 * @param t
+	 *            data-type-aware
 	 * @param value
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyValue(IDatatypeAware t, String value) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value and the data type of the given data-type-aware.
 	 * 
-	 * @param t data-type-aware
-	 * @param value the value
-	 * @param datatype the data type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            data-type-aware
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the data type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value and the data type of the given data-type-aware.
 	 * 
-	 * @param t data-type-aware
-	 * @param value the value
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            data-type-aware
+	 * @param value
+	 *            the value
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyValue(IDatatypeAware t, Object value) throws TopicMapStoreException;
 
@@ -867,18 +1000,24 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Merge a topic in the given topic
 	 * 
-	 * @param context the topic to merge in
-	 * @param other the topic to merge in
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param context
+	 *            the topic to merge in
+	 * @param other
+	 *            the topic to merge in
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException;
 
 	/**
 	 * Merge a topic map in the given topic map.
 	 * 
-	 * @param context the topic map
-	 * @param other the topic map to merge in
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param context
+	 *            the topic map
+	 * @param other
+	 *            the topic map to merge in
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doMergeTopicMaps(TopicMap context, TopicMap other) throws TopicMapStoreException;
 
@@ -1141,9 +1280,11 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Read the association played by the given topic
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException;
 
@@ -1151,10 +1292,13 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read the associations played by the given topic and being typed by the
 	 * given type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws TopicMapStoreException;
 
@@ -1162,40 +1306,52 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all scoped associations played by the given topic and being typed by
 	 * the given type
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped associations played by the given topic
 	 * 
-	 * @param t the topic
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all associations of the topic map.
 	 * 
-	 * @param tm the topic map
+	 * @param tm
+	 *            the topic map
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopicMap tm) throws TopicMapStoreException;
 
 	/**
 	 * Read all associations of the topic map being typed by the given type.
 	 * 
-	 * @param tm the topic map
-	 * @param type the type
+	 * @param tm
+	 *            the topic map
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws TopicMapStoreException;
 
@@ -1203,30 +1359,39 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all scoped associations of the topic map being typed by the given
 	 * type.
 	 * 
-	 * @param tm the topic map
-	 * @param type the type
-	 * @param scope the scope
+	 * @param tm
+	 *            the topic map
+	 * @param type
+	 *            the type
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped associations of the topic map.
 	 * 
-	 * @param tm the topic map
-	 * @param scope the scope
+	 * @param tm
+	 *            the topic map
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all characteristics if the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ICharacteristics> doReadCharacteristics(ITopic t) throws TopicMapStoreException;
 
@@ -1234,10 +1399,13 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all characteristics if the given topic being typed by the given
 	 * type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws TopicMapStoreException;
 
@@ -1245,145 +1413,183 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all scoped characteristics if the given topic being typed by the
 	 * given type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped characteristics if the given topic.
 	 * 
-	 * @param t the topic
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read the construct identified by the given id.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @param id
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IConstruct doReadConstruct(ITopicMap t, String id) throws TopicMapStoreException;
 
 	/**
 	 * Read the construct identified by the given item-identifier.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @param itemIdentifier
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Read the data type of the given data-type-aware
 	 * 
-	 * @param d the data-type-aware
+	 * @param d
+	 *            the data-type-aware
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ILocator doReadDataType(IDatatypeAware d) throws TopicMapStoreException;
 
 	/**
 	 * Read the id of the given construct
 	 * 
-	 * @param c the construct
+	 * @param c
+	 *            the construct
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract String doReadId(IConstruct c) throws TopicMapStoreException;
 
 	/**
 	 * Read all item-identifiers of the given construct
 	 * 
-	 * @param c the construct
+	 * @param c
+	 *            the construct
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ILocator> doReadItemIdentifiers(IConstruct c) throws TopicMapStoreException;
 
 	/**
 	 * Read the base locator of the given topic map.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException;
 
 	/**
 	 * Read all names if the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IName> doReadNames(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read all names if the given topic being typed by the given type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IName> doReadNames(ITopic t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped names if the given topic being typed by the given type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped names if the given topic.
 	 * 
-	 * @param t the topic
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IName> doReadNames(ITopic t, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read the previous revision of the revision.
 	 * 
-	 * @param r the revision
+	 * @param r
+	 *            the revision
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IRevision doReadFutureRevision(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read all occurrences if the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IOccurrence> doReadOccurrences(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read all occurrence if the given topic being typed by the given type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws TopicMapStoreException;
 
@@ -1391,93 +1597,116 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all scoped occurrence if the given topic being typed by the given
 	 * type.
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped occurrence if the given topic.
 	 * 
-	 * @param t the topic
-	 * @param scope the scope
+	 * @param t
+	 *            the topic
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read the player of the given role
 	 * 
-	 * @param role the role
+	 * @param role
+	 *            the role
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doReadPlayer(IAssociationRole role) throws TopicMapStoreException;
 
 	/**
 	 * Read the next revision of the revision.
 	 * 
-	 * @param r the revision
+	 * @param r
+	 *            the revision
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IRevision doReadPreviousRevision(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read the reified item of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IReifiable doReadReification(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read the reifier of the reified construct
 	 * 
-	 * @param r the reified item
+	 * @param r
+	 *            the reified item
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doReadReification(IReifiable r) throws TopicMapStoreException;
 
 	/**
 	 * Read the time-stamp of the revision begin.
 	 * 
-	 * @param r the revision
+	 * @param r
+	 *            the revision
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Calendar doReadRevisionBegin(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read the time-stamp of the revision end.
 	 * 
-	 * @param r the revision
+	 * @param r
+	 *            the revision
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Calendar doReadRevisionEnd(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read the change set of a revision.
 	 * 
-	 * @param r the revision
+	 * @param r
+	 *            the revision
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read all association role items of the given association
 	 * 
-	 * @param association the association
+	 * @param association
+	 *            the association
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociationRole> doReadRoles(IAssociation association) throws TopicMapStoreException;
 
@@ -1485,19 +1714,24 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read all association role items of the given association and the given
 	 * type.
 	 * 
-	 * @param association the association
-	 * @param type the role type
+	 * @param association
+	 *            the association
+	 * @param type
+	 *            the role type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Read the played roles of the given topic.
 	 * 
-	 * @param player the role player
+	 * @param player
+	 *            the role player
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociationRole> doReadRoles(ITopic player) throws TopicMapStoreException;
 
@@ -1505,10 +1739,13 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read the played roles of the given topic and being typed by the given
 	 * type
 	 * 
-	 * @param player the player
-	 * @param type the role type
+	 * @param player
+	 *            the player
+	 * @param type
+	 *            the role type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws TopicMapStoreException;
 
@@ -1516,161 +1753,201 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Read the played roles of the given topic and being typed by the given
 	 * type
 	 * 
-	 * @param player the player
-	 * @param type the role type
-	 * @param assocType the association type
+	 * @param player
+	 *            the player
+	 * @param type
+	 *            the role type
+	 * @param assocType
+	 *            the association type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws TopicMapStoreException;
 
 	/**
 	 * Read all role types of the given association
 	 * 
-	 * @param association the association
+	 * @param association
+	 *            the association
 	 * @return a set containing all role types
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ITopic> doReadRoleTypes(IAssociation association) throws TopicMapStoreException;
 
 	/**
 	 * Read all subject-identifiers of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read all subject-locators of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ILocator> doReadSubjectLocators(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read all super types of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read the topic identified by the given subject-identifier.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @param subjectIdentifier
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Read the topic identified by the given subject-locator.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @param subjectLocator
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Return all topics of the topic map.
 	 * 
-	 * @param t the topic map
+	 * @param t
+	 *            the topic map
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException;
 
 	/**
 	 * Return all topics of the topic map being typed by the given type.
 	 * 
-	 * @param t the topic map
-	 * @param type the type
+	 * @param t
+	 *            the topic map
+	 * @param type
+	 *            the type
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Read the type of the given typed item.
 	 * 
-	 * @param typed the typed
+	 * @param typed
+	 *            the typed
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract ITopic doReadType(ITypeable typed) throws TopicMapStoreException;
 
 	/**
 	 * Read all types of the given type.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read the scope of the given scoped item
 	 * 
-	 * @param s the scoped item
+	 * @param s
+	 *            the scoped item
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract IScope doReadScope(IScopable s) throws TopicMapStoreException;
 
 	/**
 	 * Read the value of the topic name.
 	 * 
-	 * @param n the name
+	 * @param n
+	 *            the name
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Object doReadValue(IName n) throws TopicMapStoreException;
 
 	/**
 	 * Read the value of the data-type-aware.
 	 * 
-	 * @param t the data-type-aware
+	 * @param t
+	 *            the data-type-aware
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Object doReadValue(IDatatypeAware t) throws TopicMapStoreException;
 
 	/**
 	 * Read the value of the data-type-aware and cast them to the given type
 	 * 
-	 * @param <T> the type of the value
-	 * @param t the data-type-aware
-	 * @param type the type of the value
+	 * @param <T>
+	 *            the type of the value
+	 * @param t
+	 *            the data-type-aware
+	 * @param type
+	 *            the type of the value
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract <T extends Object> T doReadValue(IDatatypeAware t, Class<T> type) throws TopicMapStoreException;
 
 	/**
 	 * Read the variants of the given name.
 	 * 
-	 * @param n the name
+	 * @param n
+	 *            the name
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException;
 
 	/**
 	 * Read the variants of the given name in the given scope.
 	 * 
-	 * @param n the name
-	 * @param scope the scope
+	 * @param n
+	 *            the name
+	 * @param scope
+	 *            the scope
 	 * @return the read information
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract Set<IVariant> doReadVariants(IName n, IScope scope) throws TopicMapStoreException;
 
@@ -1736,52 +2013,68 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @param c
 	 * @param itemIdentifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Remove the theme from the given scoped item.
 	 * 
-	 * @param s the scoped item
-	 * @param theme the theme
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param s
+	 *            the scoped item
+	 * @param theme
+	 *            the theme
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveScope(IScopable s, ITopic theme) throws TopicMapStoreException;
 
 	/**
 	 * Remove the subject-identifier from the given topic.
 	 * 
-	 * @param t the topic
-	 * @param subjectIdentifier the subject-identifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectIdentifier
+	 *            the subject-identifier
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Remove the subject-locator from the given topic.
 	 * 
-	 * @param t the topic
-	 * @param subjectLocator the subject-locator
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param subjectLocator
+	 *            the subject-locator
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Remove the type from the given topic.
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveSupertype(ITopic t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Remove the super type from the given topic.
 	 * 
-	 * @param t the topic
-	 * @param type the type
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
 	protected abstract void doRemoveType(ITopic t, ITopic type) throws TopicMapStoreException;
 
@@ -1822,9 +2115,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the topic map.
 	 * 
-	 * @param topicMap the topic map
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param topicMap
+	 *            the topic map
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws TopicMapStoreException;
@@ -1832,9 +2126,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the topic.
 	 * 
-	 * @param topic the topic
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param topic
+	 *            the topic
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException;
@@ -1842,9 +2137,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the name.
 	 * 
-	 * @param name the name
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param name
+	 *            the name
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException;
@@ -1852,9 +2148,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the occurrence.
 	 * 
-	 * @param occurrence the occurrence
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param occurrence
+	 *            the occurrence
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException;
@@ -1862,9 +2159,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the association.
 	 * 
-	 * @param association the association
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param association
+	 *            the association
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException;
@@ -1872,9 +2170,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the association role.
 	 * 
-	 * @param role the role
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param role
+	 *            the role
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException;
@@ -1882,9 +2181,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Remove the variant.
 	 * 
-	 * @param variant the variant
-	 * @param cascade flag indicates if the dependent construct should removed
-	 *            too
+	 * @param variant
+	 *            the variant
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException;
@@ -1913,7 +2213,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 				// NOTHING TO DO
 			}
 		}
-		this.threadPool = Executors.newFixedThreadPool(max);
+		this.threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(max);
 	}
 
 	/**
@@ -1965,8 +2265,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * Transform the given array to a set of the specific type.
 	 * 
-	 * @param <T> the type
-	 * @param array the array
+	 * @param <T>
+	 *            the type
+	 * @param array
+	 *            the array
 	 * @return the transformed set
 	 */
 	private static Collection<ITopic> convert(Topic[] array) {
@@ -2108,15 +2410,29 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Method called by the topic map store to notify all topic map listeners
 	 * registered for the given topic map
 	 * 
-	 * @param event the event type
-	 * @param notifier the construct changed
-	 * @param newValue the new value
-	 * @param oldValue the old value
+	 * @param event
+	 *            the event type
+	 * @param notifier
+	 *            the construct changed
+	 * @param newValue
+	 *            the new value
+	 * @param oldValue
+	 *            the old value
 	 */
 	protected void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
 		if (listeners != null) {
-			threadPool.execute(new EventNotifier(listeners, event, notifier, newValue, oldValue));
+			addTaskToThreadPool(new EventNotifier(listeners, event, notifier, newValue, oldValue));
 		}
+	}
+
+	/**
+	 * Adding the given task to the internal thread pool of the topic map store.
+	 * 
+	 * @param task
+	 *            the task to add
+	 */
+	protected void addTaskToThreadPool(Runnable task) {
+		getThreadPool().execute(task);
 	}
 
 	/**
@@ -2124,7 +2440,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @return the threadPool
 	 */
-	protected ExecutorService getThreadPool() {
+	protected final ThreadPoolExecutor getThreadPool() {
 		return threadPool;
 	}
 

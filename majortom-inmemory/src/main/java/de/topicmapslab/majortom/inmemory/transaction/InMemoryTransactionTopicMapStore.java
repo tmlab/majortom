@@ -120,7 +120,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(null, TransactionOperation.MODIFY, context, paramType, params));
+		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params));
 		super.doModify(context, paramType, params);
 	}
 
@@ -128,7 +128,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(null, TransactionOperation.REMOVE, context, paramType, params));
+		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params));
 		super.doRemove(context, paramType, params);
 	}
 
@@ -136,7 +136,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(null, TransactionOperation.REMOVE, context, null, cascade));
+		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade));
 		super.doRemove(context, cascade);
 	}
 
@@ -145,7 +145,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 */
 	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		Object obj = super.doCreate(context, paramType, params);
-		commands.add(new TransactionCommand(obj, TransactionOperation.CREATE, context, paramType, params));
+		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType, params));
 		return obj;
 	}
 
@@ -190,7 +190,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
 		return new LazyScopeStore(this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

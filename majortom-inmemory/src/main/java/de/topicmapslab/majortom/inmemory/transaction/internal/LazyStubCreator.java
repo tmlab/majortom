@@ -22,6 +22,7 @@ import de.topicmapslab.majortom.core.NameImpl;
 import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.core.VariantImpl;
+import de.topicmapslab.majortom.inmemory.store.InMemoryIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.IConstruct;
@@ -30,6 +31,7 @@ import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 
 /**
@@ -71,44 +73,48 @@ public class LazyStubCreator {
 
 	private static final ITopic createLazyStub(ITopic construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new TopicImpl(((ConstructImpl) construct).getIdentity(), transaction);
+			return new TopicImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), transaction);
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
 	private static final IOccurrence createLazyStub(IOccurrence construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new OccurrenceImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
+			return new OccurrenceImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
 	private static final IName createLazyStub(IName construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new NameImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
+			return new NameImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
 	private static final IVariant createLazyStub(IVariant construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new VariantImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
+			return new VariantImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
 	private static final IAssociation createLazyStub(IAssociation construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new AssociationImpl(((ConstructImpl) construct).getIdentity(), transaction);
+			return new AssociationImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), transaction);
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
 	}
 
 	private static final IAssociationRole createLazyStub(IAssociationRole construct, final ITransaction transaction) {
 		if (construct instanceof ConstructImpl) {
-			return new AssociationRoleImpl(((ConstructImpl) construct).getIdentity(), createLazyStub(construct.getParent(), transaction));
+			return new AssociationRoleImpl(cloneIdentity(((ConstructImpl) construct).getIdentity()), createLazyStub(construct.getParent(), transaction));
 		}
 		throw new IllegalArgumentException("construct should be an instanceof ConstructImpl");
+	}
+
+	private static ITopicMapStoreIdentity cloneIdentity(ITopicMapStoreIdentity identity) {
+		return new InMemoryIdentity(identity.getId());
 	}
 
 }

@@ -214,42 +214,40 @@ public class LazyScopeStore extends ScopeStore {
 	 * {@inheritDoc}
 	 */
 	public IScope getScope(IAssociation scoped) {
-		return internalGetScope(scoped);
+		if (getLazyIdentityStore().isRemovedConstruct(scoped)) {
+			throw new ConstructRemovedException(scoped);
+		}
+
+		if (containsScopeable(scoped)) {
+			return super.getScope(scoped);
+		}
+		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope getScope(IName scoped) {
-		return internalGetScope(scoped);
+		if (containsScopeable(scoped)) {
+			return super.getScope(scoped);
+		}
+		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope getScope(IOccurrence scoped) {
-		return internalGetScope(scoped);
+		if (containsScopeable(scoped)) {
+			return super.getScope(scoped);
+		}
+		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope getScope(IVariant scoped) {
-		return internalGetScope(scoped);
-	}
-
-	/**
-	 * Returns the scope of the scoped construct
-	 * 
-	 * @param scoped
-	 *            the scoped construct
-	 * @return the scope and never <code>null</code>
-	 */
-	private IScope internalGetScope(IScopable scoped) {
-		if (getLazyIdentityStore().isRemovedConstruct(scoped)) {
-			throw new ConstructRemovedException(scoped);
-		}
-
 		if (containsScopeable(scoped)) {
 			return super.getScope(scoped);
 		}
@@ -360,6 +358,7 @@ public class LazyScopeStore extends ScopeStore {
 	 */
 	public void setScope(IAssociation scoped, IScope s) {
 		internalSetScope(scoped, s);
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
@@ -367,6 +366,7 @@ public class LazyScopeStore extends ScopeStore {
 	 */
 	public void setScope(IName scoped, IScope s) {
 		internalSetScope(scoped, s);
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
@@ -374,6 +374,7 @@ public class LazyScopeStore extends ScopeStore {
 	 */
 	public void setScope(IOccurrence scoped, IScope s) {
 		internalSetScope(scoped, s);
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
@@ -381,6 +382,7 @@ public class LazyScopeStore extends ScopeStore {
 	 */
 	public void setScope(IVariant scoped, IScope s) {
 		internalSetScope(scoped, s);
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
@@ -401,17 +403,12 @@ public class LazyScopeStore extends ScopeStore {
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
-		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
-	 * Remove the relation between the scoped construct and the stored scope.
-	 * 
-	 * @param scoped
-	 *            the scoped construct
-	 * @return the old scope
+	 * {@inheritDoc}
 	 */
-	private final IScope internalRemoveScope(IScopable scoped) {
+	public IScope removeScope(IAssociation scoped) {
 		IScope scope = getScope(scoped);
 		super.removeScope(scoped);
 		return scope;
@@ -420,29 +417,28 @@ public class LazyScopeStore extends ScopeStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IScope removeScope(IAssociation scoped) {
-		return internalRemoveScope(scoped);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public IScope removeScope(IName scoped) {
-		return internalRemoveScope(scoped);
+		IScope scope = getScope(scoped);
+		super.removeScope(scoped);
+		return scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope removeScope(IOccurrence scoped) {
-		return internalRemoveScope(scoped);
+		IScope scope = getScope(scoped);
+		super.removeScope(scoped);
+		return scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope removeScope(IVariant scoped) {
-		return internalRemoveScope(scoped);
+		IScope scope = getScope(scoped);
+		super.removeScope(scoped);
+		return scope;
 	}
 
 }

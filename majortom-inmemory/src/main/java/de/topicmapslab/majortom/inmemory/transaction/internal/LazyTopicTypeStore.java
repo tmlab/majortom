@@ -204,7 +204,7 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 		if (removedSubtypes == null) {
 			removedSubtypes = HashUtil.getHashMap();
 		}
-		Set<String> set = removedSubtypes.get(type.getId());
+		Set<String> set = removedSubtypes.get(supertype.getId());
 		if (set == null) {
 			set = HashUtil.getHashSet();
 		}
@@ -217,12 +217,12 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 		if (removedSupertypes == null) {
 			removedSupertypes = HashUtil.getHashMap();
 		}
-		set = removedSupertypes.get(supertype.getId());
+		set = removedSupertypes.get(type.getId());
 		if (set == null) {
 			set = HashUtil.getHashSet();
 		}
-		set.add(type.getId());
-		removedSupertypes.put(supertype.getId(), set);
+		set.add(supertype.getId());
+		removedSupertypes.put(type.getId(), set);
 	}
 
 	/**
@@ -253,11 +253,12 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 	@SuppressWarnings("unchecked")
 	public Set<ITopic> getDirectTypes(ITopic instance) {
 		Set<ITopic> set = HashUtil.getHashSet();
-		for (ITopic type : (Set<ITopic>) getStore().getRealStore().doRead(instance, TopicMapStoreParameterType.TYPE)) {
+		Set<ITopic> types = (Set<ITopic>) getStore().getRealStore().doRead(instance, TopicMapStoreParameterType.TYPE);
+		for (ITopic type : types) {
 			if (getLazyIdentityStore().isRemovedConstruct(type)) {
 				continue;
 			}
-			if (removedTypes != null && removedTypes.containsKey(instance.getId()) && !removedTypes.get(instance.getId()).contains(type.getId())) {
+			if (removedTypes == null || !removedTypes.containsKey(instance.getId()) || !removedTypes.get(instance.getId()).contains(type.getId())) {
 				set.add(getLazyIdentityStore().createLazyStub(type));
 			}
 		}
@@ -306,7 +307,7 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 			 * check that is-instance-of relation was not removed in the current
 			 * transaction context
 			 */
-			if (removedInstances != null && removedInstances.containsKey(type.getId()) && !removedInstances.get(type.getId()).contains(instance.getId())) {
+			if (removedInstances == null || !removedInstances.containsKey(type.getId()) || !removedInstances.get(type.getId()).contains(instance.getId())) {
 				set.add(getLazyIdentityStore().createLazyStub(instance));
 			}
 		}
@@ -354,8 +355,8 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 			 * check that a-kind-of relation was not removed in the current
 			 * transaction context
 			 */
-			if (removedSupertypes != null && removedSupertypes.containsKey(subtype.getId())
-					&& !removedSupertypes.get(subtype.getId()).contains(supertype.getId())) {
+			if (removedSupertypes == null || !removedSupertypes.containsKey(subtype.getId())
+					|| !removedSupertypes.get(subtype.getId()).contains(supertype.getId())) {
 				set.add(getLazyIdentityStore().createLazyStub(supertype));
 			}
 		}
@@ -403,7 +404,7 @@ public class LazyTopicTypeStore extends TopicTypeStore {
 			 * check that a-kind-of relation was not removed in the current
 			 * transaction context
 			 */
-			if (removedSubtypes != null && removedSubtypes.containsKey(type.getId()) && !removedSubtypes.get(type.getId()).contains(subtype.getId())) {
+			if (removedSubtypes == null || !removedSubtypes.containsKey(type.getId()) || !removedSubtypes.get(type.getId()).contains(subtype.getId())) {
 				set.add(getLazyIdentityStore().createLazyStub(subtype));
 			}
 		}

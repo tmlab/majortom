@@ -22,6 +22,7 @@ import de.topicmapslab.majortom.tests.event.EventTestSuite;
 import de.topicmapslab.majortom.tests.index.IndexTestSuite;
 import de.topicmapslab.majortom.tests.merge.MergeTestSuite;
 import de.topicmapslab.majortom.tests.revision.RevisionTestSuite;
+import de.topicmapslab.majortom.tests.transaction.TransactionSuite;
 
 /**
  * @author Sven Krosse
@@ -38,6 +39,7 @@ public class MaJorToMTestSuite {
 		suite.addTest(MergeTestSuite.suite());
 		// suite.addTest(IOTestSuite.suite());
 		suite.addTest(RevisionTestSuite.suite());
+		suite.addTest(TransactionSuite.suite());
 		suite.addTest(org.tmapi.AllTests.suite());
 		// $JUnit-END$
 		return suite;

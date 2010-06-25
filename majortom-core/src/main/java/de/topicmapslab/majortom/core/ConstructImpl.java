@@ -41,7 +41,7 @@ public abstract class ConstructImpl implements IConstruct {
 	 * removed flag
 	 */
 	private boolean removed = false;
-	
+
 	/**
 	 * the topic map
 	 */
@@ -60,9 +60,12 @@ public abstract class ConstructImpl implements IConstruct {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param topicMap the containing topic map
-	 * @param parent the parent construct
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param topicMap
+	 *            the containing topic map
+	 * @param parent
+	 *            the parent construct
 	 */
 	public ConstructImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		this.topicMap = topicMap;
@@ -95,7 +98,7 @@ public abstract class ConstructImpl implements IConstruct {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getId() {		
+	public String getId() {
 		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
 
@@ -128,6 +131,7 @@ public abstract class ConstructImpl implements IConstruct {
 			throw new ConstructRemovedException(this);
 		}
 		getTopicMap().getStore().doRemove(this, cascade);
+		removed = true;
 	}
 
 	/**
@@ -138,7 +142,7 @@ public abstract class ConstructImpl implements IConstruct {
 			throw new ConstructRemovedException(this);
 		}
 		if (identifier != null && getItemIdentifiers().contains(identifier)) {
-			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);			
+			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.ITEM_IDENTIFIER, identifier);
 		}
 	}
 
@@ -181,12 +185,20 @@ public abstract class ConstructImpl implements IConstruct {
 	public int hashCode() {
 		return getId().hashCode();
 	}
-	
+
 	/**
 	 * Indicates if the construct is removed
+	 * 
 	 * @return the removed <code>true</code> if the construct was removed
 	 */
 	protected boolean isRemoved() {
 		return removed;
+	}
+
+	/**
+	 * Modify the internal state of deletion.
+	 */
+	public void setRemoved() {
+		this.removed = true;
 	}
 }

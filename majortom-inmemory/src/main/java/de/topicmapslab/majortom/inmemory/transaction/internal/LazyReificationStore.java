@@ -140,14 +140,14 @@ public class LazyReificationStore extends ReificationStore {
 	 */
 	private ITopic storeOldReification(IReifiable reifiable) {
 		ITopic nonTransactionReifier = null;
-		if ( reifiable instanceof ITransaction ){
+		if (reifiable instanceof ITransaction) {
 			nonTransactionReifier = getLazyIdentityStore().createLazyStub(
 					(ITopic) getStore().getRealStore().doRead(reifiable.getTopicMap(), TopicMapStoreParameterType.REIFICATION));
-		}else{
+		} else {
 			nonTransactionReifier = getLazyIdentityStore().createLazyStub(
 					(ITopic) getStore().getRealStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
 		}
-		
+
 		if (nonTransactionReifier != null) {
 			if (removedReifications == null || !removedReifications.containsKey(nonTransactionReifier.getId())) {
 				if (removedReifications == null) {
@@ -194,7 +194,9 @@ public class LazyReificationStore extends ReificationStore {
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
 		IReifiable reifiable = storeOldReification(topic);
 		removeReifier(topic);
-		setReifier(reifiable, replacement);
+		if (reifiable != null) {
+			setReifier(reifiable, replacement);
+		}
 	}
 
 }

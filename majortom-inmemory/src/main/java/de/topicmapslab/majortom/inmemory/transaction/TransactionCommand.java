@@ -18,6 +18,8 @@ package de.topicmapslab.majortom.inmemory.transaction;
 import java.util.Arrays;
 import java.util.Map;
 
+import de.topicmapslab.majortom.core.ConstructImpl;
+import de.topicmapslab.majortom.inmemory.transaction.internal.LazyStubCreator;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -52,10 +54,10 @@ public class TransactionCommand {
 	 */
 	private final Object result;
 
-	public TransactionCommand(final Object result, final TransactionOperation operation, final IConstruct context,
+	public TransactionCommand(final ITransaction transaction, final Object result, final TransactionOperation operation, final IConstruct context,
 			final TopicMapStoreParameterType parameterType, final Object... parameters) {
 		this.operation = operation;
-		this.context = context;
+		this.context = LazyStubCreator.createLazyStub(context, transaction);
 		this.paramterType = parameterType;
 		this.parameters = parameters;
 		this.result = result;
@@ -98,6 +100,9 @@ public class TransactionCommand {
 			if (paramterType == null) {
 				boolean cascade = parameters_.length == 1 && ((Boolean) parameters_[0]);
 				store.doRemove(context_, cascade);
+				if (context_ instanceof ConstructImpl) {
+					((ConstructImpl) context_).setRemoved();
+				}
 			} else {
 				store.doRemove(context_, paramterType, parameters_);
 			}
@@ -120,7 +125,8 @@ public class TransactionCommand {
 		}
 		if (parameter instanceof IConstruct) {
 			if (((IConstruct) parameter).getTopicMap() instanceof ITransaction) {
-				return store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_ID, ((IConstruct) parameter).getId());
+				IConstruct param = (IConstruct) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_ID, ((IConstruct) parameter).getId());
+				return param;
 			}
 		}
 		return parameter;

@@ -95,7 +95,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param store the parent store
+	 * @param store
+	 *            the parent store
 	 */
 	public IdentityStore(final InMemoryTopicMapStore store) {
 		this.store = store;
@@ -137,7 +138,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return the construct identified by the given id.
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the construct or <code>null</code>
 	 */
 	public IConstruct byId(final String id) {
@@ -150,7 +152,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return the construct identified by the given item-identifier.
 	 * 
-	 * @param l the item-identifier
+	 * @param l
+	 *            the item-identifier
 	 * @return the construct or <code>null</code>
 	 */
 	public IConstruct byItemIdentifier(final ILocator l) {
@@ -163,7 +166,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return the topic identified by the given subject-identifier.
 	 * 
-	 * @param l the subject-identifier
+	 * @param l
+	 *            the subject-identifier
 	 * @return the topic or <code>null</code>
 	 */
 	public ITopic bySubjectIdentifier(final ILocator l) {
@@ -176,7 +180,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return the topic identified by the given subject-locator.
 	 * 
-	 * @param l the subject-locator
+	 * @param l
+	 *            the subject-locator
 	 * @return the topic or <code>null</code>
 	 */
 	public ITopic bySubjectLocator(final ILocator l) {
@@ -189,7 +194,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return all item-identifiers of the given construct.
 	 * 
-	 * @param c the construct
+	 * @param c
+	 *            the construct
 	 * @return the identifiers
 	 */
 	public Set<ILocator> getItemIdentifiers(IConstruct c) {
@@ -202,7 +208,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return all subject-identifiers of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the identifiers
 	 */
 	public Set<ILocator> getSubjectIdentifiers(ITopic t) {
@@ -215,7 +222,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return all subject-locator of the given topic.
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 * @return the locators
 	 */
 	public Set<ILocator> getSubjectLocators(ITopic t) {
@@ -228,8 +236,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Register the id for the given construct
 	 * 
-	 * @param c the construct
-	 * @param id the id
+	 * @param c
+	 *            the construct
+	 * @param id
+	 *            the id
 	 */
 	public void setId(final IConstruct c, final String id) {
 		if (ids == null) {
@@ -247,8 +257,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Register a item-identifier for the given construct
 	 * 
-	 * @param c the construct
-	 * @param identifier the item-identifier
+	 * @param c
+	 *            the construct
+	 * @param identifier
+	 *            the item-identifier
 	 */
 	public void addItemIdentifer(final IConstruct c, final ILocator identifier) {
 		if (itemIdentitiers == null) {
@@ -273,8 +285,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Register a subject-identifier for the given topic
 	 * 
-	 * @param t the topic
-	 * @param identifier the subject-identifier
+	 * @param t
+	 *            the topic
+	 * @param identifier
+	 *            the subject-identifier
 	 */
 	public void addSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
@@ -299,8 +313,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Register a subject-locator for the given topic
 	 * 
-	 * @param t the topic
-	 * @param locator the subject-locator
+	 * @param t
+	 *            the topic
+	 * @param locator
+	 *            the subject-locator
 	 */
 	public void addSubjectLocator(final ITopic t, final ILocator locator) {
 		if (subjectLocators == null) {
@@ -325,8 +341,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Unregister the id of the construct.
 	 * 
-	 * @param c the construct
-	 * @param id the id
+	 * @param c
+	 *            the construct
+	 * @param id
+	 *            the id
 	 */
 	public void removeId(final IConstruct c, final String id) {
 		if (ids == null) {
@@ -338,8 +356,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Unregister a item-identifier for the given construct
 	 * 
-	 * @param c the construct
-	 * @param identifier the item-identifier
+	 * @param c
+	 *            the construct
+	 * @param identifier
+	 *            the item-identifier
 	 */
 	public void removeItemIdentifer(final IConstruct c, final ILocator identifier) {
 		if (itemIdentitiers == null) {
@@ -358,8 +378,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Unregister a subject-identifier for the given topic
 	 * 
-	 * @param t the topic
-	 * @param identifier the subject-identifier
+	 * @param t
+	 *            the topic
+	 * @param identifier
+	 *            the subject-identifier
 	 */
 	public void removeSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
@@ -378,8 +400,10 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Unregister a subject-locator for the given topic
 	 * 
-	 * @param t the topic
-	 * @param locator the subject-locator
+	 * @param t
+	 *            the topic
+	 * @param locator
+	 *            the subject-locator
 	 */
 	public void removeSubjectLocator(final ITopic t, final ILocator identifier) {
 		if (subjectLocators == null) {
@@ -398,7 +422,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Remove the construct from the internal store
 	 * 
-	 * @param c the construct
+	 * @param c
+	 *            the construct
 	 */
 	public void removeConstruct(IConstruct c) {
 		if (c instanceof ITopic) {
@@ -423,7 +448,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Removing the given topic from internal store
 	 * 
-	 * @param t the topic
+	 * @param t
+	 *            the topic
 	 */
 	public void removeTopic(ITopic t) {
 		/*
@@ -471,7 +497,8 @@ public class IdentityStore implements IDataStore {
 	 * Creates a new locator instance of the reference is unknown or return the
 	 * stored instance
 	 * 
-	 * @param reference the reference
+	 * @param reference
+	 *            the reference
 	 * @return the locator
 	 */
 	public ILocator createLocator(final String reference) {
@@ -500,7 +527,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Create a random item-identifier.
 	 * 
-	 * @param topicMap the topic map
+	 * @param topicMap
+	 *            the topic map
 	 * @return the item-identifier
 	 */
 	public ILocator createItemIdentifier(ITopicMap topicMap) {
@@ -626,7 +654,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Checks if the given locator is used as identifier.
 	 * 
-	 * @param locator the identifier
+	 * @param locator
+	 *            the identifier
 	 * @return <code>true</code> if the locator is used as identifier,
 	 *         <code>false</code> otherwise.
 	 */
@@ -637,7 +666,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Checks if the given locator is used as item-identifier.
 	 * 
-	 * @param locator the item-identifier
+	 * @param locator
+	 *            the item-identifier
 	 * @return <code>true</code> if the locator is used as item-identifier,
 	 *         <code>false</code> otherwise.
 	 */
@@ -651,7 +681,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Checks if the given locator is used as subject-identifier.
 	 * 
-	 * @param locator the subject-identifier
+	 * @param locator
+	 *            the subject-identifier
 	 * @return <code>true</code> if the locator is used as subject-identifier,
 	 *         <code>false</code> otherwise.
 	 */
@@ -665,7 +696,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Checks if the given locator is used as subject-locator.
 	 * 
-	 * @param locator the subject-locator
+	 * @param locator
+	 *            the subject-locator
 	 * @return <code>true</code> if the locator is used as subject-locator,
 	 *         <code>false</code> otherwise.
 	 */
@@ -679,7 +711,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Return the internal stored id of the given construct
 	 * 
-	 * @param construct the construct
+	 * @param construct
+	 *            the construct
 	 * @return the internal id and never <code>null</code>. If the construct is
 	 *         unknown an exception will be thrown.
 	 */
@@ -702,7 +735,8 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * Checks if the store know at least one subject locator for the given topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return <code>true</code> if at least one subject locator is store for
 	 *         the given topic, <code>false</code> otherwise.
 	 */
@@ -717,7 +751,8 @@ public class IdentityStore implements IDataStore {
 	 * Checks if the store know at least one subject identifier for the given
 	 * topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return <code>true</code> if at least one subject identifier is store for
 	 *         the given topic, <code>false</code> otherwise.
 	 */
@@ -732,7 +767,8 @@ public class IdentityStore implements IDataStore {
 	 * Checks if the store know at least one item identifier for the given
 	 * construct
 	 * 
-	 * @param construct the construct
+	 * @param construct
+	 *            the construct
 	 * @return <code>true</code> if at least one item identifier is store for
 	 *         the given construct, <code>false</code> otherwise.
 	 */
@@ -741,5 +777,17 @@ public class IdentityStore implements IDataStore {
 			return false;
 		}
 		return constructItemIdentitiers.containsKey(construct);
+	}
+
+	/**
+	 * Checks if the given construct is stored by the identity store.
+	 * 
+	 * @param construct
+	 *            the construct
+	 * @return <code>true</code> if the id is known by the store,
+	 *         <code>false</code> otherwise.
+	 */
+	protected final boolean containsConstruct(IConstruct construct) {
+		return ids != null && ids.containsKey(construct.getId());
 	}
 }

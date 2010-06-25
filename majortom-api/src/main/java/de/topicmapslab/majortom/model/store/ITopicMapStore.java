@@ -8,6 +8,7 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
+import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 
@@ -221,4 +222,13 @@ public interface ITopicMapStore {
 	 * @return the topic map
 	 */
 	public ITopicMap getTopicMap();
+
+	/**
+	 * Method commit all changes of every queue of the topic map store. The
+	 * calling thread will be blocked until the changes are commited.
+	 * 
+	 * @throws ConcurrentThreadsException
+	 *             thrown if the method was called by another thread before
+	 */
+	public void commit() throws ConcurrentThreadsException;
 }

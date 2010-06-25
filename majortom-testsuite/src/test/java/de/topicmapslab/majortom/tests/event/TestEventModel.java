@@ -95,6 +95,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		});
 
 		createTopic();
+		topicMap.getStore().commit();
 	}
 
 	public void testEventTypeAdded() throws Exception {
@@ -122,6 +123,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.addType(type);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSupertypeAdded() throws Exception {
@@ -149,6 +151,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.addSupertype(type);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSubjectIdentifierAdded() throws Exception {
@@ -172,6 +175,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.addSubjectIdentifier(locator);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSubjectLocatorAdded() throws Exception {
@@ -195,6 +199,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.addSubjectLocator(locator);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventItemIdentifierAdded() throws Exception {
@@ -220,6 +225,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		_testEventItemIdentifierAdded(role, itemIdentifier);
 		// for topic map
 		_testEventItemIdentifierAdded(topicMap, itemIdentifier);
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventItemIdentifierAdded(final Construct construct, final Locator itemIdentifier) throws Exception {
@@ -258,6 +264,8 @@ public class TestEventModel extends MaJorToMTestCase {
 		_testEventScopeModified(createTopic().createOccurrence(type, "Occurrence", themes), themes);
 		// for variant
 		_testEventScopeModified(createTopic().createName("Name", new Topic[0]).createVariant("Variant", themes), themes);
+		topicMap.getStore().commit();
+		System.out.println("Finish");
 	}
 
 	public void _testEventScopeModified(final Scoped scoped, final Set<Topic> themes) throws Exception {
@@ -312,7 +320,6 @@ public class TestEventModel extends MaJorToMTestCase {
 
 		topicMap.addTopicMapListener(listener);
 		scoped.removeTheme(theme);
-
 	}
 
 	public void testEventRoleAdded() throws Exception {
@@ -338,6 +345,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		association.createRole(type, player);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventAssociationAdded() throws Exception {
@@ -359,6 +367,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		createAssociation(type);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventNameAdded() throws Exception {
@@ -381,6 +390,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.createName(type, "name", new Topic[0]);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventOccurrenceAdded() throws Exception {
@@ -403,6 +413,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.createOccurrence(type, "Occurrence", new Topic[0]);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventVariantAdded() throws Exception {
@@ -426,6 +437,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		name.createVariant("Variant", theme);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventPlayerModified() throws Exception {
@@ -453,6 +465,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		role.setPlayer(newPlayer);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSubjectIdentifierRemoved() throws Exception {
@@ -477,7 +490,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.removeSubjectIdentifier(locator);
-
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSubjectLocatorRemoved() throws Exception {
@@ -502,6 +515,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.removeSubjectLocator(locator);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventItemIdentifierRemoved() throws Exception {
@@ -526,6 +540,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		_testEventItemIdentifierRemoved(role, itemIdentifier);
 		// for topic map
 		_testEventItemIdentifierRemoved(topicMap, itemIdentifier);
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventItemIdentifierRemoved(final Construct construct, final Locator locator) throws Exception {
@@ -574,6 +589,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.removeType(type);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventSupertypeRemoved() throws Exception {
@@ -601,6 +617,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.removeSupertype(type);
+		topicMap.getStore().commit();
 	}
 
 	public void testEventConstructRemoved() throws Exception {
@@ -619,6 +636,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		// for role
 		IAssociation association = createAssociation(createTopic());
 		_testEventConstructRemoved(association, association.createRole(createTopic(), createTopic()));
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventConstructRemoved(final Construct parent, final Construct construct) throws Exception {
@@ -659,6 +677,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		// for role
 		Role role = association.createRole(otherType, createTopic());
 		_testEventTypeSet(role, type, otherType);
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventTypeSet(final Typed typeable, final ITopic newType, final ITopic oldType) throws Exception {
@@ -706,6 +725,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		Role role = association.createRole(createTopic(), createTopic());
 		role.setReifier(otherReifier);
 		_testEventReifierSet(role, reifier, otherReifier);
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventReifierSet(final Reifiable reifiable, final ITopic newReifier, final ITopic oldReifier) throws Exception {
@@ -743,6 +763,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		// for occurrence
 		Occurrence occurrence = createTopic().createOccurrence(createTopic(), otherValue, new Topic[0]);
 		_testEventValueModified(occurrence, value, otherValue);
+		topicMap.getStore().commit();
 	}
 
 	public void _testEventValueModified(final Construct construct, final String newValue_, final String oldValue_) throws Exception {
@@ -790,6 +811,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		});
 		topic.mergeIn(otherTopic);
+		topicMap.getStore().commit();
 	}
 
 }

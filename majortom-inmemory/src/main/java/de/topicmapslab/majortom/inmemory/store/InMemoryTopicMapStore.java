@@ -2,6 +2,8 @@ package de.topicmapslab.majortom.inmemory.store;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -59,6 +61,7 @@ import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
+import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
@@ -100,6 +103,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	private IIdentityIndex identityIndex;
 	private ISupertypeSubtypeIndex supertypeSubtypeIndex;
 	private IRevisionIndex revisionIndex;
+
+	/**
+	 * thread specific attributes
+	 */
+	private boolean blocked = false;
+	private List<Runnable> queue;
 
 	/**
 	 * constructor
@@ -2368,7 +2377,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getDirectTypes(t));
 		if (recognizingTypeInstanceAssociation() && existsTmdmTypeInstanceAssociationType()) {
-			Collection<Association> associations = t.getAssociationsPlayed(getTmdmTypeInstanceAssociationType());
+			Collection<IAssociation> associations = doReadAssociation(t, getTmdmTypeInstanceAssociationType());
 			for (Association association : associations) {
 				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(t)) {
 					types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
@@ -2532,7 +2541,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store lazy copy
 		 */
-		getRevisionStore().createLazyCopy(name);
+		if (supportRevisions()) {
+			getRevisionStore().createLazyCopy(name);
+		}
 		/*
 		 * remove variants
 		 */
@@ -3299,7 +3310,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	private void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
-		Collection<IAssociation> associations = type.getAssociationsPlayed(getTmdmSupertypeSubtypeAssociationType());
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
 		for (IAssociation association : associations) {
 			try {
 				if (association.getRoles(getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)
@@ -3327,7 +3338,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	private boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
-		Collection<IAssociation> associations = type.getAssociationsPlayed(getTmdmTypeInstanceAssociationType());
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
 				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
@@ -3769,5 +3780,44 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			return getRevisionStore().createRevision();
 		}
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void addTaskToThreadPool(Runnable task) {
+		if (blocked) {
+			queue.add(task);
+		} else {
+			super.addTaskToThreadPool(task);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void commit() throws ConcurrentThreadsException {
+		synchronized (this) {
+			if (blocked) {
+				throw new ConcurrentThreadsException("Topic Map Store already blocked!");
+			}
+			blocked = true;
+		}
+
+		queue = new LinkedList<Runnable>();
+		while (super.getThreadPool().getActiveCount() > 0) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				throw new ConcurrentThreadsException(e);
+			}
+		}
+		synchronized (queue) {
+			blocked = false;
+			for (Runnable r : queue) {
+				addTaskToThreadPool(r);
+			}
+		}
+		queue.clear();
 	}
 }
