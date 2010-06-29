@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.tmapi.core.Locator;
 
@@ -50,8 +49,10 @@ public class DatatypeAwareUtils {
 	 * Transform the given values to its string representations dependent from
 	 * the given data type.
 	 * 
-	 * @param value the value
-	 * @param datatype the data type
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the data type
 	 * @return the string literal
 	 */
 	public static final String toString(Object value, ILocator datatype) {
@@ -85,10 +86,13 @@ public class DatatypeAwareUtils {
 	/**
 	 * Transform the given value to a representation of the given class
 	 * 
-	 * @param value the value
-	 * @param clazz the class to transform
+	 * @param value
+	 *            the value
+	 * @param clazz
+	 *            the class to transform
 	 * @return the converted value
-	 * @throws Exception if the given value cannot convert to the given class
+	 * @throws Exception
+	 *             if the given value cannot convert to the given class
 	 */
 	public static final Object toValue(Object value, Class<?> clazz) throws NumberFormatException, URISyntaxException, ParseException {
 
@@ -140,9 +144,14 @@ public class DatatypeAwareUtils {
 			if (value instanceof Calendar) {
 				return (Calendar) value;
 			}
-			Calendar c = new GregorianCalendar();
-			c.setTime(dateTimeFormat.parse(value.toString()));
-			return c;
+			if (LiteralUtils.isTime(value.toString())) {
+				return LiteralUtils.asTime(value.toString());
+			} else if (LiteralUtils.isDate(value.toString())) {
+				return LiteralUtils.asDate(value.toString());
+			} else if (LiteralUtils.isDateTime(value.toString())) {
+				return LiteralUtils.asDateTime(value.toString());
+			}
+			throw new IllegalArgumentException("Cannot cast date literal " + value.toString());
 		} else if (Boolean.class.equals(clazz)) {
 			if (value instanceof Boolean) {
 				return (Boolean) value;

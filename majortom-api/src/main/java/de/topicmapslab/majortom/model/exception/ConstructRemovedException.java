@@ -16,7 +16,6 @@
 package de.topicmapslab.majortom.model.exception;
 
 import org.tmapi.core.Construct;
-import org.tmapi.core.TMAPIRuntimeException;
 
 /**
  * Exception indicates that an construct was removed

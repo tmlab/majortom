@@ -68,8 +68,10 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	/**
 	 * constructor
 	 * 
-	 * @param topicMapSystem the parent topic map system
-	 * @param locator the locator of the topicmap
+	 * @param topicMapSystem
+	 *            the parent topic map system
+	 * @param locator
+	 *            the locator of the topicmap
 	 */
 	public TopicMapImpl(ITopicMapSystem topicMapSystem, Locator locator) {
 		super(null, null, null);
