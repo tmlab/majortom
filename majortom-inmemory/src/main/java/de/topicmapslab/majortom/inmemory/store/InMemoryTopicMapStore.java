@@ -35,6 +35,8 @@ import de.topicmapslab.majortom.inmemory.index.InMemoryScopedIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemorySupertypeSubtypeIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTypeInstanceIndex;
+import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
 import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
@@ -67,6 +69,9 @@ import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
@@ -103,6 +108,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	private IIdentityIndex identityIndex;
 	private ISupertypeSubtypeIndex supertypeSubtypeIndex;
 	private IRevisionIndex revisionIndex;
+	/**
+	 * paged indexes
+	 */
+	private IPagedTypeInstanceIndex pagedTypeInstanceIndex;
+	private IPagedTransitiveTypeInstanceIndex pagedTransitiveTypeInstanceIndex;
 
 	/**
 	 * thread specific attributes
@@ -3220,6 +3230,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				this.revisionIndex = new InMemoryRevisionIndex(this);
 			}
 			return (I) this.revisionIndex;
+		} else if (IPagedTransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (this.pagedTransitiveTypeInstanceIndex == null) {
+				this.pagedTransitiveTypeInstanceIndex = new InMemoryPagedTransitiveTypeInstanceIndex(this, getIndex(ITransitiveTypeInstanceIndex.class));
+			}
+			return (I) this.pagedTransitiveTypeInstanceIndex;
+		} else if (IPagedTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (this.pagedTypeInstanceIndex == null) {
+				this.pagedTypeInstanceIndex = new InMemoryPagedTypeInstanceIndex(this, getIndex(ITypeInstanceIndex.class));
+			}
+			return (I) this.pagedTypeInstanceIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");

@@ -31,7 +31,7 @@ import org.tmapi.core.Role;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.inmemory.index.InMemoryTypeInstanceIndex;
+import de.topicmapslab.majortom.inmemory.index.InMemoryIndex;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
@@ -43,12 +43,13 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Implementation of the in-memory {@link ITypeInstanceIndex} supporting paging
+ * Implementation of the in-memory {@link IPagedTypeInstanceIndex} supporting
+ * paging
  * 
  * @author Sven Krosse
  * 
  */
-public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex implements IPagedTypeInstanceIndex, ITopicMapListener {
+public class InMemoryPagedTypeInstanceIndex extends InMemoryIndex implements IPagedTypeInstanceIndex, ITopicMapListener {
 
 	/**
 	 * internal cache for type paging without comparator
@@ -107,27 +108,42 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 	 */
 	private Map<Topic, Map<Comparator<Topic>, List<Topic>>> cachedComparedTopics;
 	/**
-	 * internal cache for type-topics paging with multiple types (matching all) and without comparator 
+	 * internal cache for type-topics paging with multiple types (matching all)
+	 * and without comparator
 	 */
 	private Map<Collection<Topic>, List<Topic>> cachedMatchingAllTopics;
 	/**
-	 * internal cache for type-topics paging with multiple types (matching at least one) and without comparator 
+	 * internal cache for type-topics paging with multiple types (matching at
+	 * least one) and without comparator
 	 */
 	private Map<Collection<Topic>, List<Topic>> cachedMatchingTopics;
 	/**
-	 * internal cache for type-topics paging with multiple types (matching all) and with comparator 
+	 * internal cache for type-topics paging with multiple types (matching all)
+	 * and with comparator
 	 */
 	private Map<Collection<Topic>, Map<Comparator<Topic>, List<Topic>>> cachedComparedMatchingAllTopics;
 	/**
-	 * internal cache for type-topics paging with multiple types (matching at least one) and with comparator 
+	 * internal cache for type-topics paging with multiple types (matching at
+	 * least one) and with comparator
 	 */
 	private Map<Collection<Topic>, Map<Comparator<Topic>, List<Topic>>> cachedComparedMatchingTopics;
 
 	/**
-	 * @param store
+	 * reference of the parent index
 	 */
-	public InMemoryPagedTypeInstanceIndex(InMemoryTopicMapStore store) {
+	private final ITypeInstanceIndex parentIndex;
+
+	/**
+	 * constructor
+	 * 
+	 * @param store
+	 *            the topic map store
+	 * @param parentIndex
+	 *            the parent {@link ITypeInstanceIndex}
+	 */
+	public InMemoryPagedTypeInstanceIndex(InMemoryTopicMapStore store, ITypeInstanceIndex parentIndex) {
 		super(store);
+		this.parentIndex = parentIndex;
 	}
 
 	/**
@@ -162,7 +178,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Association> associations = cachedAssociations.get(type);
 		if (associations == null) {
-			associations = HashUtil.getList(getAssociations(type));
+			associations = HashUtil.getList(parentIndex.getAssociations(type));
 			cachedAssociations.put(type, associations);
 		}
 		return secureSubList(associations, offset, limit);
@@ -185,7 +201,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Association> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getAssociations(type));
+			list = HashUtil.getList(parentIndex.getAssociations(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -206,7 +222,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		for (Topic type : types) {
 			List<Association> list = cachedAssociations.get(type);
 			if (list == null) {
-				list = HashUtil.getList(getAssociations(type));
+				list = HashUtil.getList(parentIndex.getAssociations(type));
 				cachedAssociations.put(type, list);
 			}
 			associations.addAll(list);
@@ -233,7 +249,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 			}
 			List<Association> list = compared.get(comparator);
 			if (list == null) {
-				list = HashUtil.getList(getAssociations(type));
+				list = HashUtil.getList(parentIndex.getAssociations(type));
 				Collections.sort(list, comparator);
 				compared.put(comparator, list);
 			}
@@ -274,7 +290,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<ICharacteristics> list = cachedCharacteristics.get(type);
 		if (list == null) {
-			list = HashUtil.getList(getCharacteristics(type));
+			list = HashUtil.getList(parentIndex.getCharacteristics(type));
 			cachedCharacteristics.put(type, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -297,7 +313,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<ICharacteristics> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getCharacteristics(type));
+			list = HashUtil.getList(parentIndex.getCharacteristics(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -318,7 +334,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		for (Topic type : types) {
 			List<ICharacteristics> list = cachedCharacteristics.get(type);
 			if (list == null) {
-				list = HashUtil.getList(getCharacteristics(type));
+				list = HashUtil.getList(parentIndex.getCharacteristics(type));
 				cachedCharacteristics.put(type, list);
 			}
 			result.addAll(list);
@@ -345,7 +361,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 			}
 			List<ICharacteristics> list = compared.get(comparator);
 			if (list == null) {
-				list = HashUtil.getList(getCharacteristics(type));
+				list = HashUtil.getList(parentIndex.getCharacteristics(type));
 				Collections.sort(list, comparator);
 				compared.put(comparator, list);
 			}
@@ -386,7 +402,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Name> list = cachedNames.get(type);
 		if (list == null) {
-			list = HashUtil.getList(getNames(type));
+			list = HashUtil.getList(parentIndex.getNames(type));
 			cachedNames.put(type, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -409,7 +425,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Name> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getNames(type));
+			list = HashUtil.getList(parentIndex.getNames(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -430,7 +446,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		for (Topic type : types) {
 			List<Name> list = cachedNames.get(type);
 			if (list == null) {
-				list = HashUtil.getList(getNames(type));
+				list = HashUtil.getList(parentIndex.getNames(type));
 				cachedNames.put(type, list);
 			}
 			result.addAll(list);
@@ -457,7 +473,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 			}
 			List<Name> list = compared.get(comparator);
 			if (list == null) {
-				list = HashUtil.getList(getNames(type));
+				list = HashUtil.getList(parentIndex.getNames(type));
 				Collections.sort(list, comparator);
 				compared.put(comparator, list);
 			}
@@ -498,7 +514,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Occurrence> list = cachedOccurrences.get(type);
 		if (list == null) {
-			list = HashUtil.getList(getOccurrences(type));
+			list = HashUtil.getList(parentIndex.getOccurrences(type));
 			cachedOccurrences.put(type, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -521,7 +537,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Occurrence> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getOccurrences(type));
+			list = HashUtil.getList(parentIndex.getOccurrences(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -542,7 +558,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		for (Topic type : types) {
 			List<Occurrence> list = cachedOccurrences.get(type);
 			if (list == null) {
-				list = HashUtil.getList(getOccurrences(type));
+				list = HashUtil.getList(parentIndex.getOccurrences(type));
 				cachedOccurrences.put(type, list);
 			}
 			result.addAll(list);
@@ -569,7 +585,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 			}
 			List<Occurrence> list = compared.get(comparator);
 			if (list == null) {
-				list = HashUtil.getList(getOccurrences(type));
+				list = HashUtil.getList(parentIndex.getOccurrences(type));
 				Collections.sort(list, comparator);
 				compared.put(comparator, list);
 			}
@@ -610,7 +626,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Role> list = cachedRoles.get(type);
 		if (list == null) {
-			list = HashUtil.getList(getRoles(type));
+			list = HashUtil.getList(parentIndex.getRoles(type));
 			cachedRoles.put(type, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -633,7 +649,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Role> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getRoles(type));
+			list = HashUtil.getList(parentIndex.getRoles(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -654,7 +670,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		for (Topic type : types) {
 			List<Role> list = cachedRoles.get(type);
 			if (list == null) {
-				list = HashUtil.getList(getRoles(type));
+				list = HashUtil.getList(parentIndex.getRoles(type));
 				cachedRoles.put(type, list);
 			}
 			result.addAll(list);
@@ -681,7 +697,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 			}
 			List<Role> list = compared.get(comparator);
 			if (list == null) {
-				list = HashUtil.getList(getRoles(type));
+				list = HashUtil.getList(parentIndex.getRoles(type));
 				Collections.sort(list, comparator);
 				compared.put(comparator, list);
 			}
@@ -722,7 +738,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> list = cachedTopics.get(type);
 		if (list == null) {
-			list = HashUtil.getList(getTopics(type));
+			list = HashUtil.getList(parentIndex.getTopics(type));
 			cachedTopics.put(type, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -745,7 +761,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> list = compared.get(comparator);
 		if (list == null) {
-			list = HashUtil.getList(getTopics(type));
+			list = HashUtil.getList(parentIndex.getTopics(type));
 			Collections.sort(list, comparator);
 			compared.put(comparator, list);
 		}
@@ -764,7 +780,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> list = cachedMatchingTopics.get(types);
 		if (list == null) {
-			list = HashUtil.getList(getTopics(types));
+			list = HashUtil.getList(parentIndex.getTopics(types));
 			cachedMatchingTopics.put(types, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -787,7 +803,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> topics = map.get(comparator);
 		if (topics == null) {
-			topics = HashUtil.getList(getTopics(types));
+			topics = HashUtil.getList(parentIndex.getTopics(types));
 			Collections.sort(topics, comparator);
 			map.put(comparator, topics);
 		}
@@ -809,7 +825,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> list = cachedMatchingAllTopics.get(types);
 		if (list == null) {
-			list = HashUtil.getList(getTopics(types, all));
+			list = HashUtil.getList(parentIndex.getTopics(types, all));
 			cachedMatchingAllTopics.put(types, list);
 		}
 		return secureSubList(list, offset, limit);
@@ -835,7 +851,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 		}
 		List<Topic> topics = map.get(comparator);
 		if (topics == null) {
-			topics = HashUtil.getList(getTopics(types, all));
+			topics = HashUtil.getList(parentIndex.getTopics(types, all));
 			Collections.sort(topics, comparator);
 			map.put(comparator, topics);
 		}
@@ -847,6 +863,12 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 	 */
 	public void open() {
 		super.open();
+		/*
+		 * open parent index
+		 */
+		if (!parentIndex.isOpen()) {
+			parentIndex.open();
+		}
 		getStore().addTopicMapListener(this);
 	}
 
@@ -1072,8 +1094,8 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 				/*
 				 * call method to get types of the specific type
 				 */
-				Method method = getClass().getMethod(redirectMethodName);
-				Collection<Topic> col = (Collection<Topic>) method.invoke(this);
+				Method method = parentIndex.getClass().getMethod(redirectMethodName);
+				Collection<Topic> col = (Collection<Topic>) method.invoke(parentIndex);
 				/*
 				 * convert as list and store to parent map
 				 */
@@ -1138,8 +1160,8 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryTypeInstanceIndex im
 				/*
 				 * call method to get all types of the specific type
 				 */
-				Method method = getClass().getMethod(redirectMethodName);
-				Collection<Topic> col = (Collection<Topic>) method.invoke(this);
+				Method method = parentIndex.getClass().getMethod(redirectMethodName);
+				Collection<Topic> col = (Collection<Topic>) method.invoke(parentIndex);
 				/*
 				 * convert as list
 				 */
