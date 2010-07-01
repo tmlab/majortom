@@ -16,11 +16,14 @@
 package de.topicmapslab.majortom.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Utility class to support other hash implementations, like gnu.trove
@@ -45,12 +48,13 @@ public class HashUtil {
 	private HashUtil() {
 		// HIDDEN
 	}
-	
+
 	/**
 	 * Method try to initialize a gnu.trove.THashSet if the library is located
 	 * in the class path
 	 * 
-	 * @param <T> the type of elements
+	 * @param <T>
+	 *            the type of elements
 	 * @return the created set
 	 */
 	@SuppressWarnings("unchecked")
@@ -67,8 +71,10 @@ public class HashUtil {
 	 * Method try to initialize a gnu.trove.THashSet if the library is located
 	 * in the class path
 	 * 
-	 * @param initial the initial set
-	 * @param <T> the type of elements
+	 * @param initial
+	 *            the initial set
+	 * @param <T>
+	 *            the type of elements
 	 * @return the created set
 	 */
 	@SuppressWarnings("unchecked")
@@ -113,8 +119,10 @@ public class HashUtil {
 	 * Method try to initialize a gnu.trove.THashMap if the library is located
 	 * in the class path
 	 * 
-	 * @param <K> the key type
-	 * @param <V> the value type
+	 * @param <K>
+	 *            the key type
+	 * @param <V>
+	 *            the value type
 	 * @return the created map
 	 */
 	@SuppressWarnings("unchecked")
@@ -131,9 +139,12 @@ public class HashUtil {
 	 * Method try to initialize a gnu.trove.THashMap if the library is located
 	 * in the class path
 	 * 
-	 * @param initial the initial map
-	 * @param <K> the key type
-	 * @param <V> the value type
+	 * @param initial
+	 *            the initial map
+	 * @param <K>
+	 *            the key type
+	 * @param <V>
+	 *            the value type
 	 * @return the created map
 	 */
 	@SuppressWarnings("unchecked")
@@ -172,6 +183,64 @@ public class HashUtil {
 			}
 		}
 		return mapClass;
+	}
+
+	/**
+	 * Method try to initialize a {@link WeakHashMap}.
+	 * 
+	 * @param <K>
+	 *            the key type
+	 * @param <V>
+	 *            the value type
+	 * @return the created map
+	 */
+	public static <K, V> Map<K, V> getWeakHashMap() {
+		return new WeakHashMap<K, V>();
+	}
+
+	/**
+	 * Method try to initialize a {@link WeakHashMap}.
+	 * 
+	 * @param initial
+	 *            the initial map
+	 * @param <K>
+	 *            the key type
+	 * @param <V>
+	 *            the value type
+	 * @return the created map
+	 */
+	public static <K, V> Map<K, V> getWeakHashMap(Map<K, V> initial) {
+		if (initial == null) {
+			return getWeakHashMap();
+		}
+		return new WeakHashMap<K, V>(initial);
+	}
+
+	/**
+	 * Method try to initialize a {@link List}.
+	 * 
+	 * @param <T>
+	 *            the type of arguments
+	 * @return the created list
+	 */
+	public static <T> List<T> getList() {
+		return new ArrayList<T>();
+	}
+
+	/**
+	 * Method try to initialize a List.
+	 * 
+	 * @param initial
+	 *            the initial collection
+	 * @param <T>
+	 *            the type of arguments
+	 * @return the created list
+	 */
+	public static <T> List<T> getList(Collection<T> initial) {
+		if (initial == null) {
+			return getList();
+		}
+		return new ArrayList<T>(initial);
 	}
 
 }

@@ -89,7 +89,7 @@ public abstract class InMemoryIndex implements Index {
 	 * 
 	 * @return the store
 	 */
-	InMemoryTopicMapStore getStore() {
+	protected InMemoryTopicMapStore getStore() {
 		return store;
 	}
 

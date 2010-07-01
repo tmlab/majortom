@@ -63,7 +63,7 @@ public interface ITypeInstanceIndex extends TypeInstanceIndex {
 	 * @return a collection of all instances typed by at least one or every of
 	 *         the given types
 	 */
-	public Collection<Topic> getTopics(Collection<? extends Topic> types, boolean all);
+	public Collection<Topic> getTopics(Collection<Topic> types, boolean all);
 
 	/**
 	 * Returns all association items typed by one of the given types.

@@ -45,8 +45,10 @@ public class NameImpl extends ScopeableImpl implements IName {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param parent the parent topic
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param parent
+	 *            the parent topic
 	 */
 	public NameImpl(ITopicMapStoreIdentity identity, ITopic parent) {
 		super(identity, parent.getParent(), parent);
@@ -261,5 +263,14 @@ public class NameImpl extends ScopeableImpl implements IName {
 	 */
 	public String getValue() {
 		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		Topic type = getType();
+		return "Topic-Name{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Type:" + (type == null ? "null" : type.toString())
+				+ ";Value:" + getValue() +"}";
 	}
 }

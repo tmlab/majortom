@@ -464,4 +464,11 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		}
 		return (IScope) getStore().doCreate(this, TopicMapStoreParameterType.SCOPE, topics);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return "Topic-Map{Base-Locator:" + getLocator().toExternalForm() + "}";
+	}
 }

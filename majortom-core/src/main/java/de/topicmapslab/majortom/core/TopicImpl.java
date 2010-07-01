@@ -50,8 +50,10 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param topicMap the topic map
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param topicMap
+	 *            the topic map
 	 */
 	public TopicImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
 		super(identity, topicMap, topicMap);
@@ -154,8 +156,8 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore()
-				.doRead(this, TopicMapStoreParameterType.CHARACTERISTICS, type, scope));
+		return Collections.unmodifiableSet((Set<ICharacteristics>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.CHARACTERISTICS, type,
+				scope));
 	}
 
 	/**
@@ -682,6 +684,35 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 		if (getSubjectLocators().contains(locator)) {
 			getTopicMap().getStore().doRemove(this, TopicMapStoreParameterType.SUBJECT_LOCATOR, locator);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		String out = "Topic{";
+		Set<Locator> set = getSubjectIdentifiers();
+		if (!set.isEmpty()) {
+			out += "si:" + set.iterator().next().toExternalForm();
+		} else {
+			set = getSubjectLocators();
+			if (!set.isEmpty()) {
+				out += "sl:" + set.iterator().next().toExternalForm();
+			} else {
+				set = getItemIdentifiers();
+				if (!set.isEmpty()) {
+					out += "ii:" + set.iterator().next().toExternalForm();
+				} else {
+					Set<Name> names = getNames();
+					if (!names.isEmpty()) {
+						out += "Name:" + names.iterator().next().getValue();
+					} else {
+						out += "id:" + getId();
+					}
+				}
+			}
+		}
+		return out + "}";
 	}
 
 }

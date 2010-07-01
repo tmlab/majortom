@@ -35,8 +35,10 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param parent the parent construct
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param parent
+	 *            the parent construct
 	 */
 	public AssociationRoleImpl(ITopicMapStoreIdentity identity, IAssociation parent) {
 		super(identity, parent.getTopicMap(), parent);
@@ -60,10 +62,10 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 * {@inheritDoc}
 	 */
 	public void setPlayer(Topic player) {
-		if ( player == null ){
-			throw new ModelConstraintException(this,"Player cannot be null.");
+		if (player == null) {
+			throw new ModelConstraintException(this, "Player cannot be null.");
 		}
-		if ( !player.getTopicMap().equals(getTopicMap())){
+		if (!player.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(player, "Player has to be a topic of the same topic map.");
 		}
 		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.PLAYER, player);
@@ -73,10 +75,10 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 * {@inheritDoc}
 	 */
 	public void setType(Topic type) {
-		if ( type == null ){
-			throw new ModelConstraintException(this,"Type cannot be null.");
+		if (type == null) {
+			throw new ModelConstraintException(this, "Type cannot be null.");
 		}
-		if ( !type.getTopicMap().equals(getTopicMap())){
+		if (!type.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
 		}
 		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
@@ -87,6 +89,15 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 */
 	public Topic getType() {
 		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		Topic type = getType();
+		Topic player = getPlayer();
+		return "Association-Role{Type:" + (type == null ? "null" : type.toString()) + ";Player:" + (player == null ? "null" : player.toString() + "}");
 	}
 
 }

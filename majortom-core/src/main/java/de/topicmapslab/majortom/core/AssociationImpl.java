@@ -39,8 +39,10 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param topicMap the topic map
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param topicMap
+	 *            the topic map
 	 */
 	public AssociationImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
 		super(identity, topicMap, topicMap);
@@ -119,4 +121,11 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		Topic type = getType();
+		return "Association{Type:" + (type == null ? "null" : type.toString()) + ";Roles:" + getRoles().toString() + "}";
+	}
 }

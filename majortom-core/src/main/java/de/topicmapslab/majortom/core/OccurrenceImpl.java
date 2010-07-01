@@ -35,8 +35,10 @@ public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param parent the parent topic
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param parent
+	 *            the parent topic
 	 */
 	public OccurrenceImpl(ITopicMapStoreIdentity identity, ITopic parent) {
 		super(identity, parent.getTopicMap(), parent);
@@ -53,10 +55,10 @@ public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 	 * {@inheritDoc}
 	 */
 	public void setType(Topic type) {
-		if ( type == null ){
-			throw new ModelConstraintException(this,"Type cannot be null.");
+		if (type == null) {
+			throw new ModelConstraintException(this, "Type cannot be null.");
 		}
-		if ( !type.getTopicMap().equals(getTopicMap())){
+		if (!type.getTopicMap().equals(getTopicMap())) {
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map.");
 		}
 		getTopicMap().getStore().doModify(this, TopicMapStoreParameterType.TYPE, type);
@@ -67,5 +69,14 @@ public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 	 */
 	public Topic getType() {
 		return (Topic) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.TYPE);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		Topic type = getType();
+		return "Occurrence{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Type:" + (type == null ? "null" : type.toString())
+				+ ";Value:" + getValue() + ";Datatype:" + getDatatype().toExternalForm() + "}";
 	}
 }

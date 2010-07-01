@@ -349,7 +349,7 @@ public class InMemoryTypeInstanceIndex extends InMemoryIndex implements ITypeIns
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<? extends Topic> types, boolean all) {
+	public Collection<Topic> getTopics(Collection<Topic> types, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}

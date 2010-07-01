@@ -30,7 +30,8 @@ public class VariantImpl extends DataTypeAwareImpl implements IVariant {
 	/**
 	 * constructor
 	 * 
-	 * @param identity the identity of the topic map store
+	 * @param identity
+	 *            the identity of the topic map store
 	 * @param parent
 	 */
 	public VariantImpl(ITopicMapStoreIdentity identity, IName parent) {
@@ -44,4 +45,11 @@ public class VariantImpl extends DataTypeAwareImpl implements IVariant {
 		return (IName) super.getParent();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return "Topic-Name-Variant{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Value:" + getValue() + ";Datatype:"
+				+ getDatatype().toExternalForm() + "}";
+	}
 }

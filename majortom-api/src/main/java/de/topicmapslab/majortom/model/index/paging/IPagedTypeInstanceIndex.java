@@ -36,6 +36,60 @@ import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 public interface IPagedTypeInstanceIndex extends ITypeInstanceIndex {
 
 	/**
+	 * Returns all topic types of the topic map.
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @return the topic types within the given range
+	 */
+	public Collection<Topic> getTopicTypes(int offset, int limit);
+
+	/**
+	 * Returns all topic types of the topic map.
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @param comparator
+	 *            the comparator
+	 * @return the topic types within the given range
+	 */
+	public Collection<Topic> getTopicTypes(int offset, int limit, Comparator<Topic> comparator);
+
+	/**
+	 * Returns all topic instances of the given topic type within the given
+	 * range.
+	 * 
+	 * @param type
+	 *            the type
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @param comparator
+	 *            the comparator
+	 * @return the topic within the given range
+	 */
+	public Collection<Topic> getTopics(Topic type, int offset, int limit);
+
+	/**
+	 * Returns all topic instances of the given topic type within the given
+	 * range.
+	 * 
+	 * @param type
+	 *            the type
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @return the topic within the given range
+	 */
+	public Collection<Topic> getTopics(Topic type, int offset, int limit, Comparator<Topic> comparator);
+
+	/**
 	 * Returns all instances of at least one of given topic type.
 	 * 
 	 * @param types
@@ -81,7 +135,7 @@ public interface IPagedTypeInstanceIndex extends ITypeInstanceIndex {
 	 * @return a collection of all instances typed by at least one or every of
 	 *         the given types within the given range
 	 */
-	public Collection<Topic> getTopics(Collection<? extends Topic> types, boolean all, int offset, int limit);
+	public Collection<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit);
 
 	/**
 	 * Returns all instances of at least one given type or of every given topic
@@ -101,7 +155,7 @@ public interface IPagedTypeInstanceIndex extends ITypeInstanceIndex {
 	 * @return a collection of all instances typed by at least one or every of
 	 *         the given types within the given range
 	 */
-	public Collection<Topic> getTopics(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
+	public Collection<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * Returns all association types of the topic map.
