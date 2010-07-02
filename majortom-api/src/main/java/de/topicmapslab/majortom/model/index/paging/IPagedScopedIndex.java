@@ -35,7 +35,7 @@ import de.topicmapslab.majortom.model.index.IScopedIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedScopedIndex extends IScopedIndex {
+public interface IPagedScopedIndex {
 
 	/**
 	 * Returns all constructs scoped by the given scope object.

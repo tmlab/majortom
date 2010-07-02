@@ -31,7 +31,7 @@ import de.topicmapslab.majortom.model.index.IIdentityIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedIdentityIndex extends IIdentityIndex {
+public interface IPagedIdentityIndex {
 
 	/**
 	 * Returns all known item-identifiers of the current topic map within the
@@ -265,7 +265,7 @@ public interface IPagedIdentityIndex extends IIdentityIndex {
 	 * @return a collection of all identified topics within the given range but
 	 *         never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectTopic(final String regExp, int offset, int limit);
+	public Collection<Topic> getTopicsBySubjectLocator(final String regExp, int offset, int limit);
 
 	/**
 	 * The method try to identify all topic using a subject-Topic matching the
@@ -283,7 +283,7 @@ public interface IPagedIdentityIndex extends IIdentityIndex {
 	 * @return a collection of all identified topics within the given range but
 	 *         never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectTopic(final String regExp, int offset, int limit, Comparator<Topic> comparator);
+	public Collection<Topic> getTopicsBySubjectLocator(final String regExp, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * The method try to identify all topic using a subject-Topic matching the
@@ -299,7 +299,7 @@ public interface IPagedIdentityIndex extends IIdentityIndex {
 	 * @return a collection of all identified topics within the given range but
 	 *         never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectTopic(final Pattern regExp, int offset, int limit);
+	public Collection<Topic> getTopicsBySubjectLocator(final Pattern regExp, int offset, int limit);
 
 	/**
 	 * The method try to identify all topic using a subject-Topic matching the
@@ -317,7 +317,7 @@ public interface IPagedIdentityIndex extends IIdentityIndex {
 	 * @return a collection of all identified topics within the given range but
 	 *         never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectTopic(final Pattern regExp, int offset, int limit, Comparator<Topic> comparator);
+	public Collection<Topic> getTopicsBySubjectLocator(final Pattern regExp, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,

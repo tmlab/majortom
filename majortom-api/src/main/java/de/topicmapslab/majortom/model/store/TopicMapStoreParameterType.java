@@ -40,6 +40,8 @@ public enum TopicMapStoreParameterType {
 	TYPE,
 
 	SUPERTYPE,
+	
+	SUBTYPE,
 
 	REIFICATION,
 

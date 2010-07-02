@@ -20,15 +20,13 @@ import java.util.Comparator;
 
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
-
 /**
- * Special {@link ISupertypeSubtypeIndex} to support paging.
+ * Special supertype-subtype index supports paging.
  * 
  * @author Sven Krosse
  * 
  */
-public interface IPagedSupertypeSubtypeIndex extends ISupertypeSubtypeIndex {
+public interface IPagedSupertypeSubtypeIndex {
 
 	/**
 	 * Returns all topic types being a supertype of a topic type contained by
