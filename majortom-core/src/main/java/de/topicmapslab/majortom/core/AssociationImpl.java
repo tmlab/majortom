@@ -17,6 +17,8 @@
 package de.topicmapslab.majortom.core;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.tmapi.core.ModelConstraintException;
@@ -25,6 +27,8 @@ import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.core.paged.IPagedAssociation;
+import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
@@ -34,7 +38,7 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  * @author Sven Krosse
  * 
  */
-public class AssociationImpl extends ScopeableImpl implements IAssociation {
+public class AssociationImpl extends ScopeableImpl implements IAssociation, IPagedAssociation {
 
 	/**
 	 * constructor
@@ -127,5 +131,27 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation {
 	public String toString() {
 		Topic type = getType();
 		return "Association{Type:" + (type == null ? "null" : type.toString()) + ";Roles:" + getRoles().toString() + "}";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Role> getRoles(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getRoles(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Role> getRoles(int offset, int limit, Comparator<Role> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getRoles(this, offset, limit, comparator);
 	}
 }

@@ -36,6 +36,7 @@ import de.topicmapslab.majortom.inmemory.index.InMemorySupertypeSubtypeIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex;
+import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndeyx;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTransitiveTypeInstanceIndex;
@@ -69,12 +70,14 @@ import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
+import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedIdentityIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceIndex;
@@ -123,6 +126,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	private IPagedSupertypeSubtypeIndex pagedSupertypeSubtypeIndex;
 	private IPagedScopedIndex pagedScopedIndex;
 	private IPagedIdentityIndex pagedIdentityIndex;
+	private IPagedLiteralIndex pagedLiteralIndex;
 
 	/**
 	 * thread specific attributes
@@ -3205,6 +3209,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	@SuppressWarnings("unchecked")
 	public <I extends Index> I getIndex(Class<I> clazz) {
 
+		/*
+		 * non-paged indexes
+		 */
 		if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.transitiveTypeInstanceIndex == null) {
 				this.transitiveTypeInstanceIndex = new InMemoryTransitiveTypeInstanceIndex(this);
@@ -3240,7 +3247,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				this.revisionIndex = new InMemoryRevisionIndex(this);
 			}
 			return (I) this.revisionIndex;
-		} else if (IPagedTransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+		}
+		/*
+		 * paged indexes
+		 */
+		else if (IPagedTransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.pagedTransitiveTypeInstanceIndex == null) {
 				this.pagedTransitiveTypeInstanceIndex = new InMemoryPagedTransitiveTypeInstanceIndex(this, getIndex(ITransitiveTypeInstanceIndex.class));
 			}
@@ -3265,6 +3276,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				this.pagedIdentityIndex = new InMemoryPagedIdentityIndex(this, getIndex(IIdentityIndex.class));
 			}
 			return (I) this.pagedIdentityIndex;
+		} else if (IPagedLiteralIndex.class.isAssignableFrom(clazz)) {
+			if (this.pagedLiteralIndex == null) {
+				this.pagedLiteralIndex = new InMemoryPagedLiteralIndex(this, getIndex(ILiteralIndex.class));
+			}
+			return (I) this.pagedLiteralIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");

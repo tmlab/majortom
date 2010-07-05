@@ -18,6 +18,8 @@ package de.topicmapslab.majortom.core;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -36,6 +38,8 @@ import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.core.paged.IPagedTopic;
+import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
@@ -45,7 +49,7 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  * @author Sven Krosse
  * 
  */
-public class TopicImpl extends ConstructImpl implements ITopic {
+public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 
 	/**
 	 * constructor
@@ -713,6 +717,138 @@ public class TopicImpl extends ConstructImpl implements ITopic {
 			}
 		}
 		return out + "}";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Association> getAssociationsPlayed(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getAssociationsPlayed(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Association> getAssociationsPlayed(int offset, int limit, Comparator<Association> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getAssociationsPlayed(this, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Name> getNames(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNames(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Name> getNames(int offset, int limit, Comparator<Name> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNames(this, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Occurrence> getOccurrences(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getOccurrences(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Occurrence> getOccurrences(int offset, int limit, Comparator<Occurrence> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getOccurrences(this, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Role> getRolesPlayed(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getRolesPlayed(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Role> getRolesPlayed(int offset, int limit, Comparator<Role> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getRolesPlayed(this, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getSupertypes(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getSupertypes(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getSupertypes(this, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getTypes(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getTypes(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getTypes(int offset, int limit, Comparator<Topic> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getTypes(this, offset, limit, comparator);
 	}
 
 }

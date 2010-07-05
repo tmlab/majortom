@@ -38,7 +38,7 @@ import de.topicmapslab.majortom.model.index.ILiteralIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedLiteralIndex extends ILiteralIndex {
+public interface IPagedLiteralIndex {
 
 	/**
 	 * Returns all characteristics with the given value.
@@ -795,7 +795,7 @@ public interface IPagedLiteralIndex extends ILiteralIndex {
 	 * @return a collection of all matching variants and occurrences within the
 	 *         given range
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator);
 
 	/**
 	 * Return all names contained by the current topic map.
@@ -821,7 +821,7 @@ public interface IPagedLiteralIndex extends ILiteralIndex {
 	 *            the comparator
 	 * @return all names within the given range of the topic map
 	 */
-	public Collection<IName> getNames(int offset, int limit, Comparator<ICharacteristics> comparator);
+	public Collection<IName> getNames(int offset, int limit, Comparator<IName> comparator);
 
 	/**
 	 * Return all occurrences contained by the current topic map.
@@ -847,7 +847,7 @@ public interface IPagedLiteralIndex extends ILiteralIndex {
 	 *            the comparator
 	 * @return all occurrences within the given range of the topic map
 	 */
-	public Collection<IOccurrence> getOccurrences(int offset, int limit, Comparator<ICharacteristics> comparator);
+	public Collection<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator);
 
 	/**
 	 * Return all variants contained by the current topic map.
@@ -873,6 +873,6 @@ public interface IPagedLiteralIndex extends ILiteralIndex {
 	 *            the comparator
 	 * @return all variants within the given range of the topic map
 	 */
-	public Collection<IVariant> getVariants(int offset, int limit, Comparator<ICharacteristics> comparator);
+	public Collection<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator);
 
 }

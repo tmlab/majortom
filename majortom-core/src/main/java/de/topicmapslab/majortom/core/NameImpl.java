@@ -19,6 +19,8 @@ package de.topicmapslab.majortom.core;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.tmapi.core.Locator;
@@ -29,6 +31,8 @@ import org.tmapi.core.Variant;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.paged.IPagedName;
+import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -40,7 +44,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * 
  * 
  */
-public class NameImpl extends ScopeableImpl implements IName {
+public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 
 	/**
 	 * constructor
@@ -271,6 +275,28 @@ public class NameImpl extends ScopeableImpl implements IName {
 	public String toString() {
 		Topic type = getType();
 		return "Topic-Name{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Type:" + (type == null ? "null" : type.toString())
-				+ ";Value:" + getValue() +"}";
+				+ ";Value:" + getValue() + "}";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Variant> getVariants(int offset, int limit) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getVariants(this, offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Variant> getVariants(int offset, int limit, Comparator<Variant> comparator) {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getVariants(this, offset, limit, comparator);
 	}
 }
