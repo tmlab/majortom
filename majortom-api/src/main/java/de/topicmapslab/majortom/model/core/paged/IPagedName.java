@@ -56,4 +56,13 @@ public interface IPagedName {
 	 */
 	public List<Variant> getVariants(int offset, int limit, Comparator<Variant> comparator);
 
+	/**
+	 * Return the number of variants of the name
+	 * 
+	 * @return the number of variants
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfVariants();
+
 }

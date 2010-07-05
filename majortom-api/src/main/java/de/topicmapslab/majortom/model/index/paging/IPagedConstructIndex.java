@@ -66,34 +66,54 @@ public interface IPagedConstructIndex extends Index {
 	public List<Topic> getTypes(Topic topic, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all types of the given topic as a list within the given range.
+	 * Return the number of types of the topic
 	 * 
 	 * @param topic
-	 *            the topic whose types should be returned
+	 *            the topic whose number of types should be returned
+	 * @return the number of types
+	 */
+	public int getNumberOfTypes(Topic topic);
+
+	/**
+	 * Returns all supetypes of the given topic as a list within the given
+	 * range.
+	 * 
+	 * @param topic
+	 *            the topic whose supetypes should be returned
 	 * @param offset
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all types of the given topic as a list within the given range.
+	 * @return all supetypes of the given topic as a list within the given
+	 *         range.
 	 */
 	public List<Topic> getSupertypes(Topic topic, int offset, int limit);
 
 	/**
-	 * Returns all types of the given topic as a sorted list within the given
-	 * range.
+	 * Returns all supetypes of the given topic as a sorted list within the
+	 * given range.
 	 * 
 	 * @param topic
-	 *            the topic whose types should be returned
+	 *            the topic whose supetypes should be returned
 	 * @param offset
 	 *            the offset
 	 * @param limit
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all types of the given topic as a sorted list within the given
-	 *         range.
+	 * @return all supetypes of the given topic as a sorted list within the
+	 *         given range.
 	 */
 	public List<Topic> getSupertypes(Topic topic, int offset, int limit, Comparator<Topic> comparator);
+
+	/**
+	 * Return the number of supetypes of the topic
+	 * 
+	 * @param topic
+	 *            the topic whose number of supertypes should be returned
+	 * @return the number of supertypes
+	 */
+	public int getNumberOfSupertypes(Topic topic);
 
 	/**
 	 * Returns all names of the given topic as a list within the given range.
@@ -124,6 +144,15 @@ public interface IPagedConstructIndex extends Index {
 	 *         range.
 	 */
 	public List<Name> getNames(Topic topic, int offset, int limit, Comparator<Name> comparator);
+
+	/**
+	 * Return the number of names of the topic
+	 * 
+	 * @param topic
+	 *            the topic whose number of names should be returned
+	 * @return the number of names
+	 */
+	public int getNumberOfNames(Topic topic);
 
 	/**
 	 * Returns all occurrences of the given topic as a list within the given
@@ -158,6 +187,15 @@ public interface IPagedConstructIndex extends Index {
 	public List<Occurrence> getOccurrences(Topic topic, int offset, int limit, Comparator<Occurrence> comparator);
 
 	/**
+	 * Return the number of occurrences of the topic
+	 * 
+	 * @param topic
+	 *            the topic whose number of occurrences should be returned
+	 * @return the number of occurrences
+	 */
+	public int getNumberOfOccurrences(Topic topic);
+
+	/**
 	 * Returns all variants of the given name as a list within the given range.
 	 * 
 	 * @param name
@@ -186,6 +224,15 @@ public interface IPagedConstructIndex extends Index {
 	 *         range.
 	 */
 	public List<Variant> getVariants(Name name, int offset, int limit, Comparator<Variant> comparator);
+
+	/**
+	 * Return the number of variants of the name
+	 * 
+	 * @param name
+	 *            the name whose number of variants should be returned
+	 * @return the number of variants
+	 */
+	public int getNumberOfVariants(Name name);
 
 	/**
 	 * Returns all roles of the given association as a list within the given
@@ -220,6 +267,15 @@ public interface IPagedConstructIndex extends Index {
 	public List<Role> getRoles(Association association, int offset, int limit, Comparator<Role> comparator);
 
 	/**
+	 * Return the number of roles of the association
+	 * 
+	 * @param association
+	 *            the association whose number of roles should be returned
+	 * @return the number of roles
+	 */
+	public int getNumberOfRoles(Association association);
+
+	/**
 	 * Returns all associations played by given topic as a list within the given
 	 * range.
 	 * 
@@ -252,6 +308,16 @@ public interface IPagedConstructIndex extends Index {
 	public List<Association> getAssociationsPlayed(Topic topic, int offset, int limit, Comparator<Association> comparator);
 
 	/**
+	 * Return the number of played associations of the topic
+	 * 
+	 * @param topic
+	 *            the topic whose number of played associations should be
+	 *            returned
+	 * @return the number of played associations
+	 */
+	public int getNumberOfAssociationsPlayed(Topic topic);
+
+	/**
 	 * Returns all roles played by given topic as a list within the given range.
 	 * 
 	 * @param topic
@@ -280,5 +346,14 @@ public interface IPagedConstructIndex extends Index {
 	 *         range.
 	 */
 	public List<Role> getRolesPlayed(Topic topic, int offset, int limit, Comparator<Role> comparator);
+
+	/**
+	 * Return the number of played roles of the topic
+	 * 
+	 * @param topic
+	 *            the topic whose number of played roles should be returned
+	 * @return the number of played roles
+	 */
+	public int getNumberOfRolesPlayed(Topic topic);
 
 }

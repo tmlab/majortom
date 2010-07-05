@@ -61,20 +61,30 @@ public interface IPagedTopic {
 	public List<Topic> getTypes(int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all types of the topic as a list within the given range.
+	 * Return the number of types of the topic
+	 * 
+	 * @return the number of types
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfTypes();
+
+	/**
+	 * Returns all supertypes of the topic as a list within the given range.
 	 * 
 	 * @param offset
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all types of the topic as a list within the given range.
+	 * @return all supertypes of the topic as a list within the given range.
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
 	public List<Topic> getSupertypes(int offset, int limit);
 
 	/**
-	 * Returns all types of the topic as a sorted list within the given range.
+	 * Returns all supertypes of the topic as a sorted list within the given
+	 * range.
 	 * 
 	 * @param offset
 	 *            the offset
@@ -82,11 +92,21 @@ public interface IPagedTopic {
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all types of the topic as a sorted list within the given range.
+	 * @return all supertypes of the topic as a sorted list within the given
+	 *         range.
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
 	public List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator);
+
+	/**
+	 * Return the number of supertypes of the topic
+	 * 
+	 * @return the number of supertypes
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfSupertypes();
 
 	/**
 	 * Returns all names of the topic as a list within the given range.
@@ -119,6 +139,15 @@ public interface IPagedTopic {
 	public List<Name> getNames(int offset, int limit, Comparator<Name> comparator);
 
 	/**
+	 * Return the number of names of the topic
+	 * 
+	 * @return the number of names
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfNames();
+
+	/**
 	 * Returns all occurrences of the topic as a list within the given range.
 	 * 
 	 * @param offset
@@ -147,6 +176,15 @@ public interface IPagedTopic {
 	 *             thrown if paging is not supported by the underlying store
 	 */
 	public List<Occurrence> getOccurrences(int offset, int limit, Comparator<Occurrence> comparator);
+
+	/**
+	 * Return the number of occurrences of the topic
+	 * 
+	 * @return the number of occurrences
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfOccurrences();
 
 	/**
 	 * Returns all associations played by the topic as a list within the given
@@ -181,6 +219,15 @@ public interface IPagedTopic {
 	public List<Association> getAssociationsPlayed(int offset, int limit, Comparator<Association> comparator);
 
 	/**
+	 * Return the number of associations played by the topic
+	 * 
+	 * @return the number of associations played by
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfAssociationsPlayed();
+
+	/**
 	 * Returns all roles played by the topic as a list within the given range.
 	 * 
 	 * @param offset
@@ -209,5 +256,14 @@ public interface IPagedTopic {
 	 *             thrown if paging is not supported by the underlying store
 	 */
 	public List<Role> getRolesPlayed(int offset, int limit, Comparator<Role> comparator);
+
+	/**
+	 * Return the number of roles played by the topic
+	 * 
+	 * @return the number of roles played by
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfRolesPlayed();
 
 }

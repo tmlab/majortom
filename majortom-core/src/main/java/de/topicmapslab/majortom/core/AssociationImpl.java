@@ -154,4 +154,15 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation, IPag
 		}
 		return index.getRoles(this, offset, limit, comparator);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfRoles() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfRoles(this);
+	}
 }

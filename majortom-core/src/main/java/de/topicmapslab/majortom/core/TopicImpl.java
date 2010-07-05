@@ -851,4 +851,70 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		return index.getTypes(this, offset, limit, comparator);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfAssociationsPlayed() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfAssociationsPlayed(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfNames() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfNames(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfOccurrences() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfOccurrences(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfRolesPlayed() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfRolesPlayed(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfSupertypes() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfSupertypes(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfTypes() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfTypes(this);
+	}
+
 }

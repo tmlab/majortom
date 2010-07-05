@@ -299,4 +299,15 @@ public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 		}
 		return index.getVariants(this, offset, limit, comparator);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfVariants() {
+		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfVariants(this);
+	}
 }

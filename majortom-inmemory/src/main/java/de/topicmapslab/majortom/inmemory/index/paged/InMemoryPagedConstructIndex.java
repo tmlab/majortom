@@ -102,6 +102,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	/**
 	 * {@inheritDoc}
 	 */
+	public int getNumberOfAssociationsPlayed(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.ASSOCIATIONS_PLAYED, "getAssociationsPlayed", topic).size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Name> getNames(Topic topic, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -117,6 +127,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		return getConstructs(Key.NAMES, "getNames", topic, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfNames(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.NAMES, "getNames", topic).size();
 	}
 
 	/**
@@ -142,6 +162,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	/**
 	 * {@inheritDoc}
 	 */
+	public int getNumberOfOccurrences(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.OCCURRENCES, "getOccurrences", topic).size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Role> getRoles(Association association, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -157,6 +187,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		return getConstructs(Key.ROLES, "getRoles", association, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfRoles(Association association) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.ROLES, "getRoles", association).size();
 	}
 
 	/**
@@ -182,6 +222,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	/**
 	 * {@inheritDoc}
 	 */
+	public int getNumberOfRolesPlayed(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.ROLES_PLAYED, "getRolesPlayed", topic).size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getSupertypes(Topic topic, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -197,6 +247,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		return getConstructs(Key.SUPERTYPE, "getSupertypes", topic, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfSupertypes(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.SUPERTYPE, "getSupertypes", topic).size();
 	}
 
 	/**
@@ -222,6 +282,16 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	/**
 	 * {@inheritDoc}
 	 */
+	public int getNumberOfTypes(Topic topic) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.TYPES, "getTypes", topic).size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Variant> getVariants(Name name, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -240,8 +310,18 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumberOfVariants(Name name) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		return getConstructs(Key.VARIANTS, "getVariants", name).size();
+	}
+
+	/**
 	 * Internal method to read dependent constructs of the given parent
-	 * construct within the given range.
+	 * construct.
 	 * 
 	 * @param <T>
 	 *            the type of dependent constructs
@@ -251,15 +331,10 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	 *            the method name which will be called if values are missing
 	 * @param parent
 	 *            the parent construct
-	 * @param offset
-	 *            the offset
-	 * @param limit
-	 *            the limit
-	 * @return dependent constructs of the given parent construct within the
-	 *         given range
+	 * @return dependent constructs of the given parent construct
 	 */
 	@SuppressWarnings("unchecked")
-	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent, int offset, int limit) {
+	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent) {
 		/*
 		 * initialize cache
 		 */
@@ -298,7 +373,7 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 				throw new IndexException(e);
 			}
 		}
-		return secureSubList(list, offset, limit);
+		return list;
 	}
 
 	/**
@@ -317,14 +392,32 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @param comparator
-	 *            the comparators
 	 * @return dependent constructs of the given parent construct within the
 	 *         given range
 	 */
+	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent, int offset, int limit) {
+		List<T> list = getConstructs(key, methodName, parent);
+		return secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Internal method to read dependent constructs of the given parent
+	 * construct.
+	 * 
+	 * @param <T>
+	 *            the type of dependent constructs
+	 * @param key
+	 *            the key of dependent constructs
+	 * @param methodName
+	 *            the method name which will be called if values are missing
+	 * @param parent
+	 *            the parent construct
+	 * @param comparator
+	 *            the comparators
+	 * @return dependent constructs of the given parent construct
+	 */
 	@SuppressWarnings("unchecked")
-	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent, int offset, int limit,
-			Comparator<T> comparator) {
+	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent, Comparator<T> comparator) {
 		/*
 		 * initialize cache
 		 */
@@ -375,6 +468,33 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 				throw new IndexException(e);
 			}
 		}
+		return list;
+	}
+
+	/**
+	 * Internal method to read dependent constructs of the given parent
+	 * construct within the given range.
+	 * 
+	 * @param <T>
+	 *            the type of dependent constructs
+	 * @param key
+	 *            the key of dependent constructs
+	 * @param methodName
+	 *            the method name which will be called if values are missing
+	 * @param parent
+	 *            the parent construct
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @param comparator
+	 *            the comparators
+	 * @return dependent constructs of the given parent construct within the
+	 *         given range
+	 */
+	private final <T extends Construct> List<T> getConstructs(Key key, final String methodName, Construct parent, int offset, int limit,
+			Comparator<T> comparator) {
+		List<T> list = getConstructs(key, methodName, parent, comparator);
 		return secureSubList(list, offset, limit);
 	}
 
@@ -382,6 +502,7 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	 * {@inheritDoc}
 	 */
 	public void close() {
+		clearCache();
 		getStore().removeTopicMapListener(this);
 		super.close();
 	}
@@ -398,8 +519,178 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	 * {@inheritDoc}
 	 */
 	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-		// TODO Auto-generated method stub
+		/*
+		 * construct was removed
+		 */
+		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
+			if (oldValue instanceof Variant) {
+				clearVariantCache();
+			} else if (oldValue instanceof Name) {
+				clearNameCache();
+			} else if (oldValue instanceof Occurrence) {
+				clearOccurrenceCache();
+			} else if (oldValue instanceof Topic) {
+				clearTopicCache();
+			} else if (oldValue instanceof Association) {
+				clearAssociationCache();
+			} else if (oldValue instanceof Role) {
+				clearRoleCache();
+			}
+		}
+		/*
+		 * variant added
+		 */
+		else if (event == TopicMapEventType.VARIANT_ADDED) {
+			clearVariantCache();
+		}
+		/*
+		 * name added
+		 */
+		else if (event == TopicMapEventType.NAME_ADDED) {
+			clearNameCache();
+		}
+		/*
+		 * occurrence added
+		 */
+		else if (event == TopicMapEventType.OCCURRENCE_ADDED) {
+			clearOccurrenceCache();
+		}
+		/*
+		 * topic role added
+		 */
+		else if (event == TopicMapEventType.ROLE_ADDED) {
+			clearRoleCache();
+		}
+		/*
+		 * type changed
+		 */
+		else if (event == TopicMapEventType.TYPE_ADDED || event == TopicMapEventType.TYPE_REMOVED) {
+			clearTypesCache();
+		}
+		/*
+		 * supertype changed
+		 */
+		else if (event == TopicMapEventType.SUPERTYPE_ADDED || event == TopicMapEventType.SUPERTYPE_REMOVED) {
+			clearSupertypesCache();
+		}
+		/*
+		 * player modified
+		 */
+		else if (event == TopicMapEventType.PLAYER_MODIFIED) {
+			clearAssociationCache();
+		}
+	}
 
+	/**
+	 * Internal method to clear the cache
+	 */
+	private final void clearCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.clear();
+			cachedConstructs = null;
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.clear();
+			cachedComparedConstructs = null;
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on names
+	 */
+	private final void clearNameCache() {
+		clearVariantCache();
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.NAMES);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.NAMES);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on occurrences
+	 */
+	private final void clearOccurrenceCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.OCCURRENCES);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.OCCURRENCES);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on topic types
+	 */
+	private final void clearTopicCache() {
+		clearTypesCache();
+		clearSupertypesCache();
+		clearAssociationCache();
+		clearNameCache();
+		clearOccurrenceCache();
+	}
+
+	/**
+	 * Internal method to clear the cache depends on topic types
+	 */
+	private final void clearTypesCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.TYPES);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.TYPES);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on topic supertypes
+	 */
+	private final void clearSupertypesCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.SUPERTYPE);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.SUPERTYPE);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on variants
+	 */
+	private final void clearVariantCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.VARIANTS);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.VARIANTS);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on roles
+	 */
+	private final void clearRoleCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.ROLES);
+			cachedConstructs.remove(Key.ROLES_PLAYED);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.ROLES_PLAYED);
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache depends on assocaition
+	 */
+	private final void clearAssociationCache() {
+		clearRoleCache();
+		if (cachedConstructs != null) {
+			cachedConstructs.remove(Key.ASSOCIATIONS_PLAYED);
+		}
+		if (cachedComparedConstructs != null) {
+			cachedComparedConstructs.remove(Key.ASSOCIATIONS_PLAYED);
+		}
 	}
 
 	/**

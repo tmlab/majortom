@@ -56,4 +56,13 @@ public interface IPagedAssociation {
 	 *             thrown if paging is not supported by the underlying store
 	 */
 	public List<Role> getRoles(int offset, int limit, Comparator<Role> comparator);
+
+	/**
+	 * Return the number of roles
+	 * 
+	 * @return the number of roles
+	 * @throws UnsupportedOperationException
+	 *             thrown if paging is not supported by the underlying store
+	 */
+	public int getNumberOfRoles();
 }
