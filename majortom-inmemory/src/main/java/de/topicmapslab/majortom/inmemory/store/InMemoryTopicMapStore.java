@@ -38,7 +38,7 @@ import de.topicmapslab.majortom.inmemory.index.InMemoryTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex;
-import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndeyx;
+import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
@@ -3263,7 +3263,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			return (I) this.pagedTypeInstanceIndex;
 		} else if (IPagedSupertypeSubtypeIndex.class.isAssignableFrom(clazz)) {
 			if (this.pagedSupertypeSubtypeIndex == null) {
-				this.pagedSupertypeSubtypeIndex = new InMemoryPagedSupertypeSubtypeIndeyx(this, getIndex(ISupertypeSubtypeIndex.class));
+				this.pagedSupertypeSubtypeIndex = new InMemoryPagedSupertypeSubtypeIndex(this, getIndex(ISupertypeSubtypeIndex.class));
 			}
 			return (I) this.pagedSupertypeSubtypeIndex;
 		} else if (IPagedScopedIndex.class.isAssignableFrom(clazz)) {

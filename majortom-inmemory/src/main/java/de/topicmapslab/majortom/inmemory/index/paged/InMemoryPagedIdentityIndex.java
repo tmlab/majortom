@@ -49,7 +49,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	 */
 	enum Param {
 		IDENTIFIER,
-		
+
 		ITEM_IDENTIFIER,
 
 		SUBJECT_IDENTIFIER,
@@ -77,27 +77,27 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(String regExp, int offset, int limit) {
+	public List<Construct> getConstructsByIdentifier(String regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-	return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit);
+		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(String regExp, int offset, int limit, Comparator<Construct> comparator) {
+	public List<Construct> getConstructsByIdentifier(String regExp, int offset, int limit, Comparator<Construct> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit,comparator);
+		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(Pattern regExp, int offset, int limit) {
+	public List<Construct> getConstructsByIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -107,7 +107,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
+	public List<Construct> getConstructsByIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -117,7 +117,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(String regExp, int offset, int limit) {
+	public List<Construct> getConstructsByItemIdentifier(String regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -127,17 +127,17 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(String regExp, int offset, int limit, Comparator<Construct> comparator) {
+	public List<Construct> getConstructsByItemIdentifier(String regExp, int offset, int limit, Comparator<Construct> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit,comparator);
+		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit) {
+	public List<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -147,7 +147,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
+	public List<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -157,7 +157,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getItemIdentifiers(int offset, int limit) {
+	public List<Locator> getItemIdentifiers(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -167,7 +167,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getItemIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
+	public List<Locator> getItemIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -177,7 +177,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectIdentifiers(int offset, int limit) {
+	public List<Locator> getSubjectIdentifiers(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -187,7 +187,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
+	public List<Locator> getSubjectIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -197,7 +197,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectLocators(int offset, int limit) {
+	public List<Locator> getSubjectLocators(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -207,7 +207,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectLocators(int offset, int limit, Comparator<Locator> comparator) {
+	public List<Locator> getSubjectLocators(int offset, int limit, Comparator<Locator> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -217,7 +217,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(String regExp, int offset, int limit) {
+	public List<Topic> getTopicsBySubjectIdentifier(String regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -227,17 +227,17 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(String regExp, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopicsBySubjectIdentifier(String regExp, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit,comparator);
+		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit) {
+	public List<Topic> getTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -247,7 +247,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -257,7 +257,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(String regExp, int offset, int limit) {
+	public List<Topic> getTopicsBySubjectLocator(String regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -267,17 +267,17 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(String regExp, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopicsBySubjectLocator(String regExp, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit,comparator);
+		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit) {
+	public List<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -287,7 +287,7 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -301,42 +301,42 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 		/*
 		 * construct was removed
 		 */
-		if ( event == TopicMapEventType.CONSTRUCT_REMOVED){
+		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
 			/*
 			 * topic was removed -> clear cache
 			 */
-			if ( oldValue instanceof Topic ){
+			if (oldValue instanceof Topic) {
 				clearCache();
 			}
 			/*
 			 * any other construct -> remove item-identifier cache
 			 */
-			else{
+			else {
 				clearItemIdentifierCache();
 			}
 		}
 		/*
 		 * subject-identifier was changed -> clear dependent cache
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_IDENTIFIER_ADDED || event == TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED ){
+		else if (event == TopicMapEventType.SUBJECT_IDENTIFIER_ADDED || event == TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED) {
 			clearSubjectIdentifierCache();
 		}
 
 		/*
 		 * subject-locator was changed -> clear dependent cache
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_LOCATOR_ADDED || event == TopicMapEventType.SUBJECT_LOCATOR_REMOVED ){
+		else if (event == TopicMapEventType.SUBJECT_LOCATOR_ADDED || event == TopicMapEventType.SUBJECT_LOCATOR_REMOVED) {
 			clearSubjectLocatorCache();
 		}
 
 		/*
 		 * item-identifier was changed -> clear dependent cache
 		 */
-		else if ( event == TopicMapEventType.ITEM_IDENTIFIER_ADDED || event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED ){
+		else if (event == TopicMapEventType.ITEM_IDENTIFIER_ADDED || event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED) {
 			clearItemIdentifierCache();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -344,21 +344,21 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 		clearCache();
 		super.close();
 	}
-	
+
 	/**
 	 * Clear all caches
 	 */
-	private void clearCache(){
-		if ( cachedIdentifiers != null ){
+	private void clearCache() {
+		if (cachedIdentifiers != null) {
 			cachedIdentifiers.clear();
 		}
-		if ( cachedComparedIdentifiers != null ){
+		if (cachedComparedIdentifiers != null) {
 			cachedComparedIdentifiers.clear();
 		}
-		if ( cachedConstructs != null ){
+		if (cachedConstructs != null) {
 			cachedConstructs.clear();
 		}
-		if ( cachedComparedConstructs != null ){
+		if (cachedComparedConstructs != null) {
 			cachedComparedConstructs.clear();
 		}
 	}
@@ -366,46 +366,48 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	/**
 	 * clear caches depend on subject-locators
 	 */
-	private void clearSubjectLocatorCache(){
+	private void clearSubjectLocatorCache() {
 		clearDependentCache(Param.IDENTIFIER);
 		clearDependentCache(Param.SUBJECT_LOCATOR);
 	}
-	
+
 	/**
 	 * clear caches depend on subject-identifiers
 	 */
-	private void clearSubjectIdentifierCache(){
+	private void clearSubjectIdentifierCache() {
 		clearDependentCache(Param.IDENTIFIER);
 		clearDependentCache(Param.SUBJECT_IDENTIFIER);
 	}
-	
+
 	/**
 	 * clear caches depend on item-identifiers
 	 */
-	private void clearItemIdentifierCache(){
+	private void clearItemIdentifierCache() {
 		clearDependentCache(Param.IDENTIFIER);
 		clearDependentCache(Param.ITEM_IDENTIFIER);
 	}
-	
+
 	/**
 	 * Clear all caches depend on the given type
-	 * @param param the type
+	 * 
+	 * @param param
+	 *            the type
 	 */
-	private void clearDependentCache(Param param){
-		if ( cachedIdentifiers != null ){
+	private void clearDependentCache(Param param) {
+		if (cachedIdentifiers != null) {
 			cachedIdentifiers.remove(param);
 		}
-		if ( cachedComparedIdentifiers != null ){
+		if (cachedComparedIdentifiers != null) {
 			cachedComparedIdentifiers.remove(param);
 		}
-		if ( cachedConstructs != null ){
+		if (cachedConstructs != null) {
 			cachedConstructs.remove(param);
 		}
-		if ( cachedComparedConstructs != null ){
+		if (cachedComparedConstructs != null) {
 			cachedComparedConstructs.remove(param);
 		}
 	}
-	
+
 	/**
 	 * Internal method to read all identifiers of a specific type within the
 	 * given range.
@@ -608,10 +610,10 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 		 * get cached pattern-dependent
 		 */
 		Map<Pattern, Map<Comparator<? extends Construct>, List<? extends Construct>>> cached = cachedComparedConstructs.get(param);
-		if ( cached == null ){
+		if (cached == null) {
 			cached = HashUtil.getWeakHashMap();
 			cachedComparedConstructs.put(param, cached);
-		}		
+		}
 		/*
 		 * get map of cached compared constructs
 		 */
@@ -623,14 +625,14 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 		/*
 		 * get cached constructs by type
 		 */
-		List<T> list = (List<T>)map.get(comparator);
+		List<T> list = (List<T>) map.get(comparator);
 		if (list == null) {
 			try {
 				/*
 				 * call method to get identifiers
 				 */
 				Method method = getParentIndex().getClass().getMethod(methodName, Pattern.class);
-				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), pattern));				
+				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), pattern));
 				Collections.sort(list, comparator);
 				map.put(comparator, list);
 			} catch (SecurityException e) {

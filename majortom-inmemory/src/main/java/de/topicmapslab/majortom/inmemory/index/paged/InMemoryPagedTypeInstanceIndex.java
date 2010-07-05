@@ -141,7 +141,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getAssociationTypes(int offset, int limit) {
+	public List<Topic> getAssociationTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -151,7 +151,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getAssociationTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getAssociationTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -161,7 +161,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic type, int offset, int limit) {
+	public List<Association> getAssociations(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -179,7 +179,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic type, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(Topic type, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -203,7 +203,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -225,7 +225,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -247,13 +247,14 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			}
 			result.addAll(list);
 		}
+		Collections.sort(result, comparator);
 		return secureSubList(result, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getCharacteristicTypes(int offset, int limit) {
+	public List<Topic> getCharacteristicTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -263,7 +264,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getCharacteristicTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getCharacteristicTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -273,7 +274,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Topic type, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -291,7 +292,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Topic type, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(Topic type, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -315,7 +316,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -337,7 +338,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -359,13 +360,14 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			}
 			result.addAll(list);
 		}
+		Collections.sort(result, comparator);
 		return secureSubList(result, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getNameTypes(int offset, int limit) {
+	public List<Topic> getNameTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -375,7 +377,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getNameTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getNameTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -385,7 +387,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic type, int offset, int limit) {
+	public List<Name> getNames(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -403,7 +405,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic type, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(Topic type, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -427,7 +429,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Name> getNames(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -449,7 +451,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Collection<? extends Topic> types, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(Collection<? extends Topic> types, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -471,13 +473,14 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			}
 			result.addAll(list);
 		}
+		Collections.sort(result, comparator);
 		return secureSubList(result, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getOccurrenceTypes(int offset, int limit) {
+	public List<Topic> getOccurrenceTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -487,7 +490,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getOccurrenceTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getOccurrenceTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -497,7 +500,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic type, int offset, int limit) {
+	public List<Occurrence> getOccurrences(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -515,7 +518,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic type, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(Topic type, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -539,7 +542,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -561,7 +564,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -583,13 +586,14 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			}
 			result.addAll(list);
 		}
+		Collections.sort(result, comparator);
 		return secureSubList(result, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getRoleTypes(int offset, int limit) {
+	public List<Topic> getRoleTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -599,7 +603,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getRoleTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getRoleTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -609,7 +613,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Topic type, int offset, int limit) {
+	public List<Role> getRoles(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -627,7 +631,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Topic type, int offset, int limit, Comparator<Role> comparator) {
+	public List<Role> getRoles(Topic type, int offset, int limit, Comparator<Role> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -651,7 +655,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Role> getRoles(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -673,7 +677,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Collection<? extends Topic> types, int offset, int limit, Comparator<Role> comparator) {
+	public List<Role> getRoles(Collection<? extends Topic> types, int offset, int limit, Comparator<Role> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -695,13 +699,14 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			}
 			result.addAll(list);
 		}
+		Collections.sort(result, comparator);
 		return secureSubList(result, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicTypes(int offset, int limit) {
+	public List<Topic> getTopicTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -711,7 +716,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicTypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopicTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -721,7 +726,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Topic type, int offset, int limit) {
+	public List<Topic> getTopics(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -739,7 +744,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Topic type, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopics(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -763,7 +768,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<Topic> types, int offset, int limit) {
+	public List<Topic> getTopics(Collection<Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -781,7 +786,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<Topic> types, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopics(Collection<Topic> types, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -805,7 +810,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit) {
+	public List<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -826,7 +831,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -925,7 +930,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 		if (cachedTypes != null) {
 			cachedTypes.clear();
 		}
-		if (cachedComparedTypes == null) {
+		if (cachedComparedTypes != null) {
 			cachedComparedTypes.clear();
 		}
 		if (cachedAssociations != null) {
@@ -987,7 +992,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 			cachedTypes.remove(TopicMapStoreParameterType.ASSOCIATION);
 			cachedTypes.remove(TopicMapStoreParameterType.ROLE);
 		}
-		if (cachedComparedTypes == null) {
+		if (cachedComparedTypes != null) {
 			cachedComparedTypes.remove(TopicMapStoreParameterType.ASSOCIATION);
 			cachedTypes.remove(TopicMapStoreParameterType.ROLE);
 		}
@@ -1012,7 +1017,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 		if (cachedTypes != null) {
 			cachedTypes.remove(TopicMapStoreParameterType.NAME);
 		}
-		if (cachedComparedTypes == null) {
+		if (cachedComparedTypes != null) {
 			cachedComparedTypes.remove(TopicMapStoreParameterType.NAME);
 		}
 		if (cachedCharacteristics != null) {
@@ -1036,7 +1041,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 		if (cachedTypes != null) {
 			cachedTypes.remove(TopicMapStoreParameterType.OCCURRENCE);
 		}
-		if (cachedComparedTypes == null) {
+		if (cachedComparedTypes != null) {
 			cachedComparedTypes.remove(TopicMapStoreParameterType.OCCURRENCE);
 		}
 		if (cachedCharacteristics != null) {
@@ -1060,7 +1065,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 		if (cachedTypes != null) {
 			cachedTypes.remove(TopicMapStoreParameterType.ROLE);
 		}
-		if (cachedComparedTypes == null) {
+		if (cachedComparedTypes != null) {
 			cachedComparedTypes.remove(TopicMapStoreParameterType.ROLE);
 		}
 		if (cachedRoles != null) {
@@ -1086,7 +1091,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	 * @return types within the given range
 	 */
 	@SuppressWarnings("unchecked")
-	private Collection<Topic> getTypes(TopicMapStoreParameterType type, String redirectMethodName, int offset, int limit) {
+	private List<Topic> getTypes(TopicMapStoreParameterType type, String redirectMethodName, int offset, int limit) {
 		try {
 			if (cachedTypes == null) {
 				cachedTypes = HashUtil.getWeakHashMap();
@@ -1141,7 +1146,7 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 	 * @return types within the given range
 	 */
 	@SuppressWarnings("unchecked")
-	private Collection<Topic> getTypes(TopicMapStoreParameterType type, String redirectMethodName, int offset, int limit, Comparator<Topic> comparator) {
+	private List<Topic> getTypes(TopicMapStoreParameterType type, String redirectMethodName, int offset, int limit, Comparator<Topic> comparator) {
 		try {
 			if (cachedComparedTypes == null) {
 				cachedComparedTypes = HashUtil.getWeakHashMap();

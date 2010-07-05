@@ -41,7 +41,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISupertypeSubtypeIndex> implements IPagedSupertypeSubtypeIndex {
+public class InMemoryPagedSupertypeSubtypeIndex extends InMemoryPagedIndex<ISupertypeSubtypeIndex> implements IPagedSupertypeSubtypeIndex {
 
 	enum Param {
 
@@ -78,14 +78,14 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	 * @param parentIndex
 	 *            the parent index
 	 */
-	public InMemoryPagedSupertypeSubtypeIndeyx(InMemoryTopicMapStore store, ISupertypeSubtypeIndex parentIndex) {
+	public InMemoryPagedSupertypeSubtypeIndex(InMemoryTopicMapStore store, ISupertypeSubtypeIndex parentIndex) {
 		super(store, parentIndex);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSubtypes(Topic type, int offset, int limit) {
+	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -95,7 +95,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -105,7 +105,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSupertypes(Topic type, int offset, int limit) {
+	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -115,7 +115,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -125,7 +125,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(int offset, int limit) {
+	public List<Topic> getSubtypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -135,7 +135,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSubtypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -145,7 +145,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Topic type, int offset, int limit) {
+	public List<Topic> getSubtypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -155,7 +155,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -165,7 +165,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -175,7 +175,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -186,7 +186,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -199,7 +199,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -212,7 +212,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(int offset, int limit) {
+	public List<Topic> getSupertypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -222,7 +222,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -232,7 +232,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Topic type, int offset, int limit) {
+	public List<Topic> getSupertypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -242,7 +242,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -252,7 +252,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit) {
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -262,7 +262,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -272,7 +272,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -285,7 +285,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -317,22 +317,22 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 	 * Clear all caches
 	 */
 	private final void clearCache() {
-		if (cachedComparedFullHierarchy == null) {
+		if (cachedComparedFullHierarchy != null) {
 			cachedComparedFullHierarchy.clear();
 		}
-		if (cachedComparedHierarchy == null) {
+		if (cachedComparedHierarchy != null) {
 			cachedComparedHierarchy.clear();
 		}
-		if (cachedComparedHierarchyMultipleTopics == null) {
+		if (cachedComparedHierarchyMultipleTopics != null) {
 			cachedComparedHierarchyMultipleTopics.clear();
 		}
-		if (cachedFullHierarchy == null) {
+		if (cachedFullHierarchy != null) {
 			cachedFullHierarchy.clear();
 		}
-		if (cachedHierarchy == null) {
+		if (cachedHierarchy != null) {
 			cachedHierarchy.clear();
 		}
-		if (cachedHierarchyMultipleTopics == null) {
+		if (cachedHierarchyMultipleTopics != null) {
 			cachedHierarchyMultipleTopics.clear();
 		}
 	}
@@ -533,7 +533,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 				/*
 				 * call method to get type-hierarchy topics and store it
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, Collection.class, Boolean.class);
+				Method method = getParentIndex().getClass().getMethod(methodName, Collection.class, boolean.class);
 				list = HashUtil.getList((Collection<Topic>) method.invoke(getParentIndex(), types, all));
 				cached.put(types, list);
 			} catch (SecurityException e) {
@@ -610,7 +610,7 @@ public class InMemoryPagedSupertypeSubtypeIndeyx extends InMemoryPagedIndex<ISup
 				/*
 				 * call method to get type-hierarchy topics
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, Collection.class, Boolean.class);
+				Method method = getParentIndex().getClass().getMethod(methodName, Collection.class, boolean.class);
 				list = HashUtil.getList((Collection<Topic>) method.invoke(getParentIndex(), types, all));
 				/*
 				 * sort list and store them

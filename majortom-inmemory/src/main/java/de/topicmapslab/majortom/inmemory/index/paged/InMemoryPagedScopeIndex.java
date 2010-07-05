@@ -138,7 +138,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getAssociationScopes(int offset, int limit) {
+	public List<IScope> getAssociationScopes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -148,7 +148,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getAssociationScopes(int offset, int limit, Comparator<IScope> comparator) {
+	public List<IScope> getAssociationScopes(int offset, int limit, Comparator<IScope> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -158,7 +158,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getAssociationThemes(int offset, int limit) {
+	public List<Topic> getAssociationThemes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -168,7 +168,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getAssociationThemes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getAssociationThemes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -178,7 +178,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic theme, int offset, int limit) {
+	public List<Association> getAssociations(Topic theme, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -188,7 +188,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic theme, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(Topic theme, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -198,7 +198,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic[] themes, boolean all, int offset, int limit) {
+	public List<Association> getAssociations(Topic[] themes, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -208,7 +208,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic[] themes, boolean all, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(Topic[] themes, boolean all, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -218,7 +218,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(IScope scope, int offset, int limit) {
+	public List<Association> getAssociations(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -228,7 +228,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(IScope scope, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(IScope scope, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -238,7 +238,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Collection<IScope> scopes, int offset, int limit) {
+	public List<Association> getAssociations(Collection<IScope> scopes, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -248,17 +248,17 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Collection<IScope> scopes, int offset, int limit, Comparator<Association> comparator) {
+	public List<Association> getAssociations(Collection<IScope> scopes, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		return getConstructs(Param.ASSOCIATION, "getAssociations", scopes, offset, limit, comparator);
 	}
-
+		
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -268,7 +268,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -278,7 +278,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getNameScopes(int offset, int limit) {
+	public List<IScope> getNameScopes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -288,7 +288,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getNameScopes(int offset, int limit, Comparator<IScope> comparator) {
+	public List<IScope> getNameScopes(int offset, int limit, Comparator<IScope> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -298,7 +298,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getNameThemes(int offset, int limit) {
+	public List<Topic> getNameThemes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -308,7 +308,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getNameThemes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getNameThemes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -318,7 +318,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic theme, int offset, int limit) {
+	public List<Name> getNames(Topic theme, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -328,7 +328,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic theme, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(Topic theme, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -338,7 +338,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic[] themes, boolean all, int offset, int limit) {
+	public List<Name> getNames(Topic[] themes, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -348,7 +348,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic[] themes, boolean all, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(Topic[] themes, boolean all, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -358,7 +358,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(IScope scope, int offset, int limit) {
+	public List<Name> getNames(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -368,7 +368,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(IScope scope, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(IScope scope, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -378,7 +378,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Collection<IScope> scopes, int offset, int limit) {
+	public List<Name> getNames(Collection<IScope> scopes, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -388,7 +388,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Collection<IScope> scopes, int offset, int limit, Comparator<Name> comparator) {
+	public List<Name> getNames(Collection<IScope> scopes, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -398,7 +398,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getOccurrenceScopes(int offset, int limit) {
+	public List<IScope> getOccurrenceScopes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -408,7 +408,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getOccurrenceScopes(int offset, int limit, Comparator<IScope> comparator) {
+	public List<IScope> getOccurrenceScopes(int offset, int limit, Comparator<IScope> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -418,7 +418,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getOccurrenceThemes(int offset, int limit) {
+	public List<Topic> getOccurrenceThemes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -428,7 +428,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getOccurrenceThemes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getOccurrenceThemes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -438,7 +438,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic theme, int offset, int limit) {
+	public List<Occurrence> getOccurrences(Topic theme, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -448,7 +448,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic theme, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(Topic theme, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -458,7 +458,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic[] themes, boolean all, int offset, int limit) {
+	public List<Occurrence> getOccurrences(Topic[] themes, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -468,7 +468,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic[] themes, boolean all, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(Topic[] themes, boolean all, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -478,7 +478,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(IScope scope, int offset, int limit) {
+	public List<Occurrence> getOccurrences(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -488,7 +488,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(IScope scope, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(IScope scope, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -498,7 +498,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Collection<IScope> scopes, int offset, int limit) {
+	public List<Occurrence> getOccurrences(Collection<IScope> scopes, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -508,7 +508,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Collection<IScope> scopes, int offset, int limit, Comparator<Occurrence> comparator) {
+	public List<Occurrence> getOccurrences(Collection<IScope> scopes, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -518,7 +518,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Scoped> getScopables(IScope scope, int offset, int limit) {
+	public List<Scoped> getScopables(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -528,7 +528,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Scoped> getScopables(IScope scope, int offset, int limit, Comparator<Scoped> comparator) {
+	public List<Scoped> getScopables(IScope scope, int offset, int limit, Comparator<Scoped> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -538,7 +538,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getVariantScopes(int offset, int limit) {
+	public List<IScope> getVariantScopes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -548,7 +548,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getVariantScopes(int offset, int limit, Comparator<IScope> comparator) {
+	public List<IScope> getVariantScopes(int offset, int limit, Comparator<IScope> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -558,7 +558,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getVariantThemes(int offset, int limit) {
+	public List<Topic> getVariantThemes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -568,7 +568,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getVariantThemes(int offset, int limit, Comparator<Topic> comparator) {
+	public List<Topic> getVariantThemes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -578,7 +578,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Topic theme, int offset, int limit) {
+	public List<Variant> getVariants(Topic theme, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -588,7 +588,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Topic theme, int offset, int limit, Comparator<Variant> comparator) {
+	public List<Variant> getVariants(Topic theme, int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -598,7 +598,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Topic[] themes, boolean all, int offset, int limit) {
+	public List<Variant> getVariants(Topic[] themes, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -608,7 +608,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Topic[] themes, boolean all, int offset, int limit, Comparator<Variant> comparator) {
+	public List<Variant> getVariants(Topic[] themes, boolean all, int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -618,7 +618,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(IScope scope, int offset, int limit) {
+	public List<Variant> getVariants(IScope scope, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -628,7 +628,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(IScope scope, int offset, int limit, Comparator<Variant> comparator) {
+	public List<Variant> getVariants(IScope scope, int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -638,7 +638,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Collection<IScope> scopes, int offset, int limit) {
+	public List<Variant> getVariants(Collection<IScope> scopes, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -648,7 +648,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Variant> getVariants(Collection<IScope> scopes, int offset, int limit, Comparator<Variant> comparator) {
+	public List<Variant> getVariants(Collection<IScope> scopes, int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}

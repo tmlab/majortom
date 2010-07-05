@@ -17,8 +17,8 @@ package de.topicmapslab.majortom.model.index.paging;
 
 import java.net.URI;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.tmapi.core.Locator;
@@ -52,7 +52,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final String value, int offset, int limit);
+	public List<ICharacteristics> getCharacteristics(final String value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value.
@@ -68,7 +68,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final String value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCharacteristics(final String value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given datatype.
@@ -82,7 +82,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final Locator datatype, int offset, int limit);
+	public List<ICharacteristics> getCharacteristics(final Locator datatype, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given datatype.
@@ -98,7 +98,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCharacteristics(final Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the given datatype.
@@ -114,7 +114,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit);
+	public List<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the given datatype.
@@ -132,7 +132,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit,
+	public List<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**
@@ -148,7 +148,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp, int offset, int limit);
+	public List<ICharacteristics> getCharacteristicsMatches(final String regExp, int offset, int limit);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -165,7 +165,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCharacteristicsMatches(final String regExp, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -182,7 +182,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp, final Locator datatype, int offset, int limit);
+	public List<ICharacteristics> getCharacteristicsMatches(final String regExp, final Locator datatype, int offset, int limit);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -201,7 +201,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final String regExp, final Locator datatype, int offset, int limit,
+	public List<ICharacteristics> getCharacteristicsMatches(final String regExp, final Locator datatype, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**
@@ -217,7 +217,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, int offset, int limit);
+	public List<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, int offset, int limit);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -234,7 +234,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -251,7 +251,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, final Locator datatype, int offset, int limit);
+	public List<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, final Locator datatype, int offset, int limit);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -270,7 +270,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with matching values
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, final Locator datatype, int offset, int limit,
+	public List<ICharacteristics> getCharacteristicsMatches(final Pattern regExp, final Locator datatype, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**
@@ -286,7 +286,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the URI value
 	 */
-	public Collection<ICharacteristics> getUris(final URI value, int offset, int limit);
+	public List<ICharacteristics> getUris(final URI value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -303,7 +303,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the URI value
 	 */
-	public Collection<ICharacteristics> getUris(final URI value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getUris(final URI value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -318,7 +318,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the integer value
 	 */
-	public Collection<ICharacteristics> getIntegers(final int value, int offset, int limit);
+	public List<ICharacteristics> getIntegers(final int value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -335,7 +335,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the integer value
 	 */
-	public Collection<ICharacteristics> getIntegers(final int value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getIntegers(final int value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a value
@@ -352,7 +352,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getIntegers(final int value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getIntegers(final int value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a value
@@ -371,7 +371,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getIntegers(final int value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getIntegers(final int value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -386,7 +386,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the long value
 	 */
-	public Collection<ICharacteristics> getLongs(final long value, int offset, int limit);
+	public List<ICharacteristics> getLongs(final long value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -403,7 +403,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the long value
 	 */
-	public Collection<ICharacteristics> getLongs(final long value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getLongs(final long value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:long and a value
@@ -420,7 +420,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getLongs(final long value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getLongs(final long value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:long and a value
@@ -439,7 +439,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getLongs(final long value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getLongs(final long value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -456,7 +456,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the float value
 	 */
-	public Collection<ICharacteristics> getFloats(final float value, int offset, int limit);
+	public List<ICharacteristics> getFloats(final float value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -473,7 +473,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the float value
 	 */
-	public Collection<ICharacteristics> getFloats(final float value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getFloats(final float value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:float and a value
@@ -492,7 +492,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getFloats(final float value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getFloats(final float value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:float and a value
@@ -511,7 +511,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getFloats(final float value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getFloats(final float value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -526,7 +526,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the double value
 	 */
-	public Collection<ICharacteristics> getDoubles(final double value, int offset, int limit);
+	public List<ICharacteristics> getDoubles(final double value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -543,7 +543,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the double value
 	 */
-	public Collection<ICharacteristics> getDoubles(final double value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getDoubles(final double value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:double and a value
@@ -560,7 +560,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getDoubles(final double value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getDoubles(final double value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:double and a value
@@ -579,7 +579,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getDoubles(final double value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getDoubles(final double value, final double deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -595,7 +595,7 @@ public interface IPagedLiteralIndex {
 	 * @return the characteristics within the given range with the dateTime
 	 *         value
 	 */
-	public Collection<ICharacteristics> getDateTime(final Calendar value, int offset, int limit);
+	public List<ICharacteristics> getDateTime(final Calendar value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -613,7 +613,7 @@ public interface IPagedLiteralIndex {
 	 * @return the characteristics within the given range with the dateTime
 	 *         value
 	 */
-	public Collection<ICharacteristics> getDateTime(final Calendar value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getDateTime(final Calendar value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:time and with a time
@@ -635,7 +635,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the time value
 	 */
-	public Collection<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit);
+	public List<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:time and with a time
@@ -659,7 +659,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the time value
 	 */
-	public Collection<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit,
+	public List<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**
@@ -675,7 +675,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range with the boolean value
 	 */
-	public Collection<ICharacteristics> getBooleans(final boolean value, int offset, int limit);
+	public List<ICharacteristics> getBooleans(final boolean value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -692,7 +692,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the boolean value
 	 */
-	public Collection<ICharacteristics> getBooleans(final boolean value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getBooleans(final boolean value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype tm:geo.
@@ -707,7 +707,7 @@ public interface IPagedLiteralIndex {
 	 * @return the characteristics within the given range with the geographic
 	 *         coordinates
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit);
+	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype tm:geo.
@@ -724,7 +724,7 @@ public interface IPagedLiteralIndex {
 	 * @return the characteristics within the given range with the geographic
 	 *         coordinates
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a
@@ -742,7 +742,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a
@@ -762,7 +762,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit,
+	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**
@@ -778,7 +778,7 @@ public interface IPagedLiteralIndex {
 	 * @return a collection of all matching variants and occurrences within the
 	 *         given range
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit);
+	public List<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit);
 
 	/**
 	 * Returns all variants and occurrences with the given data-type.
@@ -795,7 +795,7 @@ public interface IPagedLiteralIndex {
 	 * @return a collection of all matching variants and occurrences within the
 	 *         given range
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator);
+	public List<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator);
 
 	/**
 	 * Return all names contained by the current topic map.
@@ -807,7 +807,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return all names within the given range of the topic map
 	 */
-	public Collection<IName> getNames(int offset, int limit);
+	public List<IName> getNames(int offset, int limit);
 
 	/**
 	 * Return all names contained by the current topic map.
@@ -821,7 +821,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return all names within the given range of the topic map
 	 */
-	public Collection<IName> getNames(int offset, int limit, Comparator<IName> comparator);
+	public List<IName> getNames(int offset, int limit, Comparator<IName> comparator);
 
 	/**
 	 * Return all occurrences contained by the current topic map.
@@ -833,7 +833,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return all occurrences within the given range of the topic map
 	 */
-	public Collection<IOccurrence> getOccurrences(int offset, int limit);
+	public List<IOccurrence> getOccurrences(int offset, int limit);
 
 	/**
 	 * Return all occurrences contained by the current topic map.
@@ -847,7 +847,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return all occurrences within the given range of the topic map
 	 */
-	public Collection<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator);
+	public List<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator);
 
 	/**
 	 * Return all variants contained by the current topic map.
@@ -859,7 +859,7 @@ public interface IPagedLiteralIndex {
 	 *            the maximum count of returned values
 	 * @return all variants within the given range of the topic map
 	 */
-	public Collection<IVariant> getVariants(int offset, int limit);
+	public List<IVariant> getVariants(int offset, int limit);
 
 	/**
 	 * Return all variants contained by the current topic map.
@@ -873,6 +873,6 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return all variants within the given range of the topic map
 	 */
-	public Collection<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator);
+	public List<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator);
 
 }

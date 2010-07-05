@@ -94,7 +94,11 @@ public abstract class InMemoryPagedIndex<T extends Index> extends InMemoryIndex 
 		if (from < 0) {
 			from = 0;
 		} else if (from >= list.size()) {
-			from = list.size() - 1;
+			if (!list.isEmpty()) {
+				from = list.size() - 1;
+			} else {
+				from = 0;
+			}
 		}
 		int to = offset + limit;
 		if (to < 0) {

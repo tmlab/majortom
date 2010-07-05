@@ -99,7 +99,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getBooleans(boolean value, int offset, int limit) {
+	public List<ICharacteristics> getBooleans(boolean value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -109,7 +109,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getBooleans(boolean value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getBooleans(boolean value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -119,7 +119,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(String value, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(String value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -129,7 +129,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(String value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(String value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -139,7 +139,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -149,7 +149,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -159,7 +159,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -169,7 +169,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -179,7 +179,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(String regExp, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristicsMatches(String regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -189,7 +189,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(String regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristicsMatches(String regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -199,7 +199,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -210,7 +210,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit,
+	public List<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit,
 			Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -221,7 +221,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -231,7 +231,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -241,7 +241,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit) {
+	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -251,7 +251,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit,
+	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit,
 			Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -262,7 +262,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, int offset, int limit) {
+	public List<ICharacteristics> getCoordinates(IGeoCoordinate value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -272,7 +272,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCoordinates(IGeoCoordinate value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -282,7 +282,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance, int offset, int limit) {
+	public List<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -292,7 +292,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -302,7 +302,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit) {
+	public List<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -312,7 +312,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator) {
+	public List<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -322,7 +322,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDateTime(Calendar value, int offset, int limit) {
+	public List<ICharacteristics> getDateTime(Calendar value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -332,7 +332,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDateTime(Calendar value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getDateTime(Calendar value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -342,7 +342,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit) {
+	public List<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -352,7 +352,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -362,7 +362,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDoubles(double value, int offset, int limit) {
+	public List<ICharacteristics> getDoubles(double value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -372,7 +372,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDoubles(double value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getDoubles(double value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -382,7 +382,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit) {
+	public List<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -392,7 +392,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -402,7 +402,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getFloats(float value, int offset, int limit) {
+	public List<ICharacteristics> getFloats(float value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -412,7 +412,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getFloats(float value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getFloats(float value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -422,7 +422,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getFloats(float value, double deviance, int offset, int limit) {
+	public List<ICharacteristics> getFloats(float value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -432,7 +432,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getFloats(float value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getFloats(float value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -442,7 +442,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getIntegers(int value, int offset, int limit) {
+	public List<ICharacteristics> getIntegers(int value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -452,7 +452,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getIntegers(int value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getIntegers(int value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -462,7 +462,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit) {
+	public List<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -472,7 +472,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -482,7 +482,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getLongs(long value, int offset, int limit) {
+	public List<ICharacteristics> getLongs(long value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -492,7 +492,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getLongs(long value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getLongs(long value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -502,7 +502,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getLongs(long value, double deviance, int offset, int limit) {
+	public List<ICharacteristics> getLongs(long value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -512,7 +512,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getLongs(long value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getLongs(long value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -522,7 +522,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNames(int offset, int limit) {
+	public List<IName> getNames(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -532,7 +532,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNames(int offset, int limit, Comparator<IName> comparator) {
+	public List<IName> getNames(int offset, int limit, Comparator<IName> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -542,7 +542,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(int offset, int limit) {
+	public List<IOccurrence> getOccurrences(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -552,7 +552,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator) {
+	public List<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -562,7 +562,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getUris(URI value, int offset, int limit) {
+	public List<ICharacteristics> getUris(URI value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -572,7 +572,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getUris(URI value, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getUris(URI value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -582,7 +582,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariants(int offset, int limit) {
+	public List<IVariant> getVariants(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -592,7 +592,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator) {
+	public List<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
