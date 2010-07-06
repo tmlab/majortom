@@ -28,7 +28,7 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.comparator.TopicByIdentityComparator;
+import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
@@ -123,7 +123,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				associations[j] = createAssociation(type);
-				associations[j].addItemIdentifier(createLoctor(base + c + i));
+				associations[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -197,7 +197,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					associations[j] = createAssociation(otherType);
 				}
-				associations[j].addItemIdentifier(createLoctor(base + c + i));
+				associations[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -334,7 +334,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					characteristics[j] = (IOccurrence) createTopic().createOccurrence(type, "Value", new Topic[0]);
 				}
-				characteristics[j].addItemIdentifier(createLoctor(base + c + i));
+				characteristics[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -408,7 +408,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					characteristics[j] = (IOccurrence) createTopic().createOccurrence(otherType, "Value", new Topic[0]);
 				}
-				characteristics[j].addItemIdentifier(createLoctor(base + c + i));
+				characteristics[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -537,7 +537,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				names[j] = createTopic().createName(type, "Value", new Topic[0]);
-				names[j].addItemIdentifier(createLoctor(base + c + i));
+				names[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -611,7 +611,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					names[j] = createTopic().createName(otherType, "Value", new Topic[0]);
 				}
-				names[j].addItemIdentifier(createLoctor(base + c + i));
+				names[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -739,7 +739,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				occurrences[j] = createTopic().createOccurrence(type, "Value", new Topic[0]);
-				occurrences[j].addItemIdentifier(createLoctor(base + c + i));
+				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -813,7 +813,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					occurrences[j] = createTopic().createOccurrence(otherType, "Value", new Topic[0]);
 				}
-				occurrences[j].addItemIdentifier(createLoctor(base + c + i));
+				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -941,7 +941,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				roles[j] = createAssociation(createTopic()).createRole(type, createTopic());
-				roles[j].addItemIdentifier(createLoctor(base + c + i));
+				roles[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {
@@ -1015,7 +1015,7 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				} else {
 					roles[j] = createAssociation(createTopic()).createRole(otherType, createTopic());
 				}
-				roles[j].addItemIdentifier(createLoctor(base + c + i));
+				roles[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
 			if (j == 101) {

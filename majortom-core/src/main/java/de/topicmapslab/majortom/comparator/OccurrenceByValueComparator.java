@@ -16,19 +16,19 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.model.comparator;
+package de.topicmapslab.majortom.comparator;
 
 import java.util.Comparator;
 
-import org.tmapi.core.Locator;
+import org.tmapi.core.Occurrence;
 
 /**
- * Locator comparator
+ * Occurrence comparator
  * 
  * @author Sven Krosse
  * 
  */
-public class LocatorByReferenceComparator implements Comparator<Locator> {
+public class OccurrenceByValueComparator implements Comparator<Occurrence> {
 
 	private final boolean ascending;
 
@@ -38,15 +38,15 @@ public class LocatorByReferenceComparator implements Comparator<Locator> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public LocatorByReferenceComparator(boolean ascending) {
+	public OccurrenceByValueComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int compare(Locator o1, Locator o2) {
-		int compare = o1.getReference().compareTo(o2.getReference());
+	public int compare(Occurrence o1, Occurrence o2) {
+		int compare = o1.getValue().compareTo(o2.getValue());
 		return ascending ? compare : compare * -1;
 	}
 }

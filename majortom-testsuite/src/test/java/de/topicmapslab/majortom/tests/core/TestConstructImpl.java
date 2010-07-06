@@ -39,7 +39,7 @@ public class TestConstructImpl extends MaJorToMTestCase {
 		Association a = createAssociation(createTopic());
 		assertTrue(a.getItemIdentifiers().isEmpty());
 
-		Locator ii = createLoctor("http://psi.example.org/ii");
+		Locator ii = createLocator("http://psi.example.org/ii");
 		a.addItemIdentifier(ii);
 		assertEquals(1, a.getItemIdentifiers().size());
 		assertTrue(a.getItemIdentifiers().contains(ii));
@@ -48,7 +48,7 @@ public class TestConstructImpl extends MaJorToMTestCase {
 		assertEquals(1, a.getItemIdentifiers().size());
 		assertTrue(a.getItemIdentifiers().contains(ii));
 
-		Locator ii2 = createLoctor("http://psi.example.org/ii2");
+		Locator ii2 = createLocator("http://psi.example.org/ii2");
 		a.addItemIdentifier(ii2);
 		assertEquals(2, a.getItemIdentifiers().size());
 		assertTrue(a.getItemIdentifiers().contains(ii));
@@ -76,11 +76,11 @@ public class TestConstructImpl extends MaJorToMTestCase {
 
 	public void testToString() throws Exception {
 		String si_ = "http://psi.example.org/si";
-		Locator si = createLoctor(si_);
+		Locator si = createLocator(si_);
 		String sl_ = "http://psi.example.org/sl";
-		Locator sl = createLoctor(sl_);
+		Locator sl = createLocator(sl_);
 		String ii_ = "http://psi.example.org/ii";
-		Locator ii = createLoctor(ii_);
+		Locator ii = createLocator(ii_);
 
 		/*
 		 * topic with subject-identifier

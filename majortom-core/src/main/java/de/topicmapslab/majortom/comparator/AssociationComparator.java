@@ -16,19 +16,19 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.model.comparator;
+package de.topicmapslab.majortom.comparator;
 
 import java.util.Comparator;
 
-import org.tmapi.core.Role;
+import org.tmapi.core.Association;
 
 /**
- * association role comparator
+ * association comparator
  * 
  * @author Sven Krosse
  * 
  */
-public class RoleComparator implements Comparator<Role> {
+public class AssociationComparator implements Comparator<Association> {
 
 	private final boolean ascending;
 
@@ -38,7 +38,7 @@ public class RoleComparator implements Comparator<Role> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public RoleComparator(boolean ascending) {
+	public AssociationComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 
@@ -46,22 +46,23 @@ public class RoleComparator implements Comparator<Role> {
 	 * Compare two association items.
 	 * 
 	 * <p>
-	 * Return <code>0</code> if both associations roles have the same type and
-	 * player (lexicographical comparison of identities).
+	 * Return <code>0</code> if both associations have the same type and number
+	 * of roles.
 	 * </p>
 	 * <p>
-	 * Return <code>-1</code> if the type or player of the first role is higher
-	 * (lexicographical comparison of identities).
+	 * Return <code>-1</code> if the identity of the first type is <i>higher</i>
+	 * or the first association has more roles
 	 * </p>
 	 * <p>
-	 * Return <code>1</code> if the type or player of the second role is higher
-	 * (lexicographical comparison of identities).
+	 * Return <code>1</code> if the identity of the second type is <i>higher</i>
+	 * or the second association has more roles
 	 * </p>
 	 */
-	public int compare(Role o1, Role o2) {
+	public int compare(Association o1, Association o2) {
 		int compare = new TopicByIdentityComparator(ascending).compare(o1.getType(), o2.getType());
 		if (compare == 0) {
-			compare = new TopicByIdentityComparator(ascending).compare(o1.getPlayer(), o2.getPlayer());
+			compare = o2.getRoles().size() - o1.getRoles().size();
+			compare = ascending ? compare : compare * -1;
 		}
 		return compare;
 	}

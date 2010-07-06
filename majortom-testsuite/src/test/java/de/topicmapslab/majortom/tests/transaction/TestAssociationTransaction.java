@@ -14,7 +14,7 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 public class TestAssociationTransaction extends MaJorToMTestCase {
 
 	public void testPlayerModification() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
+		Locator loc = createLocator("http://psi.example.org/1");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 		Topic player = topicMap.createTopic();
 
@@ -79,7 +79,7 @@ public class TestAssociationTransaction extends MaJorToMTestCase {
 	}
 
 	public void testRoleCreation() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
+		Locator loc = createLocator("http://psi.example.org/1");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 
 		Association association = topicMap.createAssociation(type, new Topic[0]);

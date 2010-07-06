@@ -16,19 +16,19 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.model.comparator;
+package de.topicmapslab.majortom.comparator;
 
 import java.util.Comparator;
 
-import org.tmapi.core.Association;
+import org.tmapi.core.Locator;
 
 /**
- * association comparator
+ * Locator comparator
  * 
  * @author Sven Krosse
  * 
  */
-public class AssociationComparator implements Comparator<Association> {
+public class LocatorByReferenceComparator implements Comparator<Locator> {
 
 	private final boolean ascending;
 
@@ -38,33 +38,15 @@ public class AssociationComparator implements Comparator<Association> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public AssociationComparator(boolean ascending) {
+	public LocatorByReferenceComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 
 	/**
-	 * Compare two association items.
-	 * 
-	 * <p>
-	 * Return <code>0</code> if both associations have the same type and number
-	 * of roles.
-	 * </p>
-	 * <p>
-	 * Return <code>-1</code> if the identity of the first type is <i>higher</i>
-	 * or the first association has more roles
-	 * </p>
-	 * <p>
-	 * Return <code>1</code> if the identity of the second type is <i>higher</i>
-	 * or the second association has more roles
-	 * </p>
+	 * {@inheritDoc}
 	 */
-	public int compare(Association o1, Association o2) {
-		int compare = new TopicByIdentityComparator(ascending).compare(o1.getType(), o2.getType());
-		if (compare == 0) {
-			compare = o2.getRoles().size() - o1.getRoles().size();
-			compare = ascending ? compare : compare * -1;
-		}
-		return compare;
+	public int compare(Locator o1, Locator o2) {
+		int compare = o1.getReference().compareTo(o2.getReference());
+		return ascending ? compare : compare * -1;
 	}
-
 }

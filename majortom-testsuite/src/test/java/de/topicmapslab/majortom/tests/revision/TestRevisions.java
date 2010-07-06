@@ -191,8 +191,8 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertTrue(association.getRoles().contains(otherRole));
 		assertTrue(association.getRoles().contains(role));
 		
-		set = index.getAssociationChangeset(assoicationType);		
-		System.out.println(set);
+		set = index.getAssociationChangeset(assoicationType);	
+		
 	}
 
 	public void testMergingRevisions() throws Exception {

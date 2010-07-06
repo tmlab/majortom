@@ -16,19 +16,19 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.model.comparator;
+package de.topicmapslab.majortom.comparator;
 
 import java.util.Comparator;
 
-import org.tmapi.core.Variant;
+import org.tmapi.core.Role;
 
 /**
- * Variant comparator
+ * association role comparator
  * 
  * @author Sven Krosse
  * 
  */
-public class VariantByValueComparator implements Comparator<Variant> {
+public class RoleComparator implements Comparator<Role> {
 
 	private final boolean ascending;
 
@@ -38,15 +38,32 @@ public class VariantByValueComparator implements Comparator<Variant> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public VariantByValueComparator(boolean ascending) {
+	public RoleComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Compare two association items.
+	 * 
+	 * <p>
+	 * Return <code>0</code> if both associations roles have the same type and
+	 * player (lexicographical comparison of identities).
+	 * </p>
+	 * <p>
+	 * Return <code>-1</code> if the type or player of the first role is higher
+	 * (lexicographical comparison of identities).
+	 * </p>
+	 * <p>
+	 * Return <code>1</code> if the type or player of the second role is higher
+	 * (lexicographical comparison of identities).
+	 * </p>
 	 */
-	public int compare(Variant o1, Variant o2) {
-		int compare = o1.getValue().compareTo(o2.getValue());
-		return ascending ? compare : compare * -1;
+	public int compare(Role o1, Role o2) {
+		int compare = new TopicByIdentityComparator(ascending).compare(o1.getType(), o2.getType());
+		if (compare == 0) {
+			compare = new TopicByIdentityComparator(ascending).compare(o1.getPlayer(), o2.getPlayer());
+		}
+		return compare;
 	}
+
 }

@@ -15,8 +15,8 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 public class TestTypeTransaction extends MaJorToMTestCase {
 
 	public void testAssociationModification() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
-		Locator loc2 = createLoctor("http://psi.example.org/2");
+		Locator loc = createLocator("http://psi.example.org/1");
+		Locator loc2 = createLocator("http://psi.example.org/2");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 		Topic otherType = topicMap.createTopicBySubjectIdentifier(loc2);
 
@@ -78,8 +78,8 @@ public class TestTypeTransaction extends MaJorToMTestCase {
 	}
 
 	public void testRoleModification() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
-		Locator loc2 = createLoctor("http://psi.example.org/2");
+		Locator loc = createLocator("http://psi.example.org/1");
+		Locator loc2 = createLocator("http://psi.example.org/2");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 		Topic otherType = topicMap.createTopicBySubjectIdentifier(loc2);
 
@@ -152,9 +152,9 @@ public class TestTypeTransaction extends MaJorToMTestCase {
 	}
 
 	public void testNameModification() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
-		Locator loc2 = createLoctor("http://psi.example.org/2");
-		Locator loc3 = createLoctor("http://psi.example.org/3");
+		Locator loc = createLocator("http://psi.example.org/1");
+		Locator loc2 = createLocator("http://psi.example.org/2");
+		Locator loc3 = createLocator("http://psi.example.org/3");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 		Topic otherType = topicMap.createTopicBySubjectIdentifier(loc2);
 		Topic topic = topicMap.createTopicBySubjectIdentifier(loc3);
@@ -225,9 +225,9 @@ public class TestTypeTransaction extends MaJorToMTestCase {
 	}
 
 	public void testOccurrenceModification() throws Exception {
-		Locator loc = createLoctor("http://psi.example.org/1");
-		Locator loc2 = createLoctor("http://psi.example.org/2");
-		Locator loc3 = createLoctor("http://psi.example.org/3");
+		Locator loc = createLocator("http://psi.example.org/1");
+		Locator loc2 = createLocator("http://psi.example.org/2");
+		Locator loc3 = createLocator("http://psi.example.org/3");
 		Topic type = topicMap.createTopicBySubjectIdentifier(loc);
 		Topic otherType = topicMap.createTopicBySubjectIdentifier(loc2);
 		Topic topic = topicMap.createTopicBySubjectIdentifier(loc3);

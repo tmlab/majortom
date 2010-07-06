@@ -25,6 +25,7 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Scoped;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
+import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IScope;
@@ -36,7 +37,7 @@ import de.topicmapslab.majortom.model.index.IScopedIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedScopedIndex {
+public interface IPagedScopedIndex extends Index {
 
 	/**
 	 * Returns all constructs scoped by the given scope object.
@@ -65,8 +66,8 @@ public interface IPagedScopedIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all constructs within the given range scoped by
-	 *         the given scope
+	 * @return a list of all constructs within the given range scoped by the
+	 *         given scope
 	 */
 	public List<Scoped> getScopables(IScope scope, int offset, int limit, Comparator<Scoped> comparator);
 
@@ -198,8 +199,8 @@ public interface IPagedScopedIndex {
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association items within the given range
-	 *         scoped by the given scope
+	 * @return a list of all association items within the given range scoped by
+	 *         the given scope
 	 */
 	public List<Association> getAssociations(IScope scope, int offset, int limit);
 
@@ -215,8 +216,8 @@ public interface IPagedScopedIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association items within the given range
-	 *         scoped by the given scope
+	 * @return a list of all association items within the given range scoped by
+	 *         the given scope
 	 */
 	public List<Association> getAssociations(IScope scope, int offset, int limit, Comparator<Association> comparator);
 
@@ -230,8 +231,8 @@ public interface IPagedScopedIndex {
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association items within the given range
-	 *         scoped by one of the given scopes
+	 * @return a list of all association items within the given range scoped by
+	 *         one of the given scopes
 	 */
 	public List<Association> getAssociations(Collection<IScope> scopes, int offset, int limit);
 
@@ -247,8 +248,8 @@ public interface IPagedScopedIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association items within the given range
-	 *         scoped by one of the given scopes
+	 * @return a list of all association items within the given range scoped by
+	 *         one of the given scopes
 	 */
 	public List<Association> getAssociations(Collection<IScope> scopes, int offset, int limit, Comparator<Association> comparator);
 
@@ -262,8 +263,8 @@ public interface IPagedScopedIndex {
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all characteristics within the given range scoped
-	 *         by the given scope
+	 * @return a list of all characteristics within the given range scoped by
+	 *         the given scope
 	 */
 	public List<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit);
 
@@ -279,8 +280,8 @@ public interface IPagedScopedIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all characteristics within the given range scoped
-	 *         by the given scope
+	 * @return a list of all characteristics within the given range scoped by
+	 *         the given scope
 	 */
 	public List<ICharacteristics> getCharacteristics(IScope scope, int offset, int limit, Comparator<ICharacteristics> comparator);
 

@@ -37,7 +37,6 @@ import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
@@ -103,7 +102,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.BOOLEAN, "getBooleans", value, offset, limit);
+		return getLiterals(Param.BOOLEAN, "getBooleans", boolean.class, value, offset, limit);
 	}
 
 	/**
@@ -113,7 +112,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.BOOLEAN, "getBooleans", value, offset, limit, comparator);
+		return getLiterals(Param.BOOLEAN, "getBooleans", boolean.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -143,7 +142,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATATYPE, "getCharacteristics", datatype, offset, limit);
+		return getLiterals(Param.DATATYPE, "getCharacteristics", Locator.class, datatype, offset, limit);
 	}
 
 	/**
@@ -153,7 +152,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATATYPE, "getCharacteristics", datatype, offset, limit, comparator);
+		return getLiterals(Param.DATATYPE, "getCharacteristics", Locator.class, datatype, offset, limit, comparator);
 	}
 
 	/**
@@ -163,7 +162,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.CHARACTERISTICS, "getCharacteristics", value, datatype, offset, limit);
+		return getLiterals(Param.CHARACTERISTICS, "getCharacteristics", String.class, value, Locator.class, datatype, offset, limit);
 	}
 
 	/**
@@ -173,7 +172,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.CHARACTERISTICS, "getCharacteristics", value, datatype, offset, limit, comparator);
+		return getLiterals(Param.CHARACTERISTICS, "getCharacteristics", String.class, value, Locator.class, datatype, offset, limit, comparator);
 	}
 
 	/**
@@ -210,8 +209,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit,
-			Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -245,18 +243,17 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.REGEXP, "getCharacteristicsMatches", regExp, datatype, offset, limit);
+		return getLiterals(Param.REGEXP, "getCharacteristicsMatches", Pattern.class, regExp, Locator.class, datatype, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit,
-			Comparator<ICharacteristics> comparator) {
+	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.REGEXP, "getCharacteristicsMatches", regExp, datatype, offset, limit, comparator);
+		return getLiterals(Param.REGEXP, "getCharacteristicsMatches", Pattern.class, regExp, Locator.class, datatype, offset, limit, comparator);
 	}
 
 	/**
@@ -266,7 +263,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.COORDINATES, "getCoordinates", value, offset, limit);
+		return getLiterals(Param.COORDINATES, "getCoordinates", IGeoCoordinate.class, value, offset, limit);
 	}
 
 	/**
@@ -276,7 +273,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.COORDINATES, "getCoordinates", value, offset, limit, comparator);
+		return getLiterals(Param.COORDINATES, "getCoordinates", IGeoCoordinate.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -286,7 +283,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.COORDINATES, "getCoordinates", value, deviance, offset, limit);
+		return getLiterals(Param.COORDINATES, "getCoordinates", IGeoCoordinate.class, value, double.class, deviance, offset, limit);
 	}
 
 	/**
@@ -296,27 +293,27 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.COORDINATES, "getCoordinates", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.COORDINATES, "getCoordinates", IGeoCoordinate.class, value, double.class, deviance, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit) {
+	public List<IDatatypeAware> getDatatypeAwares(Locator dataType, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATATYPEAWARE, "getDatatypeAwares", dataType, offset, limit);
+		return getLiterals(Param.DATATYPEAWARE, "getDatatypeAwares", Locator.class, dataType, offset, limit);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IDatatypeAware> getDatatypeAwares(ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator) {
+	public List<IDatatypeAware> getDatatypeAwares(Locator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATATYPEAWARE, "getDatatypeAwares", dataType, offset, limit, comparator);
+		return getLiterals(Param.DATATYPEAWARE, "getDatatypeAwares", Locator.class, dataType, offset, limit, comparator);
 	}
 
 	/**
@@ -326,7 +323,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATETIME, "getDateTime", value, offset, limit);
+		return getLiterals(Param.DATETIME, "getDateTime", Calendar.class, value, offset, limit);
 	}
 
 	/**
@@ -336,7 +333,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATETIME, "getDateTime", value, offset, limit, comparator);
+		return getLiterals(Param.DATETIME, "getDateTime", Calendar.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -346,7 +343,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATETIME, "getDateTime", value, deviance, offset, limit);
+		return getLiterals(Param.DATETIME, "getDateTime", Calendar.class, value, Calendar.class, deviance, offset, limit);
 	}
 
 	/**
@@ -356,7 +353,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DATETIME, "getDateTime", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.DATETIME, "getDateTime", Calendar.class, value, Calendar.class, deviance, offset, limit, comparator);
 	}
 
 	/**
@@ -366,7 +363,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DOUBLE, "getDoubles", value, offset, limit);
+		return getLiterals(Param.DOUBLE, "getDoubles", double.class, value, offset, limit);
 	}
 
 	/**
@@ -376,7 +373,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DOUBLE, "getDoubles", value, offset, limit, comparator);
+		return getLiterals(Param.DOUBLE, "getDoubles", double.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -386,7 +383,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DOUBLE, "getDoubles", value, deviance, offset, limit);
+		return getLiterals(Param.DOUBLE, "getDoubles", double.class, value, double.class, deviance, offset, limit);
 	}
 
 	/**
@@ -396,7 +393,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.DOUBLE, "getDoubles", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.DOUBLE, "getDoubles", double.class, value, double.class, deviance, offset, limit, comparator);
 	}
 
 	/**
@@ -406,7 +403,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.FLOAT, "getFloats", value, offset, limit);
+		return getLiterals(Param.FLOAT, "getFloats", float.class, value, offset, limit);
 	}
 
 	/**
@@ -416,7 +413,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.FLOAT, "getFloats", value, offset, limit, comparator);
+		return getLiterals(Param.FLOAT, "getFloats", float.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -426,7 +423,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.FLOAT, "getFloats", value, deviance, offset, limit);
+		return getLiterals(Param.FLOAT, "getFloats", float.class, value, double.class, deviance, offset, limit);
 	}
 
 	/**
@@ -436,7 +433,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.FLOAT, "getFloats", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.FLOAT, "getFloats", float.class, value, double.class, deviance, offset, limit, comparator);
 	}
 
 	/**
@@ -446,7 +443,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.INTEGER, "getIntegers", value, offset, limit);
+		return getLiterals(Param.INTEGER, "getIntegers", int.class, value, offset, limit);
 	}
 
 	/**
@@ -456,7 +453,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.INTEGER, "getIntegers", value, offset, limit, comparator);
+		return getLiterals(Param.INTEGER, "getIntegers", int.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -466,7 +463,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.INTEGER, "getIntegers", value, deviance, offset, limit);
+		return getLiterals(Param.INTEGER, "getIntegers", int.class, value, double.class, deviance, offset, limit);
 	}
 
 	/**
@@ -476,7 +473,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.INTEGER, "getIntegers", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.INTEGER, "getIntegers", int.class, value, double.class, deviance, offset, limit, comparator);
 	}
 
 	/**
@@ -486,7 +483,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.LONG, "getLongs", value, offset, limit);
+		return getLiterals(Param.LONG, "getLongs", long.class, value, offset, limit);
 	}
 
 	/**
@@ -496,7 +493,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.LONG, "getLongs", value, offset, limit, comparator);
+		return getLiterals(Param.LONG, "getLongs", long.class, value, offset, limit, comparator);
 	}
 
 	/**
@@ -506,7 +503,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.LONG, "getLongs", value, deviance, offset, limit);
+		return getLiterals(Param.LONG, "getLongs", long.class, value, double.class, deviance, offset, limit);
 	}
 
 	/**
@@ -516,7 +513,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getLiterals(Param.LONG, "getLongs", value, deviance, offset, limit, comparator);
+		return getLiterals(Param.LONG, "getLongs", long.class, value, double.class, deviance, offset, limit, comparator);
 	}
 
 	/**
@@ -611,36 +608,36 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 * {@inheritDoc}
 	 */
 	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-		
-		Object dependValue= null;
-		
+
+		Object dependValue = null;
+
 		/*
 		 * construct was removed
 		 */
-		if ( event == TopicMapEventType.CONSTRUCT_REMOVED ){
+		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
 			dependValue = oldValue;
 		}
 		/*
 		 * new construct
 		 */
-		else if ( event == TopicMapEventType.OCCURRENCE_ADDED || event == TopicMapEventType.NAME_ADDED || event == TopicMapEventType.VARIANT_ADDED){
+		else if (event == TopicMapEventType.OCCURRENCE_ADDED || event == TopicMapEventType.NAME_ADDED || event == TopicMapEventType.VARIANT_ADDED) {
 			dependValue = newValue;
 		}
 		/*
 		 * data type or value modified
 		 */
-		else if ( event == TopicMapEventType.DATATYPE_SET || event == TopicMapEventType.VALUE_MODIFIED){
+		else if (event == TopicMapEventType.DATATYPE_SET || event == TopicMapEventType.VALUE_MODIFIED) {
 			dependValue = notifier;
 		}
-		
+
 		/*
 		 * clear dependent caches
 		 */
-		if ( dependValue instanceof Occurrence ){
+		if (dependValue instanceof Occurrence) {
 			clearOccurrenceCache();
-		}else if ( dependValue instanceof Name ){
+		} else if (dependValue instanceof Name) {
 			clearNameCache();
-		}else if ( dependValue instanceof Variant){
+		} else if (dependValue instanceof Variant) {
 			clearVariantCache();
 		}
 	}
@@ -664,8 +661,34 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 *            the limit
 	 * @return the list within the given range
 	 */
-	@SuppressWarnings("unchecked")
 	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, E value, int offset, int limit) {
+		return getLiterals(param, methodName, value.getClass(), value, offset, limit);
+	}
+
+	/**
+	 * Internal method to read literals by value
+	 * 
+	 * @param <E>
+	 *            the value type of literals ( Boolean, Calendar etc. )
+	 * @param <T>
+	 *            the literals type to return
+	 * @param param
+	 *            value type of literals ( Boolean, Calendar etc. )
+	 * @param methodName
+	 *            the method name to call if literals are not cached
+	 * @param clazz
+	 *            the argument type
+	 * @param value
+	 *            the value
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @return the list within the given range
+	 */
+	@SuppressWarnings("unchecked")
+	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, Class<?> clazz, E value, int offset,
+			int limit) {
 		/*
 		 * initialize cache
 		 */
@@ -686,7 +709,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 				/*
 				 * call method to get literals
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, value.getClass());
+				Method method = getParentIndex().getClass().getMethod(methodName, clazz);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), value));
 				/*
 				 * store list
@@ -728,9 +751,37 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 *            the comparator
 	 * @return the list within the given range
 	 */
-	@SuppressWarnings("unchecked")
 	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, E value, int offset, int limit,
 			Comparator<T> comparator) {
+		return getLiterals(param, methodName, value.getClass(), value, offset, limit, comparator);
+	}
+
+	/**
+	 * Internal method to read literals by value
+	 * 
+	 * @param <E>
+	 *            the value type of literals ( Boolean, Calendar etc. )
+	 * @param <T>
+	 *            the literals type to return
+	 * @param param
+	 *            value type of literals ( Boolean, Calendar etc. )
+	 * @param methodName
+	 *            the method name to call if literals are not cached
+	 * @param clazz
+	 *            the argument type
+	 * @param value
+	 *            the value
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @param comparator
+	 *            the comparator
+	 * @return the list within the given range
+	 */
+	@SuppressWarnings("unchecked")
+	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, Class<?> clazz, E value, int offset,
+			int limit, Comparator<T> comparator) {
 		/*
 		 * initialize cache
 		 */
@@ -762,7 +813,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 				/*
 				 * call method to get literals
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, value.getClass());
+				Method method = getParentIndex().getClass().getMethod(methodName, clazz);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), value));
 				/*
 				 * sort and store list
@@ -795,8 +846,12 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 *            value type of literals ( Boolean, Calendar etc. )
 	 * @param methodName
 	 *            the method name to call if literals are not cached
+	 * @param valueClass
+	 *            the class of the value
 	 * @param value
 	 *            the value
+	 * @param devianceClass
+	 *            the class of the deviance
 	 * @param deviance
 	 *            the deviance
 	 * @param offset
@@ -806,8 +861,9 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 * @return the list within the given range
 	 */
 	@SuppressWarnings("unchecked")
-	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, E value, Object deviance, int offset,
-			int limit) {
+	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, Class<?> valueClass, E value,
+			Class<?> devianceClass, Object deviance, int offset, int limit) {
+
 		/*
 		 * initialize cache
 		 */
@@ -839,7 +895,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 				/*
 				 * call method to get literals
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, param.getClass(), deviance.getClass());
+				Method method = getParentIndex().getClass().getMethod(methodName, valueClass, devianceClass);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), value, deviance));
 				/*
 				 * store list
@@ -871,8 +927,12 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 *            value type of literals ( Boolean, Calendar etc. )
 	 * @param methodName
 	 *            the method name to call if literals are not cached
+	 * @param valueClass
+	 *            the class of the value
 	 * @param value
 	 *            the value
+	 * @param devianceClass
+	 *            the class of the deviance
 	 * @param deviance
 	 *            the deviance
 	 * @param offset
@@ -884,8 +944,8 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	 * @return the list within the given range
 	 */
 	@SuppressWarnings("unchecked")
-	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, E value, Object deviance, int offset,
-			int limit, Comparator<T> comparator) {
+	private final <E extends Object, T extends Construct> List<T> getLiterals(Param param, final String methodName, Class<?> valueClass, E value,
+			Class<?> devianceClass, Object deviance, int offset, int limit, Comparator<T> comparator) {
 		/*
 		 * initialize cache
 		 */
@@ -925,7 +985,7 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 				/*
 				 * call method to get literals
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, value.getClass(), deviance.getClass());
+				Method method = getParentIndex().getClass().getMethod(methodName, valueClass, devianceClass);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), value, deviance));
 				/*
 				 * sort and store list

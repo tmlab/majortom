@@ -156,7 +156,7 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventSubjectIdentifierAdded() throws Exception {
 		final ITopic topic = createTopic();
-		final Locator locator = createLoctor("http://psi.example.org/locator");
+		final Locator locator = createLocator("http://psi.example.org/locator");
 
 		topicMap.addTopicMapListener(new ITopicMapListener() {
 
@@ -180,7 +180,7 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventSubjectLocatorAdded() throws Exception {
 		final ITopic topic = createTopic();
-		final Locator locator = createLoctor("http://psi.example.org/locator");
+		final Locator locator = createLocator("http://psi.example.org/locator");
 
 		topicMap.addTopicMapListener(new ITopicMapListener() {
 
@@ -203,7 +203,7 @@ public class TestEventModel extends MaJorToMTestCase {
 	}
 
 	public void testEventItemIdentifierAdded() throws Exception {
-		Locator itemIdentifier = createLoctor("http://psi.example.org/locator");
+		Locator itemIdentifier = createLocator("http://psi.example.org/locator");
 
 		// for topic
 		ITopic topic = createTopic();
@@ -333,15 +333,17 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(ROLE_ADDED, event);
-					assertEquals(association, notifier);
-					assertTrue(newValue instanceof IAssociationRole);
-					assertEquals(type, ((IAssociationRole) newValue).getType());
-					assertEquals(player, ((IAssociationRole) newValue).getPlayer());
-					assertNull(oldValue);
+				if (notifier instanceof IAssociation) {
+					if (!checked) {
+						assertEquals(ROLE_ADDED, event);
+						assertEquals(association, notifier);
+						assertTrue(newValue instanceof IAssociationRole);
+						assertEquals(type, ((IAssociationRole) newValue).getType());
+						assertEquals(player, ((IAssociationRole) newValue).getPlayer());
+						assertNull(oldValue);
+					}
+					checked = true;
 				}
-				checked = true;
 			}
 		});
 		association.createRole(type, player);
@@ -470,7 +472,7 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventSubjectIdentifierRemoved() throws Exception {
 		final ITopic topic = createTopic();
-		final Locator locator = createLoctor("http://psi.example.org/locator");
+		final Locator locator = createLocator("http://psi.example.org/locator");
 		topic.addSubjectIdentifier(locator);
 
 		topicMap.addTopicMapListener(new ITopicMapListener() {
@@ -495,7 +497,7 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventSubjectLocatorRemoved() throws Exception {
 		final ITopic topic = createTopic();
-		final Locator locator = createLoctor("http://psi.example.org/locator");
+		final Locator locator = createLocator("http://psi.example.org/locator");
 		topic.addSubjectLocator(locator);
 
 		topicMap.addTopicMapListener(new ITopicMapListener() {
@@ -519,7 +521,7 @@ public class TestEventModel extends MaJorToMTestCase {
 	}
 
 	public void testEventItemIdentifierRemoved() throws Exception {
-		Locator itemIdentifier = createLoctor("http://psi.example.org/locator");
+		Locator itemIdentifier = createLocator("http://psi.example.org/locator");
 		// for topic
 		ITopic topic = createTopic();
 		_testEventItemIdentifierRemoved(topic, itemIdentifier);

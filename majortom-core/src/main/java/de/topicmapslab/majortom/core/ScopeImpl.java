@@ -45,7 +45,8 @@ public class ScopeImpl implements IScope {
 	/**
 	 * constructor
 	 * 
-	 * @param themes the themes
+	 * @param themes
+	 *            the themes
 	 */
 	public ScopeImpl(Set<ITopic> themes) {
 		this.themes = HashUtil.getHashSet(themes);
@@ -63,23 +64,43 @@ public class ScopeImpl implements IScope {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ITopic> Set<T> getThemes() {
-		return Collections.unmodifiableSet((Set<T>)HashUtil.getHashSet(themes));
+		return Collections.unmodifiableSet((Set<T>) HashUtil.getHashSet(themes));
 	}
-	
+
 	/**
 	 * replace the given theme by the given replacement
-	 * @param theme the theme
-	 * @param replacement the replacement
+	 * 
+	 * @param theme
+	 *            the theme
+	 * @param replacement
+	 *            the replacement
 	 */
-	public void replaceTheme(ITopic theme, ITopic replacement){
+	public void replaceTheme(ITopic theme, ITopic replacement) {
 		themes.remove(theme);
 		themes.add(replacement);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "Scope: " + themes.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object arg0) {
+		if (arg0 instanceof IScope) {
+			return ((IScope) arg0).getThemes().equals(themes);
+		}
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {		
+		return themes.hashCode();
 	}
 }

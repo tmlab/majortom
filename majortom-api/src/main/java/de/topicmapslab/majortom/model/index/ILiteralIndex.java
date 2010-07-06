@@ -26,7 +26,6 @@ import org.tmapi.index.LiteralIndex;
 import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
@@ -276,7 +275,7 @@ public interface ILiteralIndex extends LiteralIndex {
 	 *            the data type
 	 * @return a collection of all matching variants and occurrences
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(final ILocator dataType);
+	public Collection<IDatatypeAware> getDatatypeAwares(final Locator dataType);
 
 	/**
 	 * Return all names contained by the current topic map.
@@ -284,14 +283,14 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * @return all names of the topic map
 	 */
 	public Collection<IName> getNames();
-	
+
 	/**
 	 * Return all occurrences contained by the current topic map.
 	 * 
 	 * @return all occurrences of the topic map
 	 */
 	public Collection<IOccurrence> getOccurrences();
-	
+
 	/**
 	 * Return all variants contained by the current topic map.
 	 * 

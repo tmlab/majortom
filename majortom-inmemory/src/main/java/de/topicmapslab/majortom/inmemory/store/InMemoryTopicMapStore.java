@@ -35,6 +35,7 @@ import de.topicmapslab.majortom.inmemory.index.InMemoryScopedIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemorySupertypeSubtypeIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.inmemory.index.InMemoryTypeInstanceIndex;
+import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedConstructIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex;
 import de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex;
@@ -76,6 +77,7 @@ import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedIdentityIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
@@ -127,6 +129,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	private IPagedScopedIndex pagedScopedIndex;
 	private IPagedIdentityIndex pagedIdentityIndex;
 	private IPagedLiteralIndex pagedLiteralIndex;
+	private IPagedConstructIndex pagedConstructIndex;
 
 	/**
 	 * thread specific attributes
@@ -3281,6 +3284,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				this.pagedLiteralIndex = new InMemoryPagedLiteralIndex(this, getIndex(ILiteralIndex.class));
 			}
 			return (I) this.pagedLiteralIndex;
+		} else if (IPagedConstructIndex.class.isAssignableFrom(clazz)) {
+			if (this.pagedConstructIndex == null) {
+				this.pagedConstructIndex = new InMemoryPagedConstructIndex(this);
+			}
+			return (I) this.pagedConstructIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");

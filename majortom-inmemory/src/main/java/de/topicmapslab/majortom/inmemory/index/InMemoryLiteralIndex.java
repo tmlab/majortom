@@ -310,8 +310,8 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 			throw new IllegalArgumentException("Deviance cannot be null.");
 		}
 
-		double deviance_ = (deviance.get(Calendar.SECOND) + (deviance.get(Calendar.MINUTE) + (deviance.get(Calendar.HOUR) + (deviance
-				.get(Calendar.DAY_OF_MONTH) + (deviance.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60) * 1000;
+		double deviance_ = ((double) (deviance.get(Calendar.SECOND) + (deviance.get(Calendar.MINUTE) + (deviance.get(Calendar.HOUR) + (deviance
+				.get(Calendar.DAY_OF_MONTH) + (deviance.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
 
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (IDatatypeAware datatypeAware : getStore().getCharacteristicsStore().getDatatypeAwares(
@@ -665,14 +665,17 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwares(ILocator dataType) {
+	public Collection<IDatatypeAware> getDatatypeAwares(Locator dataType) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (dataType == null) {
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getDatatypeAwares(dataType));
+		if (!(dataType instanceof ILocator)) {
+			throw new IllegalArgumentException("Datatype has to be created by this topic map.");
+		}
+		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getDatatypeAwares((ILocator) dataType));
 	}
 
 	/**

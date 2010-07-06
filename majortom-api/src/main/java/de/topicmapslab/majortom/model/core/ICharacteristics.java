@@ -7,6 +7,6 @@ package de.topicmapslab.majortom.model.core;
  * @author Sven Krosse
  * 
  */
-public interface ICharacteristics extends IConstruct, ITypeable{
+public interface ICharacteristics extends IConstruct, ITypeable, IScopable{
 	
 }

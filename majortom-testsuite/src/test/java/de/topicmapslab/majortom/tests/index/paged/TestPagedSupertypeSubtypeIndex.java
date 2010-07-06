@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.comparator.TopicByIdentityComparator;
+import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.paging.IPagedSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;

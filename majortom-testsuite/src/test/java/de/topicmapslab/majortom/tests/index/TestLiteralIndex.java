@@ -142,8 +142,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLoctor(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLoctor(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
 
 		assertEquals(0, index.getCharacteristics(xsdString).size());
 
@@ -192,8 +192,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLoctor(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLoctor(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
 
 		assertEquals(0, index.getCharacteristics(xsdString).size());
 
@@ -241,8 +241,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLoctor(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLoctor(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
 
 		assertEquals(0, index.getCharacteristicsMatches("Occ", xsdString).size());
 		assertEquals(0, index.getCharacteristicsMatches(Pattern.compile("Occ"), xsdString).size());
@@ -452,7 +452,7 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 
 		Calendar calendar = new GregorianCalendar(2000, 10, 10);
 		Calendar otherCalendar = new GregorianCalendar(2000, 10, 12);
-		Calendar anotherCalendar = new GregorianCalendar(2000, 12, 12);
+		Calendar anotherCalendar = new GregorianCalendar(2002, 12, 12);
 
 		assertEquals(0, index.getDateTime(calendar).size());
 

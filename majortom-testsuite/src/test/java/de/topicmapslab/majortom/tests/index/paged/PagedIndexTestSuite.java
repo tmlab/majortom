@@ -33,6 +33,10 @@ public class PagedIndexTestSuite {
 		suite.addTestSuite(TestPagedTypeInstanceIndex.class);
 		suite.addTestSuite(TestPagedTrasitiveTypeInstanceIndex.class);
 		suite.addTestSuite(TestPagedSupertypeSubtypeIndex.class);
+		suite.addTestSuite(TestPagedIdentityIndex.class);
+		suite.addTestSuite(TestPagedScopedIndex.class);
+		suite.addTestSuite(TestPagedLiteralIndex.class);
+		suite.addTestSuite(TestPagedConstructIndex.class);
 		// $JUnit-END$
 		return suite;
 	}

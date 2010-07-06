@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.tmapi.core.Locator;
+import org.tmapi.index.Index;
 
 import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
@@ -38,7 +38,7 @@ import de.topicmapslab.majortom.model.index.ILiteralIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedLiteralIndex {
+public interface IPagedLiteralIndex extends Index {
 
 	/**
 	 * Returns all characteristics with the given value.
@@ -132,8 +132,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public List<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit,
-			Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCharacteristics(final String value, final Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics which has a value matches the given regular
@@ -659,8 +658,7 @@ public interface IPagedLiteralIndex {
 	 *            the comparator
 	 * @return the characteristics within the given range with the time value
 	 */
-	public List<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit,
-			Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getDateTime(final Calendar value, final Calendar deviance, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype
@@ -778,7 +776,7 @@ public interface IPagedLiteralIndex {
 	 * @return a collection of all matching variants and occurrences within the
 	 *         given range
 	 */
-	public List<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit);
+	public List<IDatatypeAware> getDatatypeAwares(final Locator dataType, int offset, int limit);
 
 	/**
 	 * Returns all variants and occurrences with the given data-type.
@@ -795,7 +793,7 @@ public interface IPagedLiteralIndex {
 	 * @return a collection of all matching variants and occurrences within the
 	 *         given range
 	 */
-	public List<IDatatypeAware> getDatatypeAwares(final ILocator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator);
+	public List<IDatatypeAware> getDatatypeAwares(final Locator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator);
 
 	/**
 	 * Return all names contained by the current topic map.

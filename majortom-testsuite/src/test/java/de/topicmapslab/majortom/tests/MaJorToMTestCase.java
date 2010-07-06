@@ -55,7 +55,7 @@ public class MaJorToMTestCase extends TestCase {
 		topicMap.close();
 	}
 
-	protected Locator createLoctor(final String reference) {
+	protected Locator createLocator(final String reference) {
 		return topicMap.createLocator(reference);
 	}
 
@@ -63,12 +63,16 @@ public class MaJorToMTestCase extends TestCase {
 		return (ITopic) topicMap.createTopic();
 	}
 
+	protected ITopic createTopicByII(String reference) {
+		return (ITopic) topicMap.createTopicByItemIdentifier(createLocator(reference));
+	}
+	
 	protected ITopic createTopicBySI(String reference) {
-		return (ITopic) topicMap.createTopicBySubjectIdentifier(createLoctor(reference));
+		return (ITopic) topicMap.createTopicBySubjectIdentifier(createLocator(reference));
 	}
 
 	protected ITopic createTopicBySL(String reference) {
-		return (ITopic) topicMap.createTopicBySubjectLocator(createLoctor(reference));
+		return (ITopic) topicMap.createTopicBySubjectLocator(createLocator(reference));
 	}
 
 	protected IAssociation createAssociation(final Topic type) {

@@ -707,7 +707,7 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 	 */
 	protected final <E> List<E> secureSubList(List<E> list, int offset, int limit) {
 		int from = offset;
-		if (from < 0) {
+		if (from < 0 || list.isEmpty()) {
 			from = 0;
 		} else if (from >= list.size()) {
 			from = list.size() - 1;

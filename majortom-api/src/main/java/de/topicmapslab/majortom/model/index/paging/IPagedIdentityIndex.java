@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
+import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 
@@ -31,7 +32,7 @@ import de.topicmapslab.majortom.model.index.IIdentityIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedIdentityIndex {
+public interface IPagedIdentityIndex extends Index{
 
 	/**
 	 * Returns all known item-identifiers of the current topic map within the

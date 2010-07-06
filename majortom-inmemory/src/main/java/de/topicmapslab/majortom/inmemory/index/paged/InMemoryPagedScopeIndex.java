@@ -1499,7 +1499,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 				/*
 				 * call method to get scopes
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, Topic[].class, Boolean.class);
+				Method method = getParentIndex().getClass().getMethod(methodName, Topic[].class, boolean.class);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), themes, all));
 				map.put(themes, list);
 			} catch (SecurityException e) {
@@ -1572,7 +1572,7 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 				/*
 				 * call method to get scopes
 				 */
-				Method method = getParentIndex().getClass().getMethod(methodName, Topic[].class, Boolean.class);
+				Method method = getParentIndex().getClass().getMethod(methodName, Topic[].class, boolean.class);
 				list = HashUtil.getList((Collection<T>) method.invoke(getParentIndex(), themes, all));
 				/*
 				 * sort and store it

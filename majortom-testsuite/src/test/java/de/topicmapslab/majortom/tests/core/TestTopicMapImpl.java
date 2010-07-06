@@ -240,21 +240,21 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(1, topic.getItemIdentifiers().size());
 		assertEquals(0, topic.getSubjectLocators().size());
 
-		Locator si = createLoctor("http://psi.example.org/si");
+		Locator si = createLocator("http://psi.example.org/si");
 		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
 		assertTrue(topicWithSi.getSubjectIdentifiers().contains(si));
 		assertEquals(0, topicWithSi.getItemIdentifiers().size());
 		assertEquals(0, topicWithSi.getSubjectLocators().size());
 
-		Locator ii = createLoctor("http://psi.example.org/ii");
+		Locator ii = createLocator("http://psi.example.org/ii");
 		ITopic topicWithII = (ITopic) topicMap.createTopicByItemIdentifier(ii);
 		assertEquals(0, topicWithII.getSubjectIdentifiers().size());
 		assertEquals(1, topicWithII.getItemIdentifiers().size());
 		assertTrue(topicWithII.getItemIdentifiers().contains(ii));
 		assertEquals(0, topicWithII.getSubjectLocators().size());
 
-		Locator sl = createLoctor("http://psi.example.org/sl");
+		Locator sl = createLocator("http://psi.example.org/sl");
 		ITopic topicWithSl = (ITopic) topicMap.createTopicBySubjectLocator(sl);
 		assertEquals(0, topicWithSl.getSubjectIdentifiers().size());
 		assertEquals(0, topicWithSl.getItemIdentifiers().size());
@@ -303,9 +303,9 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, topic.getSubjectLocators().size());
 		assertEquals(topic, topicMap.getConstructByItemIdentifier(topic.getItemIdentifiers().iterator().next()));
 
-		Locator si = createLoctor("http://psi.example.org/si");
-		Locator sl = createLoctor("http://psi.example.org/sl");
-		Locator ii = createLoctor("http://psi.example.org/ii");
+		Locator si = createLocator("http://psi.example.org/si");
+		Locator sl = createLocator("http://psi.example.org/sl");
+		Locator ii = createLocator("http://psi.example.org/ii");
 
 		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
@@ -439,7 +439,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 */
 	public void testMergeIn() throws Exception {
 
-		Locator si = createLoctor("http://psi.example.org/si");
+		Locator si = createLocator("http://psi.example.org/si");
 		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		Name n = topic.createName("Name", new Topic[0]);
 		n.createVariant("Variant", topicMap.createTopicBySubjectIdentifier(topicMap.createLocator("http://psi.example.org/theme")));
