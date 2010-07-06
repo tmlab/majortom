@@ -1,35 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.topicmapslab.majortom</groupId>
-  <artifactId>majortom-testsuite</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
-  <build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>process-test-classes</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.tmapi</groupId>
-									<artifactId>tmapi-tests</artifactId>
-									<version>2.0.2</version>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/test-classes/
-                                                                        </outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.topicmapslab.majortom</groupId>
+	<artifactId>majortom-testsuite</artifactId>
+	<version>1.1.0</version>
+	<build>
+		<plugins>			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -41,22 +17,22 @@
 			</plugin>
 		</plugins>
 	</build>
-  <repositories>
-  	<repository>
-  		<id>tml</id>
-  		<url>http://maven.topicmapslab.de/public</url>
-  	</repository>
+	<repositories>
+		<repository>
+			<id>tml</id>
+			<url>http://maven.topicmapslab.de/public</url>
+		</repository>
 		<repository>
 			<id>org.tmapi</id>
 			<url>http://www.tmapi.org/maven-repository</url>
 		</repository>
-  </repositories>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.topicmapslab.majortom</groupId>
-  		<artifactId>majortom-inMemory</artifactId>
-  		<version>1.0.1-SNAPSHOT</version>
-  	</dependency>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-inMemory</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.tmapi</groupId>
 			<artifactId>tmapi-tests</artifactId>
@@ -79,12 +55,12 @@
 			<artifactId>semagia-mio-xtm</artifactId>
 			<version>0.9.4</version>
 		</dependency>
-	<dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.8</version>
-		<scope>test</scope>
-	</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.8</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>semagia</groupId>
 			<artifactId>semagia-mio-ltm</artifactId>
@@ -116,5 +92,12 @@
 			<artifactId>trove</artifactId>
 			<version>2.0.4</version>
 		</dependency>
-  </dependencies>
+	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>topicmapslab-public</id>
+			<name>Topic Maps Lab Repositiory</name>
+			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+		</repository>
+	</distributionManagement>
 </project>
