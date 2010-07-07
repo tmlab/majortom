@@ -419,6 +419,9 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public ITransaction createTransaction() {
+		if ( !getStore().isTransactable()){
+			throw new UnsupportedOperationException("The current topic map store does not support transactions.");
+		}
 		return getStore().createTransaction();
 	}
 
