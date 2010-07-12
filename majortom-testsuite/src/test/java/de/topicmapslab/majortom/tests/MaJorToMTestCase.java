@@ -47,12 +47,12 @@ public class MaJorToMTestCase extends TestCase {
 		factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 		topicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://majortom");
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void tearDown() throws Exception {
-		topicMap.close();
+		topicMap.remove(true);
 	}
 
 	protected Locator createLocator(final String reference) {

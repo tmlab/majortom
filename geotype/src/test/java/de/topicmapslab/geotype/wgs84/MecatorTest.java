@@ -6,7 +6,7 @@ import de.topicmapslab.geotype.wgs84.Wgs84Coordinate.Orientation;
 
 public class MecatorTest extends TestCase {
 
-	public void testname() throws Exception {
+	public void testname() {
 		MecatorCoordinate m1 = new MecatorCoordinate(new Wgs84Coordinate(
 				52.5164, Orientation.N), new Wgs84Coordinate(13.3777,
 				Orientation.E));

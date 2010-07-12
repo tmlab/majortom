@@ -926,7 +926,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				occurrences[j] = (IOccurrence) createTopic().createOccurrence(createTopic(), "Value", new Topic[0]);
-				occurrences[j].setValue((float) (value));
+				occurrences[j].setValue(value);
 				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
@@ -1042,7 +1042,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				occurrences[j] = (IOccurrence) createTopic().createOccurrence(createTopic(), "Value", new Topic[0]);
-				occurrences[j].setValue((int) (value));
+				occurrences[j].setValue(value);
 				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
@@ -1158,7 +1158,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				occurrences[j] = (IOccurrence) createTopic().createOccurrence(createTopic(), "Value", new Topic[0]);
-				occurrences[j].setValue((long) (value));
+				occurrences[j].setValue(value);
 				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}

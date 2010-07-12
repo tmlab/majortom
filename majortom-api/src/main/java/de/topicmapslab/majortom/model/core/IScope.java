@@ -37,5 +37,11 @@ public interface IScope {
 	 *         otherwise.
 	 */
 	public boolean containsTheme(final ITopic theme);
+	
+	/**
+	 * Returns the internal id of the scope object
+	 * @return the id;
+	 */
+	public String getId();
 
 }

@@ -29,11 +29,6 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>de.topicmapslab.majortom</groupId>
-			<artifactId>majortom-inMemory</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.tmapi</groupId>
 			<artifactId>tmapi-tests</artifactId>
 			<version>2.0.2</version>
@@ -91,6 +86,11 @@
 			<groupId>gnu.trove</groupId>
 			<artifactId>trove</artifactId>
 			<version>2.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-db</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>

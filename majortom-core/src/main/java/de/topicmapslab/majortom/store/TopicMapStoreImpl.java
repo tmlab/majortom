@@ -561,17 +561,6 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @param topicMap
 	 *            the topic map
-	 * @return the created construct
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract ITopic doCreateTopic(ITopicMap topicMap) throws TopicMapStoreException;
-
-	/**
-	 * Create a new topic item.
-	 * 
-	 * @param topicMap
-	 *            the topic map
 	 * @param itemIdentifier
 	 *            the item-identifier
 	 * @return the created construct
@@ -639,15 +628,15 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @param name
 	 *            the parent name
-	 * @param datatype
-	 *            the data type
+	 * @param value
+	 *            the value
 	 * @param themes
 	 *            the scoping themes
 	 * @return the created variant
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IVariant doCreateVariant(IName name, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
+	protected abstract IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.

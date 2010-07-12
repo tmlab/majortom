@@ -78,7 +78,7 @@ public class HashUtil {
 	 * @return the created set
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Set<T> getHashSet(Set<T> initial) {
+	public static <T> Set<T> getHashSet(Collection<T> initial) {
 		if (initial == null) {
 			return getHashSet();
 		}

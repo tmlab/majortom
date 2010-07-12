@@ -5,7 +5,7 @@ import de.topicmapslab.geotype.wgs84.Wgs84Coordinate.Orientation;
 
 public class WGS84Test extends TestCase {
 
-	public void testname() throws Exception {
+	public void testname() {
 
 		// System.out.println(regExp.matcher("12°15'20'' N").matches());
 		// System.out.println(regExp.matcher("12°15'20'' E").matches());
@@ -17,7 +17,7 @@ public class WGS84Test extends TestCase {
 
 	}
 
-	public void testFromDegree() throws Exception {
+	public void testFromDegree() {
 		System.out.println(new Wgs84Coordinate(16.324525, Orientation.N).toString());
 	}
 

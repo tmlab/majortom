@@ -15,8 +15,10 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.core;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -36,10 +38,40 @@ public class ScopeImpl implements IScope {
 	private final Set<ITopic> themes;
 
 	/**
+	 * the internal id
+	 */
+	private final String id;
+
+	/**
+	 * constructor
+	 * 
+	 * @param id
+	 *            the internal id
+	 */
+	public ScopeImpl(String id) {
+		this.themes = HashUtil.getHashSet();
+		this.id = id;
+	}
+
+	/**
 	 * constructor
 	 */
 	public ScopeImpl() {
 		this.themes = HashUtil.getHashSet();
+		this.id = UUID.randomUUID().toString();
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param id
+	 *            the internal id
+	 * @param themes
+	 *            the themes
+	 */
+	public ScopeImpl(String id, Collection<ITopic> themes) {
+		this.themes = HashUtil.getHashSet(themes);		
+		this.id = id;
 	}
 
 	/**
@@ -50,6 +82,7 @@ public class ScopeImpl implements IScope {
 	 */
 	public ScopeImpl(Set<ITopic> themes) {
 		this.themes = HashUtil.getHashSet(themes);
+		this.id = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -96,11 +129,18 @@ public class ScopeImpl implements IScope {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public int hashCode() {		
+	public int hashCode() {
 		return themes.hashCode();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getId() {
+		return id;
 	}
 }

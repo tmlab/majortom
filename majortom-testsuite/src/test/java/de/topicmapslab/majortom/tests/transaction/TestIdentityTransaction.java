@@ -214,7 +214,7 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		construct.addItemIdentifier(loc);
 
 		ITransaction transaction = topicMap.createTransaction();
-		IConstruct construct_ = (IConstruct) transaction.moveToTransactionContext(construct);
+		IConstruct construct_ = transaction.moveToTransactionContext(construct);
 		assertEquals(construct, construct_);
 
 		construct_.remove();
@@ -230,7 +230,7 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		transaction.rollback();
 
 		transaction = topicMap.createTransaction();
-		construct_ = (IConstruct) transaction.moveToTransactionContext(construct);
+		construct_ = transaction.moveToTransactionContext(construct);
 		assertEquals(construct, construct_);
 
 		construct_.remove();
@@ -260,7 +260,7 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		Locator loc3 = topicMap.createLocator("http://psi.example.org/ii/3");
 
 		ITransaction transaction = topicMap.createTransaction();
-		IConstruct construct_ = (IConstruct) transaction.moveToTransactionContext(construct);
+		IConstruct construct_ = transaction.moveToTransactionContext(construct);
 		if (!(construct instanceof ITopicMap)) {
 			assertEquals(construct, construct_);
 		}
@@ -305,7 +305,7 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		assertEquals(0, construct.getItemIdentifiers().size());
 
 		transaction = topicMap.createTransaction();
-		construct_ = (IConstruct) transaction.moveToTransactionContext(construct);
+		construct_ = transaction.moveToTransactionContext(construct);
 		if (!(construct instanceof ITopicMap)) {
 			assertEquals(construct, construct_);
 		}

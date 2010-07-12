@@ -24,8 +24,6 @@ import org.tmapi.core.Name;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyAssociation;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyAssociationRole;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -33,6 +31,8 @@ import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.revision.IRevisionChange;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociationRole;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 import de.topicmapslab.majortom.util.FeatureStrings;
 

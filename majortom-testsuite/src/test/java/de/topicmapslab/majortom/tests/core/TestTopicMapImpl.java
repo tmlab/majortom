@@ -64,36 +64,38 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)}
 	 * .
 	 */
-	public void testAddTagString() {
+	public void testAddTagString() {				
+		if (topicMap.getStore().supportRevisions()) {
 
-		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
-		index.open();
+			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+			index.open();
 
-		try {
-			index.getRevision("tag");
-			fail("Tag should be unknown!");
-		} catch (Exception e) {
-			// NOTHING TO DO
+			try {
+				index.getRevision("tag");
+				fail("Tag should be unknown!");
+			} catch (Exception e) {
+				// NOTHING TO DO
+			}
+
+			topicMap.addTag("tag");
+			try {
+				index.getRevision("tag");
+			} catch (Exception e) {
+				fail("Tag should be known!");
+			}
+
+			Calendar c = new GregorianCalendar();
+			topicMap.addTag("tag2", c);
+
+			createTopic();
+
+			IRevision revisonByCalendar = index.getRevision(c);
+			IRevision revisonByTag = index.getRevision("tag2");
+
+			assertNotNull(revisonByTag);
+			assertNotNull(revisonByCalendar);
+			assertEquals(revisonByCalendar, revisonByTag);
 		}
-
-		topicMap.addTag("tag");
-		try {
-			index.getRevision("tag");
-		} catch (Exception e) {
-			fail("Tag should be known!");
-		}
-
-		Calendar c = new GregorianCalendar();
-		topicMap.addTag("tag2", c);
-
-		createTopic();
-
-		IRevision revisonByCalendar = index.getRevision(c);
-		IRevision revisonByTag = index.getRevision("tag2");
-
-		assertNotNull(revisonByTag);
-		assertNotNull(revisonByCalendar);
-		assertEquals(revisonByCalendar, revisonByTag);
 	}
 
 	/**
@@ -503,27 +505,27 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(1, t.getTypes().size());
 		assertEquals(1, topic.getTypes().size());
 	}
-	
-	public void testCreateScope() throws Exception {
+
+	public void testCreateScope() {
 		ITopic theme = createTopic();
 		ITopic theme2 = createTopic();
 		ITopic theme3 = createTopic();
 		ITopic theme4 = createTopic();
-		
+
 		IScope scope = topicMap.createScope(theme, theme2, theme3);
 		assertNotNull(scope);
 		assertEquals(3, scope.getThemes().size());
 		assertTrue(scope.containsTheme(theme));
 		assertTrue(scope.containsTheme(theme2));
 		assertTrue(scope.containsTheme(theme3));
-		
+
 		Collection<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme4);
 		scope = topicMap.createScope(themes);
 		assertNotNull(scope);
 		assertEquals(1, scope.getThemes().size());
 		assertTrue(scope.containsTheme(theme4));
-		
+
 	}
 
 }

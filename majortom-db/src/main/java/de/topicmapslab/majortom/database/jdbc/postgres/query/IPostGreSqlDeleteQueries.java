@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.store;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.database.jdbc.postgres.query;
 
-public final class TopicMapStoreProperty {
+/**
+ * @author Sven Krosse
+ *
+ */
+public interface IPostGreSqlDeleteQueries {
 
-	public static final String PREFIX = "de.topicmapslab.majortom";
-
-	public static final String TOPICMAPSTORE_CLASS = PREFIX + ".topicmapstore.class";	
+	public static final String QUERY_DELETE_TOPICMAP = "DELETE FROM topicmaps WHERE id = ?;";
 	
-	public static final String THREADPOOL_MAXIMUM = PREFIX + ".threadpool.maximum";
-	
-	private TopicMapStoreProperty(){}
 }

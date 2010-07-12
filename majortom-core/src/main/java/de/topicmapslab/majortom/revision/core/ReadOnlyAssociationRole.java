@@ -13,39 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.inmemory.store.revision.core;
+package de.topicmapslab.majortom.revision.core;
 
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.IAssociationRole;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyOccurrence extends ReadOnlyDatatypeAware implements IOccurrence {
+public class ReadOnlyAssociationRole extends ReadOnlyReifiable implements IAssociationRole {
 
-	private final String typeId;
-	
+	private final String typeId, playerId;
+
 	/*
 	 * cached values
 	 */
-	private Topic cachedType;
+	private Topic cachedPlayer, cachedType;
 
 	/**
 	 * @param clone
 	 */
-	public ReadOnlyOccurrence(IOccurrence clone) {
+	public ReadOnlyAssociationRole(IAssociationRole clone) {
 		super(clone);
 		typeId = clone.getType().getId();
+		playerId = clone.getPlayer().getId();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic getParent() {
-		return (ITopic) super.getParent();
+	public IAssociation getParent() {
+		return (IAssociation) super.getParent();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Topic getPlayer() {
+		if (cachedPlayer != null) {
+			return cachedPlayer;
+		}
+		Topic player = (Topic) getTopicMap().getConstructById(playerId);
+		if (player instanceof ReadOnlyTopic) {
+			cachedPlayer = player;
+		}
+		return player;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPlayer(Topic arg0) {
+		throw new UnsupportedOperationException("Construct is read only!");
 	}
 
 	/**

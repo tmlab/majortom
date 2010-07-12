@@ -1,8 +1,7 @@
-package de.topicmapslab.majortom.tests.core;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
@@ -27,22 +26,40 @@ import de.topicmapslab.majortom.store.TopicMapStoreProperty;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+/**
+ * 
+ */
 
 /**
  * @author Sven Krosse
  * 
  */
-public class TestTopicMapSystem extends TestCase {
+public class TestStuff extends TestCase {
 
-	public void testTopicMapSystemFactory() throws Exception {
+	private TopicMap topicMap;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void setUp() throws Exception {
 		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
 		assertNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
 		TopicMapSystem system = factory.newTopicMapSystem();
 		Assert.assertTrue(system instanceof TopicMapSystemImpl);
-		TopicMap topicMap = system.createTopicMap("http://engine.topicmapslab.de/lalel33u/");
-		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));		
+		topicMap = system.createTopicMap("http://engine.topicmapslab.de/myTopicMap/");
+		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(topicMap instanceof ITopicMap);
-
 	}
+
+	public void testCreateConstructs() {
+	 Locator locator = topicMap.createLocator("http://psi.example.org/test-create-locator");
+		// Topic t =
+		topicMap.createTopicBySubjectIdentifier(locator);
+		topicMap.createTopicBySubjectLocator(locator);
+		locator = topicMap.createLocator("http://psi.example.org/test-create-locator/2");
+		topicMap.createTopicByItemIdentifier(locator);
+		// t.createName("Name", new Topic[0]);
+	}
+
 }

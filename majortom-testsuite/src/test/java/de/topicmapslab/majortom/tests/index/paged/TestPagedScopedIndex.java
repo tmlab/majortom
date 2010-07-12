@@ -1435,7 +1435,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				} else if (j % 4 == 0) {
 					scopeables[j] = (IVariant) createTopic().createName(createTopic(), c + i, new Topic[0]).createVariant("Value", theme);
 				} else {
-					scopeables[j] = (IAssociation) createAssociation(createTopic());
+					scopeables[j] = createAssociation(createTopic());
 					scopeables[j].addTheme(theme);
 				}
 				scopeables[j].addItemIdentifier(createLocator(base + c + i));
@@ -1625,7 +1625,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				variants[j] = createTopic().createName("name", new Topic[0]).createVariant(c + i, theme);
-				;
 				j++;
 			}
 			if (j == 101) {

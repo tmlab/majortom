@@ -13,15 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.store;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.database.store;
 
-public final class TopicMapStoreProperty {
+import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 
-	public static final String PREFIX = "de.topicmapslab.majortom";
+/**
+ * @author Sven Krosse
+ * 
+ */
+public final class JdbcTopicMapStoreProperty {
 
-	public static final String TOPICMAPSTORE_CLASS = PREFIX + ".topicmapstore.class";	
-	
-	public static final String THREADPOOL_MAXIMUM = PREFIX + ".threadpool.maximum";
-	
-	private TopicMapStoreProperty(){}
+	private static final String JDBC_PREFIX = TopicMapStoreProperty.PREFIX + ".jdbc";
+
+	public static final String DATABASE_HOST = JDBC_PREFIX + ".host";
+
+	public static final String DATABASE_NAME = JDBC_PREFIX + ".database";
+
+	public static final String DATABASE_PASSWORD = JDBC_PREFIX + ".password";
+
+	public static final String DATABASE_USER = JDBC_PREFIX + ".user";
+
+	public static final String SQL_DIALECT = JDBC_PREFIX + ".dialect";
 }

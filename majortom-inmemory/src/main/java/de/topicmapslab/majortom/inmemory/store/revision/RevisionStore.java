@@ -29,12 +29,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyAssociation;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyAssociationRole;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyName;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyOccurrence;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyTopic;
-import de.topicmapslab.majortom.inmemory.store.revision.core.ReadOnlyVariant;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -51,6 +45,12 @@ import de.topicmapslab.majortom.model.revision.IRevisionChange;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.revision.RevisionChangeImpl;
 import de.topicmapslab.majortom.revision.RevisionImpl;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociationRole;
+import de.topicmapslab.majortom.revision.core.ReadOnlyName;
+import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
+import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
+import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
