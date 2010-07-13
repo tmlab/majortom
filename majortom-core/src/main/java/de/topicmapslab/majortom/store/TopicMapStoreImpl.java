@@ -23,7 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.FeatureNotRecognizedException;
+import org.tmapi.core.IdentityConstraintException;
+import org.tmapi.core.ModelConstraintException;
+import org.tmapi.core.Reifiable;
 import org.tmapi.core.Topic;
+import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 
 import de.topicmapslab.majortom.executable.EventNotifier;
@@ -48,6 +52,9 @@ import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.OperationSignatureException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
+import de.topicmapslab.majortom.model.index.IScopedIndex;
+import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
+import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -672,6 +679,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
 			if (params.length == 1 && params[0] instanceof ILocator) {
+				checkItemIdentifierConstraint(context, (ILocator) params[0]);
 				doModifyItemIdentifier(context, (ILocator) params[0]);
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -688,6 +696,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			break;
 		case REIFICATION: {
 			if (context instanceof IReifiable && params.length == 1 && params[0] instanceof ITopic) {
+				checkReificationConstraintBeforeModification((IReifiable) context, (ITopic) params[0]);
 				doModifyReifier((IReifiable) context, (ITopic) params[0]);
 			} else if (context instanceof IReifiable && params.length == 1 && params[0] == null) {
 				doModifyReifier((IReifiable) context, null);
@@ -770,6 +779,23 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	}
 
 	/**
+	 * Checks the item-identifier constraint
+	 * 
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier
+	 * @throws IdentityConstraintException
+	 *             thrown if item-identifier constraint check fails
+	 */
+	protected void checkItemIdentifierConstraint(IConstruct c, ILocator itemIdentifier) throws IdentityConstraintException {
+		Construct c_ = doReadConstruct(c.getTopicMap(), itemIdentifier);
+		if (c_ != null && !c.equals(c_)) {
+			throw new IdentityConstraintException(c, c_, itemIdentifier, "Item-identifier already in use!");
+		}
+	}
+
+	/**
 	 * Add a new item-identifier to the given construct
 	 * 
 	 * @param c
@@ -792,6 +818,32 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract void doModifyPlayer(IAssociationRole role, ITopic player) throws TopicMapStoreException;
+
+	/**
+	 * Checks the reification constraint before calling modification method.
+	 * 
+	 * @param r
+	 *            the reified construct
+	 * @param reifier
+	 *            the reifier
+	 * @throws ModelConstraintException
+	 *             thrown if constraint check fails
+	 */
+	protected void checkReificationConstraintBeforeModification(IReifiable r, ITopic reifier) throws ModelConstraintException {
+		/*
+		 * check only if new reifier is not null
+		 */
+		if (reifier != null) {
+			Topic reifier_ = r.getReifier();
+			Reifiable r_ = reifier.getReified();
+			if (reifier_ != null && !reifier.equals(reifier_)) {
+				throw new ModelConstraintException(r, "Construct is already reified!");
+			}
+			if (r_ != null && !r.equals(r_)) {
+				throw new ModelConstraintException(r, "Reifier is already in use!");
+			}
+		}
+	}
 
 	/**
 	 * Modify the reifier of the given reified item.
@@ -2085,6 +2137,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			doRemoveTopicMap((ITopicMap) context, cascade);
 			close();
 		} else if (context instanceof ITopic) {
+			/*
+			 * check if topic is in use if deletion is not marked as cascade
+			 */
+			if ( !cascade && isTopicInUse((ITopic) context) ){
+				throw new TopicInUseException((ITopic) context, "Topic is in use!");
+			}
 			doRemoveTopic((ITopic) context, cascade);
 		} else if (context instanceof IName) {
 			doRemoveName((IName) context, cascade);
@@ -2093,7 +2151,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else if (context instanceof IAssociation) {
 			doRemoveAssociation((IAssociation) context, cascade);
 		} else if (context instanceof IAssociationRole) {
-			doRemoveRole((IAssociationRole) context, cascade);
+			/*
+			 * delete role cascade means remove parent association too
+			 */
+			if ( cascade ){
+				doRemoveAssociation(((IAssociationRole) context).getParent(), cascade);
+			}else{
+				doRemoveRole((IAssociationRole) context, cascade);
+			}
 		} else if (context instanceof IVariant) {
 			doRemoveVariant((IVariant) context, cascade);
 		} else {
@@ -2111,6 +2176,86 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 */
 	protected abstract void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws TopicMapStoreException;
+
+	/**
+	 * Method checks if the topic is used by any topic map relation.
+	 * 
+	 * @param topic
+	 *            the topic to check
+	 * @return <code>true</code> if the topic is used as type, reifier etc. ,
+	 *         <code>false</code> otherwise.
+	 */
+	protected boolean isTopicInUse(final ITopic topic) {
+		/*
+		 * use as theme
+		 */
+		try {
+			IScopedIndex scopeIndex = getIndex(IScopedIndex.class);
+			if (!scopeIndex.isOpen()) {
+				scopeIndex.open();
+			}
+			if (!scopeIndex.getScopes(topic).isEmpty()) {
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// scope index not supported
+		}
+		/*
+		 * use as type
+		 */
+		try {
+			ITypeInstanceIndex index = getIndex(ITypeInstanceIndex.class);
+			if (!index.isOpen()) {
+				index.open();
+			}
+			if (!index.getTopics(topic).isEmpty()) {
+				return true;
+			}
+			if ( !index.getAssociations(topic).isEmpty()){
+				return true;
+			}
+			if ( !index.getOccurrences(topic).isEmpty()){
+				return true;
+			}
+			if ( !index.getNames(topic).isEmpty()){
+				return true;
+			}
+			if ( !index.getRoles(topic).isEmpty()){
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// index not supported
+		}
+		/*
+		 * use as supertype
+		 */
+		try {
+			ISupertypeSubtypeIndex index = getIndex(ISupertypeSubtypeIndex.class);
+			if (!index.isOpen()) {
+				index.open();
+			}
+			if (!index.getSubtypes(topic).isEmpty()) {
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// index not supported
+		}
+		/*
+		 * use as role-player
+		 */
+		if ( !topic.getRolesPlayed().isEmpty()){
+			return true;
+		}
+
+		/*
+		 * check if deletion constraints are defined and topic is used as
+		 * reifier
+		 */
+		if (isReificationDeletionRestricted() && topic.getReified() != null) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Remove the topic.
@@ -2410,9 +2555,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	protected void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
 		new EventNotifier(listeners, event, notifier, newValue, oldValue).run();
-//		if (listeners != null) {
-//			addTaskToThreadPool(new EventNotifier(listeners, event, notifier, newValue, oldValue));
-//		}
+		// if (listeners != null) {
+		// addTaskToThreadPool(new EventNotifier(listeners, event, notifier,
+		// newValue, oldValue));
+		// }
 	}
 
 	/**

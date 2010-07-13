@@ -49,43 +49,91 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class Jdbc2Construct {
 
 	public static IAssociation toAssociation(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap);
+		try {
+			if (result.next()) {
+				return new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static ITopic toTopic(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap);
+		try {
+			if (result.next()) {
+				return new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static IName toName(ITopic topic, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new NameImpl(new JdbcIdentity(result.getString(column)), topic);
+		try {
+			if (result.next()) {
+				return new NameImpl(new JdbcIdentity(result.getString(column)), topic);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static IOccurrence toOccurrence(ITopic topic, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic);
+		try {
+			if (result.next()) {
+				return new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static IVariant toVariant(IName name, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new VariantImpl(new JdbcIdentity(result.getString(column)), name);
+		try {
+			if (result.next()) {
+				return new VariantImpl(new JdbcIdentity(result.getString(column)), name);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static IAssociationRole toRole(IAssociation association, ResultSet result, String column) throws SQLException {
-		result.next();
-		return new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association);
+		try {
+			if (result.next()) {
+				return new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association);
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static IScope toScope(ResultSet result, String column) throws SQLException {
-		result.next();
-		return new ScopeImpl(result.getString(column));
+		try {
+			if (result.next()) {
+				return new ScopeImpl(result.getString(column));
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static ILocator toLocator(ResultSet result, String column) throws SQLException {
-		result.next();
-		return new LocatorImpl(result.getString(column));
+		try {
+			if (result.next()) {
+				return new LocatorImpl(result.getString(column));
+			}
+			return null;
+		} finally {
+			result.close();
+		}
 	}
 
 	public static Set<IAssociation> toAssociations(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
@@ -93,6 +141,7 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap));
 		}
+		result.close();
 		return set;
 	}
 
@@ -101,6 +150,7 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap));
 		}
+		result.close();
 		return set;
 	}
 
@@ -109,6 +159,16 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new NameImpl(new JdbcIdentity(result.getString(column)), topic));
 		}
+		result.close();
+		return set;
+	}
+
+	public static Set<IName> toNames(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+		Set<IName> set = HashUtil.getHashSet();
+		while (result.next()) {
+			set.add(new NameImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+		}
+		result.close();
 		return set;
 	}
 
@@ -117,6 +177,16 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic));
 		}
+		result.close();
+		return set;
+	}
+
+	public static Set<IOccurrence> toOccurrences(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+		Set<IOccurrence> set = HashUtil.getHashSet();
+		while (result.next()) {
+			set.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+		}
+		result.close();
 		return set;
 	}
 
@@ -125,6 +195,7 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new VariantImpl(new JdbcIdentity(result.getString(column)), name));
 		}
+		result.close();
 		return set;
 	}
 
@@ -133,6 +204,7 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association));
 		}
+		result.close();
 		return set;
 	}
 
@@ -142,6 +214,7 @@ public class Jdbc2Construct {
 			set.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), new AssociationImpl(new JdbcIdentity(result.getString(parentIdColumn)),
 					topicMap)));
 		}
+		result.close();
 		return set;
 	}
 
@@ -150,6 +223,7 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			set.add(new LocatorImpl(result.getString(column)));
 		}
+		result.close();
 		return set;
 	}
 

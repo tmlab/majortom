@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Set;
 
+import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -256,5 +257,38 @@ public interface IQueryProcessor {
 	public void doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException;
 
 	public void doRemoveVariant(IVariant variant, boolean cascade) throws SQLException;
+
+	// ****************
+	// * INDEX METHOD *
+	// ****************
+
+	// TypeInstanceIndex
+	
+	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ITopic> getNameTypes(ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ITopic> getRoleTypes(ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ITopic> getTopicTypes(ITopicMap topicMap) throws SQLException;
+	
+	public Collection<IAssociation> getAssociationsByType(ITopic type) throws SQLException;
+
+	public Collection<IName> getNamesByType(ITopic type) throws SQLException;
+
+	public Collection<IOccurrence> getOccurrencesByType(ITopic type) throws SQLException;
+
+	public Collection<IAssociationRole> getRolesByType(ITopic type) throws SQLException;
+
+	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type) throws SQLException;
+
+	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> type, boolean all) throws SQLException;
+	
+	// ScopeIndex
+	
+	public <T extends Topic> Collection<IScope> getScopesByThemes(ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException;
+
 
 }

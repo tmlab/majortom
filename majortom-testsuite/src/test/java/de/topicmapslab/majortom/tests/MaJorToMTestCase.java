@@ -45,7 +45,7 @@ public class MaJorToMTestCase extends TestCase {
 		// factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS,
 		// InMemoryTopicMapStore.class.getCanonicalName());
 		factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
-		topicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://majortom");
+		topicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.majortom.test");
 	}
 	
 	/**

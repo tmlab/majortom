@@ -22,12 +22,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
 import de.topicmapslab.majortom.core.AssociationImpl;
@@ -190,7 +192,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setString(6, value);
 		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -199,7 +201,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
+		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -209,7 +211,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(7, Long.parseLong(scope.getId()));
 		stmt.setString(8, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -226,7 +228,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setString(6, value.getReference());
 		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -245,7 +247,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(7, Long.parseLong(scope.getId()));
 		stmt.setString(8, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -262,7 +264,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setString(6, value);
 		stmt.setString(7, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -281,7 +283,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(7, Long.parseLong(scope.getId()));
 		stmt.setString(8, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -327,7 +329,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		 */
 		ResultSet set = stmt.executeQuery();
 		if (set.next()) {
-			long id = set.getLong("id");
+			long id = set.getLong("id_scope");
 			set.close();
 			stmt.close();
 			return new ScopeImpl(Long.toString(id), themes);
@@ -337,6 +339,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		 * create scope
 		 */
 		stmt = queryBuilder.getQueryCreateScope();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.execute();
 		/*
 		 * get generated scope id
@@ -490,7 +493,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(6, Long.parseLong(scope.getId()));
 		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -508,7 +511,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(6, Long.parseLong(scope.getId()));
 		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -526,7 +529,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setLong(6, Long.parseLong(scope.getId()));
 		stmt.setString(7, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
 	}
 
 	/**
@@ -560,8 +563,8 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public void doModifyPlayer(IAssociationRole role, ITopic player) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryModifyPlayer();
-		stmt.setLong(1, Long.parseLong(role.getId()));
-		stmt.setLong(2, Long.parseLong(player.getId()));
+		stmt.setLong(1, Long.parseLong(player.getId()));
+		stmt.setLong(2, Long.parseLong(role.getId()));
 		stmt.execute();
 	}
 
@@ -570,8 +573,12 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public void doModifyReifier(IReifiable r, ITopic reifier) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryModifyReifier();
-		stmt.setLong(1, Long.parseLong(r.getId()));
-		stmt.setLong(2, Long.parseLong(reifier.getId()));
+		if (reifier == null) {
+			stmt.setNull(1, Types.BIGINT);
+		} else {
+			stmt.setLong(1, Long.parseLong(reifier.getId()));
+		}
+		stmt.setLong(2, Long.parseLong(r.getId()));
 		stmt.execute();
 	}
 
@@ -671,6 +678,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(n.getId()));
+		stmt.execute();
 	}
 
 	/**
@@ -680,13 +688,14 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(t.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
+		PreparedStatement stmt = queryBuilder.getQueryModifyValueWithDatatype();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setString(3, datatype.getReference());
@@ -827,6 +836,9 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IConstruct doReadConstruct(ITopicMap t, String id) throws SQLException {
+		if (t.getId().equalsIgnoreCase(id)) {
+			return t;
+		}
 		PreparedStatement stmt = null;
 		ResultSet set = null;
 		long topicmapId = Long.parseLong(t.getId());
@@ -837,7 +849,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(ITopic.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new TopicImpl(new JdbcIdentity(set.getString("id")), t);
@@ -847,7 +859,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(IName.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new NameImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
@@ -857,7 +869,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(IOccurrence.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new OccurrenceImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
@@ -867,7 +879,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(IAssociation.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new AssociationImpl(new JdbcIdentity(set.getString("id")), t);
@@ -877,7 +889,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(IAssociationRole.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new AssociationRoleImpl(new JdbcIdentity(set.getString("id")), new AssociationImpl(new JdbcIdentity(set.getString("id_parent")), t));
@@ -887,7 +899,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			 */
 			stmt = queryBuilder.getQueryReadConstructById(IVariant.class);
 			stmt.setLong(1, topicmapId);
-			stmt.setLong(1, id_);
+			stmt.setLong(2, id_);
 			set = stmt.executeQuery();
 			if (set.next()) {
 				return new VariantImpl(new JdbcIdentity(set.getString(1)), new NameImpl(new JdbcIdentity(set.getString(2)), new TopicImpl(new JdbcIdentity(set
@@ -913,80 +925,18 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = null;
 		ResultSet set = null;
 		long id = Long.parseLong(t.getId());
-		try {
-			/*
-			 * check for topic
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(ITopic.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new TopicImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for name
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(IName.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new NameImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for occurrence
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(IOccurrence.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new OccurrenceImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for association
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(IAssociation.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for role
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(IAssociationRole.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationRoleImpl(new JdbcIdentity(set.getString("id")), new AssociationImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for variant
-			 */
-			stmt = queryBuilder.getQueryReadConstructByItemIdentifier(IVariant.class);
-			stmt.setLong(1, id);
-			stmt.setString(2, itemIdentifier.getReference());
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new VariantImpl(new JdbcIdentity(set.getString(1)), new NameImpl(new JdbcIdentity(set.getString(2)), new TopicImpl(new JdbcIdentity(set
-						.getString(2)), t)));
-			}
-			return null;
-
+		stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
+		stmt.setLong(1, id);
+		stmt.setLong(2, id);
+		stmt.setString(3, itemIdentifier.getReference());
+		set = stmt.executeQuery();
+		if (set.next()) {
+			final String id_ = set.getString("id");
+			set.close();
+			return doReadConstruct(t, id_);
 		}
-		/*
-		 * finally close the result set
-		 */
-		finally {
-			if (set != null) {
-				set.close();
-			}
-		}
-
+		set.close();
+		return null;
 	}
 
 	/**
@@ -1121,7 +1071,16 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IReifiable doReadReification(ITopic t) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
+		PreparedStatement stmt = queryBuilder.getQueryReadReified();
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		ResultSet result = stmt.executeQuery();
+		if (result.next()) {
+			String id = result.getString("id");
+			result.close();
+			return (IReifiable) doReadConstruct(t.getTopicMap(), id);
+		}
+		result.close();
+		return null;
 	}
 
 	/**
@@ -1130,7 +1089,16 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	public ITopic doReadReification(IReifiable r) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadReifier();
 		stmt.setLong(1, Long.parseLong(r.getId()));
-		return Jdbc2Construct.toTopic(r.getTopicMap(), stmt.executeQuery(), "id_reifier");
+		ResultSet result = stmt.executeQuery();
+		if (result.next()) {
+			String id = result.getString("id_reifier");
+			result.close();
+			if (id != null && !"null".equalsIgnoreCase(id)) {
+				return new TopicImpl(new JdbcIdentity(id), r.getTopicMap());
+			}
+		}
+		result.close();
+		return null;
 	}
 
 	/**
@@ -1211,7 +1179,34 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	public IScope doReadScope(IScopable s) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadScope();
 		stmt.setLong(1, Long.parseLong(s.getId()));
-		return Jdbc2Construct.toScope(stmt.executeQuery(), "id_scope");
+		ResultSet set = stmt.executeQuery();
+		set.next();
+		long scopeId = set.getLong("id_scope");
+		set.close();
+		return new ScopeImpl(Long.toString(scopeId), readThemes(s.getTopicMap(), scopeId));
+	}
+
+	/**
+	 * Internal method to read all themes of a scope
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @param scopeId
+	 *            the scope id
+	 * @return a collection of all themes
+	 * @throws SQLException
+	 *             thrown if a database error occurrs
+	 */
+	private Collection<ITopic> readThemes(ITopicMap topicMap, long scopeId) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadThemes();
+		stmt.setLong(1, scopeId);
+		ResultSet set = stmt.executeQuery();
+		Collection<ITopic> themes = HashUtil.getHashSet();
+		while (set.next()) {
+			themes.add(new TopicImpl(new JdbcIdentity(set.getString("id_theme")), topicMap));
+		}
+		set.close();
+		return themes;
 	}
 
 	/**
@@ -1324,8 +1319,8 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Object doReadValue(IDatatypeAware t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadValue();
-		stmt.setString(1, t.getId());
-		ResultSet result = stmt.executeQuery();		
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		ResultSet result = stmt.executeQuery();
 		result.next();
 		String value = result.getString("value");
 		result.close();
@@ -1355,79 +1350,98 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
+		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
+		stmt.setLong(1, Long.parseLong(association.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteItemIdentifier();
+		stmt.setLong(1, Long.parseLong(c.getId()));
+		stmt.setString(2, itemIdentifier.getReference());
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveName(IName name, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
+		stmt.setLong(1, Long.parseLong(name.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteOccurrence();
+		stmt.setLong(1, Long.parseLong(occurrence.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteRole();
+		stmt.setLong(1, Long.parseLong(role.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveScope(IScopable s, ITopic theme) throws SQLException {
-		// TODO Auto-generated method stub
-
+		Set<ITopic> themes = HashUtil.getHashSet(s.getScopeObject().getThemes());
+		themes.remove(theme);
+		IScope scope = doCreateScope(s.getTopicMap(), themes);
+		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
+		stmt.setLong(1, Long.parseLong(scope.getId()));
+		stmt.setLong(2, Long.parseLong(s.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteSubjectIdentifier();
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		stmt.setString(2, subjectIdentifier.getReference());
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteSubjectLocator();
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		stmt.setString(2, subjectLocator.getReference());
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSupertype(ITopic t, ITopic type) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteSupertype();
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
+		stmt.setLong(1, Long.parseLong(topic.getId()));
+		stmt.execute();
 	}
 
 	/**
@@ -1436,6 +1450,8 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topicMap.getId()));
+		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.execute();
 		// TODO remove all prepared statements
 	}
@@ -1444,16 +1460,174 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveType(ITopic t, ITopic type) throws SQLException {
-		// TODO Auto-generated method stub
-
+		PreparedStatement stmt = queryBuilder.getQueryDeleteType();
+		stmt.setLong(1, Long.parseLong(t.getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemoveVariant(IVariant variant, boolean cascade) throws SQLException {
-		// TODO Auto-generated method stub
+		PreparedStatement stmt = queryBuilder.getQueryDeleteVariant();
+		stmt.setLong(1, Long.parseLong(variant.getId()));
+		stmt.execute();
+	}
 
+	// ****************
+	// * INDEX METHOD *
+	// ****************
+
+	// TypeInstanceIndex
+
+	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationTypes();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_type");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getNameTypes(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectNameTypes();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_type");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrenceTypes();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_type");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getRoleTypes(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectRoleTypes();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_type");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getTopicTypes(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectTopicTypes();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_type");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IAssociation> getAssociationsByType(ITopic type) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByType();
+		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toAssociations(type.getTopicMap(), set, "id");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByType(ITopic type) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByType();
+		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toNames(type.getTopicMap(), set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByType(ITopic type) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByType();
+		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(type.getTopicMap(), set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IAssociationRole> getRolesByType(ITopic type) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByType();
+		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toRoles(type.getTopicMap(), set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(types.size(), all);
+		ITopicMap topicMap = null;
+		int n = 2;
+		for (T type : types) {
+			topicMap = (ITopicMap) type.getTopicMap();
+			stmt.setLong(n++, Long.parseLong(type.getId()));
+		}
+		/*
+		 * empty type set
+		 */
+		if (topicMap == null) {
+			return HashUtil.getHashSet();
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (type != null) {
+			stmt.setLong(2, Long.parseLong(type.getId()));
+			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
+		}
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+	}
+
+	// ScopedIndex
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectScopes(themes.size(), all);		
+		int n = 1;
+		for (T theme : themes) {			
+			stmt.setLong(n++, Long.parseLong(theme.getId()));
+		}
+		ResultSet rs = stmt.executeQuery();
+
+		List<Long> ids = HashUtil.getList();
+		while (rs.next()) {
+			ids.add(rs.getLong("id_scope"));
+		}
+		rs.close();
+
+		/*
+		 * read themes of the scopes 
+		 */
+		Collection<IScope> scopes = HashUtil.getHashSet();
+		for (Long id : ids) {
+			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+		}
+		return scopes;
 	}
 
 }

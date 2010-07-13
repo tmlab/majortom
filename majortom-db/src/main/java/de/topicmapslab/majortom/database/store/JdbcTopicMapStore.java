@@ -27,10 +27,15 @@ import java.util.UUID;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.index.Index;
+import org.tmapi.index.ScopedIndex;
+import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -49,11 +54,14 @@ import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.index.IScopedIndex;
+import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
+import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
@@ -76,6 +84,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * the base locator of the topic map
 	 */
 	private ILocator baseLocator;
+
+	// Index Instances
+	private ITypeInstanceIndex typeInstanceIndex;
+	private IScopedIndex scopedIndex;
 
 	/**
 	 * constructor
@@ -117,7 +129,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected ILocator doCreateItemIdentifier(ITopicMap topicMap) {
-		return doCreateLocator(topicMap, doReadLocator(topicMap).getReference() + "/" + UUID.randomUUID());
+		return doCreateLocator(topicMap, baseLocator.getReference()
+				+ (baseLocator.getReference().endsWith("/") || baseLocator.getReference().endsWith("#") ? "" : "/") + UUID.randomUUID());
 	}
 
 	/**
@@ -437,7 +450,6 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyTag(ITopicMap tm, String tag, Calendar timestamp) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Not implemented");
-
 	}
 
 	/**
@@ -927,7 +939,17 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IScope doReadScope(IScopable s) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doReadScope(s);
+			IScope scope = provider.getProcessor().doReadScope(s);
+			/*
+			 * add scope of name if construct is a variant
+			 */
+			if (s instanceof IVariant) {
+				IScope parent = provider.getProcessor().doReadScope((IScopable) s.getParent());
+				Collection<ITopic> themes = HashUtil.getHashSet(scope.getThemes());
+				themes.addAll(parent.getThemes());
+				scope = doCreateScope(getTopicMap(), themes);
+			}
+			return scope;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1094,90 +1116,110 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveAssociation(association, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveItemIdentifier(c, itemIdentifier);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveName(name, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveOccurrence(occurrence, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveRole(role, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveScope(IScopable s, ITopic theme) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveScope(s, theme);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveSubjectIdentifier(t, subjectIdentifier);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveSubjectLocator(t, subjectLocator);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSupertype(ITopic t, ITopic type) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveSupertype(t, type);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveTopic(topic, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -1195,18 +1237,22 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveType(ITopic t, ITopic type) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveType(t, type);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doRemoveVariant(variant, cascade);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -1228,7 +1274,19 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public <I extends Index> I getIndex(Class<I> clazz) {
+		if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (this.typeInstanceIndex == null) {
+				this.typeInstanceIndex = new JdbcTypeInstanceIndex(this);
+			}
+			return (I) this.typeInstanceIndex;
+		}else if (ScopedIndex.class.isAssignableFrom(clazz)) {
+			if (this.scopedIndex == null) {
+				this.scopedIndex = new JdbcScopedIndex(this);
+			}
+			return (I) this.scopedIndex;
+		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");
 	}
@@ -1281,6 +1339,18 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	public boolean supportRevisions() {
 		return false;
+	}
+
+	/**
+	 * Returns the internal sql processor
+	 * 
+	 * @return the provider
+	 */
+	public IQueryProcessor getProcessor() {
+		if (provider == null) {
+			throw new TopicMapStoreException("Connection not established!");
+		}
+		return provider.getProcessor();
 	}
 
 }

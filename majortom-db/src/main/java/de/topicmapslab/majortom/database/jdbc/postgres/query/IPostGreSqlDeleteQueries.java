@@ -20,10 +20,42 @@ package de.topicmapslab.majortom.database.jdbc.postgres.query;
 
 /**
  * @author Sven Krosse
- *
+ * 
  */
 public interface IPostGreSqlDeleteQueries {
 
-	public static final String QUERY_DELETE_TOPICMAP = "DELETE FROM topicmaps WHERE id = ?;";
+	// ********************
+	// * DELETE CONSTRUCT *
+	// ********************
+
+	public static final String QUERY_DELETE_ALL_ITEM_IDENTIFIERS = "DELETE FROM rel_item_identifiers WHERE id_construct IN ( SELECT id FROM constructs WHERE id_topicmap = ? OR id = ? );";
 	
+	public static final String QUERY_DELETE_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + "DELETE FROM topicmaps WHERE id = ?;";
+
+	public static final String QUERY_DELETE_TOPIC = "DELETE FROM topics WHERE id = ?;";
+
+	public static final String QUERY_DELETE_NAME = "DELETE FROM names WHERE id = ?;";
+
+	public static final String QUERY_DELETE_OCCURRENCE = "DELETE FROM occurrences WHERE id = ?;";
+
+	public static final String QUERY_DELETE_VARIANT = "DELETE FROM variants WHERE id = ?;";
+
+	public static final String QUERY_DELETE_ASSOCIATION = "DELETE FROM associations WHERE id = ?;";
+
+	public static final String QUERY_DELETE_ROLE = "DELETE FROM roles WHERE id = ?;";
+
+	// ***************
+	// * DELETE DATA *
+	// ***************
+
+	public static final String QUERY_DELETE_TYPE = "DELETE FROM rel_instance_of WHERE id_instance = ? AND id_type = ?;";
+
+	public static final String QUERY_DELETE_SUPERTYPE = "DELETE FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ?;";
+
+	public static final String QUERY_DELETE_SUBJECT_IDENTIFIER = "DELETE FROM rel_subject_identifiers WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+
+	public static final String QUERY_DELETE_SUBJECT_LOCATOR = "DELETE FROM rel_subject_locators WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+
+	public static final String QUERY_DELETE_ITEM_IDENTIFIER = "DELETE FROM rel_item_identifiers WHERE id_construct = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+
 }

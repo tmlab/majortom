@@ -79,7 +79,7 @@ public interface IPostGreSqlInsertQueries {
 	 * </p>
 	 */
 	public static final String QUERY_CREATE_OCCURRENCE = SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS
-			+ "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype) SELECT ?,?,?,?, id FROM locators WHERE reference LIKE ?;";
+			+ "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype) SELECT ?,?,?,?, l.id FROM locators AS l WHERE l.reference LIKE ?;";
 	/**
 	 * query to create an occurrence
 	 * <p>
@@ -88,7 +88,7 @@ public interface IPostGreSqlInsertQueries {
 	 * </p>
 	 */
 	public static final String QUERY_CREATE_OCCURRENCE_WITH_SCOPE = SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS
-			+ "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype, id_scope) SELECT ?,?,?,?,id,? WHERE reference LIKE ?;";
+			+ "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype, id_scope) SELECT ?,?,?,?,id,? FROM locators WHERE reference LIKE ?;";
 	/**
 	 * query to create an association role
 	 * <p>
@@ -98,8 +98,11 @@ public interface IPostGreSqlInsertQueries {
 	public static final String QUERY_CREATE_ROLE = "INSERT INTO roles(id_topicmap, id_parent, id_type, id_player) VALUES (?,?,?,?)";
 	/**
 	 * query to create a scope object
+	 * <p>
+	 * <b>parameters(1):</b> topic map id
+	 * </p>
 	 */
-	public static final String QUERY_CREATE_SCOPE = "INSERT INTO scopes VALUES (nextval('seq_scope_id'))";
+	public static final String QUERY_CREATE_SCOPE = "INSERT INTO scopes(id_topicmap) VALUES (?)";
 	/**
 	 * query to create a topic with two parameters
 	 * <p>
@@ -115,5 +118,5 @@ public interface IPostGreSqlInsertQueries {
 	 * </p>
 	 */
 	public static final String QUERY_CREATE_VARIANT = SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS
-			+ "INSERT INTO variants (id_topicmap, id_parent, value, id_datatype, id_scope) SELECT ?,?,?,id,? WHERE reference LIKE ?;";
+			+ "INSERT INTO variants (id_topicmap, id_parent, value, id_datatype, id_scope) SELECT ?,?,?,id,? FROM locators WHERE reference LIKE ?;";
 }

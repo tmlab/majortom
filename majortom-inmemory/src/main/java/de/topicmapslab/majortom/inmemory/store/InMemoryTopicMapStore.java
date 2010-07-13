@@ -2689,15 +2689,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	void removeRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
-		/*
-		 * remove dependent association too?
-		 */
-		if (cascade) {
-			/*
-			 * remove parent association
-			 */
-			doRemoveAssociation(role.getParent(), true);
-		} else {
+// REMOVED BECAUSE WILL BE HANDLED BY TOPICMAPSTOREIMPL
+//		/*
+//		 * remove dependent association too?
+//		 */
+//		if (cascade) {
+//			/*
+//			 * remove parent association
+//			 */
+//			doRemoveAssociation(role.getParent(), true);
+//		} else {
 			/*
 			 * store lazy copy of the object before deletion
 			 */
@@ -2733,7 +2734,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 * store revision
 			 */
 			storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, role.getParent(), null, role);
-		}
+//		}
 	}
 
 	/**

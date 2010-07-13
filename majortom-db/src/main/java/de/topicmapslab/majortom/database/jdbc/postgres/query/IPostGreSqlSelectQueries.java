@@ -157,45 +157,10 @@ public interface IPostGreSqlSelectQueries {
 	/**
 	 * query to read a construct by item-identifier
 	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
+	 * <b>parameters(3):</b> topic map id,topic map id, the reference
 	 * </p>
 	 */
-	public static final String QUERY_READ_TOPIC_BY_ITEM_IDENTIFIER = " SELECT c.id FROM topics AS c, locators AS l, rel_item_identifiers as r WHERE id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
-	/**
-	 * query to read a construct by item-identifier
-	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
-	 * </p>
-	 */
-	public static final String QUERY_READ_NAME_BY_ITEM_IDENTIFIER = " SELECT c.id, c.id_parent FROM names AS c, locators AS l, rel_item_identifiers as r WHERE id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
-	/**
-	 * query to read a construct by item-identifier
-	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
-	 * </p>
-	 */
-	public static final String QUERY_READ_OCCURRENCE_BY_ITEM_IDENTIFIER = " SELECT c.id, c.id_parent FROM occurrences AS c, locators AS l, rel_item_identifiers as r WHERE id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
-	/**
-	 * query to read a construct by item-identifier
-	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
-	 * </p>
-	 */
-	public static final String QUERY_READ_VARIANT_BY_ITEM_IDENTIFIER = " SELECT c.id, n.id, n.id_parent FROM variants AS c, locators AS l, rel_item_identifiers as r, names AS n WHERE c.id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id AND c.id_parent = n.id;";
-	/**
-	 * query to read a construct by item-identifier
-	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
-	 * </p>
-	 */
-	public static final String QUERY_READ_ASSOCIATION_BY_ITEM_IDENTIFIER = " SELECT c.id, c.id_parent FROM associations AS c, locators AS l, rel_item_identifiers as r WHERE id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
-	/**
-	 * query to read a construct by item-identifier
-	 * <p>
-	 * <b>parameters(2):</b> topic map id, the reference
-	 * </p>
-	 */
-	public static final String QUERY_READ_ROLE_BY_ITEM_IDENTIFIER = " SELECT c.id FROM roles AS c, locators AS l, rel_item_identifiers as r WHERE id_topicmap = ? AND reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
+	public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = " SELECT c.id FROM constructs AS c, rel_item_identifiers AS r, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
 
 	// ********************
 	// * READ DATATYPE *
@@ -219,7 +184,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(1):</b> construct id
 	 * </p>
 	 */
-	public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ?";
+	public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ? AND r.id_locator = l.id";
 
 	// **************
 	// * READ NAMES *
@@ -336,7 +301,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> association id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM associations WHERE id_parent = ? AND id_type = ?";
+	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ?";
 	/**
 	 * Query to read all played roles
 	 * <p>
@@ -359,7 +324,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> player id, type id, asso_type
 	 * </p>
 	 */
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_tpe = ?";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_type = ?";
 
 	/**
 	 * Query to read all roles types
@@ -379,14 +344,14 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(1):</b> topic id
 	 * </p>
 	 */
-	public static final String QUERY_READ_SUBJECT_IDENTIFIERS = "SELECT reference FROM locators AS l, rel_subject_identifiers AS r WHERE r.id_topic = ?";
+	public static final String QUERY_READ_SUBJECT_IDENTIFIERS = "SELECT reference FROM locators AS l, rel_subject_identifiers AS r WHERE r.id_topic = ? AND r.id_locator = l.id";
 	/**
 	 * Query to read all subject-locators of a topic
 	 * <p>
 	 * <b>parameters(1):</b> topic id
 	 * </p>
 	 */
-	public static final String QUERY_READ_SUBJECT_LOCATORS = "SELECT reference FROM locators AS l, rel_subject_locators AS r WHERE r.id_topic = ?";
+	public static final String QUERY_READ_SUBJECT_LOCATORS = "SELECT reference FROM locators AS l, rel_subject_locators AS r WHERE r.id_topic = ? AND r.id_locator = l.id";
 
 	// **************
 	// * READ TOPICS *
@@ -462,13 +427,21 @@ public interface IPostGreSqlSelectQueries {
 	public static final String QUERY_READ_SCOPE = "SELECT DISTINCT id_scope FROM scopeables WHERE id = ?";
 
 	/**
+	 * Query to read the themes of a scope
+	 * <p>
+	 * <b>parameters(1):</b> the scope id
+	 * </p>
+	 */
+	public static final String QUERY_READ_THEMES = "SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = ?";
+
+	/**
 	 * Query to read the scope object by a collection of themes
 	 * <p>
 	 * <b>parameters(1):</b> an array of theme IDs ( ASC )
 	 * </p>
 	 */
 	public static final String QUERY_READ_SCOPE_BY_THEMES = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE ARRAY(SELECT id_theme FROM rel_themes AS r2 WHERE r2.id_scope = r.id_scope ORDER BY r2.id_theme ASC ) = CAST ( ARRAY[?] AS bigint[])";
-	
+
 	// **************
 	// * READ VALUE *
 	// **************
