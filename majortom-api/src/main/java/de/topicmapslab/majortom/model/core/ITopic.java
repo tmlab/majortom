@@ -48,7 +48,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @return a collection of all associations using the current topic as
 	 *         acting player.
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed();
+	public Collection<Association> getAssociationsPlayed();
 
 	/**
 	 * Returns all associations using the current topic as acting player and
@@ -59,7 +59,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @return a collection of all associations of the given type using the
 	 *         current topic as acting player.
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type);
+	public Collection<Association> getAssociationsPlayed(Topic type);
 
 	/**
 	 * Returns all associations using the current topic as acting player and
@@ -70,7 +70,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @return a collection of all associations using the current topic as
 	 *         acting player and being valid in the given scope.
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(IScope scope);
+	public Collection<Association> getAssociationsPlayed(IScope scope);
 
 	/**
 	 * Returns all associations using the current topic as acting player, being
@@ -83,7 +83,7 @@ public interface ITopic extends Topic, IConstruct {
 	 *         current topic as acting player and being valid in the given
 	 *         scope.
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type, IScope scope);
+	public  Collection<Association> getAssociationsPlayed(Topic type, IScope scope);
 
 	/**
 	 * Returns all characteristics of the current topic item.
@@ -118,7 +118,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @param scope the scope
 	 * @return a collection of all name characteristics
 	 */
-	public <T extends Name> Collection<T> getNames(Topic type, IScope scope);
+	public Collection<Name> getNames(Topic type, IScope scope);
 
 	/**
 	 * Returns all name characteristics of the current topic item being valid in
@@ -127,7 +127,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @param scope the scope
 	 * @return a collection of all name characteristics
 	 */
-	public <T extends Name> Collection<T> getNames(IScope scope);
+	public Collection<Name> getNames(IScope scope);
 
 	/**
 	 * Returns all occurrence characteristics of the current topic item being an
@@ -137,7 +137,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @param scope the scope
 	 * @return a collection of all occurrence characteristics
 	 */
-	public <T extends Occurrence> Collection<T> getOccurrences(Topic type, IScope scope);
+	public Collection<Occurrence> getOccurrences(Topic type, IScope scope);
 
 	/**
 	 * Returns all occurrence characteristics of the current topic item being
@@ -146,7 +146,7 @@ public interface ITopic extends Topic, IConstruct {
 	 * @param scope the scope
 	 * @return a collection of all occurrence characteristics
 	 */
-	public <T extends Occurrence> Collection<T> getOccurrences(IScope scope);
+	public Collection<Occurrence> getOccurrences(IScope scope);
 
 	/**
 	 * Returns all characteristics of the current topic item being an instance

@@ -29,7 +29,10 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.core.LocatorImpl;
+import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
+import de.topicmapslab.majortom.model.core.IName;
+import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
@@ -47,6 +50,8 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	private Set<String> supertypeIds = HashUtil.getHashSet();
 	private Set<String> nameIds = HashUtil.getHashSet();
 	private Set<String> occurrenceIds = HashUtil.getHashSet();
+	private Set<String> rolesPlayedIds = HashUtil.getHashSet();
+	private Set<String> associationsPlayedIds = HashUtil.getHashSet();
 	private final String reifiedId;
 
 	/*
@@ -56,11 +61,14 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	private Set<Name> cachedNames;
 	private Set<Occurrence> cachedOccurrences;
 	private Reifiable cachedReified;
+	private Set<Role> cachedRolesPlayed;
+	private Set<Association> cachedAssociationsPlayed;
 
 	/**
 	 * constructor
 	 * 
-	 * @param clone the topic to clone
+	 * @param clone
+	 *            the topic to clone
 	 * @param parent
 	 */
 	public ReadOnlyTopic(ITopic clone) {
@@ -95,6 +103,14 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 		} else {
 			reifiedId = null;
 		}
+
+		for (Role role : clone.getRolesPlayed()) {
+			rolesPlayedIds.add(role.getId());
+		}
+
+		for (Association association : clone.getAssociationsPlayed()) {
+			associationsPlayedIds.add(association.getId());
+		}
 	}
 
 	/**
@@ -114,85 +130,173 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed() {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Association> getAssociationsPlayed() {
+		Collection<Association> associations = HashUtil.getHashSet();
+		if (cachedAssociationsPlayed != null) {
+			associations.addAll(cachedAssociationsPlayed);
+		}
+		if (!associationsPlayedIds.isEmpty()) {
+			Set<String> ids = HashUtil.getHashSet(associationsPlayedIds);
+			for (String id : ids) {
+				Association association = (Association) getTopicMap().getConstructById(id);
+				if (association instanceof ReadOnlyAssociation) {
+					if (cachedAssociationsPlayed == null) {
+						cachedAssociationsPlayed = HashUtil.getHashSet();
+					}
+					cachedAssociationsPlayed.add(association);
+					cachedAssociationsPlayed.remove(id);
+				}
+				associations.add(association);
+			}
+		}
+		return associations;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Association> getAssociationsPlayed(Topic type) {
+		Collection<Association> associations = HashUtil.getHashSet();
+		for (Association association : getAssociationsPlayed()) {
+			if (association.getType().equals(type)) {
+				associations.add(association);
+			}
+		}
+		return associations;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Association> getAssociationsPlayed(IScope scope) {
+		Collection<Association> associations = HashUtil.getHashSet();
+		for (Association association : getAssociationsPlayed()) {
+			if (((IAssociation) association).getScopeObject().equals(scope)) {
+				associations.add(association);
+			}
+		}
+		return associations;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type, IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Association> getAssociationsPlayed(Topic type, IScope scope) {
+		Collection<Association> associations = HashUtil.getHashSet();
+		for (Association association : getAssociationsPlayed()) {
+			if (association.getType().equals(type) && ((IAssociation) association).getScopeObject().equals(scope)) {
+				associations.add(association);
+			}
+		}
+		return associations;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristics() {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
+		for (Name n : getNames()) {
+			set.add((IName) n);
+		}
+		for (Occurrence o : getOccurrences()) {
+			set.add((IOccurrence) o);
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristics(Topic type) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
+		for (Name n : getNames(type)) {
+			set.add((IName) n);
+		}
+		for (Occurrence o : getOccurrences(type)) {
+			set.add((IOccurrence) o);
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristics(IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
+		for (Name n : getNames(scope)) {
+			set.add((IName) n);
+		}
+		for (Occurrence o : getOccurrences(scope)) {
+			set.add((IOccurrence) o);
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristics(Topic type, IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
+		for (Name n : getNames(type, scope)) {
+			set.add((IName) n);
+		}
+		for (Occurrence o : getOccurrences(type, scope)) {
+			set.add((IOccurrence) o);
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Name> Collection<T> getNames(Topic type, IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Name> getNames(Topic type, IScope scope) {
+		Set<Name> set = HashUtil.getHashSet();
+		for (Name n : getNames()) {
+			if (n.getType().equals(type) && ((IName) n).getScopeObject().equals(scope)) {
+				set.add(n);
+			}
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Name> Collection<T> getNames(IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Name> getNames(IScope scope) {
+		Set<Name> set = HashUtil.getHashSet();
+		for (Name n : getNames()) {
+			if (((IName) n).getScopeObject().equals(scope)) {
+				set.add(n);
+			}
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Occurrence> Collection<T> getOccurrences(Topic type, IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Occurrence> getOccurrences(Topic type, IScope scope) {
+		Set<Occurrence> set = HashUtil.getHashSet();
+		for (Occurrence o : getOccurrences()) {
+			if (o.getType().equals(type) && ((IOccurrence) o).getScopeObject().equals(scope)) {
+				set.add(o);
+			}
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Occurrence> Collection<T> getOccurrences(IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Collection<Occurrence> getOccurrences(IScope scope) {
+		Set<Occurrence> set = HashUtil.getHashSet();
+		for (Occurrence o : getOccurrences()) {
+			if (((IOccurrence) o).getScopeObject().equals(scope)) {
+				set.add(o);
+			}
+		}
+		return set;
 	}
 
 	/**
@@ -346,8 +450,14 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Name> getNames(Topic arg0) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Set<Name> getNames(Topic type) {
+		Set<Name> set = HashUtil.getHashSet();
+		for (Name n : getNames()) {
+			if (n.getType().equals(type)) {
+				set.add(n);
+			}
+		}
+		return set;
 	}
 
 	/**
@@ -378,8 +488,14 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Occurrence> getOccurrences(Topic arg0) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Set<Occurrence> getOccurrences(Topic type) {
+		Set<Occurrence> set = HashUtil.getHashSet();
+		for (Occurrence o : getOccurrences()) {
+			if (o.getType().equals(type)) {
+				set.add(o);
+			}
+		}
+		return set;
 	}
 
 	/**
@@ -403,21 +519,51 @@ public class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 	 * {@inheritDoc}
 	 */
 	public Set<Role> getRolesPlayed() {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Set<Role> roles = HashUtil.getHashSet();
+		if (cachedRolesPlayed != null) {
+			roles.addAll(cachedRolesPlayed);
+		}
+		if (!rolesPlayedIds.isEmpty()) {
+			Set<String> ids = HashUtil.getHashSet(rolesPlayedIds);
+			for (String id : ids) {
+				Role role = (Role) getTopicMap().getConstructById(id);
+				if (role instanceof ReadOnlyAssociationRole) {
+					if (cachedRolesPlayed == null) {
+						cachedRolesPlayed = HashUtil.getHashSet();
+					}
+					cachedRolesPlayed.add(role);
+					cachedRolesPlayed.remove(id);
+				}
+				roles.add(role);
+			}
+		}
+		return roles;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Role> getRolesPlayed(Topic arg0) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+	public Set<Role> getRolesPlayed(Topic type) {
+		Set<Role> roles = HashUtil.getHashSet();
+		for (Role role : getRolesPlayed()) {
+			if (role.getType().equals(type)) {
+				roles.add(role);
+			}
+		}
+		return roles;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Role> getRolesPlayed(Topic arg0, Topic arg1) {
-		throw new UnsupportedOperationException();
+	public Set<Role> getRolesPlayed(Topic type, Topic assoType) {
+		Set<Role> roles = HashUtil.getHashSet();
+		for (Role role : getRolesPlayed()) {
+			if (role.getType().equals(type) && role.getParent().getType().equals(assoType)) {
+				roles.add(role);
+			}
+		}
+		return roles;
 	}
 
 	/**

@@ -78,7 +78,7 @@ public class HashUtil {
 	 * @return the created set
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Set<T> getHashSet(Collection<T> initial) {
+	public static <T> Set<T> getHashSet(Collection<? extends T> initial) {
 		if (initial == null) {
 			return getHashSet();
 		}
@@ -148,7 +148,7 @@ public class HashUtil {
 	 * @return the created map
 	 */
 	@SuppressWarnings("unchecked")
-	public static <K, V> Map<K, V> getHashMap(Map<K, V> initial) {
+	public static <K, V> Map<K, V> getHashMap(Map<? extends K, ? extends V> initial) {
 		if (initial == null) {
 			return getHashMap();
 		}
@@ -209,7 +209,7 @@ public class HashUtil {
 	 *            the value type
 	 * @return the created map
 	 */
-	public static <K, V> Map<K, V> getWeakHashMap(Map<K, V> initial) {
+	public static <K, V> Map<K, V> getWeakHashMap(Map<? extends K, ? extends V> initial) {
 		if (initial == null) {
 			return getWeakHashMap();
 		}

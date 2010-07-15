@@ -32,6 +32,7 @@ import org.tmapi.core.Reifiable;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
@@ -42,6 +43,7 @@ import de.topicmapslab.majortom.model.core.paged.IPagedTopic;
 import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * Base implementation of {@link ITopic}
@@ -67,40 +69,46 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Association> Collection<T> getAssociationsPlayed() {
-		return (Collection<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION);
+	public Collection<Association> getAssociationsPlayed() {
+		Set<Association> col = HashUtil.getHashSet();
+		col.addAll((Collection<IAssociation>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type) {
+	public Collection<Association> getAssociationsPlayed(Topic type) {
 		if (type == null) {
 			throw new IllegalArgumentException("Association type filter cannot be null!");
 		}
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type));
+		Set<Association> col = HashUtil.getHashSet();
+		col.addAll((Set<IAssociation>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Association> Collection<T> getAssociationsPlayed(IScope scope) {
+	public Collection<Association> getAssociationsPlayed(IScope scope) {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, scope));
+		Set<Association> col = HashUtil.getHashSet();
+		col.addAll((Set<IAssociation>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Association> Collection<T> getAssociationsPlayed(Topic type, IScope scope) {
+	public Collection<Association> getAssociationsPlayed(Topic type, IScope scope) {
 		if (type == null) {
 			throw new IllegalArgumentException("Association type filter cannot be null!");
 		}
@@ -110,7 +118,9 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type, scope));
+		Set<Association> col = HashUtil.getHashSet();
+		col.addAll((Set<IAssociation>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
@@ -168,7 +178,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Name> Collection<T> getNames(Topic type, IScope scope) {
+	public Collection<Name> getNames(Topic type, IScope scope) {
 		if (type == null) {
 			throw new IllegalArgumentException("Name type filter cannot be null!");
 		}
@@ -178,25 +188,29 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, type, scope));
+		Set<Name> col = HashUtil.getHashSet();
+		col.addAll((Set<IName>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, type, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Name> Collection<T> getNames(IScope scope) {
+	public Collection<Name> getNames(IScope scope) {
 		if (scope == null) {
 			throw new IllegalArgumentException("Name scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, scope));
+		Set<Name> col = HashUtil.getHashSet();
+		col.addAll((Set<IName>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.NAME, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Occurrence> Collection<T> getOccurrences(Topic type, IScope scope) {
+	public Collection<Occurrence> getOccurrences(Topic type, IScope scope) {
 		if (type == null) {
 			throw new IllegalArgumentException("Occurrence type filter cannot be null!");
 		}
@@ -206,18 +220,22 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		if (!type.getParent().equals(getTopicMap())) {
 			throw new IllegalArgumentException("Type has to be a topic of the same topic map!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, type, scope));
+		Set<Occurrence> col = HashUtil.getHashSet();
+		col.addAll((Set<IOccurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, type, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Occurrence> Collection<T> getOccurrences(IScope scope) {
+	public Collection<Occurrence> getOccurrences(IScope scope) {
 		if (scope == null) {
 			throw new IllegalArgumentException("Occurrence scope filter cannot be null!");
 		}
-		return Collections.unmodifiableSet((Set<T>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, scope));
+		Set<Occurrence> col = HashUtil.getHashSet();
+		col.addAll((Set<IOccurrence>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.OCCURRENCE, scope));
+		return Collections.unmodifiableSet(col);
 	}
 
 	/**

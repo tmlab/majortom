@@ -122,6 +122,30 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(oldValue, change.getOldValue());
 	}
 
+	public void testTopicRemovedRevision() throws Exception {
+		ITopic topic = createTopic();
+		ITopic type = createTopic();
+		IAssociation association = createAssociation(createTopic());
+		Role role = association.createRole(type, topic);
+		
+		topic.remove(true);
+		
+
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		IRevision revision = index.getLastRevision();
+		assertEquals(3, revision.getChangeset().size());
+		Changeset set = revision.getChangeset();
+		assertEquals(topic, set.get(2).getOldValue());
+		ITopic clone = (ITopic)set.get(2).getOldValue();
+		assertEquals(1, clone.getRolesPlayed().size());
+		assertTrue(clone.getRolesPlayed().contains(role));
+		assertEquals(1, clone.getRolesPlayed(type).size());
+		assertTrue(clone.getRolesPlayed(type).contains(role));
+		assertEquals(1, clone.getAssociationsPlayed().size());
+		assertTrue(clone.getAssociationsPlayed().contains(association));		
+	}
+	
 	public void testRoleRevisions() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();

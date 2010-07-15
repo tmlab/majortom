@@ -706,22 +706,18 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventReifierSet() throws Exception {
 		ITopic reifier = createTopic();
-		ITopic otherReifier = createTopic();
+		ITopic otherReifier = null;
 		// for name
 		Name name = createTopic().createName("Name", new Topic[0]);
-		name.setReifier(otherReifier);
 		_testEventReifierSet(name, reifier, otherReifier);
 		// for variant
 		Variant variant = name.createVariant("Variant", createTopic());
-		variant.setReifier(otherReifier);
 		_testEventReifierSet(variant, reifier, otherReifier);
 		// for occurrence
 		Occurrence occurrence = createTopic().createOccurrence(createTopic(), "Occurrence", createTopic());
-		occurrence.setReifier(otherReifier);
 		_testEventReifierSet(occurrence, reifier, otherReifier);
 		// for association
 		Association association = createAssociation(createTopic());
-		association.setReifier(otherReifier);
 		_testEventReifierSet(association, reifier, otherReifier);
 		// for role
 		Role role = association.createRole(createTopic(), createTopic());
