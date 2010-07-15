@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-package de.topicmapslab.majortom.model.store;
-
 /**
- * Interface definition of identity of a topic map construct contained by a
- * {@link ITopicMapStore}.
- * 
- * @author Sven Krosse
  * 
  */
-public interface ITopicMapStoreIdentity {
+package de.topicmapslab.majortom.database;
 
-	String getId();
-	
-	public void setId(final String id);
+import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+/**
+ * @author Sven Krosse
+ *
+ */
+public class JdbcTestSuite extends TestSuite {
+
+	public static Test suite() {
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.inmemory");
+		// $JUnit-BEGIN$
+		suite.addTest(MaJorToMTestSuite.suite());
+		// $JUnit-END$
+		return suite;
+	}
 	
 }

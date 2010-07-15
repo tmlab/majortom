@@ -199,6 +199,26 @@ public class Jdbc2Construct {
 		return set;
 	}
 
+	public static Set<IVariant> toVariants(ITopicMap topicMap, ResultSet result) throws SQLException {
+		Set<IVariant> set = HashUtil.getHashSet();
+		while (result.next()) {
+			set.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(new JdbcIdentity(
+					result.getString(3)), topicMap))));
+		}
+		result.close();
+		return set;
+	}
+
+	public static Set<IVariant> toVariants(ITopicMap topicMap, ResultSet result, String column, String nameIdColumn, String topicIdColumn) throws SQLException {
+		Set<IVariant> set = HashUtil.getHashSet();
+		while (result.next()) {
+			set.add(new VariantImpl(new JdbcIdentity(result.getString(column)), new NameImpl(new JdbcIdentity(result.getString(nameIdColumn)), new TopicImpl(
+					new JdbcIdentity(result.getString(topicIdColumn)), topicMap))));
+		}
+		result.close();
+		return set;
+	}
+
 	public static Set<IAssociationRole> toRoles(IAssociation association, ResultSet result, String column) throws SQLException {
 		Set<IAssociationRole> set = HashUtil.getHashSet();
 		while (result.next()) {

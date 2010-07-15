@@ -52,7 +52,7 @@ import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
  * @author Sven Krosse
  * 
  */
-public class MergeUtils {
+public class InMemoryMergeUtils {
 
 	/**
 	 * Method checks if there is a topic with the same name

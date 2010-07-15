@@ -419,6 +419,14 @@ public interface IPostGreSqlSelectQueries {
 	// **************
 
 	/**
+	 * Query to read the empty scope of the topic map
+	 * <p>
+	 * <b>parameters(1):</b> the topic map id
+	 * </p>
+	 */
+	public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id_topicmap = ? AND id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) ";
+
+	/**
 	 * Query to read the scope of a construct
 	 * <p>
 	 * <b>parameters(1):</b> the construct id
@@ -437,10 +445,11 @@ public interface IPostGreSqlSelectQueries {
 	/**
 	 * Query to read the scope object by a collection of themes
 	 * <p>
-	 * <b>parameters(1):</b> an array of theme IDs ( ASC )
+	 * <b>parameters(1):</b> the topic map id and an array of theme IDs ( ASC )
 	 * </p>
 	 */
-	public static final String QUERY_READ_SCOPE_BY_THEMES = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE ARRAY(SELECT id_theme FROM rel_themes AS r2 WHERE r2.id_scope = r.id_scope ORDER BY r2.id_theme ASC ) = CAST ( ARRAY[?] AS bigint[])";
+	public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE ARRAY(SELECT id_theme FROM rel_themes AS r2 WHERE r2.id_scope = r.id_scope ORDER BY r2.id_theme ASC ) %OPERATOR% CAST ( ARRAY[%ARRAY%] AS bigint[])";
+	
 
 	// **************
 	// * READ VALUE *

@@ -71,7 +71,7 @@ public class InMemoryIdentity implements ITopicMapStoreIdentity {
 	 * 
 	 * @param id the id to set
 	 */
-	void setId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

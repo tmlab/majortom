@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package de.topicmapslab.majortom.inmemory;
 
-package de.topicmapslab.majortom.model.store;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
 
 /**
- * Interface definition of identity of a topic map construct contained by a
- * {@link ITopicMapStore}.
- * 
  * @author Sven Krosse
  * 
  */
-public interface ITopicMapStoreIdentity {
+public class InMemoryMaJorToMTestSuite {
 
-	String getId();
-	
-	public void setId(final String id);
-	
+	public static Test suite() {
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.inmemory");
+		// $JUnit-BEGIN$
+		suite.addTest(MaJorToMTestSuite.suite());
+		// $JUnit-END$
+		return suite;
+	}
+
 }

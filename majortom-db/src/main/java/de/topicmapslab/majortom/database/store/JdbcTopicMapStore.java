@@ -27,11 +27,13 @@ import java.util.UUID;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.index.Index;
+import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
@@ -54,11 +56,13 @@ import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -88,6 +92,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	// Index Instances
 	private ITypeInstanceIndex typeInstanceIndex;
 	private IScopedIndex scopedIndex;
+	private ILiteralIndex literalIndex;
 
 	/**
 	 * constructor
@@ -280,6 +285,17 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
+		try {
+			return provider.getProcessor().doCreateTopicWithoutIdentifier(topicMap);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doCreateTopicByItemIdentifier(topicMap, itemIdentifier);
@@ -347,18 +363,22 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doMergeTopicMaps(TopicMap context, TopicMap other) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		TypeInstanceIndex index = other.getIndex(TypeInstanceIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		MergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
+		try {
+			provider.getProcessor().doMergeTopics(context, other);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -436,6 +456,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
+		/*
+		 * create type-hierarchy as association if necessary
+		 */
+		if (typeHiearchyAsAssociation()) {
+			createSupertypeSubtypeAssociation(t, type, null);
+		}
 	}
 
 	/**
@@ -471,6 +497,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			provider.getProcessor().doModifyType(t, type);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		}
+		/*
+		 * create association if necessary
+		 */
+		if (typeHiearchyAsAssociation()) {
+			createTypeInstanceAssociation(t, type, null);
 		}
 	}
 
@@ -1209,6 +1241,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
+		/*
+		 * remove supertype-association if necessary
+		 */
+		if (typeHiearchyAsAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
+			removeSupertypeSubtypeAssociation(t, type, null);
+		}
 	}
 
 	/**
@@ -1241,6 +1279,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			provider.getProcessor().doRemoveType(t, type);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		}
+		/*
+		 * remove type-association if necessary
+		 */
+		if (typeHiearchyAsAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
+			removeSupertypeSubtypeAssociation(t, type, null);
 		}
 	}
 
@@ -1281,11 +1325,16 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 				this.typeInstanceIndex = new JdbcTypeInstanceIndex(this);
 			}
 			return (I) this.typeInstanceIndex;
-		}else if (ScopedIndex.class.isAssignableFrom(clazz)) {
+		} else if (ScopedIndex.class.isAssignableFrom(clazz)) {
 			if (this.scopedIndex == null) {
 				this.scopedIndex = new JdbcScopedIndex(this);
 			}
 			return (I) this.scopedIndex;
+		} else if (LiteralIndex.class.isAssignableFrom(clazz)) {
+			if (this.literalIndex == null) {
+				this.literalIndex = new JdbcLiteralIndex(this);
+			}
+			return (I) this.literalIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");
@@ -1312,7 +1361,6 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Cannot open connection to database!", e);
 		}
 		this.baseLocator = (ILocator) topicMapBaseLocator;
-
 	}
 
 	/**

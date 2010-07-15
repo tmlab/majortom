@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.store;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,6 +27,7 @@ import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Reifiable;
+import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
@@ -61,6 +63,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
+import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * Base implementation of {@link ITopicMapStore}.
@@ -564,6 +567,17 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	protected abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
+	 * Create a new topic item without any identifier.
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException;
+
+	/**
 	 * Create a new topic item.
 	 * 
 	 * @param topicMap
@@ -679,8 +693,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
 			if (params.length == 1 && params[0] instanceof ILocator) {
-				checkItemIdentifierConstraint(context, (ILocator) params[0]);
-				doModifyItemIdentifier(context, (ILocator) params[0]);
+				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
+					doModifyItemIdentifier(context, (ILocator) params[0]);
+				}
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -715,7 +730,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			break;
 		case SUBJECT_IDENTIFIER: {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
+					doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				}
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -723,7 +740,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			break;
 		case SUBJECT_LOCATOR: {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				doModifySubjectLocator((ITopic) context, (ILocator) params[0]);
+				if (checkMergeConditionOfSubjectLocator((ITopic) context, (ILocator) params[0])) {
+					doModifySubjectLocator((ITopic) context, (ILocator) params[0]);
+				}
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -776,23 +795,6 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		}
 		}
 
-	}
-
-	/**
-	 * Checks the item-identifier constraint
-	 * 
-	 * @param c
-	 *            the construct
-	 * @param itemIdentifier
-	 *            the item identifier
-	 * @throws IdentityConstraintException
-	 *             thrown if item-identifier constraint check fails
-	 */
-	protected void checkItemIdentifierConstraint(IConstruct c, ILocator itemIdentifier) throws IdentityConstraintException {
-		Construct c_ = doReadConstruct(c.getTopicMap(), itemIdentifier);
-		if (c_ != null && !c.equals(c_)) {
-			throw new IdentityConstraintException(c, c_, itemIdentifier, "Item-identifier already in use!");
-		}
 	}
 
 	/**
@@ -870,6 +872,90 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	protected abstract void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException;
 
 	/**
+	 * Method checks if there is another with the subject-identifier or
+	 * item-identifier
+	 * 
+	 * @param t
+	 *            the construct
+	 * @param identifier
+	 *            the identifier
+	 * @return <code>false</code> if topics were merged, <code>true</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if merging fails
+	 */
+	protected boolean checkMergeConditionOfIdentifier(IConstruct t, ILocator identifier) throws TopicMapStoreException {
+		/*
+		 * check if there is topic with the identifier as subject-identifier
+		 */
+		ITopic other = doReadTopicBySubjectIdentifier(getTopicMap(), identifier);
+		/*
+		 * both items are equal
+		 */
+		if (t.equals(other)) {
+			return true;
+		}
+		/*
+		 * is there another topic?
+		 */
+		if (other != null) {
+			/*
+			 * can only merge topics
+			 */
+			if (!(t instanceof ITopic)) {
+				throw new IdentityConstraintException(t, other, identifier, "Identity in use but construct is not a topic!");
+			}
+			/*
+			 * automatic merging enabled
+			 */
+			else if (doAutomaticMerging()) {
+				doMerge(t, other);
+				return false;
+			}
+			/*
+			 * automatic merging disabled
+			 */
+			throw new IdentityConstraintException(t, other, identifier, "Subject-Identifier in use but automatic merging is disabled!");
+		}
+		/*
+		 * check if there is construct with the identifier as item-identifier
+		 */
+		IConstruct c = doReadConstruct(getTopicMap(), identifier);
+		/*
+		 * both items are equal
+		 */
+		if (t.equals(c)) {
+			return true;
+		}
+		/*
+		 * is there another construct?
+		 */
+		if (c != null) {
+			/*
+			 * can only merge topics
+			 */
+			if (!(t instanceof ITopic) || !(c instanceof ITopic)) {
+				throw new IdentityConstraintException(t, c, identifier, "Identity in use but construct is not a topic!");
+			}
+			/*
+			 * automatic merging enabled
+			 */
+			else if (doAutomaticMerging()) {
+				doMerge(t, c);
+				return false;
+			}
+			/*
+			 * automatic merging disabled
+			 */
+			throw new IdentityConstraintException(t, c, identifier, "Item-Identifier in use but automatic merging is disabled!");
+		}
+		/*
+		 * modification is allowed
+		 */
+		return true;
+	}
+
+	/**
 	 * Add a new subject-identifier to the given topic
 	 * 
 	 * @param t
@@ -880,6 +966,48 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException;
+
+	/**
+	 * Method checks if there is another with the subject-locator
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param identifier
+	 *            the identifier
+	 * @return <code>false</code> if topics were merged, <code>true</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if merging fails
+	 */
+	protected boolean checkMergeConditionOfSubjectLocator(ITopic t, ILocator identifier) throws TopicMapStoreException {
+		/*
+		 * check if there is topic with the identifier as subject-locator
+		 */
+		ITopic other = doReadTopicBySubjectLocator(getTopicMap(), identifier);
+		/*
+		 * both items are equal
+		 */
+		if (t.equals(other)) {
+			return true;
+		}
+		/*
+		 * automatic merging enabled
+		 */
+		if (other != null && doAutomaticMerging()) {
+			doMerge(t, other);
+			return false;
+		}
+		/*
+		 * automatic merging disabled
+		 */
+		else if (other != null) {
+			throw new IdentityConstraintException(t, other, identifier, "Subject-locator in use but automatic merging is disabled!");
+		}
+		/*
+		 * modification is allowed
+		 */
+		return true;
+	}
 
 	/**
 	 * Add a new subject-locator to the given topic
@@ -1028,6 +1156,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else if (context instanceof ITopic && others.length > 0) {
 			for (T other : others) {
 				if (other instanceof ITopic) {
+					checkMergeConstraint((ITopic) context, (ITopic) other);
 					doMergeTopics((ITopic) context, (ITopic) other);
 				} else {
 					throw new TopicMapStoreException("Cannot merge other constructs than topics into a topic.");
@@ -1049,6 +1178,27 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException;
+
+	/**
+	 * Method checks the merging constraints. At least one of the topics may not
+	 * have a reified construct.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param other
+	 *            the other topic
+	 * @throws TopicMapStoreException
+	 */
+	protected void checkMergeConstraint(ITopic context, ITopic other) throws TopicMapStoreException {
+		/*
+		 * check if at least one of the topics has no reified construct
+		 */
+		IReifiable reifiable = doReadReification(context);
+		IReifiable otherReifiable = doReadReification(other);
+		if (reifiable != null && otherReifiable != null) {
+			throw new ModelConstraintException(context, "Merging topics not allowed because of reified clash!");
+		}
+	}
 
 	/**
 	 * Merge a topic map in the given topic map.
@@ -2140,7 +2290,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			/*
 			 * check if topic is in use if deletion is not marked as cascade
 			 */
-			if ( !cascade && isTopicInUse((ITopic) context) ){
+			if (!cascade && isTopicInUse((ITopic) context)) {
 				throw new TopicInUseException((ITopic) context, "Topic is in use!");
 			}
 			doRemoveTopic((ITopic) context, cascade);
@@ -2154,9 +2304,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			/*
 			 * delete role cascade means remove parent association too
 			 */
-			if ( cascade ){
+			if (cascade) {
 				doRemoveAssociation(((IAssociationRole) context).getParent(), cascade);
-			}else{
+			} else {
 				doRemoveRole((IAssociationRole) context, cascade);
 			}
 		} else if (context instanceof IVariant) {
@@ -2186,6 +2336,21 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         <code>false</code> otherwise.
 	 */
 	protected boolean isTopicInUse(final ITopic topic) {
+		if (isTopicUsedAsPlayer(topic) || isTopicUsedAsTheme(topic) || isTopicUsedAsType(topic) || isTopicUsedAsSupertype(topic) || isTopicUsedAsReifier(topic)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the topic is used as theme by any scoped item.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return <code>true</code> if the topic is used as theme,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean isTopicUsedAsTheme(final ITopic topic) {
 		/*
 		 * use as theme
 		 */
@@ -2200,6 +2365,18 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} catch (UnsupportedOperationException e) {
 			// scope index not supported
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the topic is used as type by any typed item.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return <code>true</code> if the topic is used as type,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean isTopicUsedAsType(final ITopic topic) {
 		/*
 		 * use as type
 		 */
@@ -2211,21 +2388,33 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			if (!index.getTopics(topic).isEmpty()) {
 				return true;
 			}
-			if ( !index.getAssociations(topic).isEmpty()){
+			if (!index.getAssociations(topic).isEmpty()) {
 				return true;
 			}
-			if ( !index.getOccurrences(topic).isEmpty()){
+			if (!index.getOccurrences(topic).isEmpty()) {
 				return true;
 			}
-			if ( !index.getNames(topic).isEmpty()){
+			if (!index.getNames(topic).isEmpty()) {
 				return true;
 			}
-			if ( !index.getRoles(topic).isEmpty()){
+			if (!index.getRoles(topic).isEmpty()) {
 				return true;
 			}
 		} catch (UnsupportedOperationException e) {
 			// index not supported
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the topic is used as supertype by any topic item.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return <code>true</code> if the topic is used as supertype,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean isTopicUsedAsSupertype(final ITopic topic) {
 		/*
 		 * use as supertype
 		 */
@@ -2240,13 +2429,53 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} catch (UnsupportedOperationException e) {
 			// index not supported
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the topic is used as player by any association item.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return <code>true</code> if the topic is used as player,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean isTopicUsedAsPlayer(final ITopic topic) {
 		/*
 		 * use as role-player
 		 */
-		if ( !topic.getRolesPlayed().isEmpty()){
+		for (Role r : topic.getRolesPlayed()) {
+			/*
+			 * ignore instance role
+			 */
+			if (existsTmdmInstanceRoleType() && r.getType().equals(getTmdmInstanceRoleType())) {
+				continue;
+			}
+			/*
+			 * ignore subtype-role
+			 */
+			if (existsTmdmSubtypeRoleType() && r.getType().equals(getTmdmSubtypeRoleType())) {
+				continue;
+			}
+			/*
+			 * any other role
+			 */
 			return true;
 		}
 
+		return false;
+	}
+
+	/**
+	 * Checks if the topic is used as reifier and reification is restricted for
+	 * deletion
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @return <code>true</code> if the topic is used as reifier and reification
+	 *         is restricted for deletion, <code>false</code> otherwise
+	 */
+	protected boolean isTopicUsedAsReifier(final ITopic topic) {
 		/*
 		 * check if deletion constraints are defined and topic is used as
 		 * reifier
@@ -2590,4 +2819,278 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		this.topicMapSystem = topicMapSystem;
 	}
 
+	// *******************
+	// * Utility methods *
+	// *******************
+
+	/**
+	 * Create the specific association of the topic maps data model representing
+	 * a type-instance relation between the given topics.
+	 * 
+	 * @param instance
+	 *            the instance
+	 * @param type
+	 *            the type
+	 */
+	protected void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
+		IAssociation association = doCreateAssociation(getTopicMap(), getTmdmTypeInstanceAssociationType());
+		doCreateRole(association, getTmdmInstanceRoleType(), instance);
+		doCreateRole(association, getTmdmTypeRoleType(), type);
+	}
+
+	/**
+	 * Create the specific association of the topic maps data model representing
+	 * a supertype-subtype relation between the given topics.
+	 * 
+	 * @param type
+	 *            the type
+	 * @param supertype
+	 *            the supertype
+	 */
+	protected void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
+		IAssociation association = doCreateAssociation(getTopicMap(), getTmdmSupertypeSubtypeAssociationType());
+		doCreateRole(association, getTmdmSubtypeRoleType(), type);
+		doCreateRole(association, getTmdmSupertypeRoleType(), supertype);
+	}
+
+	/**
+	 * Removes the corresponding association of the supertype-subtype relation
+	 * between the given topics.
+	 * 
+	 * @param type
+	 *            the type
+	 * @param supertype
+	 *            the supertype
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
+		for (IAssociation association : associations) {
+			try {
+				if (association.getRoles(getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)
+						&& association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(supertype)) {
+					doRemoveAssociation(association, false);
+					break;
+				}
+			} catch (NoSuchElementException e) {
+				throw new TopicMapStoreException("Invalid meta model! Missing supertype or subtype role!", e);
+			}
+		}
+	}
+
+	/**
+	 * Removes the corresponding association of the type-instance relation
+	 * between the given topics.
+	 * 
+	 * @param instance
+	 *            the instance
+	 * @param type
+	 *            the type
+	 * @return <code>true</code> if an association was removed,
+	 *         <code>false</code> otherwise.
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
+		for (IAssociation association : associations) {
+			try {
+				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
+						&& association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
+					doRemoveAssociation(association, false);
+					return true;
+				}
+			} catch (NoSuchElementException e) {
+				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the topic type representing the type-instance association type of
+	 * the topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Returns the topic type representing the type association role type of the
+	 * topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Returns the topic type representing the instance association role type of
+	 * the topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Returns the topic type representing the supertype-subtype association
+	 * type of the topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Returns the topic type representing the supertype association role type
+	 * of the topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Returns the topic type representing the subtype association role type of
+	 * the topic map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
+	 * Check if the topic type representing the type-instance association type
+	 * of the topic map data model exists.
+	 * 
+	 *@return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the type association role type of
+	 * the topic map data model exists.
+	 * 
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the instance association role type
+	 * of the topic map data model exists.
+	 * 
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the supertype-subtype association
+	 * type of the topic map data model exists.
+	 * 
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the supertype association role type
+	 * of the topic map data model exists.
+	 * 
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the subtype association role type of
+	 * the topic map data model exists.
+	 * 
+	 *@return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
 }

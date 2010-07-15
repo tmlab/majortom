@@ -124,4 +124,28 @@ public interface IPostGreSqlUpdateQueries {
 	public static final String QUERY_MODIFY_VALUE_WITH_DATATYPE = QUERY_MODIFY_VALUE + IPostGreSqlQueries.SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS
 			+ "UPDATE datatypeawares SET id_datatype = ( SELECT id FROM locators WHERE reference LIKE ? ) WHERE id = ?;";
 
+	interface QueryMerge{
+		
+		/**
+		 * query to replace each reference of a topic by another topic
+		 * <p>
+		 * <b>parameters(22):</b> 11x(new topic id, old topic id)
+		 * </p>
+		 */
+		public static final String QUERY_MERGE_TOPIC 	= 	"UPDATE rel_kind_of SET id_subtype = ? WHERE id_subtype = ?;"
+														+	"UPDATE rel_kind_of SET id_supertype = ? WHERE id_supertype = ?;"
+														+	"UPDATE rel_instance_of SET id_instance = ? WHERE id_instance = ?;"
+														+	"UPDATE rel_instance_of SET id_type = ? WHERE id_type = ?;"
+														+	"UPDATE rel_themes SET id_theme = ? WHERE id_theme = ?;"
+														+	"UPDATE typeables SET id_type = ? WHERE id_type = ?;"
+														+	"UPDATE reifiables SET id_reifier = ? WHERE id_reifier = ?;"
+														+	"UPDATE rel_item_identifiers SET id_construct = ? WHERE id_construct = ?;"
+														+	"UPDATE rel_subject_identifiers SET id_topic = ? WHERE id_topic = ?;"
+														+	"UPDATE rel_subject_locators SET id_topic = ? WHERE id_topic = ?;"
+														+	"UPDATE roles SET id_player = ? WHERE id_player = ?;"
+														+	"UPDATE constructs SET id_parent = ? WHERE id_parent = ?;"
+														+	"DELETE FROM topics WHERE id = ?;";
+		
+	}
+	
 }

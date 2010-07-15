@@ -310,7 +310,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		if (doMergingByTopicName()) {
 			Set<ITopic> themes = HashUtil.getHashSet();
-			Map<ITopic, IName> candidate = MergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
+			Map<ITopic, IName> candidate = InMemoryMergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
 			if (candidate != null) {
 				Entry<ITopic, IName> c = candidate.entrySet().iterator().next();
 				if (!doAutomaticMerging()) {
@@ -379,7 +379,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * check if topics should merge because of same name
 		 */
 		if (doMergingByTopicName()) {
-			Map<ITopic, IName> candidate = MergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
+			Map<ITopic, IName> candidate = InMemoryMergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
 			if (candidate != null) {
 				Entry<ITopic, IName> c = candidate.entrySet().iterator().next();
 				if (!doAutomaticMerging()) {
@@ -441,7 +441,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		if (doMergingByTopicName()) {
 			Set<ITopic> themes = HashUtil.getHashSet();
-			Map<ITopic, IName> candidate = MergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
+			Map<ITopic, IName> candidate = InMemoryMergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
 			if (candidate != null) {
 				Entry<ITopic, IName> c = candidate.entrySet().iterator().next();
 				if (!doAutomaticMerging()) {
@@ -511,7 +511,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * check if topics should merge because of same name
 		 */
 		if (doMergingByTopicName()) {
-			Map<ITopic, IName> candidate = MergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
+			Map<ITopic, IName> candidate = InMemoryMergeUtils.detectMergeByNameCandidate(this, topic, type, value, themes);
 			if (candidate != null) {
 				Entry<ITopic, IName> c = candidate.entrySet().iterator().next();
 				if (!doAutomaticMerging()) {
@@ -948,11 +948,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		storeRevision(revision, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 		return t;
 	}
-
+		
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopic(ITopicMap topicMap) throws TopicMapStoreException {
+	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
 		/*
 		 * create revision
 		 */
@@ -1145,7 +1145,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * notify listeners
 		 */
 		notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
-		MergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
+		InMemoryMergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
 
 	}
 
@@ -1171,8 +1171,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 * merge into
 			 */
 			ITopic newTopic = createTopic(getTopicMap(), revision);
-			MergeUtils.doMerge(this, newTopic, context, revision);
-			MergeUtils.doMerge(this, newTopic, other, revision);
+			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
+			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
 			((InMemoryIdentity) ((TopicImpl) context).getIdentity()).setId(newTopic.getId());
 			((InMemoryIdentity) ((TopicImpl) other).getIdentity()).setId(newTopic.getId());
 		}
@@ -3337,15 +3337,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Create the specific association of the topic maps data model representing
-	 * a type-instance relation between the given topics.
-	 * 
-	 * @param instance
-	 *            the instance
-	 * @param type
-	 *            the type
+	 * {@inheritDoc}
 	 */
-	private void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
+	protected void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
 		IAssociation association = createAssociation(getTopicMap(), revision);
 		modifyType(association, getTmdmTypeInstanceAssociationType(), revision);
 		createRole(association, getTmdmInstanceRoleType(), instance, revision);
@@ -3353,15 +3347,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Create the specific association of the topic maps data model representing
-	 * a supertype-subtype relation between the given topics.
-	 * 
-	 * @param type
-	 *            the type
-	 * @param supertype
-	 *            the supertype
+	 * {@inheritDoc}
 	 */
-	private void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
+	protected void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
 		IAssociation association = createAssociation(getTopicMap(), revision);
 		modifyType(association, getTmdmSupertypeSubtypeAssociationType(), revision);
 		createRole(association, getTmdmSubtypeRoleType(), type, revision);
@@ -3369,17 +3357,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Removes the corresponding association of the supertype-subtype relation
-	 * between the given topics.
-	 * 
-	 * @param type
-	 *            the type
-	 * @param supertype
-	 *            the supertype
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
-	private void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
+	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
 		for (IAssociation association : associations) {
 			try {
@@ -3395,19 +3375,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Removes the corresponding association of the type-instance relation
-	 * between the given topics.
-	 * 
-	 * @param instance
-	 *            the instance
-	 * @param type
-	 *            the type
-	 * @return <code>true</code> if an association was removed,
-	 *         <code>false</code> otherwise.
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
-	private boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
+	protected boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
@@ -3424,12 +3394,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Returns the topic type representing the type-instance association type of
-	 * the topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
@@ -3441,12 +3406,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Returns the topic type representing the type association role type of the
-	 * topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
@@ -3458,12 +3418,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Returns the topic type representing the instance association role type of
-	 * the topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
@@ -3475,12 +3430,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Returns the topic type representing the supertype-subtype association
-	 * type of the topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
@@ -3492,12 +3442,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Returns the topic type representing the supertype association role type
-	 * of the topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
@@ -3508,14 +3453,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		return topic;
 	}
 
-	/**
-	 * Returns the topic type representing the subtype association role type of
-	 * the topic map data model.
-	 * 
-	 * @return the topic type
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
+	 /**
+		 * {@inheritDoc}
+		 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
@@ -3526,13 +3466,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Check if the topic type representing the type-instance association type
-	 * of the topic map data model exists.
-	 * 
-	 *@return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
@@ -3540,13 +3474,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Check if the topic type representing the type association role type of
-	 * the topic map data model exists.
-	 * 
-	 * @return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
@@ -3554,13 +3482,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Check if the topic type representing the instance association role type
-	 * of the topic map data model exists.
-	 * 
-	 * @return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
@@ -3568,13 +3490,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Check if the topic type representing the supertype-subtype association
-	 * type of the topic map data model exists.
-	 * 
-	 * @return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
@@ -3582,29 +3498,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Check if the topic type representing the supertype association role type
-	 * of the topic map data model exists.
-	 * 
-	 * @return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	 * {@inheritDoc}
 	 */
-	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
+	protected boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
-	/**
-	 * Check if the topic type representing the subtype association role type of
-	 * the topic map data model exists.
-	 * 
-	 *@return <code>true</code> if this topic type exists, <code>false</code>
-	 *         otherwise
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
+	/** 
+	 * {@inheritDoc}
 	 */
-	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
+	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}

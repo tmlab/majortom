@@ -56,25 +56,36 @@ public class DatatypeAwareUtils {
 	 * @return the string literal
 	 */
 	public static final String toString(Object value, ILocator datatype) {
-
-		final String ref = datatype.getReference();
-
-		if (ref.equalsIgnoreCase(XmlSchemeDatatypes.XSD_ANYURI)) {
+		return toString(value, datatype.getReference());
+	}
+	
+	/**
+	 * Transform the given values to its string representations dependent from
+	 * the given data type.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param reference
+	 *            the reference
+	 * @return the string literal
+	 */
+	public static final String toString(Object value, String reference) {
+		if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_ANYURI)) {
 			if (value instanceof Locator) {
 				return ((Locator) value).getReference();
 			}
 			return value.toString();
-		} else if (ref.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATE)) {
+		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATE)) {
 			if (value instanceof Calendar) {
 				return dateFormat.format(((Calendar) value).getTime());
 			}
 			return value.toString();
-		} else if (ref.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATETIME)) {
+		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATETIME)) {
 			if (value instanceof Calendar) {
 				return dateTimeFormat.format(((Calendar) value).getTime());
 			}
 			return value.toString();
-		} else if (ref.equalsIgnoreCase(XmlSchemeDatatypes.XSD_TIME)) {
+		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_TIME)) {
 			if (value instanceof Calendar) {
 				return timeFormat.format(((Calendar) value).getTime());
 			}

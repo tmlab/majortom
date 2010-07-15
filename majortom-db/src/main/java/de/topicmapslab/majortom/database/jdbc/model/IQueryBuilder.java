@@ -143,13 +143,19 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadScope() throws SQLException;
 
-	public PreparedStatement getQueryReadScopeByThemes(long themeNumber) throws SQLException;
+	public PreparedStatement getQueryReadScopeByThemes(long themeNumber, boolean exact) throws SQLException;
 
 	public PreparedStatement getQueryReadValue() throws SQLException;
 
 	public PreparedStatement getQueryReadVariants() throws SQLException;
 
 	public PreparedStatement getQueryReadVariantsWithScope() throws SQLException;
+
+	// ***************
+	// * MERGE QUERY *
+	// ***************
+
+	public PreparedStatement getQueryMergeTopic() throws SQLException;
 
 	// ****************
 	// * UPDATE QUERY *
@@ -234,7 +240,81 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all) throws SQLException;
 
 	// ScopedIndex
+	
+	public PreparedStatement getQuerySelectScopes(long themeCount, boolean all, boolean exact) throws SQLException;
 
-	public PreparedStatement getQuerySelectScopes(long themeCount, boolean all) throws SQLException;
+	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException;
+
+	public PreparedStatement getQueryAssociationsByScopes(long scopeCount) throws SQLException;
+
+	public PreparedStatement getQueryAssociationsByTheme() throws SQLException;
+
+	public PreparedStatement getQueryAssociationsByThemes(long themeCount, boolean all) throws SQLException;
+
+	public PreparedStatement getQueryAssociationScopes() throws SQLException;
+
+	public PreparedStatement getQueryAssociationThemes() throws SQLException;
+
+	public PreparedStatement getQueryNamesByScope(boolean emptyScope) throws SQLException;
+
+	public PreparedStatement getQueryNamesByScopes(long scopeCount) throws SQLException;
+
+	public PreparedStatement getQueryNamesByTheme() throws SQLException;
+
+	public PreparedStatement getQueryNamesByThemes(long themeCount, boolean all) throws SQLException;
+
+	public PreparedStatement getQueryNameScopes() throws SQLException;
+
+	public PreparedStatement getQueryNameThemes() throws SQLException;
+
+	public PreparedStatement getQueryOccurrencesByScope(boolean emptyScope) throws SQLException;
+
+	public PreparedStatement getQueryOccurrencesByScopes(long scopeCount) throws SQLException;
+
+	public PreparedStatement getQueryOccurrencesByTheme() throws SQLException;
+
+	public PreparedStatement getQueryOccurrencesByThemes(long themeCount, boolean all) throws SQLException;
+
+	public PreparedStatement getQueryOccurrenceScopes() throws SQLException;
+
+	public PreparedStatement getQueryOccurrenceThemes() throws SQLException;
+
+	public PreparedStatement getQueryVariantsByScope() throws SQLException;
+
+	public PreparedStatement getQueryVariantsByScopes(long scopeCount) throws SQLException;
+
+	public PreparedStatement getQueryVariantsByTheme() throws SQLException;
+
+	public PreparedStatement getQueryVariantsByThemes(long themeCount,boolean all) throws SQLException;
+
+	public PreparedStatement getQueryVariantScopes() throws SQLException;
+
+	public PreparedStatement getQueryVariantThemes() throws SQLException;
+
+	// LiteralIndex
+
+	public PreparedStatement getQuerySelectNames() throws SQLException;
+
+	public PreparedStatement getQuerySelectNamesByValue() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrences() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByDatatype() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByDateRange() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByRange() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByValue() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype() throws SQLException;
+
+	public PreparedStatement getQuerySelectVariants() throws SQLException;
+
+	public PreparedStatement getQuerySelectVariantsByDatatype() throws SQLException;
+
+	public PreparedStatement getQuerySelectVariantsByValue() throws SQLException;
+
+	public PreparedStatement getQuerySelectVariantsByValueAndDatatype() throws SQLException;
 
 }
