@@ -384,7 +384,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id FROM topics WHERE id_type = ?";
+	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id_instance FROM rel_instance_of WHERE id_type = ?";
 
 	// **********************
 	// * READ TYPE HIERACHY *

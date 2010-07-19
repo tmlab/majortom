@@ -64,7 +64,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)}
 	 * .
 	 */
-	public void testAddTagString() {				
+	public void testAddTagString() {
 		if (topicMap.getStore().supportRevisions()) {
 
 			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
@@ -345,10 +345,14 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	public void testGetIndex() {
 		for (Class<? extends Index> clazz : new Class[] { ITypeInstanceIndex.class, ITransitiveTypeInstanceIndex.class, IRevisionIndex.class,
 				IScopedIndex.class, ILiteralIndex.class, ISupertypeSubtypeIndex.class, IIdentityIndex.class }) {
-			Index i = topicMap.getIndex(clazz);
-			assertNotNull("Index of type " + clazz.getSimpleName() + " should not be null", i);
-			assertTrue("Invalid type of index, expects " + clazz.getSimpleName(), clazz.isAssignableFrom(clazz));
-			assertFalse(i.isOpen());
+			try {
+				Index i = topicMap.getIndex(clazz);
+				assertNotNull("Index of type " + clazz.getSimpleName() + " should not be null", i);
+				assertTrue("Invalid type of index, expects " + clazz.getSimpleName(), clazz.isAssignableFrom(clazz));
+				assertFalse(i.isOpen());
+			} catch (UnsupportedOperationException e) {
+				// NOTHING TO DO
+			}
 		}
 
 		Index myIndex = new Index() {
@@ -452,7 +456,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		IAssociation association = createAssociation(createTopic());
 		association.createRole(createTopic(), topic);
 
-		assertEquals(7, topicMap.getTopics().size());
+		assertEquals(6, topicMap.getTopics().size());
 
 		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.example.org/merge-in");
 		ITopic t = (ITopic) otherTopicMap.createTopicBySubjectIdentifier(si);
@@ -466,22 +470,22 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		association.createRole(otherTopicMap.createTopic(), t);
 
 		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(11, otherTopicMap.getTopics().size());
+			assertEquals(10, otherTopicMap.getTopics().size());
 		} else {
-			assertEquals(8, otherTopicMap.getTopics().size());
+			assertEquals(7, otherTopicMap.getTopics().size());
 		}
 
 		topicMap.mergeIn(otherTopicMap);
 
 		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(11, otherTopicMap.getTopics().size());
+			assertEquals(10, otherTopicMap.getTopics().size());
 		} else {
-			assertEquals(8, otherTopicMap.getTopics().size());
+			assertEquals(7, otherTopicMap.getTopics().size());
 		}
 		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(13, topicMap.getTopics().size());
+			assertEquals(12, topicMap.getTopics().size());
 		} else {
-			assertEquals(10, topicMap.getTopics().size());
+			assertEquals(9, topicMap.getTopics().size());
 		}
 
 		assertEquals(1, t.getNames().size());
@@ -504,6 +508,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 		assertEquals(1, t.getTypes().size());
 		assertEquals(1, topic.getTypes().size());
+		otherTopicMap.remove(true);
 	}
 
 	public void testCreateScope() {

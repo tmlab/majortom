@@ -13,31 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.core.CoreTestSuite;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.database.jdbc.postgres.query;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class MaJorToMTestSuite {
+public interface IPostGreSqlPerformQueries {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
-		// $JUnit-BEGIN$
-		suite.addTest(CoreTestSuite.suite());
-		// suite.addTest(EventTestSuite.suite());
-		// suite.addTest(IndexTestSuite.suite());
-		// suite.addTest(MergeTestSuite.suite());
-		// // suite.addTest(IOTestSuite.suite());
-		// suite.addTest(RevisionTestSuite.suite());
-		// suite.addTest(TransactionSuite.suite());
-		suite.addTest(org.tmapi.AllTests.suite());
-		// $JUnit-END$
-		return suite;
-	}
+	public static final String PERFORM_MERGE_TOPICS = "SELECT merge_topics(?,?);";
 
 }

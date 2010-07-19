@@ -695,6 +695,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			if (params.length == 1 && params[0] instanceof ILocator) {
 				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
 					doModifyItemIdentifier(context, (ILocator) params[0]);
+				}else{
+					context.addItemIdentifier((ILocator)params[0]);
 				}
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -732,6 +734,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
 				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
 					doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				}else{
+					((ITopic) context).addSubjectIdentifier((ILocator)params[0]);
 				}
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -836,11 +840,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		 * check only if new reifier is not null
 		 */
 		if (reifier != null) {
-			Topic reifier_ = r.getReifier();
 			Reifiable r_ = reifier.getReified();
-			if (reifier_ != null && !reifier.equals(reifier_)) {
-				throw new ModelConstraintException(r, "Construct is already reified!");
-			}
 			if (r_ != null && !r.equals(r_)) {
 				throw new ModelConstraintException(r, "Reifier is already in use!");
 			}

@@ -119,7 +119,7 @@ public class TransactionCommand {
 		return result;
 	}
 
-	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {
+	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {		
 		if (lazy.containsKey(parameter)) {
 			return lazy.get(parameter);
 		}

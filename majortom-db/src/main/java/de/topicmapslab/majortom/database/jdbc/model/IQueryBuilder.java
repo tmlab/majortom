@@ -155,7 +155,7 @@ public interface IQueryBuilder {
 	// * MERGE QUERY *
 	// ***************
 
-	public PreparedStatement getQueryMergeTopic() throws SQLException;
+//	public PreparedStatement getQueryMergeTopic() throws SQLException;
 
 	// ****************
 	// * UPDATE QUERY *
@@ -240,7 +240,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all) throws SQLException;
 
 	// ScopedIndex
-	
+
 	public PreparedStatement getQuerySelectScopes(long themeCount, boolean all, boolean exact) throws SQLException;
 
 	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException;
@@ -285,7 +285,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryVariantsByTheme() throws SQLException;
 
-	public PreparedStatement getQueryVariantsByThemes(long themeCount,boolean all) throws SQLException;
+	public PreparedStatement getQueryVariantsByThemes(long themeCount, boolean all) throws SQLException;
 
 	public PreparedStatement getQueryVariantScopes() throws SQLException;
 
@@ -316,5 +316,11 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByValue() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByValueAndDatatype() throws SQLException;
+
+	// *****************
+	// * PERFORM QUERY *
+	// *****************
+	
+	public PreparedStatement getPerformMergeTopics() throws SQLException;
 
 }

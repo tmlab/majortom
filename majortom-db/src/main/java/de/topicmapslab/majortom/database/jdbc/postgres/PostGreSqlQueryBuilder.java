@@ -28,6 +28,7 @@ import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
 import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlDeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlIndexQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlInsertQueries;
+import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlPerformQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlSelectQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlUpdateQueries;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -757,17 +758,17 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	// * MERGE QUERY *
 	// ***************
 
-	private PreparedStatement preparedStatementMergeTopics;
+//	private PreparedStatement preparedStatementMergeTopics;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public PreparedStatement getQueryMergeTopic() throws SQLException {
-		if (preparedStatementMergeTopics == null) {
-			preparedStatementMergeTopics = connection.prepareStatement(IPostGreSqlUpdateQueries.QueryMerge.QUERY_MERGE_TOPIC);
-		}
-		return preparedStatementMergeTopics;
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public PreparedStatement getQueryMergeTopic() throws SQLException {
+//		if (preparedStatementMergeTopics == null) {
+//			preparedStatementMergeTopics = connection.prepareStatement(IPostGreSqlUpdateQueries.QueryMerge.QUERY_MERGE_TOPIC);
+//		}
+//		return preparedStatementMergeTopics;
+//	}
 
 	// ****************
 	// * UPDATE QUERY *
@@ -861,7 +862,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyReifier() throws SQLException {
 		if (this.preparedStatementModifyReifier == null) {
-			this.preparedStatementModifyReifier = connection.prepareStatement(IPostGreSqlUpdateQueries.QUERY_MODIFY_REIFIER);
+			this.preparedStatementModifyReifier = connection.prepareStatement(IPostGreSqlUpdateQueries.QUERY_MODIFY_REIFIER,Statement.RETURN_GENERATED_KEYS);
 		}
 		return this.preparedStatementModifyReifier;
 	}
@@ -1855,6 +1856,22 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 			subquery += placeholder;
 		}
 		return connection.prepareStatement(query.replaceAll(replacer, subquery));
+	}
+
+	// *****************
+	// * PERFORM QUERY *
+	// *****************
+
+	private PreparedStatement preparedStatementPerformMergeTopics;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getPerformMergeTopics() throws SQLException {
+		if (preparedStatementPerformMergeTopics == null) {
+			preparedStatementPerformMergeTopics = connection.prepareStatement(IPostGreSqlPerformQueries.PERFORM_MERGE_TOPICS);
+		}
+		return preparedStatementPerformMergeTopics;
 	}
 
 }

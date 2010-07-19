@@ -19,7 +19,6 @@ import static de.topicmapslab.majortom.model.event.TopicMapEventType.ASSOCIATION
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.CONSTRUCT_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ITEM_IDENTIFIER_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ITEM_IDENTIFIER_REMOVED;
-import static de.topicmapslab.majortom.model.event.TopicMapEventType.MERGE;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.NAME_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.OCCURRENCE_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.PLAYER_MODIFIED;
@@ -800,10 +799,9 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (!checked) {
-					assertEquals(MERGE, event);
+					assertEquals(TOPIC_ADDED, event);
 					assertEquals(topicMap, notifier);
-					assertEquals(topic, newValue);
-					assertEquals(otherTopic, oldValue);
+					assertEquals(null, oldValue);
 				}
 				checked = true;
 			}

@@ -19,6 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.tmapi.core.Construct;
+import org.tmapi.core.Locator;
+
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
@@ -36,7 +39,10 @@ import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTopicTypeStore
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
+import de.topicmapslab.majortom.model.event.ITopicMapListener;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.TransactionException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -82,8 +88,44 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 */
 	public synchronized void commit() throws TransactionException {
 		try {
-			Map<Object, Object> lazy = HashUtil.getHashMap();
+			final Map<Object, Object> lazy = HashUtil.getHashMap();
 			lazy.put(transaction, transaction.getTopicMap());
+			ITopicMapListener listener = new ITopicMapListener() {				
+				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
+					if ( event == TopicMapEventType.MERGE){
+						Object oldValue_ = null;
+						/* find old value */
+						// By subject-identifier
+						for ( Locator l : ((ITopic)oldValue).getSubjectIdentifiers()){
+							oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
+							if ( oldValue_ != null ){
+								break;
+							}
+						}
+						// By subject-locator
+						if ( oldValue_ == null ){
+							for ( Locator l : ((ITopic)oldValue).getSubjectLocators()){
+								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
+								if ( oldValue_ != null ){
+									break;
+								}
+							}
+						}
+						// By item-identifier
+						if ( oldValue_ == null ){
+							for ( Locator l : ((ITopic)oldValue).getItemIdentifiers()){
+								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
+								if ( oldValue_ != null ){
+									break;
+								}
+							}
+						}
+						// store mapping
+						lazy.put(oldValue_, newValue);
+					}
+				}
+			};
+			getRealStore().addTopicMapListener(listener);			
 			for (TransactionCommand command : commands) {
 				Object obj = command.commit(getRealStore(), lazy);
 				if (obj != null && command.getResult() != null) {
@@ -92,6 +134,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 				commited.add(command);
 			}
 			commands.clear();
+			getRealStore().removeTopicMapListener(listener);
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			System.out.println("Rollback " + commited.size() + " commands!");

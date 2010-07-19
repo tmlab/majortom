@@ -549,16 +549,19 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryMergeTopic();
-		long idContext = Long.parseLong(context.getId());
-		long idOther = Long.parseLong(other.getId());
-		int max = 12;
-		for (int n = 0; n < max; n++) {
-			stmt.setLong(n * 2 + 1, idContext);
-			stmt.setLong(n * 2 + 2, idOther);
-		}
-		stmt.setLong(max * 2 + 1, idOther);
+		PreparedStatement stmt = queryBuilder.getPerformMergeTopics();
+		stmt.setLong(1,Long.parseLong(context.getId()));
+		stmt.setLong(2,Long.parseLong(other.getId()));
 		stmt.execute();
+//		long idContext = Long.parseLong(context.getId());
+//		long idOther = Long.parseLong(other.getId());
+//		int max = 12;
+//		for (int n = 0; n < max; n++) {
+//			stmt.setLong(n * 2 + 1, idContext);
+//			stmt.setLong(n * 2 + 2, idOther);
+//		}
+//		stmt.setLong(max * 2 + 1, idOther);
+//		stmt.execute();
 	}
 
 	/**
@@ -594,7 +597,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			stmt.setLong(1, Long.parseLong(reifier.getId()));
 		}
 		stmt.setLong(2, Long.parseLong(r.getId()));
-		stmt.execute();
+		stmt.executeUpdate();
 	}
 
 	/**
@@ -725,7 +728,8 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociation();
-		stmt.setLong(1, Long.parseLong(t.getId()));
+		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toAssociations(t.getTopicMap(), stmt.executeQuery(), "id");
 	}
 
@@ -1293,9 +1297,8 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadTopicsWithType();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id");
+		stmt.setLong(1, Long.parseLong(type.getId()));
+		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id_instance");
 	}
 
 	/**

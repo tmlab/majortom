@@ -1162,16 +1162,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	void mergeTopics(ITopic context, ITopic other, IRevision revision) throws TopicMapStoreException {
-		if (!context.equals(other)) {
-			/*
-			 * notify listeners
-			 */
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
+		if (!context.equals(other)) {			
 			/*
 			 * merge into
 			 */
 			ITopic newTopic = createTopic(getTopicMap(), revision);
+			/*
+			 * notify listeners
+			 */
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
 			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
+			/*
+			 * notify listeners
+			 */
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
 			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
 			((InMemoryIdentity) ((TopicImpl) context).getIdentity()).setId(newTopic.getId());
 			((InMemoryIdentity) ((TopicImpl) other).getIdentity()).setId(newTopic.getId());
@@ -3310,31 +3314,31 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		ITopic defaultNameType = getIdentityStore().bySubjectIdentifier(locDefaultNameType);
 		if (defaultNameType == null) {
 			defaultNameType = doCreateTopicBySubjectIdentifier(topicMap, locDefaultNameType);
-			registerAsNameType(defaultNameType);
+//			registerAsNameType(defaultNameType);
 		}
 		return defaultNameType;
 	}
 
-	/**
-	 * Add the given type as name type.
-	 * 
-	 * @param type
-	 *            the type
-	 */
-	private void registerAsNameType(ITopic type) {
-		/*
-		 * get TMDM name type
-		 */
-		ILocator locNameType = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_NAME_TYPE);
-		ITopic nameType = getIdentityStore().bySubjectIdentifier(locNameType);
-		if (nameType == null) {
-			nameType = doCreateTopicBySubjectIdentifier(type.getTopicMap(), locNameType);
-		}
-		/*
-		 * add supertype-subtype relation
-		 */
-		getTopicTypeStore().addSupertype(type, nameType);
-	}
+//	/**
+//	 * Add the given type as name type.
+//	 * 
+//	 * @param type
+//	 *            the type
+//	 */
+//	private void registerAsNameType(ITopic type) {
+//		/*
+//		 * get TMDM name type
+//		 */
+//		ILocator locNameType = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_NAME_TYPE);
+//		ITopic nameType = getIdentityStore().bySubjectIdentifier(locNameType);
+//		if (nameType == null) {
+//			nameType = doCreateTopicBySubjectIdentifier(type.getTopicMap(), locNameType);
+//		}
+//		/*
+//		 * add supertype-subtype relation
+//		 */
+//		getTopicTypeStore().addSupertype(type, nameType);
+//	}
 
 	/**
 	 * {@inheritDoc}
