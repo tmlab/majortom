@@ -550,18 +550,18 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getPerformMergeTopics();
-		stmt.setLong(1,Long.parseLong(context.getId()));
-		stmt.setLong(2,Long.parseLong(other.getId()));
+		stmt.setLong(1, Long.parseLong(context.getId()));
+		stmt.setLong(2, Long.parseLong(other.getId()));
 		stmt.execute();
-//		long idContext = Long.parseLong(context.getId());
-//		long idOther = Long.parseLong(other.getId());
-//		int max = 12;
-//		for (int n = 0; n < max; n++) {
-//			stmt.setLong(n * 2 + 1, idContext);
-//			stmt.setLong(n * 2 + 2, idOther);
-//		}
-//		stmt.setLong(max * 2 + 1, idOther);
-//		stmt.execute();
+		// long idContext = Long.parseLong(context.getId());
+		// long idOther = Long.parseLong(other.getId());
+		// int max = 12;
+		// for (int n = 0; n < max; n++) {
+		// stmt.setLong(n * 2 + 1, idContext);
+		// stmt.setLong(n * 2 + 2, idOther);
+		// }
+		// stmt.setLong(max * 2 + 1, idOther);
+		// stmt.execute();
 	}
 
 	/**
@@ -702,16 +702,6 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModifyValue(IDatatypeAware t, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
-		stmt.setString(1, value);
-		stmt.setLong(2, Long.parseLong(t.getId()));
-		stmt.execute();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryModifyValueWithDatatype();
 		stmt.setString(1, value);
@@ -738,8 +728,9 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithType();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
+		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(t.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toAssociations(t.getTopicMap(), stmt.executeQuery(), "id");
 	}
 
@@ -748,9 +739,10 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithTypeAndScope();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		stmt.setLong(3, Long.parseLong(scope.getId()));
+		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(t.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setLong(4, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toAssociations(t.getTopicMap(), stmt.executeQuery(), "id");
 	}
 
@@ -759,8 +751,9 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithScope();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		stmt.setLong(2, Long.parseLong(scope.getId()));
+		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
+		stmt.setLong(2, Long.parseLong(t.getId()));
+		stmt.setLong(3, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toAssociations(t.getTopicMap(), stmt.executeQuery(), "id");
 	}
 
@@ -2069,6 +2062,17 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
+	public Collection<IName> getNamesByPattern(ITopicMap topicMap, String pattern) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByPattern();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, pattern);
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toNames(topicMap, rs, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -2079,7 +2083,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences();
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
 		stmt.setTimestamp(3, new Timestamp(lower.getTimeInMillis()));
@@ -2091,7 +2095,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance, final String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences();
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByRange();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		stmt.setDouble(3, value - deviance);
@@ -2129,6 +2133,29 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByPattern();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, pattern);
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern, String reference) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByPatternAndDatatype();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, pattern);
+		stmt.setString(3, reference);
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
 	}
@@ -2177,4 +2204,128 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		return Jdbc2Construct.toVariants(topicMap, rs);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantByPattern(ITopicMap topicMap, String pattern) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByPattern();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, pattern);
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantsByPattern(ITopicMap topicMap, String pattern, String reference) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByPatternAndDatatype();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, pattern);
+		stmt.setString(3, reference);
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, rs);
+	}
+
+	// IdentityIndex
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ILocator> getItemIdentifiers(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectItemIdentifiers();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ILocator> getSubjectIdentifiers(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectIdentifiers();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ILocator> getSubjectLocators(ITopicMap topicMap) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectLocators();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByIdentitifer();
+		long topicMapId = Long.parseLong(topicMap.getId());
+		String pattern = "^" + regExp + "$";
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, pattern);
+		stmt.setLong(3, topicMapId);
+		stmt.setString(4, pattern);
+		stmt.setLong(5, topicMapId);
+		stmt.setLong(6, topicMapId);
+		stmt.setString(7, pattern);
+		ResultSet rs = stmt.executeQuery();
+		Set<IConstruct> set = HashUtil.getHashSet();
+		Set<Long> ids = HashUtil.getHashSet();
+		while (rs.next()) {
+			if (rs.getString("type").equalsIgnoreCase("t")) {
+				set.add(new TopicImpl(new JdbcIdentity(rs.getString("id")), topicMap));
+			} else {
+				ids.add(rs.getLong("id"));
+			}
+		}
+		rs.close();
+		for (Long id : ids) {
+			set.add(doReadConstruct(topicMap, Long.toString(id)));
+		}
+		return set;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByItemIdentitifer();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topicMap.getId()));
+		stmt.setString(3, "^" + regExp + "$");
+		Set<Long> ids = HashUtil.getHashSet();
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			ids.add(rs.getLong("id_construct"));
+		}
+		rs.close();
+		Set<IConstruct> set = HashUtil.getHashSet();
+		for (Long id : ids) {
+			set.add(doReadConstruct(topicMap, Long.toString(id)));
+		}
+		return set;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectIdentitifer();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, "^" + regExp + "$");
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_topic");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectLocator();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, "^" + regExp + "$");
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_topic");
+	}
 }

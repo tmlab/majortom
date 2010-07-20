@@ -18,6 +18,7 @@ package de.topicmapslab.majortom.tests.merge;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
  * 
@@ -33,6 +34,12 @@ public class TestMergeByName extends MaJorToMTestCase {
 
 		Topic t2 = topicMap.createTopic();
 		t2.createName("Name", new Topic[0]);
+		
+		if ( factory.getFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME)){
+			assertEquals(2, topicMap.getTopics().size());
+		}else{
+			assertEquals(3, topicMap.getTopics().size());
+		}
 	}
 
 }

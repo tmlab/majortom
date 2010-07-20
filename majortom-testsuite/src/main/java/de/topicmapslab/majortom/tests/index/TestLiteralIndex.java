@@ -429,6 +429,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			fail("Invalid type!");
 		}catch(IllegalArgumentException e){
 			//NOTHING TO DO
+		}catch(UnsupportedOperationException e){
+			//NOTHING TO DO
 		}
 	}
 

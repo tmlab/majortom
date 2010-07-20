@@ -120,8 +120,6 @@ public interface IQueryProcessor {
 
 	public void doModifyValue(IName n, String value) throws SQLException;
 
-	public void doModifyValue(IDatatypeAware t, String value) throws SQLException;
-
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException;
 
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException;
@@ -345,6 +343,8 @@ public interface IQueryProcessor {
 	public Collection<IName> getNames(final ITopicMap topicMap) throws SQLException;
 
 	public Collection<IName> getNames(final ITopicMap topicMap, final String value) throws SQLException;
+	
+	public Collection<IName> getNamesByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap) throws SQLException;
 
@@ -357,6 +357,10 @@ public interface IQueryProcessor {
 	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, final String value, final String reference) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrencesByDatatype(final ITopicMap topicMap, final String reference) throws SQLException;
+	
+	public Collection<IOccurrence> getOccurrencesByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
+
+	public Collection<IOccurrence> getOccurrencesByPattern(final ITopicMap topicMap,final String pattern,  final String reference) throws SQLException;
 
 	public Collection<IVariant> getVariants(final ITopicMap topicMap) throws SQLException;
 
@@ -365,5 +369,25 @@ public interface IQueryProcessor {
 	public Collection<IVariant> getVariants(final ITopicMap topicMap, final String value, final String reference) throws SQLException;
 
 	public Collection<IVariant> getVariantsByDatatype(final ITopicMap topicMap, final String reference) throws SQLException;
+	
+	public Collection<IVariant> getVariantByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
 
+	public Collection<IVariant> getVariantsByPattern(final ITopicMap topicMap,final String pattern,  final String reference) throws SQLException;
+
+	// IdentityIndex
+	
+	public Collection<ILocator> getItemIdentifiers(final ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ILocator> getSubjectIdentifiers(final ITopicMap topicMap) throws SQLException;
+	
+	public Collection<ILocator> getSubjectLocators(final ITopicMap topicMap) throws SQLException;
+	
+	public Collection<IConstruct> getConstructsByIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	
+	public Collection<IConstruct> getConstructsByItemIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	
+	public Collection<ITopic> getTopicsBySubjectIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	
+	public Collection<ITopic> getTopicsBySubjectLocator(final ITopicMap topicMap, final String regExp) throws SQLException;
+	
 }

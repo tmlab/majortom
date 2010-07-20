@@ -51,7 +51,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?";
+	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
 	/**
 	 * Query to read all associations within a specific type
 	 * <p>
@@ -203,7 +203,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type = ?";
+	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
 	/**
 	 * query to read all names of topic by scope
 	 * <p>
@@ -217,7 +217,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type = ? AND id_scope = ?";
+	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?))) AND id_scope = ?";
 
 	// ********************
 	// * READ OCCURRENCES *
@@ -236,7 +236,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ?";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
 	/**
 	 * query to read all occurrences of topic by scope
 	 * <p>
@@ -250,7 +250,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ? AND id_scope = ?";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?))) AND id_scope = ?";
 
 	// ********************
 	// * READ ROLE PLAYER *

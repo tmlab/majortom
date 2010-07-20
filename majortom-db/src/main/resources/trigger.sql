@@ -5,3 +5,4 @@ CREATE TRIGGER trigger_detect_duplicate_variants BEFORE INSERT OR UPDATE ON vari
 CREATE TRIGGER trigger_detect_duplicate_associations AFTER UPDATE ON roles FOR EACH ROW EXECUTE PROCEDURE detect_duplicate_associations();
 CREATE TRIGGER trigger_detect_duplicate_roles BEFORE INSERT OR UPDATE ON roles FOR EACH ROW EXECUTE PROCEDURE detect_duplicate_roles();
 CREATE TRIGGER trigger_check_reification_condition BEFORE INSERT OR UPDATE ON reifiables FOR EACH ROW EXECUTE PROCEDURE check_reification_condition();
+CREATE CAST ( character varying AS timestamp with time zone ) WITH FUNCTION cast_as_timestamp (character varying) AS ASSIGNMENT;

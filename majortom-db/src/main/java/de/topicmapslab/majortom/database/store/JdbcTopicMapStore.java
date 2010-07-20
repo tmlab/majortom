@@ -33,6 +33,7 @@ import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcIdentityIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTypeInstanceIndex;
@@ -56,6 +57,7 @@ import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
@@ -93,6 +95,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	private ITypeInstanceIndex typeInstanceIndex;
 	private IScopedIndex scopedIndex;
 	private ILiteralIndex literalIndex;
+	private IIdentityIndex identityIndex;
 
 	/**
 	 * constructor
@@ -522,7 +525,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyValue(IDatatypeAware t, String value) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doModifyValue(t, value);
+			provider.getProcessor().doModifyValue(t, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1014,7 +1017,13 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doReadSuptertypes(t);
+			Set<ITopic> supertypes = provider.getProcessor().doReadSuptertypes(t);
+			if ( existsTmdmSupertypeSubtypeAssociationType()){
+				for ( IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmSupertypeSubtypeAssociationType())){
+					supertypes.add((ITopic)association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer());
+				}			
+			}
+			return supertypes;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1080,7 +1089,13 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doReadTypes(t);
+			Set<ITopic> types = provider.getProcessor().doReadTypes(t);
+			if ( existsTmdmTypeInstanceAssociationType()){
+				for ( IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())){
+					types.add((ITopic)association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
+				}				
+			}
+			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1283,8 +1298,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove type-association if necessary
 		 */
-		if (typeHiearchyAsAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
-			removeSupertypeSubtypeAssociation(t, type, null);
+		if (existsTmdmTypeInstanceAssociationType()) {
+			removeTypeInstanceAssociation(t, type, null);
 		}
 	}
 
@@ -1335,6 +1350,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 				this.literalIndex = new JdbcLiteralIndex(this);
 			}
 			return (I) this.literalIndex;
+		}else if (IIdentityIndex.class.isAssignableFrom(clazz)) {
+			if (this.identityIndex == null) {
+				this.identityIndex = new JdbcIdentityIndex(this);
+			}
+			return (I) this.identityIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");

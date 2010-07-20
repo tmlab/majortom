@@ -211,7 +211,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), ".*", datatype.getReference()));
+			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), ".*", datatype.getReference()));
 			if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
 				col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap()));
 			}
@@ -258,8 +258,8 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), regExp));
-			col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), regExp));
+			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), regExp));
+			col.addAll(getStore().getProcessor().getNamesByPattern(getStore().getTopicMap(), regExp));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -281,9 +281,9 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), regExp, datatype.getReference()));
+			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), regExp, datatype.getReference()));
 			if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
-				col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), regExp));
+				col.addAll(getStore().getProcessor().getNamesByPattern(getStore().getTopicMap(), regExp));
 			}
 			return col;
 		} catch (SQLException e) {
@@ -386,7 +386,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(),
-					DatatypeAwareUtils.toString(value.toString(), XmlSchemeDatatypes.XSD_DATETIME), XmlSchemeDatatypes.XSD_DATETIME));
+					DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME), XmlSchemeDatatypes.XSD_DATETIME));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -494,7 +494,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_FLOAT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -526,7 +526,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_FLOAT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);

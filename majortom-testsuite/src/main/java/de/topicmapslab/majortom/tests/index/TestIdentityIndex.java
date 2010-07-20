@@ -481,7 +481,66 @@ public class TestIdentityIndex extends MaJorToMTestCase {
 	 * Test method for {@link de.topicmapslab.majortom.inMemory.index.InMemoryIdentityIndex#getConstructsByIdentifier(java.util.regex.Pattern)}.
 	 */
 	public void testGetConstructsByIdentifierPattern() {
+		IIdentityIndex index = topicMap.getIndex(IIdentityIndex.class);
+		assertNotNull(index);
+		try{
+			index.existsSubjectLocator((String)null);
+			fail("Index should be close!");
+		}catch(TMAPIRuntimeException e){
+			index.open();
+		}
 		
+		final String loc1_ = "http://www.example.org/1";
+		Locator loc1 = topicMap.createLocator(loc1_);
+		final String loc2_ = "http://www.example.org/2";
+		Locator loc2 = topicMap.createLocator(loc2_);
+		final String loc3_ = "http://www.example.org/3";
+		Locator loc3 = topicMap.createLocator(loc3_);
+				
+		Topic topic = createTopic();
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).isEmpty());
+		
+		topic.addSubjectIdentifier(loc1);
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).isEmpty());
+		
+		topic.addItemIdentifier(loc2);
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(topic));
+		
+		ITopic otherTopic = (ITopic)topicMap.createTopicBySubjectLocator(loc3);
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).contains(otherTopic));
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(topic));
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(otherTopic));
+		
+		topic.removeItemIdentifier(loc2);
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).contains(topic));
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).contains(otherTopic));
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(topic));
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(otherTopic));
+		
+		topic.removeSubjectIdentifier(loc1);
+		assertTrue(index.getConstructsByIdentifier(loc1.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc2.getReference()).isEmpty());
+		assertTrue(index.getConstructsByIdentifier(loc3.getReference()).contains(otherTopic));
+		assertFalse(index.getConstructsByIdentifier("http://www.example.org/.*").contains(topic));
+		assertTrue(index.getConstructsByIdentifier("http://www.example.org/.*").contains(otherTopic));
+				
+		index.close();
+		try{
+			index.existsSubjectLocator((String)null);
+			fail("Index should be close!");
+		}catch(TMAPIRuntimeException e){
+			//NOTHING TO DO
+		}
 	}
 
 	/**

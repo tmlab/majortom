@@ -221,8 +221,9 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertEquals(3, topicMap.getTopics().size());
 		assertTrue(topicMap.getTopics().contains(reifier));
 		assertTrue(topicMap.getTopics().contains(topic));
+		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
 		try {
-			topic.remove();
+			reifier.remove();
 			fail("topic is use as reifier!");
 		} catch (TopicInUseException e) {
 			// NOTHING TO DO
@@ -231,7 +232,7 @@ public class TestTopicImpl extends MaJorToMTestCase {
 
 		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, false);
 		try {
-			topic.remove();
+			reifier.remove();
 		} catch (TopicInUseException e) {
 			fail("Deletion constraint is false!");
 		}

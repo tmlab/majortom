@@ -296,6 +296,8 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectNames() throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByValue() throws SQLException;
+	
+	public PreparedStatement getQuerySelectNamesByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrences() throws SQLException;
 
@@ -306,17 +308,41 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByRange() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByValue() throws SQLException;
+	
+	public PreparedStatement getQuerySelectOccurrencesByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype() throws SQLException;
+	
+	public PreparedStatement getQuerySelectOccurrencesByPatternAndDatatype() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariants() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByDatatype() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByValue() throws SQLException;
+	
+	public PreparedStatement getQuerySelectVariantsByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByValueAndDatatype() throws SQLException;
+	
+	public PreparedStatement getQuerySelectVariantsByPatternAndDatatype() throws SQLException;
 
+	// IdentityIndex
+	
+	public PreparedStatement getQuerySelectItemIdentifiers() throws SQLException;
+	
+	public PreparedStatement getQuerySelectSubjectIdentifiers() throws SQLException;
+	
+	public PreparedStatement getQuerySelectSubjectLocators() throws SQLException;
+	
+	public PreparedStatement getQuerySelectConstructsByIdentitifer() throws SQLException;
+	
+	public PreparedStatement getQuerySelectConstructsByItemIdentitifer() throws SQLException;
+	
+	public PreparedStatement getQuerySelectTopicsBySubjectIdentitifer() throws SQLException;
+	
+	public PreparedStatement getQuerySelectTopicsBySubjectLocator() throws SQLException;
+	
 	// *****************
 	// * PERFORM QUERY *
 	// *****************

@@ -160,6 +160,17 @@ public class TestScopeIndex extends MaJorToMTestCase {
 		IScope scope6 = index.getScope(otherTheme, anotherTheme);
 		IScope scope7 = index.getScope(theme, otherTheme, anotherTheme);
 
+		/*
+		 * create scoped constructs
+		 */
+		createTopic().createName("Value", theme);
+		createTopic().createName("Value", otherTheme);
+		createTopic().createName("Value", anotherTheme);
+		createTopic().createName("Value", theme, otherTheme);
+		createTopic().createName("Value", theme, anotherTheme);
+		createTopic().createName("Value", otherTheme, anotherTheme);
+		createTopic().createName("Value", anotherTheme, otherTheme, theme);
+		
 		Collection<IScope> scopes = index.getScopes(new Topic[] { theme, otherTheme }, false);
 		assertEquals(6, scopes.size());
 		assertTrue(scopes.contains(scope1));
@@ -212,6 +223,17 @@ public class TestScopeIndex extends MaJorToMTestCase {
 		IScope scope6 = index.getScope(otherTheme, anotherTheme);
 		IScope scope7 = index.getScope(theme, otherTheme, anotherTheme);
 
+		/*
+		 * create scoped constructs
+		 */
+		createTopic().createName("Value", theme);
+		createTopic().createName("Value", otherTheme);
+		createTopic().createName("Value", anotherTheme);
+		createTopic().createName("Value", theme, otherTheme);
+		createTopic().createName("Value", theme, anotherTheme);
+		createTopic().createName("Value", otherTheme, anotherTheme);
+		createTopic().createName("Value", anotherTheme, otherTheme, theme);
+		
 		Collection<IScope> scopes = index.getScopes(Arrays.asList(new Topic[] { theme, otherTheme }), false);
 		assertEquals(6, scopes.size());
 		assertTrue(scopes.contains(scope1));

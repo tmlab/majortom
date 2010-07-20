@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.query;
 
+import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
@@ -59,7 +60,7 @@ public interface IPostGreSqlIndexQueries {
 		public static final String QUERY_SELECT_TOPIC_BY_TYPE = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type = ?;";
 
 		public static final String QUERY_SELECT_TOPIC_BY_TYPES = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND  id_topicmap = ? AND ( %SUBQUERY% ) ";
-				
+
 		public static final String QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL = "SELECT DISTINCT id_instance FROM rel_instance_of AS r, topics WHERE id = id_instance AND  id_topicmap = ?  AND  ARRAY ( SELECT id_type FROM rel_instance_of AS r2 WHERE r.id_instance = r2.id_instance ) @> CAST ( ARRAY[ %ARRAY%] AS bigint[] )";
 
 	}
@@ -74,71 +75,66 @@ public interface IPostGreSqlIndexQueries {
 
 		public static final String QUERY_SELECT_SCOPES = "SELECT DISTINCT id_scope FROM rel_themes WHERE id_scope IN ( SELECT DISTINCT id_scope FROM scopeables ) AND ";
 
-		
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_EMPTYSCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND ( id_scope = NULL OR id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) );";
-		
+
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ?;";
-		
+
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_SCOPES = "SELECT id FROM associations WHERE id_topicmap = ? AND ";
-		
+
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_THEME = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? );";
-		
+
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_THEMES = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% ); ";
-		
+
 		public static final String QUERY_SELECT_ASSOCIATIONS_BY_THEMES_MATCH_ALL = "SELECT id FROM associations AS a WHERE id_topicmap = ?  AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = a.id_scope ) @> CAST ( ARRAY[%ARRAY%] AS bigint[] ); ";
-		
-		public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT id_scope FROM associations WHERE id_topicmap = ?;";		
-		
+
+		public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT id_scope FROM associations WHERE id_topicmap = ?;";
+
 		public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ? );";
 
-		
 		public static final String QUERY_SELECT_NAMES_BY_EMPTYSCOPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND ( id_scope = NULL OR id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) );";
 
 		public static final String QUERY_SELECT_NAMES_BY_SCOPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_scope = ?;";
-		
+
 		public static final String QUERY_SELECT_NAMES_BY_SCOPES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND ";
-		
+
 		public static final String QUERY_SELECT_NAMES_BY_THEME = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? );";
-		
+
 		public static final String QUERY_SELECT_NAMES_BY_THEMES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% );";
-		
+
 		public static final String QUERY_SELECT_NAMES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM names AS n WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) @> CAST ( ARRAY[%ARRAY%] AS bigint[] ); ";
-		
+
 		public static final String QUERY_SELECT_NAME_SCOPES = "SELECT id_scope FROM names WHERE id_topicmap = ?;";
 
 		public static final String QUERY_SELECT_NAME_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? );";
 
-		
 		public static final String QUERY_SELECT_OCCURRENCES_BY_EMPTYSCOPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND ( id_scope = NULL OR id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) );";
-		
+
 		public static final String QUERY_SELECT_OCCURRENCES_BY_SCOPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_scope = ?;";
-		
+
 		public static final String QUERY_SELECT_OCCURRENCES_BY_SCOPES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND ";
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_THEME = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? );";
-		
+
 		public static final String QUERY_SELECT_OCCURRENCES_BY_THEMES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% ); ";
-		
+
 		public static final String QUERY_SELECT_OCCURRENCES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM occurrences AS o WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = o.id_scope ) @> CAST ( ARRAY[%ARRAY%] AS bigint[] ); ";
-				
+
 		public static final String QUERY_SELECT_OCCURRENCE_SCOPES = "SELECT id_scope FROM occurrences WHERE id_topicmap = ?;";
 
 		public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? );";
 
-		
-		
 		public static final String QUERY_SELECT_VARIANTS_BY_SCOPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_scope = ?;";
-		
+
 		public static final String QUERY_SELECT_VARIANTS_BY_SCOPES = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ";
-		
+
 		public static final String QUERY_SELECT_VARIANTS_BY_THEME = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND  ( v.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ) OR n.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ));";
-		
+
 		public static final String QUERY_SELECT_VARIANTS_BY_THEMES = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ( v.id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% ) OR n.id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% )); ";
-		
+
 		public static final String QUERY_SELECT_VARIANTS_BY_THEMES_MATCH_ALL = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) || ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = v.id_scope ) @> CAST ( ARRAY[%ARRAY%] AS bigint[] )";
-		
+
 		public static final String QUERY_SELECT_VARIANT_SCOPES = "SELECT id_scope FROM variants WHERE id_topicmap = ?;";
-		
+
 		public static final String QUERY_SELECT_VARIANT_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM variants WHERE id_topicmap = ? ) OR id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? AND id IN ( SELECT id_parent FROM variants ));";
 	}
 
@@ -153,17 +149,23 @@ public interface IPostGreSqlIndexQueries {
 
 		public static final String QUERY_SELECT_NAMES_BY_VALUE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ILIKE ?;";
 
+		public static final String QUERY_SELECT_NAMES_BY_REGEXP = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ~* ?;";
+
 		public static final String QUERY_SELECT_OCCURRENCES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ?;";
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ?;";
 
-		public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND ? <= CAST ( value AS timestamp ) AND CAST ( value AS timestamp )  <= ? ";
+		public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND ? <= CAST ( value AS timestamp with time zone ) AND CAST ( value AS timestamp with time zone )  <= ? ";
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_RANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND CAST ( value AS double precision ) BETWEEN ? AND ? ";
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ILIKE ?;";
 
+		public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ~* ?;";
+
 		public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ILIKE ? AND o.id_datatype = l.id AND l.reference = ?;";
+
+		public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ~* ? AND o.id_datatype = l.id AND l.reference = ?;";
 
 		public static final String QUERY_SELECT_VARIANTS = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ?;";
 
@@ -171,7 +173,34 @@ public interface IPostGreSqlIndexQueries {
 
 		public static final String QUERY_SELECT_VARIANTS_BY_VALUE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ?;";
 
+		public static final String QUERY_SELECT_VARIANTS_BY_REGEXP = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ?;";
+
 		public static final String QUERY_SELECT_VARIANTS_BY_VALUE_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ? AND v.id_datatype = l.id AND l.reference = ?;";
+
+		public static final String QUERY_SELECT_VARIANTS_BY_REGEXP_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ? AND v.id_datatype = l.id AND l.reference = ?;";
+	}
+
+	/**
+	 * Query definitions to realize methods of {@link IIdentityIndex}
+	 * 
+	 * @author Sven Krosse
+	 */
+	interface QueryIdentityIndex {
+
+		public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct";
+
+		public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic";
+
+		public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic";
+
+		public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ? UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ?";
+
+		public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ?;";
+
+		public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?;";
+
+		public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?;";
+
 	}
 
 }
