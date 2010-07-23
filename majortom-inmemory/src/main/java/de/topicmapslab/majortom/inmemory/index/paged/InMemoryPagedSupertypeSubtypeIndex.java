@@ -302,7 +302,7 @@ public class InMemoryPagedSupertypeSubtypeIndex extends InMemoryPagedIndex<ISupe
 		/*
 		 * a topic was removed
 		 */
-		if (event == TopicMapEventType.CONSTRUCT_REMOVED && oldValue instanceof Topic) {
+		if (event == TopicMapEventType.TOPIC_REMOVED) {
 			clearCache();
 		}
 		/*

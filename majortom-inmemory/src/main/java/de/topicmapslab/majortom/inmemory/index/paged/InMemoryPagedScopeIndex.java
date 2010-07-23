@@ -662,16 +662,14 @@ public class InMemoryPagedScopeIndex extends InMemoryPagedIndex<IScopedIndex> im
 		/*
 		 * construct was removed -> clear dependent caches
 		 */
-		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
-			if (oldValue instanceof Association) {
-				clearAssociationCache();
-			} else if (oldValue instanceof Name) {
-				clearNameCache();
-			} else if (oldValue instanceof Occurrence) {
-				clearOccurrenceCache();
-			} else if (oldValue instanceof Variant) {
-				clearVariantCache();
-			}
+		if (event == TopicMapEventType.VARIANT_REMOVED) {
+			clearVariantCache();
+		} else if (event == TopicMapEventType.NAME_REMOVED) {
+			clearNameCache();
+		} else if (event == TopicMapEventType.OCCURRENCE_REMOVED) {
+			clearOccurrenceCache();
+		} else if (event == TopicMapEventType.ASSOCIATION_REMOVED) {
+			clearAssociationCache();
 		}
 		/*
 		 * scope was modified -> clear dependent caches

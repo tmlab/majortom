@@ -2512,11 +2512,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, association.getParent(), null, association);
+		notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, association.getParent(), null, association);
 		/*
 		 * store revision
 		 */
-		storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, association.getParent(), null, association);
+		storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, association.getParent(), null, association);
 	}
 
 	/**
@@ -2608,11 +2608,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, name.getParent(), null, name);
+		notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 		/*
 		 * store revision
 		 */
-		storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, name.getParent(), null, name);
+		storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 	}
 
 	/**
@@ -2666,11 +2666,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, occurrence.getParent(), null, occurrence);
+		notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(), null, occurrence);
 		/*
 		 * store revision
 		 */
-		storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, occurrence.getParent(), null, occurrence);
+		storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(), null, occurrence);
 	}
 
 	/**
@@ -2733,11 +2733,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, role.getParent(), null, role);
+			notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
 			/*
 			 * store revision
 			 */
-			storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, role.getParent(), null, role);
+			storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
 //		}
 	}
 
@@ -2788,11 +2788,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, variant.getParent(), null, variant);
+		notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null, variant);
 		/*
 		 * store revision
 		 */
-		storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, variant.getParent(), null, variant);
+		storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null, variant);
 	}
 
 	/**
@@ -2932,11 +2932,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.CONSTRUCT_REMOVED, topic.getTopicMap(), null, topic);
+		notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
 		/*
 		 * store revision
 		 */
-		storeRevision(revision, TopicMapEventType.CONSTRUCT_REMOVED, topic.getParent(), null, topic);
+		storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getParent(), null, topic);
 	}
 
 	/**

@@ -47,7 +47,17 @@ public enum TopicMapEventType {
 	 
 	 SUPERTYPE_REMOVED,
 	 
-	 CONSTRUCT_REMOVED,
+	 ASSOCIATION_REMOVED,
+	 
+	 ROLE_REMOVED,
+	 
+	 OCCURRENCE_REMOVED,
+	 
+	 VARIANT_REMOVED,
+	 
+	 NAME_REMOVED,
+	 
+	 TOPIC_REMOVED,
 	 /**
 	  * The type of {@link Typed} was set
 	  */

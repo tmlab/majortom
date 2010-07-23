@@ -160,7 +160,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(revision);
 		assertFalse(revision.getChangeset().isEmpty());
 		IRevisionChange change = revision.getChangeset().get(0);
-		checkChange(change, TopicMapEventType.CONSTRUCT_REMOVED, association, null, role);
+		checkChange(change, TopicMapEventType.ROLE_REMOVED, association, null, role);
 		role = (Role) change.getOldValue();
 		assertTrue(role instanceof ReadOnlyAssociationRole);
 		assertEquals(type, role.getType());
@@ -196,19 +196,19 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(revision);
 		assertEquals(3, revision.getChangeset().size());
 		IRevisionChange change = revision.getChangeset().get(0);
-		assertEquals(TopicMapEventType.CONSTRUCT_REMOVED, change.getType());
+		assertEquals(TopicMapEventType.ROLE_REMOVED, change.getType());
 		assertEquals(association, change.getContext());
 		assertNull(change.getNewValue());
 		assertTrue(otherRole.equals(change.getOldValue()) || role.equals(change.getOldValue()));
 
 		change = revision.getChangeset().get(1);
-		assertEquals(TopicMapEventType.CONSTRUCT_REMOVED, change.getType());
+		assertEquals(TopicMapEventType.ROLE_REMOVED, change.getType());
 		assertEquals(association, change.getContext());
 		assertNull(change.getNewValue());
 		assertTrue(otherRole.equals(change.getOldValue()) || role.equals(change.getOldValue()));
 
 		change = revision.getChangeset().get(2);
-		checkChange(change, TopicMapEventType.CONSTRUCT_REMOVED, topicMap, null, association);
+		checkChange(change, TopicMapEventType.ASSOCIATION_REMOVED, topicMap, null, association);
 		association = (IAssociation) change.getOldValue();
 		assertTrue(association instanceof ReadOnlyAssociation);
 		assertEquals(2, association.getRoles().size());

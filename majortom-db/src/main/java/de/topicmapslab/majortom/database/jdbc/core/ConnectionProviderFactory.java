@@ -22,6 +22,7 @@ import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.PostGreSqlConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.postgresql99.Sql99ConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -45,6 +46,7 @@ public class ConnectionProviderFactory {
 	private static Map<String, Class<? extends IConnectionProvider>> protocols = HashUtil.getHashMap();
 	static {
 		protocols.put(SqlDialect.POSTGRESQL.name(), PostGreSqlConnectionProvider.class);
+		protocols.put(SqlDialect.POSTGRESQL99.name(), Sql99ConnectionProvider.class);
 	}
 
 	/**

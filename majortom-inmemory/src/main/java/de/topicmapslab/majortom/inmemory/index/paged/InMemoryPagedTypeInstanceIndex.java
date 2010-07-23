@@ -872,7 +872,12 @@ public class InMemoryPagedTypeInstanceIndex extends InMemoryPagedIndex<ITypeInst
 		 * switch by event
 		 */
 		switch (event) {
-		case CONSTRUCT_REMOVED: {
+		case ASSOCIATION_REMOVED:
+		case NAME_REMOVED:
+		case OCCURRENCE_REMOVED:
+		case VARIANT_REMOVED:
+		case ROLE_REMOVED:
+		case TOPIC_REMOVED: {
 			/*
 			 * change depends on the old value
 			 */

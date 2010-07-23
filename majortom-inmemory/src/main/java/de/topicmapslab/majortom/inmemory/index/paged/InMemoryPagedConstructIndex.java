@@ -522,21 +522,20 @@ public class InMemoryPagedConstructIndex extends InMemoryIndex implements IPaged
 		/*
 		 * construct was removed
 		 */
-		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
-			if (oldValue instanceof Variant) {
-				clearVariantCache();
-			} else if (oldValue instanceof Name) {
-				clearNameCache();
-			} else if (oldValue instanceof Occurrence) {
-				clearOccurrenceCache();
-			} else if (oldValue instanceof Topic) {
-				clearTopicCache();
-			} else if (oldValue instanceof Association) {
-				clearAssociationCache();
-			} else if (oldValue instanceof Role) {
-				clearRoleCache();
-			}
+		if (event == TopicMapEventType.VARIANT_REMOVED) {
+			clearVariantCache();
+		} else if (event == TopicMapEventType.NAME_REMOVED) {
+			clearNameCache();
+		} else if (event == TopicMapEventType.OCCURRENCE_REMOVED) {
+			clearOccurrenceCache();
+		} else if (event == TopicMapEventType.TOPIC_REMOVED) {
+			clearTopicCache();
+		} else if (event == TopicMapEventType.ASSOCIATION_REMOVED) {
+			clearAssociationCache();
+		} else if (event == TopicMapEventType.ROLE_REMOVED) {
+			clearRoleCache();
 		}
+
 		/*
 		 * variant added
 		 */

@@ -298,22 +298,19 @@ public class InMemoryPagedIdentityIndex extends InMemoryPagedIndex<IIdentityInde
 	 * {@inheritDoc}
 	 */
 	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-		/*
-		 * construct was removed
-		 */
-		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
-			/*
-			 * topic was removed -> clear cache
-			 */
-			if (oldValue instanceof Topic) {
-				clearCache();
-			}
-			/*
-			 * any other construct -> remove item-identifier cache
-			 */
-			else {
-				clearItemIdentifierCache();
-			}
+		
+		if (event == TopicMapEventType.VARIANT_REMOVED) {
+			clearItemIdentifierCache();
+		} else if (event == TopicMapEventType.NAME_REMOVED) {
+			clearItemIdentifierCache();
+		} else if (event == TopicMapEventType.OCCURRENCE_REMOVED) {
+			clearItemIdentifierCache();
+		} else if (event == TopicMapEventType.TOPIC_REMOVED) {
+			clearCache();
+		} else if (event == TopicMapEventType.ASSOCIATION_REMOVED) {
+			clearItemIdentifierCache();
+		} else if (event == TopicMapEventType.ROLE_REMOVED) {
+			clearItemIdentifierCache();
 		}
 		/*
 		 * subject-identifier was changed -> clear dependent cache

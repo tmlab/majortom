@@ -16,13 +16,13 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.query;
+package de.topicmapslab.majortom.database.jdbc.postgresql99.query;
 
 /**
  * @author Sven Krosse
  * 
  */
-public interface IPostGreSqlDeleteQueries {
+public interface ISql99DeleteQueries {
 
 	// ********************
 	// * DELETE CONSTRUCT *

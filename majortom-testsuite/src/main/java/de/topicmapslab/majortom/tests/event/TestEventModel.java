@@ -16,14 +16,17 @@
 package de.topicmapslab.majortom.tests.event;
 
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ASSOCIATION_ADDED;
-import static de.topicmapslab.majortom.model.event.TopicMapEventType.CONSTRUCT_REMOVED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.ASSOCIATION_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ITEM_IDENTIFIER_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ITEM_IDENTIFIER_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.NAME_ADDED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.NAME_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.OCCURRENCE_ADDED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.OCCURRENCE_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.PLAYER_MODIFIED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.REIFIER_SET;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.ROLE_ADDED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.ROLE_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.SCOPE_MODIFIED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.SUBJECT_IDENTIFIER_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED;
@@ -32,11 +35,13 @@ import static de.topicmapslab.majortom.model.event.TopicMapEventType.SUBJECT_LOC
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.SUPERTYPE_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.SUPERTYPE_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.TOPIC_ADDED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.TOPIC_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.TYPE_ADDED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.TYPE_REMOVED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.TYPE_SET;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.VALUE_MODIFIED;
 import static de.topicmapslab.majortom.model.event.TopicMapEventType.VARIANT_ADDED;
+import static de.topicmapslab.majortom.model.event.TopicMapEventType.VARIANT_REMOVED;
 
 import java.util.Set;
 
@@ -651,7 +656,19 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (!checked) {
-					assertEquals(CONSTRUCT_REMOVED, event);
+					if (construct instanceof Topic) {
+						assertEquals(TOPIC_REMOVED, event);
+					} else if (construct instanceof Association) {
+						assertEquals(ASSOCIATION_REMOVED, event);
+					} else if (construct instanceof Name) {
+						assertEquals(NAME_REMOVED, event);
+					} else if (construct instanceof Occurrence) {
+						assertEquals(OCCURRENCE_REMOVED, event);
+					} else if (construct instanceof Variant) {
+						assertEquals(VARIANT_REMOVED, event);
+					} else if (construct instanceof Role) {
+						assertEquals(ROLE_REMOVED, event);
+					}
 					assertEquals(parent, notifier);
 					assertTrue(oldValue instanceof IConstruct);
 					assertEquals(construct, oldValue);

@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres;
+package de.topicmapslab.majortom.database.jdbc.postgresql99;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +26,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -70,9 +69,9 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class PostGreSqlQueryProcessor implements IQueryProcessor {
+public class Sql99QueryProcessor implements IQueryProcessor {
 
-	private final PostGreSqlQueryBuilder queryBuilder;
+	private final Sql99QueryBuilder queryBuilder;
 	private final Connection connection;
 
 	/**
@@ -81,9 +80,9 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 * @param connection
 	 *            the JDBC connection
 	 */
-	public PostGreSqlQueryProcessor(Connection connection) {
+	public Sql99QueryProcessor(Connection connection) {
 		this.connection = connection;
-		this.queryBuilder = new PostGreSqlQueryBuilder(connection);
+		this.queryBuilder = new Sql99QueryBuilder(connection);
 	}
 
 	/**
@@ -301,45 +300,74 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), "id");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
+	private IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
+		if (themes.isEmpty()) {
+			PreparedStatement stmt = queryBuilder.getQueryReadEmptyScope();
+			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+			ResultSet set = stmt.executeQuery();
+			if (set.next()) {
+				long id = set.getLong("id");
+				set.close();
+				return new ScopeImpl(Long.toString(id));
+			}
+			return null;
+		}
+		Set<IScope> set = HashUtil.getHashSet();
 		/*
 		 * read scope by themes
 		 */
 		PreparedStatement stmt = queryBuilder.getQueryReadScopeByThemes();
-		/*
-		 * set topic map if empty scope is required
-		 */
-		List<Long> ids = HashUtil.getList();
+		boolean first = true;
 		for (ITopic theme : themes) {
-			ids.add(Long.parseLong(theme.getId()));
+			Set<Long> ids = HashUtil.getHashSet();
+			stmt.setLong(1, Long.parseLong(theme.getId()));
+			stmt.setInt(2, themes.size());
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				ids.add(rs.getLong("id_scope"));
+			}
+			rs.close();
+
+			Set<IScope> temp = HashUtil.getHashSet();
+			for (Long id : ids) {
+				temp.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			}
+			if (first) {
+				first = false;
+				set.addAll(temp);
+			} else {
+				set.retainAll(temp);
+				if (set.isEmpty()) {
+					break;
+				}
+			}
 		}
-		Collections.sort(ids);
-		stmt.setArray(1, connection.createArrayOf("bigint", ids.toArray(new Long[0])));
-		stmt.setBoolean(2, true);
-		stmt.setBoolean(3, true);
-		stmt.setLong(4, Long.parseLong(topicMap.getId()));
-		/*
-		 * query for scope
-		 */
-		ResultSet set = stmt.executeQuery();
-		if (set.next()) {
-			long id = set.getLong(1);
-			set.close();
-			return new ScopeImpl(Long.toString(id), themes);
+
+		if (set.isEmpty()) {
+			return null;
+		}
+
+		return set.iterator().next();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
+		IScope scope = readScopeByThemes(topicMap, themes);
+		if (scope != null) {
+			return scope;
 		}
 		/*
 		 * create scope
 		 */
-		stmt = queryBuilder.getQueryCreateScope();
+		PreparedStatement stmt = queryBuilder.getQueryCreateScope();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.execute();
 		/*
 		 * get generated scope id
 		 */
-		set = stmt.getGeneratedKeys();
+		ResultSet set = stmt.getGeneratedKeys();
 		set.next();
 		long id = set.getLong("id");
 		set.close();
@@ -539,18 +567,18 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 */
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getPerformMergeTopics();
-		stmt.setLong(1, Long.parseLong(context.getId()));
-		stmt.setLong(2, Long.parseLong(other.getId()));
-		stmt.execute();
-		// long idContext = Long.parseLong(context.getId());
-		// long idOther = Long.parseLong(other.getId());
-		// int max = 12;
-		// for (int n = 0; n < max; n++) {
-		// stmt.setLong(n * 2 + 1, idContext);
-		// stmt.setLong(n * 2 + 2, idOther);
-		// }
-		// stmt.setLong(max * 2 + 1, idOther);
+		// stmt.setLong(1, Long.parseLong(context.getId()));
+		// stmt.setLong(2, Long.parseLong(other.getId()));
 		// stmt.execute();
+		long idContext = Long.parseLong(context.getId());
+		long idOther = Long.parseLong(other.getId());
+		int max = 12;
+		for (int n = 0; n < max; n++) {
+			stmt.setLong(n * 2 + 1, idContext);
+			stmt.setLong(n * 2 + 2, idOther);
+		}
+		stmt.setLong(max * 2 + 1, idOther);
+		stmt.execute();
 	}
 
 	/**
@@ -1738,39 +1766,54 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		stmt.setArray(1, connection.createArrayOf("bigint", ids));
 		stmt.setBoolean(2, all);
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap,set, "id");
+		return Jdbc2Construct.toTopics(topicMap, set, "id");
 	}
-	
+
 	// ScopedIndex
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryScopesByThemesUsed();
-		Long ids[] = new Long[themes.size()];
-		int n = 0;
-		for (T theme : themes) {
-			ids[n++] = Long.parseLong(theme.getId());
-		}
-		stmt.setArray(1, connection.createArrayOf("bigint", ids));
-		stmt.setBoolean(2, all);
-		stmt.setBoolean(3, false);
-		stmt.setLong(4, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
+		Set<IScope> scopes = HashUtil.getHashSet();
+		if (themes.isEmpty()) {
+			PreparedStatement stmt = queryBuilder.getQueryReadEmptyScope();
+			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+			ResultSet set = stmt.executeQuery();
+			if (set.next()) {
+				long id = set.getLong("id");
+				set.close();
+				scopes.add(new ScopeImpl(Long.toString(id)));
+			}
+		} else {		
+			/*
+			 * read scope by themes
+			 */
+			PreparedStatement stmt = queryBuilder.getQueryScopesByThemesUsed();
+			boolean first = true;
+			for (T theme : themes) {
+				Set<Long> ids = HashUtil.getHashSet();
+				stmt.setLong(1, Long.parseLong(theme.getId()));
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					ids.add(rs.getLong("id_scope"));
+				}
+				rs.close();
 
-		List<Long> list = HashUtil.getList();
-		while (rs.next()) {
-			list.add(rs.getLong("id"));
-		}
-		rs.close();
-
-		/*
-		 * read themes of the scopes
-		 */
-		Collection<IScope> scopes = HashUtil.getHashSet();
-		for (Long id : list) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+				Set<IScope> temp = HashUtil.getHashSet();
+				for (Long id : ids) {
+					temp.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+				}
+				if (first || !all) {
+					first = false;
+					scopes.addAll(temp);
+				} else {
+					scopes.retainAll(temp);
+					if (scopes.isEmpty()) {
+						break;
+					}
+				}
+			}
 		}
 		return scopes;
 	}

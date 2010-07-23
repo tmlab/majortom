@@ -610,11 +610,11 @@ public class InMemoryPagedLiteralIndex extends InMemoryPagedIndex<ILiteralIndex>
 	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 
 		Object dependValue = null;
-
 		/*
 		 * construct was removed
 		 */
-		if (event == TopicMapEventType.CONSTRUCT_REMOVED) {
+		if (event == TopicMapEventType.VARIANT_REMOVED || event == TopicMapEventType.NAME_REMOVED || event == TopicMapEventType.OCCURRENCE_REMOVED
+				|| event == TopicMapEventType.TOPIC_REMOVED || event == TopicMapEventType.ASSOCIATION_REMOVED || event == TopicMapEventType.ROLE_REMOVED) {
 			dependValue = oldValue;
 		}
 		/*
