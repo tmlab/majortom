@@ -143,7 +143,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadScope() throws SQLException;
 
-	public PreparedStatement getQueryReadScopeByThemes(long themeNumber, boolean exact) throws SQLException;
+	public PreparedStatement getQueryReadScopeByThemes() throws SQLException;
 
 	public PreparedStatement getQueryReadValue() throws SQLException;
 
@@ -155,7 +155,7 @@ public interface IQueryBuilder {
 	// * MERGE QUERY *
 	// ***************
 
-//	public PreparedStatement getQueryMergeTopic() throws SQLException;
+	// public PreparedStatement getQueryMergeTopic() throws SQLException;
 
 	// ****************
 	// * UPDATE QUERY *
@@ -239,10 +239,24 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all) throws SQLException;
 
+	// TransitiveTypeInstanceIndex
+	
+	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException;
+
+	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException;
+
+	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException;
+
+	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException;
+	
+	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException;
+	
+	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException;
+	
 	// ScopedIndex
 
-	public PreparedStatement getQuerySelectScopes(long themeCount, boolean all, boolean exact) throws SQLException;
-
+	public PreparedStatement getQueryScopesByThemesUsed() throws SQLException;
+	
 	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException;
 
 	public PreparedStatement getQueryAssociationsByScopes(long scopeCount) throws SQLException;
@@ -296,7 +310,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectNames() throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByValue() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectNamesByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrences() throws SQLException;
@@ -308,11 +322,11 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByRange() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByValue() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectOccurrencesByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectOccurrencesByPatternAndDatatype() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariants() throws SQLException;
@@ -320,33 +334,55 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByDatatype() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByValue() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectVariantsByPattern() throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByValueAndDatatype() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectVariantsByPatternAndDatatype() throws SQLException;
 
 	// IdentityIndex
-	
+
 	public PreparedStatement getQuerySelectItemIdentifiers() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSubjectIdentifiers() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSubjectLocators() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectConstructsByIdentitifer() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectConstructsByItemIdentitifer() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectTopicsBySubjectIdentitifer() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectTopicsBySubjectLocator() throws SQLException;
+
+	// SupertypeSubtypeIndex
+
+	public PreparedStatement getQuerySelectDirectSubtypes() throws SQLException;
+
+	public PreparedStatement getQuerySelectTopicsWithoutSubtypes() throws SQLException;
+
+	public PreparedStatement getQuerySelectSubtypesOfTopic() throws SQLException;
 	
+	public PreparedStatement getQuerySelectSubtypesOfTopics() throws SQLException;
+	
+	public PreparedStatement getQuerySelectSubtypes() throws SQLException;
+
+	public PreparedStatement getQuerySelectDirectSupertypes() throws SQLException;
+
+	public PreparedStatement getQuerySelectTopicsWithoutSupertypes() throws SQLException;
+
+	public PreparedStatement getQuerySelectSupertypesOfTopic() throws SQLException;
+	
+	public PreparedStatement getQuerySelectSupertypesOfTopics() throws SQLException;
+	
+	public PreparedStatement getQuerySelectSupertypes() throws SQLException;
+
 	// *****************
 	// * PERFORM QUERY *
 	// *****************
-	
+
 	public PreparedStatement getPerformMergeTopics() throws SQLException;
 
 }

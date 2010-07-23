@@ -51,7 +51,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
+	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 	/**
 	 * Query to read all associations within a specific type
 	 * <p>
@@ -66,7 +66,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic map id, type id, scope id
 	 * </p>
 	 */
-	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? AND id_scope = ?";
+	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ?";
 	/**
 	 * Query to read all played associations
 	 * <p>
@@ -81,7 +81,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic map id, player id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type = ?";
+	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 
 	/**
 	 * Query to read all played associations within a specific scope
@@ -98,7 +98,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(4):</b> topic map id, player id, type id, scope id
 	 * </p>
 	 */
-	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ?";
+	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?))) AND a.id_scope = ?";
 
 	// ********************
 	// * READ CONSTRUCTS *
@@ -203,7 +203,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
+	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 	/**
 	 * query to read all names of topic by scope
 	 * <p>
@@ -217,7 +217,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?))) AND id_scope = ?";
+	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ?";
 
 	// ********************
 	// * READ OCCURRENCES *
@@ -236,7 +236,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?)))";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 	/**
 	 * query to read all occurrences of topic by scope
 	 * <p>
@@ -250,7 +250,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(transitive_subtypes(?))) AND id_scope = ?";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ?";
 
 	// ********************
 	// * READ ROLE PLAYER *
@@ -301,7 +301,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> association id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ?";
+	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM roles WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 	/**
 	 * Query to read all played roles
 	 * <p>
@@ -316,7 +316,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(2):</b> player id, type id
 	 * </p>
 	 */
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE = "SELECT id, id_parent FROM roles WHERE id_player = ? AND id_type = ?";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE = "SELECT id, id_parent FROM roles WHERE id_player = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 
 	/**
 	 * Query to read all played roles by types
@@ -324,7 +324,7 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(3):</b> player id, type id, asso_type
 	 * </p>
 	 */
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_type = ?";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type IN ( SELECT unnest(types_and_subtypes(?))) AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?)))";
 
 	/**
 	 * Query to read all roles types
@@ -412,19 +412,19 @@ public interface IPostGreSqlSelectQueries {
 	 * <b>parameters(1):</b> topic id
 	 * </p>
 	 */
-	public static final String QUERY_READ_SUPERTYPES = "SELECT id_supertype FROM rel_kind_of WHERE id_subtype = ?";
+	public static final String QUERY_READ_SUPERTYPES = "SELECT unnest(transitive_supertypes(?)) AS id;"; //"SELECT id_supertype FROM rel_kind_of WHERE id_subtype = ?";
 
 	// **************
 	// * READ SCOPE *
 	// **************
 
-	/**
-	 * Query to read the empty scope of the topic map
-	 * <p>
-	 * <b>parameters(1):</b> the topic map id
-	 * </p>
-	 */
-	public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id_topicmap = ? AND id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) ";
+//	/**
+//	 * Query to read the empty scope of the topic map
+//	 * <p>
+//	 * <b>parameters(1):</b> the topic map id
+//	 * </p>
+//	 */
+//	public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id_topicmap = ? AND id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) ";
 
 	/**
 	 * Query to read the scope of a construct
@@ -445,10 +445,10 @@ public interface IPostGreSqlSelectQueries {
 	/**
 	 * Query to read the scope object by a collection of themes
 	 * <p>
-	 * <b>parameters(1):</b> the topic map id and an array of theme IDs ( ASC )
+	 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map id 
 	 * </p>
 	 */
-	public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE ARRAY(SELECT id_theme FROM rel_themes AS r2 WHERE r2.id_scope = r.id_scope ORDER BY r2.id_theme ASC ) %OPERATOR% CAST ( ARRAY[%ARRAY%] AS bigint[])";
+	public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";
 	
 
 	// **************

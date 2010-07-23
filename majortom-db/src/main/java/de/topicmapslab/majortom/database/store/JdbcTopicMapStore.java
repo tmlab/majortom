@@ -36,6 +36,8 @@ import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcIdentityIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcSupertypeSubtypeIndex;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
@@ -60,6 +62,8 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
+import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
+import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
@@ -93,6 +97,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 
 	// Index Instances
 	private ITypeInstanceIndex typeInstanceIndex;
+	private ITransitiveTypeInstanceIndex transitiveTypeInstanceIndex;
+	private ISupertypeSubtypeIndex supertSubtypeIndex;
 	private IScopedIndex scopedIndex;
 	private ILiteralIndex literalIndex;
 	private IIdentityIndex identityIndex;
@@ -1018,10 +1024,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException {
 		try {
 			Set<ITopic> supertypes = provider.getProcessor().doReadSuptertypes(t);
-			if ( existsTmdmSupertypeSubtypeAssociationType()){
-				for ( IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmSupertypeSubtypeAssociationType())){
-					supertypes.add((ITopic)association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer());
-				}			
+			if (existsTmdmSupertypeSubtypeAssociationType()) {
+				for (IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmSupertypeSubtypeAssociationType())) {
+					supertypes.add((ITopic) association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer());
+				}
 			}
 			return supertypes;
 		} catch (SQLException e) {
@@ -1090,10 +1096,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		try {
 			Set<ITopic> types = provider.getProcessor().doReadTypes(t);
-			if ( existsTmdmTypeInstanceAssociationType()){
-				for ( IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())){
-					types.add((ITopic)association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
-				}				
+			if (existsTmdmTypeInstanceAssociationType()) {
+				for (IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())) {
+					types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
+				}
 			}
 			return types;
 		} catch (SQLException e) {
@@ -1335,7 +1341,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	@SuppressWarnings("unchecked")
 	public <I extends Index> I getIndex(Class<I> clazz) {
-		if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
+		if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (this.transitiveTypeInstanceIndex == null) {
+				transitiveTypeInstanceIndex = new JdbcTransitiveTypeInstanceIndex(this);
+			}
+			return (I)transitiveTypeInstanceIndex;
+		} else if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.typeInstanceIndex == null) {
 				this.typeInstanceIndex = new JdbcTypeInstanceIndex(this);
 			}
@@ -1350,11 +1361,16 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 				this.literalIndex = new JdbcLiteralIndex(this);
 			}
 			return (I) this.literalIndex;
-		}else if (IIdentityIndex.class.isAssignableFrom(clazz)) {
+		} else if (IIdentityIndex.class.isAssignableFrom(clazz)) {
 			if (this.identityIndex == null) {
 				this.identityIndex = new JdbcIdentityIndex(this);
 			}
 			return (I) this.identityIndex;
+		} else if (ISupertypeSubtypeIndex.class.isAssignableFrom(clazz)) {
+			if (this.supertSubtypeIndex == null) {
+				this.supertSubtypeIndex = new JdbcSupertypeSubtypeIndex(this);
+			}
+			return (I) this.supertSubtypeIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");

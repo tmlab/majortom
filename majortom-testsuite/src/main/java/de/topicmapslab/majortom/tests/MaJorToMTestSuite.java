@@ -31,7 +31,7 @@ public class MaJorToMTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
 		// $JUnit-BEGIN$
 		suite.addTest(CoreTestSuite.suite());
-		// suite.addTest(EventTestSuite.suite());
+//		// suite.addTest(EventTestSuite.suite());
 		suite.addTest(IndexTestSuite.suite());
 		suite.addTest(MergeTestSuite.suite());
 		// // suite.addTest(IOTestSuite.suite());

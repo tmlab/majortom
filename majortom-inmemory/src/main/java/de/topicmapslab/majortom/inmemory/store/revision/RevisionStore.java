@@ -591,7 +591,7 @@ public class RevisionStore implements IDataStore {
 
 		IRevision revision = getLastRevision();
 		while (revision != null && revision.getBegin().after(timestamp)) {
-			revision = revision.getPrevious();
+			revision = revision.getPast();
 		}
 		return revision;
 	}

@@ -21,6 +21,8 @@ package de.topicmapslab.majortom.database.jdbc.postgres.query;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
+import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
+import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 
 /**
@@ -64,6 +66,30 @@ public interface IPostGreSqlIndexQueries {
 		public static final String QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL = "SELECT DISTINCT id_instance FROM rel_instance_of AS r, topics WHERE id = id_instance AND  id_topicmap = ?  AND  ARRAY ( SELECT id_type FROM rel_instance_of AS r2 WHERE r.id_instance = r2.id_instance ) @> CAST ( ARRAY[ %ARRAY%] AS bigint[] )";
 
 	}
+	
+	/**
+	 * Query definitions to realize methods of {@link ITransitiveTypeInstanceIndex}
+	 * 
+	 * @author Sven Krosse
+	 * 
+	 */
+	interface QueryTransitiveTypeInstanceIndex {
+
+		public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type;";
+
+		public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) ;";
+
+		public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
+
+		public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
+
+		public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
+
+		public static final String QUERY_SELECT_TOPICS_BY_TYPE = "SELECT id_instance AS id FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
+
+		public static final String QUERY_SELECT_TOPICS_BY_TYPES = "SELECT unnest(topics_by_type_transitive(?,?)) AS id;";		
+
+	}
 
 	/**
 	 * Query definitions to realize methods of {@link IScopedIndex}
@@ -72,6 +98,8 @@ public interface IPostGreSqlIndexQueries {
 	 * 
 	 */
 	interface QueryScopeIndex {
+
+		public static final String QUERY_SELECT_SCOPES_BY_THEMES_USED = "SELECT unnest(scope_by_themes(?,?,?,?)) AS id INTERSECT SELECT id_scope AS id FROM scopeables;";
 
 		public static final String QUERY_SELECT_SCOPES = "SELECT DISTINCT id_scope FROM rel_themes WHERE id_scope IN ( SELECT DISTINCT id_scope FROM scopeables ) AND ";
 
@@ -125,7 +153,7 @@ public interface IPostGreSqlIndexQueries {
 
 		public static final String QUERY_SELECT_VARIANTS_BY_SCOPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_scope = ?;";
 
-		public static final String QUERY_SELECT_VARIANTS_BY_SCOPES = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ";
+		public static final String QUERY_SELECT_VARIANTS_BY_SCOPES = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND  scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope  ORDER BY id_theme ASC ), TRUE,TRUE, ? ) <@ ? AND array_upper( scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope ORDER BY id_theme ASC ), TRUE,TRUE, ? ),1) <> 0 ";// "WITH sc AS ( SELECT scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope ), TRUE,TRUE, ? ) AS a FROM variants AS v, names AS n WHERE v.id_parent = n.id ) SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND ( SELECT a FROM sc ) <@ ? AND array_upper(( SELECT a FROM sc ),1) <> 0 ;";
 
 		public static final String QUERY_SELECT_VARIANTS_BY_THEME = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND  ( v.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ) OR n.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ));";
 
@@ -203,4 +231,33 @@ public interface IPostGreSqlIndexQueries {
 
 	}
 
+	/**
+	 * Query definitions to realize methods of {@link ISupertypeSubtypeIndex}
+	 * 
+	 * @author Sven Krosse
+	 * 
+	 */
+	interface QuerySupertypeSubtypeIndex {
+
+		public static final String QUERY_SELECT_DIRECT_SUBTYPES = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
+
+		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_supertype FROM rel_kind_of ) AND id_parent = ?;";
+
+		public static final String QUERY_SELECT_SUBTYPES_OF_TOPIC = "SELECT unnest(transitive_subtypes(?)) AS id;";
+
+		public static final String QUERY_SELECT_SUBTYPES_OF_TOPICS = "SELECT unnest(transitive_subtypes(?,?)) AS id;";
+
+		public static final String QUERY_SELECT_SUBTYPES = "SELECT id_subtype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
+
+		public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?;";
+
+		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
+
+		public static final String QUERY_SELECT_SUPERTYPES_OF_TOPIC = "SELECT unnest(transitive_supertypes(?)) AS id;";
+
+		public static final String QUERY_SELECT_SUPERTYPES_OF_TOPICS = "SELECT unnest(transitive_supertypes(?,?)) AS id;";
+
+		public static final String QUERY_SELECT_SUPERTYPES = "SELECT id_supertype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
+
+	}
 }

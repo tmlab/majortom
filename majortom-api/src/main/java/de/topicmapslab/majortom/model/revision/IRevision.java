@@ -23,7 +23,7 @@ public interface IRevision {
 	long getId();
 
 	/**
-	 * Returns the previous revision of this construct.
+	 * Returns the past revision of this construct.
 	 * 
 	 * <p>
 	 * Special case:<br />
@@ -31,9 +31,9 @@ public interface IRevision {
 	 * <code>null</code> will be returned.
 	 * </p>
 	 * 
-	 * @return the previous revision or <code>null</code>
+	 * @return the past revision or <code>null</code>
 	 */
-	public IRevision getPrevious();
+	public IRevision getPast();
 
 	/**
 	 * Return the future revision of this revision.

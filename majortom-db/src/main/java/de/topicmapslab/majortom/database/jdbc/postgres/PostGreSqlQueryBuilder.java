@@ -251,7 +251,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadType;
 	private PreparedStatement preparedStatementReadTypes;
 	private PreparedStatement preparedStatementReadScope;
-	private PreparedStatement preparedStatementReadEmptyScope;
+	private PreparedStatement preparedStatementReadScopeByThemes;
 	private PreparedStatement preparedStatementReadValue;
 	private PreparedStatement preparedStatementReadVariants;
 	private PreparedStatement preparedStatementReadVariantsWithScope;
@@ -593,25 +593,11 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadScopeByThemes(long themeNumber, boolean exact) throws SQLException {
-		/*
-		 * is empty scope
-		 */
-		if (themeNumber == 0) {
-			if (preparedStatementReadEmptyScope == null) {
-				preparedStatementReadEmptyScope = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_EMPTY_SCOPE);
-			}
-			return preparedStatementReadEmptyScope;
+	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
+		if (preparedStatementReadScopeByThemes == null) {
+			this.preparedStatementReadScopeByThemes = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_SCOPES_BY_THEMES);
 		}
-		/*
-		 * is non-empty scope
-		 */
-		String subquery = "";
-		for (long n = 0; n < themeNumber; n++) {
-			subquery += subquery.isEmpty() ? "?" : ",?";
-		}
-		String query = IPostGreSqlSelectQueries.QUERY_READ_SCOPES_BY_THEMES.replaceFirst("%OPERATOR%", exact ? "=" : "@>");
-		return connection.prepareStatement(query.replaceFirst("%ARRAY%", subquery));
+		return preparedStatementReadScopeByThemes;
 	}
 
 	/**
@@ -1192,7 +1178,83 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		return stmt;
 	}
 
+	// TransitiveTypeInstanceIndex
+
+	private PreparedStatement preparedStatementIndexAssociationsByTypeTransitive;
+	private PreparedStatement preparedStatementIndexRolesByTypeTransitive;
+	private PreparedStatement preparedStatementIndexNamesByTypeTransitive;
+	private PreparedStatement preparedStatementIndexOccurrencesByTypeTransitive;
+	private PreparedStatement preparedStatementIndexTopicsByTypeTransitive;
+	private PreparedStatement preparedStatementIndexTopicsByTypesTransitive;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException {
+		if (this.preparedStatementIndexAssociationsByTypeTransitive == null) {
+			this.preparedStatementIndexAssociationsByTypeTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
+		}
+		return this.preparedStatementIndexAssociationsByTypeTransitive;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException {
+		if (this.preparedStatementIndexRolesByTypeTransitive == null) {
+			this.preparedStatementIndexRolesByTypeTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_ROLES_BY_TYPE);
+		}
+		return this.preparedStatementIndexRolesByTypeTransitive;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException {
+		if (this.preparedStatementIndexNamesByTypeTransitive == null) {
+			this.preparedStatementIndexNamesByTypeTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_NAMES_BY_TYPE);
+		}
+		return this.preparedStatementIndexNamesByTypeTransitive;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException {
+		if (this.preparedStatementIndexOccurrencesByTypeTransitive == null) {
+			this.preparedStatementIndexOccurrencesByTypeTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_OCCURRENCES_BY_TYPE);
+		}
+		return this.preparedStatementIndexOccurrencesByTypeTransitive;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException {
+		if (this.preparedStatementIndexTopicsByTypeTransitive == null) {
+			this.preparedStatementIndexTopicsByTypeTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_TOPICS_BY_TYPE);
+		}
+		return this.preparedStatementIndexTopicsByTypeTransitive;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException {
+		if (this.preparedStatementIndexTopicsByTypesTransitive == null) {
+			this.preparedStatementIndexTopicsByTypesTransitive = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_TOPICS_BY_TYPES);
+		}
+		return this.preparedStatementIndexTopicsByTypesTransitive;
+	}
+
 	// ScopeIndex
+	private PreparedStatement preparedStatementIndexScopesByThemesUsed;
 	private PreparedStatement preparedStatementIndexAssociationsByEmptyScope;
 	private PreparedStatement preparedStatementIndexAssociationsByScope;
 	private Map<Long, PreparedStatement> preparedStatementIndexAssociationsByScopes;
@@ -1215,7 +1277,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementIndexOccurrenceScopes;
 	private PreparedStatement preparedStatementIndexOccurrenceThemes;
 	private PreparedStatement preparedStatementIndexVariantsByScope;
-	private Map<Long, PreparedStatement> preparedStatementIndexVariantsByScopes;
+	private PreparedStatement preparedStatementIndexVariantsByScopes;
 	private PreparedStatement preparedStatementIndexVariantsByTheme;
 	private Map<Boolean, Map<Long, PreparedStatement>> preparedStatementIndexVariantsByThemes;
 	private PreparedStatement preparedStatementIndexVariantScopes;
@@ -1224,22 +1286,11 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectScopes(long themeCount, boolean all, boolean exact) throws SQLException {
-		/*
-		 * matches all?
-		 */
-		if (all) {
-			return getQueryReadScopeByThemes(themeCount, exact);
+	public PreparedStatement getQueryScopesByThemesUsed() throws SQLException {
+		if (this.preparedStatementIndexScopesByThemesUsed == null) {
+			preparedStatementIndexScopesByThemesUsed = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_SCOPES_BY_THEMES_USED);
 		}
-		/*
-		 * create statement
-		 */
-		String subquery = "";
-		for (long n = 0; n < themeCount; n++) {
-			subquery += subquery.isEmpty() ? "" : (all ? " AND " : " OR ");
-			subquery += "id_theme = ?";
-		}
-		return connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_SCOPES + " " + subquery);
+		return preparedStatementIndexScopesByThemesUsed;
 	}
 
 	/**
@@ -1600,25 +1651,9 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		 * check if cache is initialized
 		 */
 		if (preparedStatementIndexVariantsByScopes == null) {
-			preparedStatementIndexVariantsByScopes = HashUtil.getHashMap();
+			preparedStatementIndexVariantsByScopes = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_VARIANTS_BY_SCOPES);
 		}
-		/*
-		 * check if statement exists
-		 */
-		PreparedStatement stmt = preparedStatementIndexVariantsByScopes.get(scopeCount);
-		if (stmt == null) {
-			/*
-			 * create statement
-			 */
-			String subquery = "";
-			for (long n = 0; n < scopeCount; n++) {
-				subquery += subquery.isEmpty() ? "" : " OR ";
-				subquery += "v.id_scope = ? OR n.id_scope = ?";
-			}
-			stmt = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_VARIANTS_BY_SCOPES + " " + subquery);
-			preparedStatementIndexVariantsByScopes.put(scopeCount, stmt);
-		}
-		return stmt;
+		return preparedStatementIndexVariantsByScopes;
 	}
 
 	/**
@@ -1882,7 +1917,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		return this.preparedStatementIndexVariantsByPatternAndDatatype;
 	}
 
-	// LiteralIndex
+	// IdentityIndex
 
 	private PreparedStatement preparedStatementIndexItemIdentifiers;
 	private PreparedStatement preparedStatementIndexSubjectIdentifiers;
@@ -1930,7 +1965,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		}
 		return this.preparedStatementIndexConstructsByIdentifier;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1962,6 +1997,127 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 					.prepareStatement(IPostGreSqlIndexQueries.QueryIdentityIndex.QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN);
 		}
 		return this.preparedStatementIndexTopicsBySubjectLocator;
+	}
+
+	// SupertypeSubtypeIndex
+
+	private PreparedStatement preparedStatementIndexDirectSubtypes;
+	private PreparedStatement preparedStatementIndexTopicsWithoutSubtypes;
+	private PreparedStatement preparedStatementIndexSubtypesOfTopic;
+	private PreparedStatement preparedStatementIndexSubtypesOfTopics;
+	private PreparedStatement preparedStatementIndexSubtypes;
+	private PreparedStatement preparedStatementIndexDirectSupertypes;
+	private PreparedStatement preparedStatementIndexTopicsWithoutSupertypes;
+	private PreparedStatement preparedStatementIndexSupertypesOfTopic;
+	private PreparedStatement preparedStatementIndexSupertypesOfTopics;
+	private PreparedStatement preparedStatementIndexSupertypes;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectDirectSubtypes() throws SQLException {
+		if (this.preparedStatementIndexDirectSubtypes == null) {
+			this.preparedStatementIndexDirectSubtypes = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_DIRECT_SUBTYPES);
+		}
+		return this.preparedStatementIndexDirectSubtypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectDirectSupertypes() throws SQLException {
+		if (this.preparedStatementIndexDirectSupertypes == null) {
+			this.preparedStatementIndexDirectSupertypes = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_DIRECT_SUPERTYPES);
+		}
+		return this.preparedStatementIndexDirectSupertypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSubtypes() throws SQLException {
+		if (this.preparedStatementIndexSubtypes == null) {
+			this.preparedStatementIndexSubtypes = connection.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUBTYPES);
+		}
+		return this.preparedStatementIndexSubtypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSupertypes() throws SQLException {
+		if (this.preparedStatementIndexSupertypes == null) {
+			this.preparedStatementIndexSupertypes = connection.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUPERTYPES);
+		}
+		return this.preparedStatementIndexSupertypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSubtypesOfTopic() throws SQLException {
+		if (this.preparedStatementIndexSubtypesOfTopic == null) {
+			this.preparedStatementIndexSubtypesOfTopic = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUBTYPES_OF_TOPIC);
+		}
+		return this.preparedStatementIndexSubtypesOfTopic;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSubtypesOfTopics() throws SQLException {
+		if (this.preparedStatementIndexSubtypesOfTopics == null) {
+			this.preparedStatementIndexSubtypesOfTopics = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUBTYPES_OF_TOPICS);
+		}
+		return this.preparedStatementIndexSubtypesOfTopics;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSupertypesOfTopic() throws SQLException {
+		if (this.preparedStatementIndexSupertypesOfTopic == null) {
+			this.preparedStatementIndexSupertypesOfTopic = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUPERTYPES_OF_TOPIC);
+		}
+		return this.preparedStatementIndexSupertypesOfTopic;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectSupertypesOfTopics() throws SQLException {
+		if (this.preparedStatementIndexSupertypesOfTopics == null) {
+			this.preparedStatementIndexSupertypesOfTopics = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUPERTYPES_OF_TOPICS);
+		}
+		return this.preparedStatementIndexSupertypesOfTopics;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectTopicsWithoutSubtypes() throws SQLException {
+		if (this.preparedStatementIndexTopicsWithoutSubtypes == null) {
+			this.preparedStatementIndexTopicsWithoutSubtypes = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES);
+		}
+		return this.preparedStatementIndexTopicsWithoutSubtypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQuerySelectTopicsWithoutSupertypes() throws SQLException {
+		if (this.preparedStatementIndexTopicsWithoutSupertypes == null) {
+			this.preparedStatementIndexTopicsWithoutSupertypes = connection
+					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES);
+		}
+		return this.preparedStatementIndexTopicsWithoutSupertypes;
 	}
 
 	// *******************

@@ -70,7 +70,7 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision getPrevious() {
+	public IRevision getPast() {
 		return (IRevision) store.doRead(null, TopicMapStoreParameterType.PREVIOUS_REVISION, this);
 	}
 

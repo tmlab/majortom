@@ -93,7 +93,7 @@ public class TestImport extends TestCase implements ITopicMapListener {
 		assertNotNull(map);
 
 		try {
-			XTMTopicMapReader reader = new XTMTopicMapReader(map, new File("src/test/resources/Opera Topic Map.xtm"));
+			XTMTopicMapReader reader = new XTMTopicMapReader(map, new File("src/test/resources/toyTM_xtm10.xtm"));
 			reader.read();
 		} catch (Exception e) {
 			e.printStackTrace();
