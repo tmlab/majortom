@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.tmapi.core.Association;
-import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.TopicInUseException;
@@ -948,7 +947,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		storeRevision(revision, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 		return t;
 	}
-		
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1162,7 +1161,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	void mergeTopics(ITopic context, ITopic other, IRevision revision) throws TopicMapStoreException {
-		if (!context.equals(other)) {			
+		if (!context.equals(other)) {
 			/*
 			 * merge into
 			 */
@@ -1202,45 +1201,71 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	void modifyItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
-
-		if (!getIdentityStore().getItemIdentifiers(c).contains(itemIdentifier)) {
-			/*
-			 * check if item identifier is already used as item identifier
-			 */
-			IConstruct mergeCandidate = getIdentityStore().byItemIdentifier(itemIdentifier);
-			if (mergeCandidate != null) {
-				if (mergeCandidate.equals(c)) {
-					return;
-				}
-				if (!doAutomaticMerging() || !(c instanceof ITopic) || !(mergeCandidate instanceof ITopic)) {
-					throw new IdentityConstraintException(c, mergeCandidate, itemIdentifier, "Duplicated item-identifiers not allowed!");
-				}
-				mergeTopics((ITopic) c, (ITopic) mergeCandidate, revision);
-			} else {
-				/*
-				 * check if item identifier is already used as subject
-				 * identifier
-				 */
-				mergeCandidate = getIdentityStore().bySubjectIdentifier(itemIdentifier);
-				if (mergeCandidate != null && !mergeCandidate.equals(c)) {
-					if (!doAutomaticMerging() || !(c instanceof ITopic) || !(mergeCandidate instanceof ITopic)) {
-						throw new IdentityConstraintException(c, mergeCandidate, itemIdentifier,
-								"Duplicated identifiers not allowed, already use as subject-identifier!");
-					}
-					mergeTopics((ITopic) c, (ITopic) mergeCandidate, revision);
-				} else {
-					getIdentityStore().addItemIdentifer(c, itemIdentifier);
-					/*
-					 * notify listeners
-					 */
-					notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
-					/*
-					 * store revision
-					 */
-					storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
-				}
-			}
+		/*
+		 * check if item-identifier causes merging
+		 */
+		ITopic topic = checkMergeConditionOfItemIdentifier(c, itemIdentifier);
+		if ( topic != null ){
+			mergeTopics((ITopic)c, topic, revision);
 		}
+		getIdentityStore().addItemIdentifer(c, itemIdentifier);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
+		/*
+		 * store revision
+		 */
+		storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
+		//		
+		// if
+		// (!getIdentityStore().getItemIdentifiers(c).contains(itemIdentifier))
+		// {
+		// /*
+		// * check if item identifier is already used as item identifier
+		// */
+		// IConstruct mergeCandidate =
+		// getIdentityStore().byItemIdentifier(itemIdentifier);
+		// if (mergeCandidate != null) {
+		// if (mergeCandidate.equals(c)) {
+		// return;
+		// }
+		// if (!doAutomaticMerging() || !(c instanceof ITopic) ||
+		// !(mergeCandidate instanceof ITopic)) {
+		// throw new IdentityConstraintException(c, mergeCandidate,
+		// itemIdentifier, "Duplicated item-identifiers not allowed!");
+		// }
+		// mergeTopics((ITopic) c, (ITopic) mergeCandidate, revision);
+		// } else {
+		// /*
+		// * check if item identifier is already used as subject
+		// * identifier
+		// */
+		// mergeCandidate =
+		// getIdentityStore().bySubjectIdentifier(itemIdentifier);
+		// if (mergeCandidate != null && !mergeCandidate.equals(c)) {
+		// if (!doAutomaticMerging() || !(c instanceof ITopic) ||
+		// !(mergeCandidate instanceof ITopic)) {
+		// throw new IdentityConstraintException(c, mergeCandidate,
+		// itemIdentifier,
+		// "Duplicated identifiers not allowed, already use as subject-identifier!");
+		// }
+		// mergeTopics((ITopic) c, (ITopic) mergeCandidate, revision);
+		// } else {
+		// getIdentityStore().addItemIdentifer(c, itemIdentifier);
+		// /*
+		// * notify listeners
+		// */
+		// notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c,
+		// itemIdentifier, null);
+		// /*
+		// * store revision
+		// */
+		// storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_ADDED, c,
+		// itemIdentifier, null);
+		// }
+		// }
+		// }
 	}
 
 	/**
@@ -1360,39 +1385,62 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void modifySubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
 		/*
-		 * check if subject identifier is already used as subject identifier
+		 * check if subject-identifier causes merging
 		 */
-		IConstruct mergeCandidate = getIdentityStore().bySubjectIdentifier(subjectIdentifier);
-		if (mergeCandidate != null) {
-			if (mergeCandidate.equals(t)) {
-				return;
-			}
-			if (!doAutomaticMerging()) {
-				throw new IdentityConstraintException(t, mergeCandidate, subjectIdentifier, "Topic with subject-identifier already exists!");
-			}
-			mergeTopics(t, (ITopic) mergeCandidate, revision);
-		} else {
-			/*
-			 * check if subject identifier is already used as item identifier
-			 */
-			mergeCandidate = getIdentityStore().byItemIdentifier(subjectIdentifier);
-			if (mergeCandidate != null && !mergeCandidate.equals(t)) {
-				if (!doAutomaticMerging() || !(mergeCandidate instanceof ITopic)) {
-					throw new IdentityConstraintException(t, mergeCandidate, subjectIdentifier,
-							"Duplicated identifiers not allowed, already use as item-identifier!");
-				}
-				mergeTopics(t, (ITopic) mergeCandidate, revision);
-			}
-			getIdentityStore().addSubjectIdentifier(t, subjectIdentifier);
-			/*
-			 * notify listeners
-			 */
-			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
-			/*
-			 * store revision
-			 */
-			storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
+		ITopic topic = checkMergeConditionOfSubjectIdentifier(t, subjectIdentifier);
+		if ( topic != null ){
+			mergeTopics(t, topic, revision);
 		}
+		getIdentityStore().addSubjectIdentifier(t, subjectIdentifier);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
+		/*
+		 * store revision
+		 */
+		storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
+
+		// /*
+		// * check if subject identifier is already used as subject identifier
+		// */
+		// IConstruct mergeCandidate =
+		// getIdentityStore().bySubjectIdentifier(subjectIdentifier);
+		// if (mergeCandidate != null) {
+		// if (mergeCandidate.equals(t)) {
+		// return;
+		// }
+		// if (!doAutomaticMerging()) {
+		// throw new IdentityConstraintException(t, mergeCandidate,
+		// subjectIdentifier, "Topic with subject-identifier already exists!");
+		// }
+		// mergeTopics(t, (ITopic) mergeCandidate, revision);
+		// } else {
+		// /*
+		// * check if subject identifier is already used as item identifier
+		// */
+		// mergeCandidate =
+		// getIdentityStore().byItemIdentifier(subjectIdentifier);
+		// if (mergeCandidate != null && !mergeCandidate.equals(t)) {
+		// if (!doAutomaticMerging() || !(mergeCandidate instanceof ITopic)) {
+		// throw new IdentityConstraintException(t, mergeCandidate,
+		// subjectIdentifier,
+		// "Duplicated identifiers not allowed, already use as item-identifier!");
+		// }
+		// mergeTopics(t, (ITopic) mergeCandidate, revision);
+		// }
+		// getIdentityStore().addSubjectIdentifier(t, subjectIdentifier);
+		// /*
+		// * notify listeners
+		// */
+		// notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t,
+		// subjectIdentifier, null);
+		// /*
+		// * store revision
+		// */
+		// storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED,
+		// t, subjectIdentifier, null);
+		// }
 	}
 
 	/**
@@ -1415,16 +1463,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if the operation fails
 	 */
 	void modifySubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
-		ITopic mergeCandidate = getIdentityStore().bySubjectLocator(subjectLocator);
-		if (mergeCandidate != null) {
-			if (mergeCandidate.equals(t)) {
-				return;
-			}
-			if (!doAutomaticMerging()) {
-				throw new IdentityConstraintException(t, mergeCandidate, subjectLocator, "Topic with subject-locator already exists!");
-			}
-			mergeTopics(t, mergeCandidate, revision);
-		} else {
+		/*
+		 * check if subject-locator causes merging
+		 */
+		ITopic topic = checkMergeConditionOfSubjectLocator(t, subjectLocator);
+		if ( topic != null ){
+			mergeTopics(t, topic, revision);
+		}else{
 			getIdentityStore().addSubjectLocator(t, subjectLocator);
 			/*
 			 * notify listeners
@@ -2693,52 +2738,52 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	void removeRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
-// REMOVED BECAUSE WILL BE HANDLED BY TOPICMAPSTOREIMPL
-//		/*
-//		 * remove dependent association too?
-//		 */
-//		if (cascade) {
-//			/*
-//			 * remove parent association
-//			 */
-//			doRemoveAssociation(role.getParent(), true);
-//		} else {
-			/*
-			 * store lazy copy of the object before deletion
-			 */
-			getRevisionStore().createLazyCopy(role);
-			/*
-			 * remove role
-			 */
-			getAssociationStore().removeRole(role);
-			/*
-			 * remove reification
-			 */
-			/*
-			 * remove reification
-			 */
-			ITopic reifier = getReificationStore().getReifier(role);
-			if (reifier != null) {
-				removeTopic(reifier, cascade, revision);
-				getReificationStore().removeReification(role);
-			}
-			/*
-			 * remove type
-			 */
-			getTypedStore().removeType(role);
-			/*
-			 * remove construct
-			 */
-			getIdentityStore().removeConstruct(role);
-			/*
-			 * notify listeners
-			 */
-			notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
-			/*
-			 * store revision
-			 */
-			storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
-//		}
+		// REMOVED BECAUSE WILL BE HANDLED BY TOPICMAPSTOREIMPL
+		// /*
+		// * remove dependent association too?
+		// */
+		// if (cascade) {
+		// /*
+		// * remove parent association
+		// */
+		// doRemoveAssociation(role.getParent(), true);
+		// } else {
+		/*
+		 * store lazy copy of the object before deletion
+		 */
+		getRevisionStore().createLazyCopy(role);
+		/*
+		 * remove role
+		 */
+		getAssociationStore().removeRole(role);
+		/*
+		 * remove reification
+		 */
+		/*
+		 * remove reification
+		 */
+		ITopic reifier = getReificationStore().getReifier(role);
+		if (reifier != null) {
+			removeTopic(reifier, cascade, revision);
+			getReificationStore().removeReification(role);
+		}
+		/*
+		 * remove type
+		 */
+		getTypedStore().removeType(role);
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(role);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
+		/*
+		 * store revision
+		 */
+		storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
+		// }
 	}
 
 	/**
@@ -3314,31 +3359,33 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		ITopic defaultNameType = getIdentityStore().bySubjectIdentifier(locDefaultNameType);
 		if (defaultNameType == null) {
 			defaultNameType = doCreateTopicBySubjectIdentifier(topicMap, locDefaultNameType);
-//			registerAsNameType(defaultNameType);
+			// registerAsNameType(defaultNameType);
 		}
 		return defaultNameType;
 	}
 
-//	/**
-//	 * Add the given type as name type.
-//	 * 
-//	 * @param type
-//	 *            the type
-//	 */
-//	private void registerAsNameType(ITopic type) {
-//		/*
-//		 * get TMDM name type
-//		 */
-//		ILocator locNameType = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_NAME_TYPE);
-//		ITopic nameType = getIdentityStore().bySubjectIdentifier(locNameType);
-//		if (nameType == null) {
-//			nameType = doCreateTopicBySubjectIdentifier(type.getTopicMap(), locNameType);
-//		}
-//		/*
-//		 * add supertype-subtype relation
-//		 */
-//		getTopicTypeStore().addSupertype(type, nameType);
-//	}
+	// /**
+	// * Add the given type as name type.
+	// *
+	// * @param type
+	// * the type
+	// */
+	// private void registerAsNameType(ITopic type) {
+	// /*
+	// * get TMDM name type
+	// */
+	// ILocator locNameType =
+	// getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_NAME_TYPE);
+	// ITopic nameType = getIdentityStore().bySubjectIdentifier(locNameType);
+	// if (nameType == null) {
+	// nameType = doCreateTopicBySubjectIdentifier(type.getTopicMap(),
+	// locNameType);
+	// }
+	// /*
+	// * add supertype-subtype relation
+	// */
+	// getTopicTypeStore().addSupertype(type, nameType);
+	// }
 
 	/**
 	 * {@inheritDoc}
@@ -3457,9 +3504,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		return topic;
 	}
 
-	 /**
-		 * {@inheritDoc}
-		 */
+	/**
+	 * {@inheritDoc}
+	 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
@@ -3509,7 +3556,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
-	/** 
+	/**
 	 * {@inheritDoc}
 	 */
 	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {

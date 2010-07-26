@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.tests.index;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import de.topicmapslab.majortom.tests.index.paged.PagedIndexTestSuite;
 
 /**
  * @author Sven Krosse
@@ -32,7 +33,7 @@ public class IndexTestSuite {
 		suite.addTestSuite(TestSupertypeSubtypeIndex.class);
 		suite.addTestSuite(TestTransitiveTypeInstanceIndex.class);
 		suite.addTestSuite(TestScopeIndex.class);
-//		suite.addTest(PagedIndexTestSuite.suite());
+		suite.addTest(PagedIndexTestSuite.suite());
 		//$JUnit-END$
 		return suite;
 	}

@@ -258,7 +258,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(topic.getReified());
 		assertEquals(n, topic.getReified());
 
-		IRevision revision = index.getLastRevision();
+		IRevision revision = index.getLastRevision().getPast();
 		assertEquals(32, revision.getChangeset().size());
 	}
 }
