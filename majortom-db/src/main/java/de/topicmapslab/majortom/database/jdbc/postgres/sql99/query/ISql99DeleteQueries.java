@@ -16,13 +16,13 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
 
 /**
  * @author Sven Krosse
  * 
  */
-public interface IPostGreSqlDeleteQueries {
+public interface ISql99DeleteQueries {
 
 	// ********************
 	// * DELETE CONSTRUCT *
@@ -34,15 +34,15 @@ public interface IPostGreSqlDeleteQueries {
 	
 	public static final String QUERY_DELETE_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + QUERY_DELETE_HISTORY + "DELETE FROM topicmaps WHERE id = ?;";
 
-	public static final String QUERY_DELETE_TOPIC = "UPDATE topics SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_TOPIC = "UPDATE topics SET removed = TRUE WHERE id = ?; UPDATE constructs SET removed = TRUE WHERE id_parent = ?; UPDATE variants SET removed = TRUE WHERE id_parent IN ( SELECT id FROM names WHERE id_parent = ? );";
 
-	public static final String QUERY_DELETE_NAME = "UPDATE names SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_NAME = "UPDATE names SET removed = TRUE WHERE id = ?; UPDATE variants SET removed = TRUE WHERE id_parent = ?;";
 
 	public static final String QUERY_DELETE_OCCURRENCE = "UPDATE occurrences SET removed = TRUE WHERE id = ?;";
 
 	public static final String QUERY_DELETE_VARIANT = "UPDATE variants SET removed = TRUE WHERE id = ?;";
 
-	public static final String QUERY_DELETE_ASSOCIATION = "UPDATE associations SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_ASSOCIATION = "UPDATE associations SET removed = TRUE WHERE id = ?; UPDATE roles SET removed = TRUE WHERE id_parent = ?;";
 
 	public static final String QUERY_DELETE_ROLE = "UPDATE roles SET removed = TRUE WHERE id = ?;";
 

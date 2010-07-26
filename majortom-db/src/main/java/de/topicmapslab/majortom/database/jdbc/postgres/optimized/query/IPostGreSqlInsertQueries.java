@@ -16,16 +16,16 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgresql99.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
 
-import static de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlQueries.SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS;
-import static de.topicmapslab.majortom.database.jdbc.postgres.query.IPostGreSqlQueries.SNIPPET_CREATE_TOPICMAP_IF_NOT_EXISTS;
+import static de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlQueries.SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS;
+import static de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlQueries.SNIPPET_CREATE_TOPICMAP_IF_NOT_EXISTS;
 
 /**
  * @author Sven Krosse
  * 
  */
-public interface ISql99InsertQueries {
+public interface IPostGreSqlInsertQueries {
 
 	/**
 	 * query to create a topic map by base locator if there is not a topic map

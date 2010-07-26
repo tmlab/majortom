@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
 
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;

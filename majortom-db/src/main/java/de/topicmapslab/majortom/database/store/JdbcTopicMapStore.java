@@ -58,6 +58,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
@@ -123,7 +124,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateAssociation(topicMap, type);
+			IAssociation a = provider.getProcessor().doCreateAssociation(topicMap, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
+			return a;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -134,7 +140,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateAssociation(topicMap, type, themes);
+			IAssociation a = provider.getProcessor().doCreateAssociation(topicMap, type, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
+			return a;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -164,7 +175,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IName doCreateName(ITopic topic, String value) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateName(topic, value);
+			IName n = provider.getProcessor().doCreateName(topic, value);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.NAME_ADDED, topic, n, null);
+			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -175,7 +191,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateName(topic, value, themes);
+			IName n = provider.getProcessor().doCreateName(topic, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.NAME_ADDED, topic, n, null);
+			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -186,7 +207,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IName doCreateName(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateName(topic, type, value);
+			IName n = provider.getProcessor().doCreateName(topic, type, value);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.NAME_ADDED, topic, n, null);
+			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -197,7 +223,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateName(topic, type, value, themes);
+			IName n = provider.getProcessor().doCreateName(topic, type, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.NAME_ADDED, topic, n, null);
+			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -208,7 +239,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -219,7 +255,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value, themes);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -230,7 +271,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -241,7 +287,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value, themes);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -252,7 +303,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value, datatype);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value, datatype);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -264,7 +320,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateOccurrence(topic, type, value, datatype, themes);
+			IOccurrence o = provider.getProcessor().doCreateOccurrence(topic, type, value, datatype, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -275,7 +336,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateRole(association, type, player);
+			IAssociationRole r = provider.getProcessor().doCreateRole(association, type, player);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ROLE_ADDED, association, r, null);
+			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -297,7 +363,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateTopicWithoutIdentifier(topicMap);
+			ITopic t = provider.getProcessor().doCreateTopicWithoutIdentifier(topicMap);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
+			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -308,7 +379,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateTopicByItemIdentifier(topicMap, itemIdentifier);
+			ITopic t = provider.getProcessor().doCreateTopicByItemIdentifier(topicMap, itemIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
+			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -319,7 +395,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateTopicBySubjectIdentifier(topicMap, subjectIdentifier);
+			ITopic t = provider.getProcessor().doCreateTopicBySubjectIdentifier(topicMap, subjectIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
+			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -330,7 +411,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateTopicBySubjectLocator(topicMap, subjectLocator);
+			ITopic t = provider.getProcessor().doCreateTopicBySubjectLocator(topicMap, subjectLocator);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
+			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -341,7 +427,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateVariant(name, value, themes);
+			IVariant v = provider.getProcessor().doCreateVariant(name, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VARIANT_ADDED, name, v, null);
+			return v;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -352,7 +443,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateVariant(name, value, themes);
+			IVariant v = provider.getProcessor().doCreateVariant(name, value, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VARIANT_ADDED, name, v, null);
+			return v;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -363,7 +459,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doCreateVariant(name, value, datatype, themes);
+			IVariant v = provider.getProcessor().doCreateVariant(name, value, datatype, themes);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VARIANT_ADDED, name, v, null);
+			return v;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -386,7 +487,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doMergeTopics(context, other);
-			((TopicImpl)other).getIdentity().setId(context.getId());
+			((TopicImpl) other).getIdentity().setId(context.getId());
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -398,6 +503,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doModifyItemIdentifier(c, itemIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -408,7 +517,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyPlayer(IAssociationRole role, ITopic player) throws TopicMapStoreException {
 		try {
+			ITopic oldPlayer = provider.getProcessor().doReadPlayer(role);
 			provider.getProcessor().doModifyPlayer(role, player);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.PLAYER_MODIFIED, role, player, oldPlayer);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -419,7 +533,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyReifier(IReifiable r, ITopic reifier) throws TopicMapStoreException {
 		try {
+			ITopic oldReifier = provider.getProcessor().doReadReification(r);
 			provider.getProcessor().doModifyReifier(r, reifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.REIFIER_SET, r, reifier, oldReifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -430,7 +549,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException {
 		try {
+			IScope oldScope = provider.getProcessor().doReadScope(s);
 			provider.getProcessor().doModifyScope(s, theme);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, provider.getProcessor().doReadScope(s), oldScope);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -442,6 +566,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doModifySubjectIdentifier(t, subjectIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -453,6 +581,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doModifySubjectLocator(t, subjectLocator);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_ADDED, t, subjectLocator, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -467,6 +599,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
+		/*
+		 * notify listener
+		 */
+		notifyListeners(TopicMapEventType.SUPERTYPE_ADDED, t, type, null);
 		/*
 		 * create type-hierarchy as association if necessary
 		 */
@@ -494,7 +630,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyType(ITypeable t, ITopic type) throws TopicMapStoreException {
 		try {
+			ITopic oldType = provider.getProcessor().doReadType(t);
 			provider.getProcessor().doModifyType(t, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -506,6 +647,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doModifyType(ITopic t, ITopic type) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doModifyType(t, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TYPE_ADDED, t, type, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -522,7 +667,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyValue(IName n, String value) throws TopicMapStoreException {
 		try {
+			String oldValue = provider.getProcessor().doReadValue(n).toString();
 			provider.getProcessor().doModifyValue(n, value);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, n, value, oldValue);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -533,7 +683,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyValue(IDatatypeAware t, String value) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doModifyValue(t, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING));
+			Object oldValue = provider.getProcessor().doReadValue(t);
+			ILocator oldDatatype = provider.getProcessor().doReadDataType(t);
+			ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+			provider.getProcessor().doModifyValue(t, value, datatype);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, t, value, oldValue);
+			notifyListeners(TopicMapEventType.DATATYPE_SET, t, datatype, oldDatatype);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -544,7 +702,14 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws TopicMapStoreException {
 		try {
+			Object oldValue = provider.getProcessor().doReadValue(t);
+			ILocator oldDatatype = provider.getProcessor().doReadDataType(t);
 			provider.getProcessor().doModifyValue(t, value, datatype);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, t, value, oldValue);
+			notifyListeners(TopicMapEventType.DATATYPE_SET, t, datatype, oldDatatype);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -555,8 +720,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyValue(IDatatypeAware t, Object value) throws TopicMapStoreException {
 		try {
+			Object oldValue = provider.getProcessor().doReadValue(t);
+			ILocator oldDatatype = provider.getProcessor().doReadDataType(t);
 			final ILocator loc = doCreateLocator(t.getTopicMap(), XmlSchemeDatatypes.javaToXsd(value.getClass()));
 			provider.getProcessor().doModifyValue(t, DatatypeAwareUtils.toString(value, loc), loc);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, t, value, oldValue);
+			notifyListeners(TopicMapEventType.DATATYPE_SET, t, loc, oldDatatype);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1172,7 +1344,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
 		try {
+			Set<IAssociationRole> roles = HashUtil.getHashSet(provider.getProcessor().doReadRoles(association));
 			provider.getProcessor().doRemoveAssociation(association, cascade);
+			/*
+			 * notify listener
+			 */
+			for (IAssociationRole role : roles) {
+				notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+			}
+			notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1184,6 +1364,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveItemIdentifier(c, itemIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null, itemIdentifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1194,7 +1378,16 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException {
 		try {
+			ITopic parent = name.getParent();
+			Set<IVariant> variants = HashUtil.getHashSet(provider.getProcessor().doReadVariants(name));
 			provider.getProcessor().doRemoveName(name, cascade);
+			/*
+			 * notify listener
+			 */
+			for (IVariant variant : variants) {
+				notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+			}
+			notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1205,7 +1398,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
 		try {
+			ITopic parent = occurrence.getParent();
 			provider.getProcessor().doRemoveOccurrence(occurrence, cascade);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null,occurrence);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1216,7 +1414,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
 		try {
+			IAssociation parent = role.getParent();
 			provider.getProcessor().doRemoveRole(role, cascade);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null,role);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1227,7 +1430,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveScope(IScopable s, ITopic theme) throws TopicMapStoreException {
 		try {
+			IScope oldScope = provider.getProcessor().doReadScope(s);
 			provider.getProcessor().doRemoveScope(s, theme);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, provider.getProcessor().doReadScope(s), oldScope);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1239,6 +1447,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveSubjectIdentifier(t, subjectIdentifier);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null, subjectIdentifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1250,6 +1462,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveSubjectLocator(t, subjectLocator);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null, subjectLocator);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1261,6 +1477,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveSupertype(ITopic t, ITopic type) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveSupertype(t, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1277,7 +1497,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doRemoveTopic(topic, cascade);
+			provider.getProcessor().doRemoveTopic(topic, cascade);			
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1300,6 +1524,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveType(ITopic t, ITopic type) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveType(t, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1316,7 +1544,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
 		try {
+			IName parent = variant.getParent();
 			provider.getProcessor().doRemoveVariant(variant, cascade);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1326,9 +1559,6 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void commit() throws ConcurrentThreadsException {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Not implemented!");
 	}
 
 	/**
@@ -1347,7 +1577,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			if (this.transitiveTypeInstanceIndex == null) {
 				transitiveTypeInstanceIndex = new JdbcTransitiveTypeInstanceIndex(this);
 			}
-			return (I)transitiveTypeInstanceIndex;
+			return (I) transitiveTypeInstanceIndex;
 		} else if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.typeInstanceIndex == null) {
 				this.typeInstanceIndex = new JdbcTypeInstanceIndex(this);
@@ -1392,6 +1622,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Missing connection properties!");
 		}
 		provider = ConnectionProviderFactory.getFactory().newConnectionProvider(dialect.toString());
+		provider.setTopicMapStore(this);
 		try {
 			provider.openConnection(host.toString(), database.toString(), user.toString(), password == null ? "" : password.toString());
 			this.identity = new JdbcIdentity(provider.getProcessor().doCreateTopicMap((ILocator) topicMapBaseLocator));

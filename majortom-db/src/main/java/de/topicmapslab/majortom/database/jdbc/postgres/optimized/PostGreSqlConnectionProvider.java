@@ -16,14 +16,33 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.optimized;
+
+import java.sql.Connection;
+
+import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 
 /**
+ * Special connection provider for PostGreSQL.
+ * 
  * @author Sven Krosse
  * 
  */
-public interface IPostGreSqlPerformQueries {
+public class PostGreSqlConnectionProvider extends BasePostGreSqlConnectionProvider {
 
-	public static final String PERFORM_MERGE_TOPICS = "SELECT merge_topics(?,?);";
+	/**
+	 * constructor
+	 */
+	public PostGreSqlConnectionProvider() {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected IQueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
+		return new PostGreSqlQueryProcessor(this, connection);
+	}
 
 }

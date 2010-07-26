@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgresql99.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
 
 /**
  * @author Sven Krosse

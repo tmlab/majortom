@@ -21,6 +21,7 @@ package de.topicmapslab.majortom.database.jdbc.model;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
@@ -78,5 +79,21 @@ public interface IConnectionProvider {
 	 *             thrown if the connection is not established
 	 */
 	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException;
+
+	/**
+	 * Returns the internal reference of the encapsulated topic map store
+	 * 
+	 * @returns the store
+	 */
+	public JdbcTopicMapStore getTopicMapStore();
+
+	/**
+	 * Method set the internal reference of the JDBC topic map store to the
+	 * given reference.
+	 * 
+	 * @param store
+	 *            the topic map store
+	 */
+	public void setTopicMapStore(JdbcTopicMapStore store);
 
 }

@@ -16,13 +16,13 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgresql99.query;
+package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
 
 /**
  * @author Sven Krosse
  * 
  */
-public interface ISql99SelectQueries {
+public interface IPostGreSqlSelectQueries {
 
 	// ******************
 	// * READ TOPIC MAP *
@@ -51,8 +51,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? AND NOT removed ";
+	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND NOT removed ";
 	/**
 	 * Query to read all associations within a specific type
 	 * <p>
@@ -67,8 +66,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(3):</b> topic map id, type id, scope id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? AND id_scope = ? AND NOT removed ";
+	public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ? AND NOT removed ";
 	/**
 	 * Query to read all played associations
 	 * <p>
@@ -83,8 +81,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(3):</b> topic map id, player id, type id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type = ? AND NOT a.removed AND NOT r.removed ";
+	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?)))  AND NOT a.removed AND NOT r.removed ";
 
 	/**
 	 * Query to read all played associations within a specific scope
@@ -101,8 +98,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(4):</b> topic map id, player id, type id, scope id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ?  AND NOT a.removed AND NOT r.removed ";
+	public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE_AND_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?))) AND a.id_scope = ?  AND NOT a.removed AND NOT r.removed ";
 
 	// ********************
 	// * READ CONSTRUCTS *
@@ -150,7 +146,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic map id, association id
 	 * </p>
 	 */
-	public static String QUERY_READ_ASSOCIATION_BY_ID = "SELECT id FROM associations WHERE id_topicmap = ? AND id = ? AND NOT removed";
+	public static String QUERY_READ_ASSOCIATION_BY_ID = "SELECT id FROM associations WHERE id_topicmap = ? AND id = ? AND NOT a.removed";
 	/**
 	 * Query to read a role by id
 	 * <p>
@@ -207,8 +203,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	// TODO
-	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type  = ? AND NOT removed";
+	public static final String QUERY_READ_NAMES_WITH_TYPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND NOT removed";
 	/**
 	 * query to read all names of topic by scope
 	 * <p>
@@ -222,8 +217,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	// TODO
-	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type = ? AND id_scope = ? AND NOT removed";
+	public static final String QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE = "SELECT id FROM names WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ? AND NOT removed";
 
 	// ********************
 	// * READ OCCURRENCES *
@@ -242,8 +236,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic id, type id
 	 * </p>
 	 */
-	// TODO
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ? AND NOT removed";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND NOT removed";
 	/**
 	 * query to read all occurrences of topic by scope
 	 * <p>
@@ -257,8 +250,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(3):</b> topic id, type id, scope id
 	 * </p>
 	 */
-	// TODO
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ? AND id_scope = ? AND NOT removed";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND id_scope = ? AND NOT removed";
 
 	// ********************
 	// * READ ROLE PLAYER *
@@ -309,8 +301,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> association id, type id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ? AND NOT removed";
+	public static String QUERY_READ_ROLES_WITH_TYPE = "SELECT id FROM roles WHERE id_parent = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND NOT removed";
 	/**
 	 * Query to read all played roles
 	 * <p>
@@ -325,8 +316,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> player id, type id
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE = "SELECT id, id_parent FROM roles WHERE id_player = ? AND id_type = ? AND NOT removed";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE = "SELECT id, id_parent FROM roles WHERE id_player = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) AND NOT removed";
 
 	/**
 	 * Query to read all played roles by types
@@ -334,8 +324,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(3):</b> player id, type id, asso_type
 	 * </p>
 	 */
-	// TODO
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_type = ? AND NOT r.removed  AND NOT a.removed";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type IN ( SELECT unnest(types_and_subtypes(?))) AND r.id_parent = a.id AND a.id_type IN ( SELECT unnest(types_and_subtypes(?)))  AND NOT r.removed";
 
 	/**
 	 * Query to read all roles types
@@ -395,7 +384,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id_instance FROM rel_instance_of AS r, topics AS t WHERE id_instance = t.id AND id_type IN ( SELECT id FROM topics WHERE id = ? AND NOT removed ) AND NOT t.removed";
+	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id_instance FROM rel_instance_of WHERE id_type = ? AND NOT removed";
 
 	// **********************
 	// * READ TYPE HIERACHY *
@@ -407,7 +396,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(1):</b> construct id
 	 * </p>
 	 */
-	public static final String QUERY_READ_TYPE = "SELECT id_type FROM typeables AS ty, topics AS t WHERE ty.id = ?";
+	public static final String QUERY_READ_TYPE = "SELECT id_type FROM typeables AS ty, topics AS t WHERE id = ?";
 
 	/**
 	 * Query to read the types of a topic
@@ -423,11 +412,19 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(1):</b> topic id
 	 * </p>
 	 */
-	public static final String QUERY_READ_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?";
+	public static final String QUERY_READ_SUPERTYPES = "SELECT unnest(transitive_supertypes(?)) AS id;"; //"SELECT id_supertype FROM rel_kind_of WHERE id_subtype = ?";
 
 	// **************
 	// * READ SCOPE *
 	// **************
+
+//	/**
+//	 * Query to read the empty scope of the topic map
+//	 * <p>
+//	 * <b>parameters(1):</b> the topic map id
+//	 * </p>
+//	 */
+//	public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id_topicmap = ? AND id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) ";
 
 	/**
 	 * Query to read the scope of a construct
@@ -448,13 +445,11 @@ public interface ISql99SelectQueries {
 	/**
 	 * Query to read the scope object by a collection of themes
 	 * <p>
-	 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all,
-	 * boolean flag exact match, topic map id
+	 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map id 
 	 * </p>
 	 */
-	public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";// "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";
-
-	public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_topicmap = ?";
+	public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";
+	
 
 	// **************
 	// * READ VALUE *
@@ -478,12 +473,12 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(1):</b> name id
 	 * </p>
 	 */
-	public static final String QUERY_READ_VARIANTS = "SELECT id FROM variants WHERE id_parent = ? AND NOT removed";
+	public static final String QUERY_READ_VARIANTS = "SELECT id FROM variants WHERE id_parent = ?";
 	/**
 	 * query to read all variants of a name by scope
 	 * <p>
 	 * <b>parameters(2):</b> name id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_VARIANTS_WITH_SCOPE = "SELECT id FROM variants WHERE id_parent = ? AND id_scope = ? AND NOT removed";
+	public static final String QUERY_READ_VARIANTS_WITH_SCOPE = "SELECT id FROM variants WHERE id_parent = ? AND id_scope = ?";
 }

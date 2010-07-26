@@ -18,6 +18,7 @@ package de.topicmapslab.majortom.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.topicmapslab.majortom.tests.core.CoreTestSuite;
+import de.topicmapslab.majortom.tests.event.EventTestSuite;
 import de.topicmapslab.majortom.tests.index.IndexTestSuite;
 import de.topicmapslab.majortom.tests.merge.MergeTestSuite;
 
@@ -31,7 +32,7 @@ public class MaJorToMTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
 		// $JUnit-BEGIN$
 		suite.addTest(CoreTestSuite.suite());
-		// suite.addTest(EventTestSuite.suite());
+		suite.addTest(EventTestSuite.suite());
 		suite.addTest(IndexTestSuite.suite());
 		suite.addTest(MergeTestSuite.suite());
 		// // // suite.addTest(IOTestSuite.suite());

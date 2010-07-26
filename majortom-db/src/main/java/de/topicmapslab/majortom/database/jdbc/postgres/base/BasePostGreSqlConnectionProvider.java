@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres;
+package de.topicmapslab.majortom.database.jdbc.postgres.base;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -25,6 +25,7 @@ import java.sql.SQLException;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
@@ -33,7 +34,7 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  * @author Sven Krosse
  * 
  */
-public class PostGreSqlConnectionProvider implements IConnectionProvider {
+public abstract class BasePostGreSqlConnectionProvider implements IConnectionProvider {
 
 	/**
 	 * the JDBC connection
@@ -49,9 +50,29 @@ public class PostGreSqlConnectionProvider implements IConnectionProvider {
 	private IQueryProcessor processor;
 
 	/**
+	 * internal reference of the topic map store
+	 */
+	private JdbcTopicMapStore store;
+
+	/**
 	 * constructor
 	 */
-	public PostGreSqlConnectionProvider() {
+	protected BasePostGreSqlConnectionProvider() {}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void setTopicMapStore(JdbcTopicMapStore store) {
+		this.store = store;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public JdbcTopicMapStore getTopicMapStore() {
+		return store;
 	}
 
 	/**
@@ -78,6 +99,9 @@ public class PostGreSqlConnectionProvider implements IConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	public void openConnection(String host, String database, String user, String password) throws SQLException, TopicMapStoreException {
+		if (store == null) {
+			throw new TopicMapStoreException("Topic map store not set!");
+		}
 		if (connection != null) {
 			throw new TopicMapStoreException("Connection already established!");
 		}
@@ -86,11 +110,22 @@ public class PostGreSqlConnectionProvider implements IConnectionProvider {
 		} catch (ClassNotFoundException e) {
 			throw new TopicMapStoreException("Cannot find driver class for PostGreSQL!", e);
 		}
-		connection = DriverManager.getConnection("jdbc:postgresql://" + host + "/"+ database, user, password);
+		connection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
 		metaData = connection.getMetaData();
-		processor = new PostGreSqlQueryProcessor(connection);
+		processor = createProcessor(this, connection);
 
 	}
+
+	/**
+	 * Abstract method to create a new query processor.
+	 * 
+	 * @param provider
+	 *            the calling provider instance
+	 * @param connection
+	 *            the connection
+	 * @return the created query processor instance
+	 */
+	protected abstract IQueryProcessor createProcessor(IConnectionProvider provider, Connection connection);
 
 	/**
 	 * {@inheritDoc}

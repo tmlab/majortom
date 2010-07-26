@@ -21,8 +21,8 @@ package de.topicmapslab.majortom.database.jdbc.core;
 import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.postgres.PostGreSqlConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.postgresql99.Sql99ConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.postgres.optimized.PostGreSqlConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99ConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 

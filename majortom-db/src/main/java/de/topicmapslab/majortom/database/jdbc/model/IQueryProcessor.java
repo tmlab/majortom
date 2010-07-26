@@ -50,6 +50,13 @@ import de.topicmapslab.majortom.model.revision.IRevision;
  */
 public interface IQueryProcessor {
 
+	/**
+	 * Returns the connection handler of the current query processor
+	 * 
+	 * @return the connection handler
+	 */
+	public IConnectionProvider getConnectionProvider();
+
 	public String doCreateTopicMap(ILocator baseLocator) throws SQLException;
 
 	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws SQLException;
@@ -287,27 +294,27 @@ public interface IQueryProcessor {
 	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> type, boolean all) throws SQLException;
 
 	// TransitiveTypeInstanceIndex
-	
+
 	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type) throws SQLException;
-	
-	public  <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
 
 	public Collection<IName> getNamesByTypeTransitive(ITopic type) throws SQLException;
-	
-	public  <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type) throws SQLException;
-	
-	public  <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
 
 	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type) throws SQLException;
-	
-	public  <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
-	
+
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+
 	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type) throws SQLException;
-	
+
 	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> type, boolean all) throws SQLException;
-	
+
 	// ScopeIndex
 
 	public <T extends Topic> Collection<IScope> getScopesByThemes(ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException;
@@ -415,18 +422,18 @@ public interface IQueryProcessor {
 	// SupertypeSubtypeIndex
 
 	public Collection<ITopic> getDirectSubtypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
-	
+
 	public Collection<ITopic> getSubtypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
-	
+
 	public Collection<ITopic> getSubtypes(final ITopicMap topicMap) throws SQLException;
 
 	public <T extends Topic> Collection<ITopic> getSubtypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll) throws SQLException;
-	
+
 	public Collection<ITopic> getDirectSupertypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
-	
+
 	public Collection<ITopic> getSupertypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
-	
+
 	public Collection<ITopic> getSupertypes(final ITopicMap topicMap) throws SQLException;
-	
+
 	public <T extends Topic> Collection<ITopic> getSupertypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll) throws SQLException;
 }

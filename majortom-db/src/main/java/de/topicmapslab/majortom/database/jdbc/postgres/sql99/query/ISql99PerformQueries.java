@@ -1,3 +1,4 @@
+package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
 ///*******************************************************************************
 // * Copyright 2010, Topic Map Lab ( http://www.topicmapslab.de )
 // * 
