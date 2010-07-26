@@ -64,6 +64,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
@@ -99,7 +100,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IConnectionProvider getConnectionProvider() {
 		return provider;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1632,9 +1633,18 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
+		/*
+		 * remove roles
+		 */
+		for ( IAssociationRole role : doReadRoles(association)){
+			doRemoveRole(role, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+		}
+		/*
+		 * remove association
+		 */
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
 		stmt.setLong(1, Long.parseLong(association.getId()));
-		stmt.setLong(2, Long.parseLong(association.getId()));
 		stmt.execute();
 	}
 
@@ -1652,9 +1662,18 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveName(IName name, boolean cascade) throws SQLException {
+		/*
+		 * remove variants
+		 */
+		for ( IVariant variant : doReadVariants(name)){
+			doRemoveVariant(variant, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+		}
+		/*
+		 * remove name
+		 */
 		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
 		stmt.setLong(1, Long.parseLong(name.getId()));
-		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.execute();
 	}
 
@@ -1724,20 +1743,108 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
-		long id = Long.parseLong(topic.getId());
+		/*
+		 * remove all names of the topic
+		 */
+		for ( IName name : doReadNames(topic)){
+			doRemoveName(name, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, topic, null, name);
+		}
+		/*
+		 * remove all occurrences of the topic
+		 */
+		for ( IOccurrence occurrence : doReadOccurrences(topic)){
+			doRemoveOccurrence(occurrence, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, topic, null, occurrence);
+		}		
+		/*
+		 * remove all played-association
+		 */
+		for ( IAssociation association : doReadAssociation(topic)){
+			doRemoveAssociation(association, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+		}
+		/*
+		 * remove all instance
+		 */
+		for ( ITopic instance : doReadTopics(topic.getTopicMap(), topic)){
+			doRemoveTopic(instance, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, instance);
+		}
+		/*
+		 * remove all subtypes
+		 */
+		for ( ITopic subtype : getSubtypes(topic.getTopicMap(), topic)){
+			doRemoveTopic(subtype, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, subtype);
+		}
+		/*
+		 * remove typed associations
+		 */
+		for ( IAssociation association : getAssociationsByType(topic)){
+			doRemoveAssociation(association, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+		}
+		/*
+		 * remove typed roles
+		 */
+		for ( IAssociationRole role : getRolesByType(topic)){
+			IAssociation parent = role.getParent();
+			doRemoveRole(role, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
+		}
+		/*
+		 * remove typed name
+		 */
+		for ( IName name : getNamesByType(topic)){
+			ITopic parent = name.getParent();
+			doRemoveName(name, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
+		}
+		/*
+		 * remove typed occurrences
+		 */
+		for ( IOccurrence occurrence : getOccurrencesByType(topic)){
+			ITopic parent = occurrence.getParent();
+			doRemoveOccurrence(occurrence, cascade);
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+		}
+		/*
+		 * get all scopes
+		 */
+		Set<ITopic> themes = HashUtil.getHashSet();
+		themes.add(topic);
+		for ( IScope scope : getScopesByThemes(topic.getTopicMap(),themes ,false)){
+			/*
+			 * remove scoped associations
+			 */
+			for ( IAssociation association : getAssociationsByScope(topic.getTopicMap(),scope)){
+				doRemoveAssociation(association, cascade);
+				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+			}
+			/*
+			 * remove scoped name
+			 */
+			for ( IName name : getNamesByScope(topic.getTopicMap(),scope)){
+				ITopic parent = name.getParent();
+				doRemoveName(name, cascade);
+				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
+			}
+			/*
+			 * remove scoped occurrences
+			 */
+			for ( IOccurrence occurrence : getOccurrencesByScope(topic.getTopicMap(),scope)){
+				ITopic parent = occurrence.getParent();
+				doRemoveOccurrence(occurrence, cascade);
+				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+			}
+		}		
 		/*
 		 * remove topic
 		 */
+		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
+		long id = Long.parseLong(topic.getId());		
 		stmt.setLong(1, id);
-		/*
-		 * remove occurrences / names
-		 */
-		stmt.setLong(2, id);
-		/*
-		 * remove name variants
-		 */
-		stmt.setLong(3, id);
 		stmt.execute();
 	}
 

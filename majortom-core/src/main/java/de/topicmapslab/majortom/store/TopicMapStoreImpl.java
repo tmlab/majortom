@@ -2851,12 +2851,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @param oldValue
 	 *            the old value
 	 */
-	protected void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
+	public void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
 		new EventNotifier(listeners, event, notifier, newValue, oldValue).run();
-		// if (listeners != null) {
-		// addTaskToThreadPool(new EventNotifier(listeners, event, notifier,
-		// newValue, oldValue));
-		// }
 	}
 
 	/**
