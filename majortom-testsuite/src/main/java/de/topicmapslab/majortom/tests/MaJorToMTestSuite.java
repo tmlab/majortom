@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.tests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import de.topicmapslab.majortom.tests.core.CoreTestSuite;
 
 /**
  * @author Sven Krosse
@@ -27,7 +28,7 @@ public class MaJorToMTestSuite {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
 		// $JUnit-BEGIN$
-//		suite.addTest(CoreTestSuite.suite());
+		suite.addTest(CoreTestSuite.suite());
 ////		// suite.addTest(EventTestSuite.suite());
 //		suite.addTest(IndexTestSuite.suite());
 //		suite.addTest(MergeTestSuite.suite());

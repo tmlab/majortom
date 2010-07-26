@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.tests.core;
 
 import org.tmapi.core.Association;
+import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
@@ -23,7 +24,9 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
+import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
  * @author Sven Krosse
@@ -150,4 +153,122 @@ public class TestConstructImpl extends MaJorToMTestCase {
 		assertTrue(topicMap.toString().equalsIgnoreCase("Topic-Map{Base-Locator:" + topicMap.getLocator().toExternalForm() + "}"));
 	}
 
+	public void testIdentityClash() throws Exception {
+		Locator locator = createLocator("http://psi.example.org/test");
+		Topic topic = topicMap.createTopicByItemIdentifier(locator);
+		
+		assertEquals(1, topicMap.getTopics().size());
+		
+
+		/*
+		 * used by topic		
+		 */
+		int cnt = 2;
+		Topic other = createTopic();
+		assertEquals(cnt, topicMap.getTopics().size());
+		if ( topicMap.getTopicMapSystem().getFeature(FeatureStrings.AUTOMATIC_MERGING)){			
+			other.addItemIdentifier(locator);
+			cnt--;
+			assertEquals(cnt, topicMap.getTopics().size());
+		}else{
+			try{
+				other.addItemIdentifier(locator);
+				fail("Item-identifier in use!");
+			}catch(IdentityConstraintException e){
+				assertEquals(e.getReporter(), other);
+				assertEquals(e.getExisting(), topic);
+			}
+		}
+		/*
+		 * used by topic by subject-identifier	
+		 */
+		Topic another = createTopic();
+		cnt++;
+		assertEquals(cnt, topicMap.getTopics().size());
+		if ( topicMap.getTopicMapSystem().getFeature(FeatureStrings.AUTOMATIC_MERGING)){			
+			another.addSubjectIdentifier(locator);
+			cnt--;
+			assertEquals(cnt, topicMap.getTopics().size());
+		}else{
+			try{
+				another.addSubjectIdentifier(locator);
+				fail("Identifier is used as item-identifier!");
+			}catch(IdentityConstraintException e){
+				assertEquals(e.getReporter(), other);
+				assertEquals(e.getExisting(), topic);
+			}
+		}
+		
+		/*
+		 * get merged topic
+		 */
+		topic = (ITopic)topicMap.getConstructByItemIdentifier(locator);
+		
+		/*
+		 * used by name
+		 */
+		Name name = createTopic().createName("Name", new Topic[0]);		
+		try{
+			name.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), name);
+			assertEquals(e.getExisting(), topic);
+		}
+		/*
+		 * used by variant
+		 */
+		Variant variant = name.createVariant("Variant", createTopic());		
+		try{
+			variant.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), variant);
+			assertEquals(e.getExisting(), topic);
+		}
+		/*
+		 * used by occurrence
+		 */
+		Occurrence occurrence = createTopic().createOccurrence(createTopic(), "Value", new Topic[0]);		
+		try{
+			occurrence.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), occurrence);
+			assertEquals(e.getExisting(), topic);
+		}
+		/*
+		 * used by association
+		 */
+		Association association = createAssociation(createTopic());		
+		try{
+			association.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), association);
+			assertEquals(e.getExisting(), topic);
+		}
+		/*
+		 * used by role
+		 */
+		Role role = association.createRole(createTopic(), createTopic());		
+		try{
+			role.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), role);
+			assertEquals(e.getExisting(), topic);
+		}
+		/*
+		 * used by topic map
+		 */
+		try{
+			topicMap.addItemIdentifier(locator);
+			fail("Item-identifier in use!");
+		}catch(IdentityConstraintException e){
+			assertEquals(e.getReporter(), topicMap);
+			assertEquals(e.getExisting(), topic);
+		}
+		
+	}
 }

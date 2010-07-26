@@ -693,7 +693,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
 			if (params.length == 1 && params[0] instanceof ILocator) {
-				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
+				if (checkMergeConditionOfItemIdentifier(context, (ILocator) params[0])) {
 					doModifyItemIdentifier(context, (ILocator) params[0]);
 				}else{
 					context.addItemIdentifier((ILocator)params[0]);
@@ -732,7 +732,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			break;
 		case SUBJECT_IDENTIFIER: {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				if (checkMergeConditionOfIdentifier(context, (ILocator) params[0])) {
+				if (checkMergeConditionOfSubjectIdentifier((ITopic)context, (ILocator) params[0])) {
 					doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
 				}else{
 					((ITopic) context).addSubjectIdentifier((ILocator)params[0]);
@@ -801,6 +801,86 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 
 	}
 
+	/**
+	 * Method checks if there is another with the item-identifier 
+	 * 
+	 * @param c
+	 *            the construct
+	 * @param identifier
+	 *            the identifier
+	 * @return <code>false</code> if topics were merged, <code>true</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if merging fails
+	 */
+	protected boolean checkMergeConditionOfItemIdentifier(IConstruct c, ILocator identifier) throws TopicMapStoreException {
+		/*
+		 * check if there is construct with the identifier as item-identifier
+		 */
+		IConstruct other = doReadConstruct(getTopicMap(), identifier);
+		/*
+		 * both items are equal
+		 */
+		if (c.equals(other)) {
+			return true;
+		}
+		if ( c instanceof ITopic){
+			if ( other instanceof ITopic ){
+				/*
+				 * automatic merging enabled
+				 */
+				if (doAutomaticMerging()) {
+					doMerge(c,other);
+					return false;
+				}
+				/*
+				 * automatic merging disabled
+				 */
+				throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but automatic merging is disabled!");
+			}else if ( other != null ){
+				/*
+				 * item-identifier in use
+				 */
+				throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but construct is not a topic!");
+			}
+			
+			ITopic t = doReadTopicBySubjectIdentifier(getTopicMap(), identifier);
+			if ( c.equals(t)){
+				return true;
+			}
+			if ( t != null ){
+				/*
+				 * automatic merging enabled
+				 */
+				if (doAutomaticMerging()) {
+					doMerge(c,t);
+					return false;
+				}
+				/*
+				 * automatic merging disabled
+				 */
+				throw new IdentityConstraintException(c, other, identifier, "Identifier is used as subject-identifier but automatic merging is disabled!");
+			}		
+			/*
+			 * modification is allowed
+			 */
+			return true;
+		}
+		/*
+		 * construct is not a topic
+		 */
+		else if ( other != null ){
+			/*
+			 * item-identifier in use
+			 */
+			throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but construct is not a topic!");
+		}		
+		/*
+		 * modification is allowed
+		 */
+		return true;
+	}
+	
 	/**
 	 * Add a new item-identifier to the given construct
 	 * 
@@ -872,11 +952,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	protected abstract void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException;
 
 	/**
-	 * Method checks if there is another with the subject-identifier or
-	 * item-identifier
+	 * Method checks if there is another with the subject-identifier 
 	 * 
 	 * @param t
-	 *            the construct
+	 *            the topic
 	 * @param identifier
 	 *            the identifier
 	 * @return <code>false</code> if topics were merged, <code>true</code>
@@ -884,7 +963,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if merging fails
 	 */
-	protected boolean checkMergeConditionOfIdentifier(IConstruct t, ILocator identifier) throws TopicMapStoreException {
+	protected boolean checkMergeConditionOfSubjectIdentifier(ITopic t, ILocator identifier) throws TopicMapStoreException {
 		/*
 		 * check if there is topic with the identifier as subject-identifier
 		 */
@@ -900,15 +979,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		 */
 		if (other != null) {
 			/*
-			 * can only merge topics
-			 */
-			if (!(t instanceof ITopic)) {
-				throw new IdentityConstraintException(t, other, identifier, "Identity in use but construct is not a topic!");
-			}
-			/*
 			 * automatic merging enabled
 			 */
-			else if (doAutomaticMerging()) {
+			if (doAutomaticMerging()) {
 				doMerge(t, other);
 				return false;
 			}
@@ -930,17 +1003,11 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		/*
 		 * is there another construct?
 		 */
-		if (c != null) {
-			/*
-			 * can only merge topics
-			 */
-			if (!(t instanceof ITopic) || !(c instanceof ITopic)) {
-				throw new IdentityConstraintException(t, c, identifier, "Identity in use but construct is not a topic!");
-			}
+		if (c instanceof IConstruct ) {
 			/*
 			 * automatic merging enabled
 			 */
-			else if (doAutomaticMerging()) {
+			if (doAutomaticMerging()) {
 				doMerge(t, c);
 				return false;
 			}
