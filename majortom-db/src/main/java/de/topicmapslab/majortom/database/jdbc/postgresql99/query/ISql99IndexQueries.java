@@ -22,7 +22,6 @@ import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
-import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 
 /**
@@ -68,37 +67,6 @@ public interface ISql99IndexQueries {
 	}
 
 	/**
-	 * Query definitions to realize methods of
-	 * {@link ITransitiveTypeInstanceIndex}
-	 * 
-	 * @author Sven Krosse
-	 * 
-	 */
-	interface QueryTransitiveTypeInstanceIndex {
-
-		public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type;";
-
-		// TODO
-		public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "";// "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?))) ;";
-
-		// TODO
-		public static final String QUERY_SELECT_ROLES_BY_TYPE = "";// "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
-
-		// TODO
-		public static final String QUERY_SELECT_NAMES_BY_TYPE = "";// "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
-
-		// TODO
-		public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "";// "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
-
-		// TODO
-		public static final String QUERY_SELECT_TOPICS_BY_TYPE = "";// "SELECT id_instance AS id FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type IN ( SELECT unnest(types_and_subtypes(?)));";
-
-		// TODO
-		public static final String QUERY_SELECT_TOPICS_BY_TYPES = "";// "SELECT unnest(topics_by_type_transitive(?,?)) AS id;";
-
-	}
-
-	/**
 	 * Query definitions to realize methods of {@link IScopedIndex}
 	 * 
 	 * @author Sven Krosse
@@ -106,7 +74,6 @@ public interface ISql99IndexQueries {
 	 */
 	interface QueryScopeIndex {
 
-		// TODO
 		public static final String QUERY_SELECT_SCOPES_BY_THEMES_USED = "SELECT r.id_scope FROM rel_themes AS r, scopeables AS s, constructs AS c WHERE id_theme = ? AND r.id_scope = s.id_scope AND c.id = s.id AND NOT c.removed;";
 
 		public static final String QUERY_SELECT_SCOPES = "SELECT DISTINCT id_scope FROM rel_themes WHERE id_scope IN ( SELECT DISTINCT id_scope FROM scopeables ) AND ";
@@ -161,10 +128,6 @@ public interface ISql99IndexQueries {
 
 		public static final String QUERY_SELECT_VARIANTS_BY_SCOPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_scope = ? AND NOT v.removed;";
 
-		// TODO
-		public static final String QUERY_SELECT_VARIANTS_BY_SCOPES = "";// "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND  scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope  ORDER BY id_theme ASC ), TRUE,TRUE, ? ) <@ ? AND array_upper( scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope ORDER BY id_theme ASC ), TRUE,TRUE, ? ),1) <> 0 ";//
-																		// "WITH sc AS ( SELECT scope_by_themes( ARRAY ( SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope = v.id_scope OR id_scope = n.id_scope ), TRUE,TRUE, ? ) AS a FROM variants AS v, names AS n WHERE v.id_parent = n.id ) SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND ( SELECT a FROM sc ) <@ ? AND array_upper(( SELECT a FROM sc ),1) <> 0 ;";
-
 		public static final String QUERY_SELECT_VARIANTS_BY_THEME = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ?  AND NOT v.removed AND  ( v.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ) OR n.id_scope IN ( SELECT id_scope FROM rel_themes WHERE id_theme = ? ));";
 
 		public static final String QUERY_SELECT_VARIANTS_BY_THEMES = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND NOT v.removed AND ( v.id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% ) OR n.id_scope IN ( SELECT id_scope FROM rel_themes WHERE %SUBQUERY% )); ";
@@ -193,12 +156,7 @@ public interface ISql99IndexQueries {
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND NOT removed;";
 
-		// TODO
 		public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE = "SELECT o.id, id_parent FROM  occurrences AS o WHERE NOT o.removed AND id_topicmap = ? AND ? <= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id ) AND ? >= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id );";
-		// public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE =
-		// "SELECT o.id, id_parent FROM  occurrences AS o WHERE id_topicmap = ? AND ARRAY[o.id] <@ ( SELECT CASE WHEN ( l2.reference = ? ) THEN ( SELECT ARRAY( SELECT id FROM occurrences WHERE ? <= CAST ( value AS timestamp with time zone ) AND CAST ( value AS timestamp with time zone )  <= ? ) ) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o2.id = o.id AND o2.id_datatype = l2.id );";
-		// public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE =
-		// "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND ? <= CAST ( value AS timestamp with time zone ) AND CAST ( value AS timestamp with time zone )  <= ? ";
 
 		public static final String QUERY_SELECT_OCCURRENCES_BY_RANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND CAST ( value AS double precision ) BETWEEN ? AND ?  AND NOT removed";
 
@@ -258,11 +216,7 @@ public interface ISql99IndexQueries {
 
 		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_supertype FROM rel_kind_of ) AND id_parent = ?;";
 
-		// TODO
 		public static final String QUERY_SELECT_SUBTYPES_OF_TOPIC = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
-
-		// TODO
-		public static final String QUERY_SELECT_SUBTYPES_OF_TOPICS = "";// "SELECT unnest(transitive_subtypes(?,?)) AS id;";
 
 		public static final String QUERY_SELECT_SUBTYPES = "SELECT id_subtype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
 
@@ -270,11 +224,7 @@ public interface ISql99IndexQueries {
 
 		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
 
-		// TODO
 		public static final String QUERY_SELECT_SUPERTYPES_OF_TOPIC = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?";
-
-		// TODO
-		public static final String QUERY_SELECT_SUPERTYPES_OF_TOPICS = "";// "SELECT unnest(transitive_supertypes(?,?)) AS id;";
 
 		public static final String QUERY_SELECT_SUPERTYPES = "SELECT id_supertype AS id  FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
 

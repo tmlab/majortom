@@ -76,8 +76,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  */
 public class Sql99QueryProcessor implements IQueryProcessor {
 
-	private final Sql99QueryBuilder queryBuilder;
-	private final Connection connection;
+	private final Sql99QueryBuilder queryBuilder;	
 
 	/**
 	 * constructor
@@ -86,7 +85,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 *            the JDBC connection
 	 */
 	public Sql99QueryProcessor(Connection connection) {
-		this.connection = connection;
 		this.queryBuilder = new Sql99QueryBuilder(connection);
 	}
 
@@ -1075,9 +1073,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type));
 		set.addAll(doReadOccurrences(t, type));
-		for ( ITopic type_ : getSubtypes(t.getTopicMap(), type)){
+		for (ITopic type_ : getSubtypes(t.getTopicMap(), type)) {
 			set.addAll(doReadNames(t, type_));
-			set.addAll(doReadOccurrences(t, type_));	
+			set.addAll(doReadOccurrences(t, type_));
 		}
 		return set;
 	}
@@ -1086,12 +1084,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();		
+		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type, scope));
 		set.addAll(doReadOccurrences(t, type, scope));
-		for ( ITopic type_ : getSubtypes(t.getTopicMap(), type)){
+		for (ITopic type_ : getSubtypes(t.getTopicMap(), type)) {
 			set.addAll(doReadNames(t, type_, scope));
-			set.addAll(doReadOccurrences(t, type_, scope));	
+			set.addAll(doReadOccurrences(t, type_, scope));
 		}
 		return set;
 	}
@@ -2096,7 +2094,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			if (first || !all) {
 				set.addAll(getTopicsByTypeTransitive((ITopic) type));
-			}else{
+			} else {
 				set.retainAll(getTopicsByTypeTransitive((ITopic) type));
 			}
 			first = false;
@@ -2469,23 +2467,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
-		/*
-		 * if no scope is specified return empty set
-		 */
-		if (scopes.isEmpty()) {
-			return HashUtil.getHashSet();
-		}
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByScopes(scopes.size());
-		Long ids[] = new Long[scopes.size()];
-		int n = 0;
-		for (IScope s : scopes) {
-			ids[n++] = Long.parseLong(s.getId());
-		}
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toVariants(topicMap, set);
+		throw new UnsupportedOperationException("Unsupported by the SQL processor implementation!");
 	}
 
 	/**
@@ -2600,7 +2582,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-//		stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
+		// stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
 		stmt.setTimestamp(2, new Timestamp(lower.getTimeInMillis()));
 		stmt.setTimestamp(3, new Timestamp(upper.getTimeInMillis()));
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");

@@ -1183,77 +1183,46 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 
 	// TransitiveTypeInstanceIndex
 
-	private PreparedStatement preparedStatementIndexAssociationsByTypeTransitive;
-	private PreparedStatement preparedStatementIndexRolesByTypeTransitive;
-	private PreparedStatement preparedStatementIndexNamesByTypeTransitive;
-	private PreparedStatement preparedStatementIndexOccurrencesByTypeTransitive;
-	private PreparedStatement preparedStatementIndexTopicsByTypeTransitive;
-	private PreparedStatement preparedStatementIndexTopicsByTypesTransitive;
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException {
-		if (this.preparedStatementIndexAssociationsByTypeTransitive == null) {
-			this.preparedStatementIndexAssociationsByTypeTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
-		}
-		return this.preparedStatementIndexAssociationsByTypeTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException {
-		if (this.preparedStatementIndexRolesByTypeTransitive == null) {
-			this.preparedStatementIndexRolesByTypeTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_ROLES_BY_TYPE);
-		}
-		return this.preparedStatementIndexRolesByTypeTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException {
-		if (this.preparedStatementIndexNamesByTypeTransitive == null) {
-			this.preparedStatementIndexNamesByTypeTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_NAMES_BY_TYPE);
-		}
-		return this.preparedStatementIndexNamesByTypeTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException {
-		if (this.preparedStatementIndexOccurrencesByTypeTransitive == null) {
-			this.preparedStatementIndexOccurrencesByTypeTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_OCCURRENCES_BY_TYPE);
-		}
-		return this.preparedStatementIndexOccurrencesByTypeTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException {
-		if (this.preparedStatementIndexTopicsByTypeTransitive == null) {
-			this.preparedStatementIndexTopicsByTypeTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_TOPICS_BY_TYPE);
-		}
-		return this.preparedStatementIndexTopicsByTypeTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException {
-		if (this.preparedStatementIndexTopicsByTypesTransitive == null) {
-			this.preparedStatementIndexTopicsByTypesTransitive = connection
-					.prepareStatement(ISql99IndexQueries.QueryTransitiveTypeInstanceIndex.QUERY_SELECT_TOPICS_BY_TYPES);
-		}
-		return this.preparedStatementIndexTopicsByTypesTransitive;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	// ScopeIndex
@@ -1280,7 +1249,6 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementIndexOccurrenceScopes;
 	private PreparedStatement preparedStatementIndexOccurrenceThemes;
 	private PreparedStatement preparedStatementIndexVariantsByScope;
-	private PreparedStatement preparedStatementIndexVariantsByScopes;
 	private PreparedStatement preparedStatementIndexVariantsByTheme;
 	private Map<Boolean, Map<Long, PreparedStatement>> preparedStatementIndexVariantsByThemes;
 	private PreparedStatement preparedStatementIndexVariantScopes;
@@ -1646,13 +1614,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQueryVariantsByScopes(long scopeCount) throws SQLException {
-		/*
-		 * check if cache is initialized
-		 */
-		if (preparedStatementIndexVariantsByScopes == null) {
-			preparedStatementIndexVariantsByScopes = connection.prepareStatement(ISql99IndexQueries.QueryScopeIndex.QUERY_SELECT_VARIANTS_BY_SCOPES);
-		}
-		return preparedStatementIndexVariantsByScopes;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
@@ -1998,12 +1960,10 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementIndexDirectSubtypes;
 	private PreparedStatement preparedStatementIndexTopicsWithoutSubtypes;
 	private PreparedStatement preparedStatementIndexSubtypesOfTopic;
-	private PreparedStatement preparedStatementIndexSubtypesOfTopics;
 	private PreparedStatement preparedStatementIndexSubtypes;
 	private PreparedStatement preparedStatementIndexDirectSupertypes;
 	private PreparedStatement preparedStatementIndexTopicsWithoutSupertypes;
 	private PreparedStatement preparedStatementIndexSupertypesOfTopic;
-	private PreparedStatement preparedStatementIndexSupertypesOfTopics;
 	private PreparedStatement preparedStatementIndexSupertypes;
 
 	/**
@@ -2062,11 +2022,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectSubtypesOfTopics() throws SQLException {
-		if (this.preparedStatementIndexSubtypesOfTopics == null) {
-			this.preparedStatementIndexSubtypesOfTopics = connection
-					.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUBTYPES_OF_TOPICS);
-		}
-		return this.preparedStatementIndexSubtypesOfTopics;
+		throw new UnsupportedOperationException("Unsupported by the SQL processor implementation!");
 	}
 
 	/**
@@ -2084,11 +2040,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectSupertypesOfTopics() throws SQLException {
-		if (this.preparedStatementIndexSupertypesOfTopics == null) {
-			this.preparedStatementIndexSupertypesOfTopics = connection
-					.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_SUPERTYPES_OF_TOPICS);
-		}
-		return this.preparedStatementIndexSupertypesOfTopics;
+		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
