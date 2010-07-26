@@ -445,70 +445,73 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 */
 	public void testMergeIn() throws Exception {
 
-		Locator si = createLocator("http://psi.example.org/si");
-		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
-		Name n = topic.createName("Name", new Topic[0]);
-		n.createVariant("Variant", topicMap.createTopicBySubjectIdentifier(topicMap.createLocator("http://psi.example.org/theme")));
-		topic.createOccurrence(topicMap.createTopicByItemIdentifier(topicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence", new Topic[0]);
-
-		assertEquals(0, topic.getTypes().size());
-
-		IAssociation association = createAssociation(createTopic());
-		association.createRole(createTopic(), topic);
-
-		assertEquals(6, topicMap.getTopics().size());
-
 		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.example.org/merge-in");
-		ITopic t = (ITopic) otherTopicMap.createTopicBySubjectIdentifier(si);
-		n = t.createName("Name", new Topic[0]);
-		n.createVariant("Variant", otherTopicMap.createTopicBySubjectIdentifier(otherTopicMap.createLocator("http://psi.example.org/theme")));
-		t.createOccurrence(otherTopicMap.createTopicByItemIdentifier(otherTopicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence",
-				new Topic[0]);
-		t.addType(otherTopicMap.createTopic());
+		try {
+			Locator si = createLocator("http://psi.example.org/si");
+			ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
+			Name n = topic.createName("Name", new Topic[0]);
+			n.createVariant("Variant", topicMap.createTopicBySubjectIdentifier(topicMap.createLocator("http://psi.example.org/theme")));
+			topic.createOccurrence(topicMap.createTopicByItemIdentifier(topicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence", new Topic[0]);
 
-		association = (IAssociation) otherTopicMap.createAssociation(otherTopicMap.createTopic(), new Topic[0]);
-		association.createRole(otherTopicMap.createTopic(), t);
+			assertEquals(0, topic.getTypes().size());
 
-		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(10, otherTopicMap.getTopics().size());
-		} else {
-			assertEquals(7, otherTopicMap.getTopics().size());
+			IAssociation association = createAssociation(createTopic());
+			association.createRole(createTopic(), topic);
+
+			assertEquals(6, topicMap.getTopics().size());
+
+			ITopic t = (ITopic) otherTopicMap.createTopicBySubjectIdentifier(si);
+			n = t.createName("Name", new Topic[0]);
+			n.createVariant("Variant", otherTopicMap.createTopicBySubjectIdentifier(otherTopicMap.createLocator("http://psi.example.org/theme")));
+			t.createOccurrence(otherTopicMap.createTopicByItemIdentifier(otherTopicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence",
+					new Topic[0]);
+			t.addType(otherTopicMap.createTopic());
+
+			association = (IAssociation) otherTopicMap.createAssociation(otherTopicMap.createTopic(), new Topic[0]);
+			association.createRole(otherTopicMap.createTopic(), t);
+
+			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+				assertEquals(10, otherTopicMap.getTopics().size());
+			} else {
+				assertEquals(7, otherTopicMap.getTopics().size());
+			}
+
+			topicMap.mergeIn(otherTopicMap);
+
+			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+				assertEquals(10, otherTopicMap.getTopics().size());
+			} else {
+				assertEquals(7, otherTopicMap.getTopics().size());
+			}
+			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+				assertEquals(12, topicMap.getTopics().size());
+			} else {
+				assertEquals(9, topicMap.getTopics().size());
+			}
+
+			assertEquals(1, t.getNames().size());
+			assertEquals(1, topic.getNames().size());
+			assertEquals(1, t.getNames().iterator().next().getVariants().size());
+			assertEquals(1, topic.getNames().iterator().next().getVariants().size());
+			assertEquals(1, t.getOccurrences().size());
+			assertEquals(1, topic.getOccurrences().size());
+			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+				assertEquals(2, t.getAssociationsPlayed().size());
+				assertEquals(3, topic.getAssociationsPlayed().size());
+				assertEquals(2, t.getRolesPlayed().size());
+				assertEquals(3, topic.getRolesPlayed().size());
+			} else {
+				assertEquals(1, t.getAssociationsPlayed().size());
+				assertEquals(2, topic.getAssociationsPlayed().size());
+				assertEquals(1, t.getRolesPlayed().size());
+				assertEquals(2, topic.getRolesPlayed().size());
+			}
+
+			assertEquals(1, t.getTypes().size());
+			assertEquals(1, topic.getTypes().size());
+		} finally {
+			otherTopicMap.remove(true);
 		}
-
-		topicMap.mergeIn(otherTopicMap);
-
-		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(10, otherTopicMap.getTopics().size());
-		} else {
-			assertEquals(7, otherTopicMap.getTopics().size());
-		}
-		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(12, topicMap.getTopics().size());
-		} else {
-			assertEquals(9, topicMap.getTopics().size());
-		}
-
-		assertEquals(1, t.getNames().size());
-		assertEquals(1, topic.getNames().size());
-		assertEquals(1, t.getNames().iterator().next().getVariants().size());
-		assertEquals(1, topic.getNames().iterator().next().getVariants().size());
-		assertEquals(1, t.getOccurrences().size());
-		assertEquals(1, topic.getOccurrences().size());
-		if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
-			assertEquals(2, t.getAssociationsPlayed().size());
-			assertEquals(3, topic.getAssociationsPlayed().size());
-			assertEquals(2, t.getRolesPlayed().size());
-			assertEquals(3, topic.getRolesPlayed().size());
-		} else {
-			assertEquals(1, t.getAssociationsPlayed().size());
-			assertEquals(2, topic.getAssociationsPlayed().size());
-			assertEquals(1, t.getRolesPlayed().size());
-			assertEquals(2, topic.getRolesPlayed().size());
-		}
-
-		assertEquals(1, t.getTypes().size());
-		assertEquals(1, topic.getTypes().size());
-		otherTopicMap.remove(true);
 	}
 
 	public void testCreateScope() {

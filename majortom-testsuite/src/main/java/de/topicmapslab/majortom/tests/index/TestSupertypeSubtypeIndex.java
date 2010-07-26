@@ -75,7 +75,7 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertTrue(index.getSubtypes(supertypeB).size() == 1);
 		Assert.assertTrue(index.getSubtypes(supertypeB).contains(supertypeC));
 		supertypeB.addSupertype(supertypeA);
-		Assert.assertTrue(index.getSubtypes(supertypeA).size() == 3);
+		Assert.assertEquals(3,index.getSubtypes(supertypeA).size());
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(type));
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(supertypeB));
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(supertypeC));

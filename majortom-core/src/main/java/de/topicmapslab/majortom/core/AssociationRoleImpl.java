@@ -95,9 +95,13 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 * {@inheritDoc}
 	 */
 	public String toString() {
+		try{
 		Topic type = getType();
 		Topic player = getPlayer();
 		return "Association-Role{Type:" + (type == null ? "null" : type.toString()) + ";Player:" + (player == null ? "null" : player.toString() + "}");
+		}catch (Exception e) {
+			return "Association-Role{Id:" + getId() +"}";
+		}
 	}
 
 }

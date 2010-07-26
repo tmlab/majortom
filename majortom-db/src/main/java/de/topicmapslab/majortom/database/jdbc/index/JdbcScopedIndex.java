@@ -477,7 +477,9 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationsByScopes(getStore().getTopicMap(), c));
 			col.addAll(getStore().getProcessor().getNamesByScopes(getStore().getTopicMap(), c));
 			col.addAll(getStore().getProcessor().getOccurrencesByScopes(getStore().getTopicMap(), c));
-			col.addAll(getStore().getProcessor().getVariantsByScopes(getStore().getTopicMap(), c));
+			for (IScope scope : scopes) {
+				col.addAll(getStore().getProcessor().getVariantsByScope(getStore().getTopicMap(), scope));
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -619,7 +621,9 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		}
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getVariantsByScopes(getStore().getTopicMap(), scopes));
+			for (IScope scope : scopes) {
+				col.addAll(getStore().getProcessor().getVariantsByScope(getStore().getTopicMap(), scope));
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);

@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.tmapi.core.Association;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Name;
 import org.tmapi.core.Role;
@@ -260,5 +261,45 @@ public class TestRevisions extends MaJorToMTestCase {
 
 		IRevision revision = index.getLastRevision().getPast();
 		assertEquals(32, revision.getChangeset().size());
+	}
+	
+	public void testRemovingTypeInstanceRelation() throws Exception {
+		ITopic topic = createTopic();
+		ITopic other = createTopic();
+		
+		topic.addType(other);
+		
+		assertEquals(1, topic.getTypes().size());
+		assertTrue(topic.getTypes().contains(other));
+		
+		assertEquals(1, topic.getAssociationsPlayed().size());
+		Association a = topic.getAssociationsPlayed().iterator().next();
+		a.remove();
+		
+		assertEquals(0, topic.getAssociationsPlayed().size());
+		assertEquals(1, topic.getTypes().size());
+		assertTrue(topic.getTypes().contains(other));
+		topic.remove();
+		
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		IRevision revision = index.getLastRevision();
+		System.out.println(revision.getChangeset());
+		System.out.println(revision.getPast().getChangeset());
+		
+		topic = createTopic();
+		
+		topic.addType(other);
+		
+		assertEquals(1, topic.getTypes().size());
+		assertTrue(topic.getTypes().contains(other));
+		
+		assertEquals(1, topic.getAssociationsPlayed().size());
+		assertEquals(1, topic.getTypes().size());
+		assertTrue(topic.getTypes().contains(other));
+		topic.remove();
+		
+		revision = index.getLastRevision();
+		System.out.println(revision.getChangeset());
 	}
 }

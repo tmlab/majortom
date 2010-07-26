@@ -129,8 +129,12 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation, IPag
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		Topic type = getType();
-		return "Association{Type:" + (type == null ? "null" : type.toString()) + ";Roles:" + getRoles().toString() + "}";
+		try {
+			Topic type = getType();
+			return "Association{Type:" + (type == null ? "null" : type.toString()) + ";Roles:" + getRoles().toString() + "}";
+		} catch (Exception e) {
+			return "Association{ID:" + getId() + "}";
+		}
 	}
 
 	/**
@@ -154,7 +158,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation, IPag
 		}
 		return index.getRoles(this, offset, limit, comparator);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

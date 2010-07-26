@@ -29,8 +29,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.tmapi.core.Association;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
+import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.core.AssociationImpl;
 import de.topicmapslab.majortom.core.AssociationRoleImpl;
@@ -579,6 +584,238 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		stmt.setLong(max * 2 + 1, idOther);
 		stmt.execute();
+
+		detectDuplicateNames(context);
+		detectDuplicateOccurrences(context);
+		detectDuplicateAssociations(context);
+	}
+
+	private void detectDuplicateNames(ITopic topic) throws SQLException {
+		Set<Name> removed = HashUtil.getHashSet();
+		/*
+		 * test duplicated names
+		 */
+		for (Name n : topic.getNames()) {
+			if (removed.contains(n)) {
+				continue;
+			}
+			PreparedStatement stmt = queryBuilder.getQueryDuplicateName();
+			stmt.setLong(1, Long.parseLong(topic.getId()));
+			stmt.setLong(2, Long.parseLong(n.getId()));
+			stmt.setLong(3, Long.parseLong(n.getType().getId()));
+			stmt.setString(4, n.getValue());
+			stmt.setLong(5, Long.parseLong(((IName) n).getScopeObject().getId()));
+			ResultSet rs = stmt.executeQuery();
+			IName name = Jdbc2Construct.toName(topic, rs, "id");
+			if (name != null) {
+				ITopic reifier = (ITopic) n.getReifier();
+				ITopic otherReifier = (ITopic) name.getReifier();
+				if (reifier != null) {
+					if (otherReifier != null) {
+						doMergeTopics(reifier, otherReifier);
+					}
+				} else if (otherReifier != null) {
+					name.setReifier(null);
+					n.setReifier(otherReifier);
+				}
+
+				/*
+				 * move item-identifier
+				 */
+				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				stmtMoveII.setLong(1, Long.parseLong(n.getId()));
+				stmtMoveII.setLong(2, Long.parseLong(name.getId()));
+				stmtMoveII.execute();
+				/*
+				 * move variants
+				 */
+				PreparedStatement stmtMoveVariants = queryBuilder.getQueryMoveVariants();
+				stmtMoveVariants.setLong(1, Long.parseLong(n.getId()));
+				stmtMoveVariants.setLong(2, Long.parseLong(name.getId()));
+				stmtMoveVariants.execute();
+
+				/*
+				 * remove name
+				 */
+				name.remove();
+				removed.add(name);
+
+				/*
+				 * check duplicated variants
+				 */
+				detectDuplicateVariants((IName) n);
+			}
+		}
+	}
+
+	private void detectDuplicateVariants(IName name) throws SQLException {
+		Set<Variant> removed = HashUtil.getHashSet();
+		/*
+		 * test duplicated names
+		 */
+		for (Variant v : name.getVariants()) {
+			if (removed.contains(v)) {
+				continue;
+			}
+			PreparedStatement stmt = queryBuilder.getQueryDuplicateVariant();
+			stmt.setLong(1, Long.parseLong(name.getId()));
+			stmt.setLong(2, Long.parseLong(v.getId()));
+			stmt.setString(3, v.getValue());
+			stmt.setString(4, v.getDatatype().getReference());
+			stmt.setLong(5, Long.parseLong(((IVariant) v).getScopeObject().getId()));
+			ResultSet rs = stmt.executeQuery();
+			IVariant variant = Jdbc2Construct.toVariant(name, rs, "id");
+			if (variant != null) {
+				ITopic reifier = (ITopic) v.getReifier();
+				ITopic otherReifier = (ITopic) variant.getReifier();
+				if (reifier != null) {
+					if (otherReifier != null) {
+						doMergeTopics(reifier, otherReifier);
+					}
+				} else if (otherReifier != null) {
+					variant.setReifier(null);
+					v.setReifier(otherReifier);
+				}
+
+				/*
+				 * move item-identifier
+				 */
+				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				stmtMoveII.setLong(1, Long.parseLong(v.getId()));
+				stmtMoveII.setLong(2, Long.parseLong(variant.getId()));
+				stmtMoveII.execute();
+				/*
+				 * remove variant
+				 */
+				variant.remove();
+				removed.add(variant);
+			}
+		}
+	}
+
+	private void detectDuplicateOccurrences(ITopic topic) throws SQLException {
+		Set<IOccurrence> removed = HashUtil.getHashSet();
+		/*
+		 * test duplicated names
+		 */
+		for (Occurrence o : topic.getOccurrences()) {
+			if (removed.contains(o)) {
+				continue;
+			}
+			PreparedStatement stmt = queryBuilder.getQueryDuplicateOccurrence();
+			stmt.setLong(1, Long.parseLong(topic.getId()));
+			stmt.setLong(2, Long.parseLong(o.getId()));
+			stmt.setLong(3, Long.parseLong(o.getType().getId()));
+			stmt.setString(4, o.getValue());
+			stmt.setString(5, o.getDatatype().getReference());
+			stmt.setLong(6, Long.parseLong(((IOccurrence) o).getScopeObject().getId()));
+			ResultSet rs = stmt.executeQuery();
+			IOccurrence occurrence = Jdbc2Construct.toOccurrence(topic, rs, "id");
+			if (occurrence != null) {
+				ITopic reifier = (ITopic) o.getReifier();
+				ITopic otherReifier = (ITopic) occurrence.getReifier();
+				if (reifier != null) {
+					if (otherReifier != null) {
+						doMergeTopics(reifier, otherReifier);
+					}
+				} else if (otherReifier != null) {
+					occurrence.setReifier(null);
+					o.setReifier(otherReifier);
+				}
+
+				/*
+				 * move item-identifier
+				 */
+				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				stmtMoveII.setLong(1, Long.parseLong(o.getId()));
+				stmtMoveII.setLong(2, Long.parseLong(occurrence.getId()));
+				stmtMoveII.execute();
+				/*
+				 * remove occurrence
+				 */
+				occurrence.remove();
+				removed.add(occurrence);
+			}
+		}
+	}
+
+	private void detectDuplicateAssociations(ITopic topic) throws SQLException {
+		Set<IAssociation> removed = HashUtil.getHashSet();
+		/*
+		 * test duplicated names
+		 */
+		for (Association a : topic.getAssociationsPlayed()) {
+			if (removed.contains(a)) {
+				continue;
+			}
+			PreparedStatement stmt = queryBuilder.getQueryDuplicateAssociations();
+			stmt.setLong(1, Long.parseLong(a.getId()));
+			stmt.setLong(2, Long.parseLong(a.getId()));
+			stmt.setLong(3, Long.parseLong(a.getType().getId()));
+			stmt.setLong(4, Long.parseLong(((IAssociation) a).getScopeObject().getId()));
+
+			ResultSet rs = stmt.executeQuery();
+			IAssociation association = Jdbc2Construct.toAssociation(topic.getTopicMap(), rs, "id");
+			if (association != null) {
+				/*
+				 * move reifier
+				 */
+				ITopic reifier = (ITopic) a.getReifier();
+				ITopic otherReifier = (ITopic) association.getReifier();
+				if (reifier != null) {
+					if (otherReifier != null) {
+						doMergeTopics(reifier, otherReifier);
+					}
+				} else if (otherReifier != null) {
+					association.setReifier(null);
+					a.setReifier(otherReifier);
+				}
+
+				/*
+				 * move item-identifier
+				 */
+				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				stmtMoveII.setLong(1, Long.parseLong(a.getId()));
+				stmtMoveII.setLong(2, Long.parseLong(association.getId()));
+				stmtMoveII.execute();
+				/*
+				 * check role reifier
+				 */
+				for (Role r : a.getRoles()) {
+					PreparedStatement stmtRole = queryBuilder.getQueryDuplicateRoles();
+					stmtRole.setLong(1, Long.parseLong(association.getId()));
+					stmtRole.setLong(2, Long.parseLong(r.getType().getId()));
+					stmtRole.setLong(3, Long.parseLong(r.getPlayer().getId()));
+					IAssociationRole role = Jdbc2Construct.toRole(association, stmtRole.executeQuery(), "id");
+					/*
+					 * move reifier
+					 */
+					reifier = (ITopic) r.getReifier();
+					otherReifier = (ITopic) role.getReifier();
+					if (reifier != null) {
+						if (otherReifier != null) {
+							doMergeTopics(reifier, otherReifier);
+						}
+					} else if (otherReifier != null) {
+						role.setReifier(null);
+						r.setReifier(otherReifier);
+					}
+
+					/*
+					 * move item-identifier
+					 */
+					stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+					stmtMoveII.setLong(1, Long.parseLong(r.getId()));
+					stmtMoveII.setLong(2, Long.parseLong(role.getId()));
+					stmtMoveII.execute();
+				}
+				/*
+				 * remove association
+				 */
+				association.remove();
+				removed.add(association);
+			}
+		}
 	}
 
 	/**
@@ -838,6 +1075,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type));
 		set.addAll(doReadOccurrences(t, type));
+		for ( ITopic type_ : getSubtypes(t.getTopicMap(), type)){
+			set.addAll(doReadNames(t, type_));
+			set.addAll(doReadOccurrences(t, type_));	
+		}
 		return set;
 	}
 
@@ -845,9 +1086,13 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+		Set<ICharacteristics> set = HashUtil.getHashSet();		
 		set.addAll(doReadNames(t, type, scope));
 		set.addAll(doReadOccurrences(t, type, scope));
+		for ( ITopic type_ : getSubtypes(t.getTopicMap(), type)){
+			set.addAll(doReadNames(t, type_, scope));
+			set.addAll(doReadOccurrences(t, type_, scope));	
+		}
 		return set;
 	}
 
@@ -1260,9 +1505,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Set<ITopic> doReadSuptertypes(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadSupertypes();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
+		Set<ITopic> set = HashUtil.getHashSet(getSupertypes(t.getTopicMap(), t));
+		return set;
 	}
 
 	/**
@@ -1380,6 +1624,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
 		stmt.setLong(1, Long.parseLong(association.getId()));
+		stmt.setLong(2, Long.parseLong(association.getId()));
 		stmt.execute();
 	}
 
@@ -1399,6 +1644,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public void doRemoveName(IName name, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
 		stmt.setLong(1, Long.parseLong(name.getId()));
+		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.execute();
 	}
 
@@ -1469,7 +1715,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
-		stmt.setLong(1, Long.parseLong(topic.getId()));
+		long id = Long.parseLong(topic.getId());
+		/*
+		 * remove topic
+		 */
+		stmt.setLong(1, id);
+		/*
+		 * remove occurrences / names
+		 */
+		stmt.setLong(2, id);
+		/*
+		 * remove name variants
+		 */
+		stmt.setLong(3, id);
 		stmt.execute();
 	}
 
@@ -1638,135 +1896,212 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(type.getTopicMap(), set, "id");
+		/*
+		 * create association set and add associations directly typed by the
+		 * given type
+		 */
+		Set<IAssociation> set = HashUtil.getHashSet(getAssociationsByType(type));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+			/*
+			 * add all associations typed by the sub-type
+			 */
+			set.addAll(getAssociationsByType(t));
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		Long ids[] = new Long[types.size()];
-		int i = 0;
+		/*
+		 * create association set
+		 */
+		Set<IAssociation> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
 		for (T type : types) {
-			ids[i++] = Long.parseLong(type.getId());
+			/*
+			 * add associations transitive by type
+			 */
+			set.addAll(getAssociationsByTypeTransitive((ITopic) type));
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(topicMap, set, "id");
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNamesByTypeTransitive(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(type.getTopicMap(), set, "id", "id_parent");
+		/*
+		 * create name set and add names directly typed by the given type
+		 */
+		Set<IName> set = HashUtil.getHashSet(getNamesByType(type));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+			/*
+			 * add all names typed by the sub-type
+			 */
+			set.addAll(getNamesByType(t));
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		Long ids[] = new Long[types.size()];
-		int i = 0;
+		/*
+		 * create name set
+		 */
+		Set<IName> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
 		for (T type : types) {
-			ids[i++] = Long.parseLong(type.getId());
+			/*
+			 * add names transitive by type
+			 */
+			set.addAll(getNamesByTypeTransitive((ITopic) type));
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(type.getTopicMap(), set, "id", "id_parent");
+		/*
+		 * create occurrence set and add occurrences directly typed by the given
+		 * type
+		 */
+		Set<IOccurrence> set = HashUtil.getHashSet(getOccurrencesByType(type));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+			/*
+			 * add all occurrences typed by the sub-type
+			 */
+			set.addAll(getOccurrencesByType(t));
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		Long ids[] = new Long[types.size()];
-		int i = 0;
+		/*
+		 * create occurrences set
+		 */
+		Set<IOccurrence> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
 		for (T type : types) {
-			ids[i++] = Long.parseLong(type.getId());
+			/*
+			 * add occurrences transitive by type
+			 */
+			set.addAll(getOccurrencesByTypeTransitive((ITopic) type));
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toRoles(type.getTopicMap(), set, "id", "id_parent");
+		/*
+		 * create role set and add roles directly typed by the given type
+		 */
+		Set<IAssociationRole> set = HashUtil.getHashSet(getRolesByType(type));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+			/*
+			 * add all roles typed by the sub-type
+			 */
+			set.addAll(getRolesByType(t));
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		Long ids[] = new Long[types.size()];
-		int i = 0;
+		/*
+		 * create roles set
+		 */
+		Set<IAssociationRole> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
 		for (T type : types) {
-			ids[i++] = Long.parseLong(type.getId());
+			/*
+			 * add roles transitive by type
+			 */
+			set.addAll(getRolesByTypeTransitive((ITopic) type));
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toRoles(topicMap, set, "id", "id_parent");
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypeTransitive();
-		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(type.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(type.getTopicMap(), set, "id");
+		/*
+		 * create topics set and add topics directly typed by the given type
+		 */
+		Set<ITopic> set = HashUtil.getHashSet(getTopicsByType(type.getTopicMap(), type));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+			/*
+			 * add all topics typed by the sub-type
+			 */
+			set.addAll(getTopicsByType(type.getTopicMap(), t));
+		}
+		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypesTransitive();
-		Long ids[] = new Long[types.size()];
-		int i = 0;
+		/*
+		 * flag indicates first iteration
+		 */
+		boolean first = true;
+		/*
+		 * create topics set
+		 */
+		Set<ITopic> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
 		for (T type : types) {
-			ids[i++] = Long.parseLong(type.getId());
+			/*
+			 * add roles transitive by type if is first iteration or
+			 * matching-all flag is false
+			 */
+			if (first || !all) {
+				set.addAll(getTopicsByTypeTransitive((ITopic) type));
+			}else{
+				set.retainAll(getTopicsByTypeTransitive((ITopic) type));
+			}
+			first = false;
 		}
-		stmt.setArray(1, connection.createArrayOf("bigint", ids));
-		stmt.setBoolean(2, all);
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap, set, "id");
+		return set;
 	}
 
 	// ScopedIndex
@@ -1785,7 +2120,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				set.close();
 				scopes.add(new ScopeImpl(Long.toString(id)));
 			}
-		} else {		
+		} else {
 			/*
 			 * read scope by themes
 			 */
@@ -2265,9 +2600,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
-		stmt.setTimestamp(3, new Timestamp(lower.getTimeInMillis()));
-		stmt.setTimestamp(4, new Timestamp(upper.getTimeInMillis()));
+//		stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
+		stmt.setTimestamp(2, new Timestamp(lower.getTimeInMillis()));
+		stmt.setTimestamp(3, new Timestamp(upper.getTimeInMillis()));
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
 	}
 
@@ -2545,15 +2880,37 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type) throws SQLException {
-		PreparedStatement stmt = null;
 		if (type == null) {
+			PreparedStatement stmt = null;
 			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes();
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		} else {
-			stmt = queryBuilder.getQuerySelectSubtypesOfTopic();
-			stmt.setLong(1, Long.parseLong(type.getId()));
+			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		Collection<ITopic> knownSubtypes = HashUtil.getHashSet();
+		return getSubtypes(topicMap, type, knownSubtypes);
+	}
+
+	private Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSubtypes) throws SQLException {
+		/*
+		 * get sub-types of given topic
+		 */
+		PreparedStatement stmt = null;
+		stmt = queryBuilder.getQuerySelectSubtypesOfTopic();
+		stmt.setLong(1, Long.parseLong(type.getId()));
+		Collection<ITopic> types = HashUtil.getHashSet();
+		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		for (ITopic topic : topics) {
+			/*
+			 * avoid cycle
+			 */
+			if (knownSubtypes.contains(topic)) {
+				continue;
+			}
+			knownSubtypes.add(topic);
+			types.add(topic);
+			types.addAll(getSubtypes(topicMap, topic, knownSubtypes));
+		}
+		return types;
 	}
 
 	/**
@@ -2569,31 +2926,71 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypesOfTopics();
-		Long ids[] = new Long[types.size()];
-		int i = 0;
-		for (T topic : types) {
-			ids[i++] = Long.parseLong(topic.getId());
+		Set<ITopic> topics = HashUtil.getHashSet();
+		boolean first = true;
+		for (T type : types) {
+			if (first || !matchAll) {
+				topics.addAll(getSubtypes(topicMap, (ITopic) type));
+			} else {
+				topics.retainAll(getSubtypes(topicMap, (ITopic) type));
+			}
+			first = false;
 		}
-		stmt.setArray(1, this.connection.createArrayOf("bigint", ids));
-		stmt.setBoolean(2, matchAll);
-		ResultSet rs = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap, rs, "id");
+		return topics;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type) throws SQLException {
-		PreparedStatement stmt = null;
 		if (type == null) {
+			PreparedStatement stmt = null;
 			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes();
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		} else {
-			stmt = queryBuilder.getQuerySelectSupertypesOfTopic();
-			stmt.setLong(1, Long.parseLong(type.getId()));
+			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		Set<ITopic> knownSupertypes = HashUtil.getHashSet();
+		return getSupertypes(topicMap, type, knownSupertypes);
+
+	}
+
+	/**
+	 * Returns all super-types of the given topic type.
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @param type
+	 *            the type
+	 * @param knownSupertypes
+	 *            a collection containing all known super-types to avoid cycles
+	 * @return a collection of all transitive supertypes of the given type
+	 * @throws SQLException
+	 *             thrown by JDBC
+	 */
+	private Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSupertypes) throws SQLException {
+		/*
+		 * get super-types of given topic
+		 */
+		PreparedStatement stmt = null;
+		stmt = queryBuilder.getQuerySelectSupertypesOfTopic();
+		stmt.setLong(1, Long.parseLong(type.getId()));
+		Collection<ITopic> types = HashUtil.getHashSet();
+		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		/*
+		 * iterate over all super-types and get transitive super-types
+		 */
+		for (ITopic topic : topics) {
+			/*
+			 * avoid cycle
+			 */
+			if (knownSupertypes.contains(topic)) {
+				continue;
+			}
+			knownSupertypes.add(topic);
+			types.add(topic);
+			types.addAll(getSupertypes(topicMap, topic, knownSupertypes));
+		}
+		return types;
 	}
 
 	/**
@@ -2602,22 +2999,23 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public Collection<ITopic> getSupertypes(ITopicMap topicMap) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_supertype");
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypesOfTopics();
-		Long ids[] = new Long[types.size()];
-		int i = 0;
-		for (T topic : types) {
-			ids[i++] = Long.parseLong(topic.getId());
+		Set<ITopic> topics = HashUtil.getHashSet();
+		boolean first = true;
+		for (T type : types) {
+			if (first || !matchAll) {
+				topics.addAll(getSupertypes(topicMap, (ITopic) type));
+			} else {
+				topics.retainAll(getSupertypes(topicMap, (ITopic) type));
+			}
+			first = false;
 		}
-		stmt.setArray(1, this.connection.createArrayOf("bigint", ids));
-		stmt.setBoolean(2, matchAll);
-		ResultSet rs = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap, rs, "id");
+		return topics;
 	}
 }

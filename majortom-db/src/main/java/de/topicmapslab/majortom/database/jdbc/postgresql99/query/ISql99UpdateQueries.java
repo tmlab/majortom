@@ -144,7 +144,7 @@ public interface ISql99UpdateQueries {
 														+	"UPDATE rel_subject_locators SET id_topic = ? WHERE id_topic = ?;"
 														+	"UPDATE roles SET id_player = ? WHERE id_player = ?;"
 														+	"UPDATE constructs SET id_parent = ? WHERE id_parent = ?;"
-														+	"DELETE FROM topics WHERE id = ?;";
+														+	"UPDATE topics SET removed = TRUE WHERE id = ?;";
 		
 	}
 	

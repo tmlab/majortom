@@ -32,6 +32,7 @@ import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
+import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcIdentityIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
@@ -385,6 +386,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doMergeTopics(context, other);
+			((TopicImpl)other).getIdentity().setId(context.getId());
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}

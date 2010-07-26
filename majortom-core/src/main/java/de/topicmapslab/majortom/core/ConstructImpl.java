@@ -107,9 +107,9 @@ public abstract class ConstructImpl implements IConstruct {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Locator> getItemIdentifiers() {
-		if (isRemoved()) {
-			throw new ConstructRemovedException(this);
-		}
+//		if (isRemoved()) {
+//			throw new ConstructRemovedException(this);
+//		}
 		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 	}
 

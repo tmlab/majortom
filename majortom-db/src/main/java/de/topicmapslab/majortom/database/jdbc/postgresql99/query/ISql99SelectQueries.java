@@ -258,7 +258,7 @@ public interface ISql99SelectQueries {
 	 * </p>
 	 */
 	// TODO
-	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ? AND NOT removed";
+	public static final String QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE = "SELECT id FROM occurrences WHERE id_parent = ? AND id_type = ? AND id_scope = ? AND NOT removed";
 
 	// ********************
 	// * READ ROLE PLAYER *
@@ -335,7 +335,7 @@ public interface ISql99SelectQueries {
 	 * </p>
 	 */
 	// TODO
-	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_type = ? AND NOT r.removed";
+	public static String QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE = "SELECT r.id, r.id_parent FROM roles AS r, associations AS a WHERE r.id_player = ? AND r.id_type = ? AND r.id_parent = a.id AND a.id_type = ? AND NOT r.removed  AND NOT a.removed";
 
 	/**
 	 * Query to read all roles types
@@ -395,7 +395,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(2):</b> topic map id, type id
 	 * </p>
 	 */
-	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id_instance FROM rel_instance_of WHERE id_type = ? AND NOT removed";
+	public static final String QUERY_READ_TOPICS_WITH_TYPE = "SELECT id_instance FROM rel_instance_of AS r, topics AS t WHERE id_instance = t.id AND id_type IN ( SELECT id FROM topics WHERE id = ? AND NOT removed ) AND NOT t.removed";
 
 	// **********************
 	// * READ TYPE HIERACHY *
@@ -423,7 +423,7 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(1):</b> topic id
 	 * </p>
 	 */
-	public static final String QUERY_READ_SUPERTYPES = "SELECT id_supertype FROM rel_kind_of WHERE id_subtype = ?";
+	public static final String QUERY_READ_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?";
 
 	// **************
 	// * READ SCOPE *
@@ -478,12 +478,12 @@ public interface ISql99SelectQueries {
 	 * <b>parameters(1):</b> name id
 	 * </p>
 	 */
-	public static final String QUERY_READ_VARIANTS = "SELECT id FROM variants WHERE id_parent = ?";
+	public static final String QUERY_READ_VARIANTS = "SELECT id FROM variants WHERE id_parent = ? AND NOT removed";
 	/**
 	 * query to read all variants of a name by scope
 	 * <p>
 	 * <b>parameters(2):</b> name id, scope id
 	 * </p>
 	 */
-	public static final String QUERY_READ_VARIANTS_WITH_SCOPE = "SELECT id FROM variants WHERE id_parent = ? AND id_scope = ?";
+	public static final String QUERY_READ_VARIANTS_WITH_SCOPE = "SELECT id FROM variants WHERE id_parent = ? AND id_scope = ? AND NOT removed";
 }

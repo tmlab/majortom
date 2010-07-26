@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
+import de.topicmapslab.majortom.database.jdbc.postgresql99.query.ISql99ConstraintsQueries;
 import de.topicmapslab.majortom.database.jdbc.postgresql99.query.ISql99DeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.postgresql99.query.ISql99IndexQueries;
 import de.topicmapslab.majortom.database.jdbc.postgresql99.query.ISql99InsertQueries;
@@ -2164,4 +2165,66 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		return preparedStatementPerformMergeTopics;
 	}
 
+	// ********************
+	// * CONSTRAINT QUERY *
+	// ********************
+	
+	private PreparedStatement preparedStatementDuplicateName;
+	private PreparedStatement preparedStatementMoveVariants;
+	private PreparedStatement preparedStatementMoveItemIdentifiers;
+	private PreparedStatement preparedStatementDuplicateOccurrence;
+	private PreparedStatement preparedStatementDuplicateVariant;
+	private PreparedStatement preparedStatementDuplicateAssociations;
+	private PreparedStatement preparedStatementDuplicateRoles;
+	
+	public PreparedStatement getQueryDuplicateName() throws SQLException{
+		if ( this.preparedStatementDuplicateName == null ){
+			this.preparedStatementDuplicateName = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_NAME);
+		}
+		return preparedStatementDuplicateName;
+	}
+	
+	public PreparedStatement getQueryMoveVariants() throws SQLException{
+		if ( this.preparedStatementMoveVariants == null ){
+			this.preparedStatementMoveVariants = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_MOVE_VARIANTS);
+		}
+		return preparedStatementMoveVariants;
+	}
+	
+	public PreparedStatement getQueryMoveItemIdentifiers() throws SQLException{
+		if ( this.preparedStatementMoveItemIdentifiers == null ){
+			this.preparedStatementMoveItemIdentifiers = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_MOVE_ITEM_IDENTIFIERS);
+		}
+		return preparedStatementMoveItemIdentifiers;
+	}
+	
+	public PreparedStatement getQueryDuplicateOccurrence() throws SQLException{
+		if ( this.preparedStatementDuplicateOccurrence == null ){
+			this.preparedStatementDuplicateOccurrence = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_OCCURRENCE);
+		}
+		return preparedStatementDuplicateOccurrence;
+	}
+	
+	public PreparedStatement getQueryDuplicateVariant() throws SQLException{
+		if ( this.preparedStatementDuplicateVariant == null ){
+			this.preparedStatementDuplicateVariant = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_VARIANTS);
+		}
+		return preparedStatementDuplicateVariant;
+	}
+	
+	public PreparedStatement getQueryDuplicateAssociations() throws SQLException{
+		if ( this.preparedStatementDuplicateAssociations == null ){
+			this.preparedStatementDuplicateAssociations = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_ASSOCIATIONS);
+		}
+		return preparedStatementDuplicateAssociations;
+	}
+	
+	public PreparedStatement getQueryDuplicateRoles() throws SQLException{
+		if ( this.preparedStatementDuplicateRoles == null ){
+			this.preparedStatementDuplicateRoles = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_ROLES);
+		}
+		return preparedStatementDuplicateRoles;
+	}
+	
+	
 }
