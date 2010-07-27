@@ -453,7 +453,7 @@ public class JdbcTransitiveTypeInstanceIndex extends JdbcIndex implements ITrans
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			if (type == null) {
-				col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(),(ITopic)type));
+				col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(),type));
 			} else {
 				col.addAll(getStore().getProcessor().getTopicsByTypeTransitive((ITopic) type));
 			}

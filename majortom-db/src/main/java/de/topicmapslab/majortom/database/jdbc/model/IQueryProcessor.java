@@ -21,6 +21,7 @@ package de.topicmapslab.majortom.database.jdbc.model;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.tmapi.core.Topic;
@@ -41,6 +42,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 
@@ -436,4 +438,36 @@ public interface IQueryProcessor {
 	public Collection<ITopic> getSupertypes(final ITopicMap topicMap) throws SQLException;
 
 	public <T extends Topic> Collection<ITopic> getSupertypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll) throws SQLException;
+
+	/*
+	 * revision management
+	 */
+
+	public IRevision doCreateRevision(ITopicMap topicMap) throws SQLException;
+
+	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue, Object oldValue) throws SQLException;
+
+	public IRevision doReadFirstRevision(ITopicMap topicMap) throws SQLException;
+
+	public IRevision doReadLastRevision(ITopicMap topicMap) throws SQLException;
+
+	public IRevision doReadPastRevision(ITopicMap topicMap, IRevision revision) throws SQLException;
+
+	public IRevision doReadFutureRevision(ITopicMap topicMap, IRevision revision) throws SQLException;
+
+	public Changeset doReadChangesets(ITopicMap topicMap, IRevision revision) throws SQLException;
+
+	public Calendar doReadLastModification(ITopicMap topicMap) throws SQLException;
+
+	public Calendar doReadLastModificationOfTopic(ITopic topic) throws SQLException;
+
+	public Calendar doReadTimestamp(IRevision revision) throws SQLException;
+
+	public List<IRevision> doReadRevisionsByTopic(ITopic topic) throws SQLException;
+
+	public List<IRevision> doReadRevisionsByAssociationType(ITopic type) throws SQLException;
+
+	public Changeset doReadChangesetsByTopic(ITopic topic) throws SQLException;
+
+	public Changeset doReadChangesetsByAssociationType(ITopic type) throws SQLException;
 }

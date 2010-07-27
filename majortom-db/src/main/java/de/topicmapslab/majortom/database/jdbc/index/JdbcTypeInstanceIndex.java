@@ -40,7 +40,7 @@ import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
- *
+ * 
  */
 public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceIndex {
 
@@ -50,7 +50,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 	public JdbcTypeInstanceIndex(JdbcTopicMapStore store) {
 		super(store);
 	}
-	
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -61,7 +61,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByType((ITopic)type));
+			col.addAll(getStore().getProcessor().getAssociationsByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -76,7 +76,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Association> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getAssociations(type));
 		}
 		return col;
@@ -90,10 +90,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Association> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getAssociations(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -116,11 +116,11 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<ICharacteristics> col = HashUtil.getHashSet();
-		for ( Name n : getNames(type)){
-			col.add((IName)n);
+		for (Name n : getNames(type)) {
+			col.add((IName) n);
 		}
-		for ( Occurrence o : getOccurrences(type)){
-			col.add((IOccurrence)o);
+		for (Occurrence o : getOccurrences(type)) {
+			col.add((IOccurrence) o);
 		}
 		return col;
 	}
@@ -133,11 +133,11 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<ICharacteristics> col = HashUtil.getHashSet();
-		for ( Name n : getNames(types)){
-			col.add((IName)n);
+		for (Name n : getNames(types)) {
+			col.add((IName) n);
 		}
-		for ( Occurrence o : getOccurrences(types)){
-			col.add((IOccurrence)o);
+		for (Occurrence o : getOccurrences(types)) {
+			col.add((IOccurrence) o);
 		}
 		return col;
 	}
@@ -150,11 +150,11 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<ICharacteristics> col = HashUtil.getHashSet();
-		for ( Name n : getNames(types)){
-			col.add((IName)n);
+		for (Name n : getNames(types)) {
+			col.add((IName) n);
 		}
-		for ( Occurrence o : getOccurrences(types)){
-			col.add((IOccurrence)o);
+		for (Occurrence o : getOccurrences(types)) {
+			col.add((IOccurrence) o);
 		}
 		return col;
 	}
@@ -169,13 +169,13 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByType((ITopic)type));
+			col.addAll(getStore().getProcessor().getNamesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -184,10 +184,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Name> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getNames(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -198,10 +198,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Name> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getNames(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -214,13 +214,13 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByType((ITopic)type));
+			col.addAll(getStore().getProcessor().getOccurrencesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -229,10 +229,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Occurrence> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getOccurrences(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -243,10 +243,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Occurrence> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getOccurrences(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -259,13 +259,13 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRolesByType((ITopic)type));
+			col.addAll(getStore().getProcessor().getRolesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -274,10 +274,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Role> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getRoles(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -288,10 +288,10 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Role> col = HashUtil.getHashSet();
-		for ( Topic type : types){
+		for (Topic type : types) {
 			col.addAll(getRoles(type));
 		}
-		return col;	
+		return col;
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(),(ITopic)type));
+			col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(), type));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot close connection to database!", e);
@@ -317,7 +317,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), all));
 			return col;
@@ -333,7 +333,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), false));
 			return col;
@@ -349,7 +349,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getTopicsByTypes(types, false));
 			return col;
@@ -365,7 +365,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getTopicsByTypes(types, all));
 			return col;
@@ -381,7 +381,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getAssociationTypes(getStore().getTopicMap()));
 			return col;
@@ -397,7 +397,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getNameTypes(getStore().getTopicMap()));
 			return col;
@@ -413,7 +413,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getOccurrenceTypes(getStore().getTopicMap()));
 			return col;
@@ -429,7 +429,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getRoleTypes(getStore().getTopicMap()));
 			return col;
@@ -445,7 +445,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {			
+		try {
 			Collection<Topic> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getTopicTypes(getStore().getTopicMap()));
 			return col;

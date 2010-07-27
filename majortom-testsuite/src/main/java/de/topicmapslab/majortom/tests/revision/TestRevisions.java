@@ -64,33 +64,33 @@ public class TestRevisions extends MaJorToMTestCase {
 
 			ITopic topic = createTopic();
 			assertEquals(1, index.getRevisions(topic).size());
-			assertEquals(2, index.getRevisions(topic).get(0).getChangeset().size());
+			assertEquals(1, index.getRevisions(topic).get(0).getChangeset().size());
 			checkChange(index.getRevisions(topic).get(0).getChangeset().get(0), TopicMapEventType.TOPIC_ADDED, topicMap, topic, null);
-			assertEquals(2, index.getChangeset(topic).size());
+			assertEquals(1, index.getChangeset(topic).size());
 
 			topic.addSubjectIdentifier(topicMap.createLocator("http://psi.exampple.org/topicWithoutII"));
 			assertEquals(2, index.getRevisions(topic).size());
 			assertEquals(1, index.getRevisions(topic).get(1).getChangeset().size());
-			assertEquals(3, index.getChangeset(topic).size());
+			assertEquals(2, index.getChangeset(topic).size());
 
 			ITopic type = createTopic();
 			assertEquals(1, index.getRevisions(type).size());
-			assertEquals(2, index.getRevisions(type).get(0).getChangeset().size());
+			assertEquals(1, index.getRevisions(type).get(0).getChangeset().size());
 
 			topic.addType(type);
 			assertEquals(3, index.getRevisions(topic).size());
-			assertEquals(9, index.getRevisions(topic).get(2).getChangeset().size());
-			assertEquals(5, index.getChangeset(topic).size());
+			assertEquals(3, index.getRevisions(topic).get(2).getChangeset().size());
+			assertEquals(3, index.getChangeset(topic).size());
 			assertEquals(2, index.getRevisions(type).size());
-			assertEquals(9, index.getRevisions(type).get(1).getChangeset().size());
-			assertEquals(4, index.getChangeset(type).size());
+			assertEquals(3, index.getRevisions(type).get(1).getChangeset().size());
+			assertEquals(2, index.getChangeset(type).size());
 
 			File file = new File("src/test/resources/history.xml");
 			index.toXml(file);
 
 			topic.createName(type, "Name", new Topic[0]);
-			assertEquals(5, index.getChangeset(type).size());
-			assertEquals(9, index.getChangeset(topic).size());
+			assertEquals(2, index.getChangeset(type).size());
+			assertEquals(4, index.getChangeset(topic).size());
 		}
 	}
 
@@ -128,9 +128,8 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic type = createTopic();
 		IAssociation association = createAssociation(createTopic());
 		Role role = association.createRole(type, topic);
-		
+
 		topic.remove(true);
-		
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
@@ -138,15 +137,15 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(3, revision.getChangeset().size());
 		Changeset set = revision.getChangeset();
 		assertEquals(topic, set.get(2).getOldValue());
-		ITopic clone = (ITopic)set.get(2).getOldValue();
+		ITopic clone = (ITopic) set.get(2).getOldValue();
 		assertEquals(1, clone.getRolesPlayed().size());
 		assertTrue(clone.getRolesPlayed().contains(role));
 		assertEquals(1, clone.getRolesPlayed(type).size());
 		assertTrue(clone.getRolesPlayed(type).contains(role));
 		assertEquals(1, clone.getAssociationsPlayed().size());
-		assertTrue(clone.getAssociationsPlayed().contains(association));		
+		assertTrue(clone.getAssociationsPlayed().contains(association));
 	}
-	
+
 	public void testRoleRevisions() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
@@ -181,15 +180,16 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic otherType = createTopic();
 		Role otherRole = association.createRole(otherType, otherPlayer);
 
-		Changeset set = index.getAssociationChangeset(assoicationType);		
-		assertEquals(5, set.size());
+		Changeset set = index.getAssociationChangeset(assoicationType);
+		assertEquals(3, set.size());
 
 		IAssociation other = createAssociation(assoicationType);
 		set = index.getAssociationChangeset(assoicationType);
-		assertEquals(8, set.size());
+		assertEquals(4, set.size());
+		
 		other.createRole(createTopic(), createTopic());
 		set = index.getAssociationChangeset(assoicationType);
-		assertEquals(9, set.size());
+		assertEquals(5, set.size());
 
 		association.remove();
 
@@ -215,9 +215,9 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(2, association.getRoles().size());
 		assertTrue(association.getRoles().contains(otherRole));
 		assertTrue(association.getRoles().contains(role));
-		
-		set = index.getAssociationChangeset(assoicationType);	
-		
+
+		set = index.getAssociationChangeset(assoicationType);
+
 	}
 
 	public void testMergingRevisions() throws Exception {
@@ -260,46 +260,66 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(n, topic.getReified());
 
 		IRevision revision = index.getLastRevision().getPast();
-		assertEquals(32, revision.getChangeset().size());
+		assertEquals(18, revision.getChangeset().size());
 	}
-	
+
 	public void testRemovingTypeInstanceRelation() throws Exception {
 		ITopic topic = createTopic();
 		ITopic other = createTopic();
-		
+
 		topic.addType(other);
-		
+
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
-		
+
 		assertEquals(1, topic.getAssociationsPlayed().size());
 		Association a = topic.getAssociationsPlayed().iterator().next();
 		a.remove();
-		
+
 		assertEquals(0, topic.getAssociationsPlayed().size());
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
 		topic.remove();
-		
+
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		IRevision revision = index.getLastRevision();
 		System.out.println(revision.getChangeset());
 		System.out.println(revision.getPast().getChangeset());
-		
+
 		topic = createTopic();
-		
+
 		topic.addType(other);
-		
+
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
-		
+
 		assertEquals(1, topic.getAssociationsPlayed().size());
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
 		topic.remove();
-		
+
 		revision = index.getLastRevision();
 		System.out.println(revision.getChangeset());
+	}
+
+	public void testMetaData() {
+		createTopic();
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		IRevision revision = index.getLastRevision();
+		assertNotNull(revision);
+
+		for (long l = 1; l < 100; l++) {
+			revision.addMetaData("key#" + Long.toString(l), "value#"+Long.toString(l));
+			assertEquals("value#"+Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
+			assertEquals(l, revision.getMetadata().size());
+		}
+		
+		for (long l = 1; l < 100; l++) {
+			revision.addMetaData("key#" + Long.toString(l), "new#"+Long.toString(l));
+			assertEquals("new#"+Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
+			assertEquals("Number of meta-data should be keep constants because of overwrite key",99, revision.getMetadata().size());
+		}
 	}
 }

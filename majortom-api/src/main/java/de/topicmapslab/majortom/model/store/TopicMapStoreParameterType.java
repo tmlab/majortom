@@ -53,7 +53,7 @@ public enum TopicMapStoreParameterType {
 
 	REVISION_END,
 
-	REVISION_BEGIN,
+	REVISION_TIMESTAMP,
 	
 	CHANGESET,
 
@@ -72,4 +72,6 @@ public enum TopicMapStoreParameterType {
 	BY_SUBJECT_IDENTIFER,
 
 	BY_SUBJECT_LOCATOR,
+	
+	META_DATA
 }

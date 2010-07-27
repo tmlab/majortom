@@ -384,5 +384,37 @@ public interface IQueryBuilder {
 	// *****************
 
 	public PreparedStatement getPerformMergeTopics() throws SQLException;
+	
+	// ******************
+	// * REVISION QUERY *
+	// ******************
+	
+	public PreparedStatement getQueryCreateRevision() throws SQLException;
+	
+	public PreparedStatement getQueryCreateChangeset() throws SQLException;
+	
+	public PreparedStatement getQueryReadFirstRevision() throws SQLException;
+	
+	public PreparedStatement getQueryReadLastRevision() throws SQLException;
+	
+	public PreparedStatement getQueryReadPastRevision() throws SQLException;
+	
+	public PreparedStatement getQueryReadFutureRevision() throws SQLException;
+	
+	public PreparedStatement getQueryReadChangesets() throws SQLException;
+	
+	public PreparedStatement getQueryReadLastModification() throws SQLException;
+	
+	public PreparedStatement getQueryReadLastModificationOfTopic() throws SQLException;
+	
+	public PreparedStatement getQueryReadTimestamp() throws SQLException;
+	
+	public PreparedStatement getQueryReadRevisionsByTopic() throws SQLException;
+	
+	public PreparedStatement getQueryReadRevisionsByAssociationType() throws SQLException;
+	
+	public PreparedStatement getQueryReadChangesetsByTopic() throws SQLException;
+	
+	public PreparedStatement getQueryReadChangesetsByAssociationType() throws SQLException;
 
 }

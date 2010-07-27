@@ -20,6 +20,8 @@ package de.topicmapslab.majortom.database.jdbc.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import de.topicmapslab.majortom.core.AssociationImpl;
@@ -30,6 +32,7 @@ import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.core.VariantImpl;
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
@@ -40,6 +43,9 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
+import de.topicmapslab.majortom.model.revision.Changeset;
+import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -247,4 +253,91 @@ public class Jdbc2Construct {
 		return set;
 	}
 
+	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs, IRevision parent) throws SQLException {
+		
+		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
+		while (rs.next()) {
+			RevisionChangeData data = new RevisionChangeData();
+			data.idNotifier = rs.getLong("id_notifier");
+			data.type = TopicMapEventType.valueOf(rs.getString("type"));
+			data.newValue = rs.getString("newValue");
+			data.oldValue = rs.getString("oldValue");
+			list.add(data);
+		}
+		rs.close();
+		Changeset changeset = new Changeset();
+		for (RevisionChangeData data : list) {
+			switch (data.type) {
+			case ASSOCIATION_ADDED: {
+			}
+			case ASSOCIATION_REMOVED: {
+			}
+			case DATATYPE_SET: {
+			}
+			case ITEM_IDENTIFIER_ADDED: {
+			}
+			case ITEM_IDENTIFIER_REMOVED: {
+			}
+			case MERGE: {
+			}
+			case NAME_ADDED: {
+			}
+			case NAME_REMOVED: {
+			}
+			case OCCURRENCE_ADDED: {
+			}
+			case OCCURRENCE_REMOVED: {
+			}
+			case PLAYER_MODIFIED: {
+			}
+			case REIFIER_SET: {
+			}
+			case ROLE_ADDED: {
+			}
+			case ROLE_REMOVED: {
+			}
+			case SCOPE_MODIFIED: {
+			}
+			case SUBJECT_IDENTIFIER_ADDED: {
+			}
+			case SUBJECT_IDENTIFIER_REMOVED: {
+			}
+			case SUBJECT_LOCATOR_ADDED: {
+			}
+			case SUBJECT_LOCATOR_REMOVED: {
+			}
+			case SUPERTYPE_ADDED: {
+			}
+			case SUPERTYPE_REMOVED: {
+			}
+			case TOPIC_ADDED: {
+			}
+			case TOPIC_REMOVED: {
+			}
+			case TYPE_ADDED: {
+			}
+			case TYPE_REMOVED: {
+			}
+			case TYPE_SET: {
+			}
+			case VALUE_MODIFIED: {
+			}
+			case VARIANT_ADDED: {
+			}
+			case VARIANT_REMOVED: {
+			}
+			}
+		}
+		return changeset;
+	}
+
+	
+
+}
+
+  class RevisionChangeData {
+	long idNotifier;
+	TopicMapEventType type;
+	String newValue;
+	String oldValue;
 }

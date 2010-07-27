@@ -42,7 +42,7 @@ import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.core.VariantImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -71,11 +71,9 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class PostGreSqlQueryProcessor implements IQueryProcessor {
+public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 
 	private final PostGreSqlQueryBuilder queryBuilder;
-	private final Connection connection;
-	private final IConnectionProvider provider;
 
 	/**
 	 * constructor
@@ -84,17 +82,9 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 	 *            the JDBC connection
 	 */
 	public PostGreSqlQueryProcessor(IConnectionProvider provider, Connection connection) {
-		this.connection = connection;
-		this.provider = provider;
+		super(provider, connection);
 		this.queryBuilder = new PostGreSqlQueryBuilder(connection);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public IConnectionProvider getConnectionProvider() {
-		return provider;
-	}
+	}	
 
 	/**
 	 * {@inheritDoc}
@@ -327,7 +317,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			ids.add(Long.parseLong(theme.getId()));
 		}
 		Collections.sort(ids);
-		stmt.setArray(1, connection.createArrayOf("bigint", ids.toArray(new Long[0])));
+		stmt.setArray(1, getConnection().createArrayOf("bigint", ids.toArray(new Long[0])));
 		stmt.setBoolean(2, true);
 		stmt.setBoolean(3, true);
 		stmt.setLong(4, Long.parseLong(topicMap.getId()));
@@ -1638,7 +1628,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[i++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toAssociations(topicMap, set, "id");
 	}
@@ -1665,7 +1655,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[i++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
 	}
@@ -1692,7 +1682,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[i++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
 	}
@@ -1719,7 +1709,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[i++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toRoles(topicMap, set, "id", "id_parent");
 	}
@@ -1745,7 +1735,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[i++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, connection.createArrayOf("bigint", ids));
+		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, all);
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toTopics(topicMap,set, "id");
@@ -1763,7 +1753,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T theme : themes) {
 			ids[n++] = Long.parseLong(theme.getId());
 		}
-		stmt.setArray(1, connection.createArrayOf("bigint", ids));
+		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, all);
 		stmt.setBoolean(3, false);
 		stmt.setLong(4, Long.parseLong(topicMap.getId()));
@@ -2114,7 +2104,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toVariants(topicMap, set);
@@ -2542,7 +2532,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T topic : types) {
 			ids[i++] = Long.parseLong(topic.getId());
 		}
-		stmt.setArray(1, this.connection.createArrayOf("bigint", ids));
+		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, matchAll);
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toTopics(topicMap, rs, "id");
@@ -2582,7 +2572,7 @@ public class PostGreSqlQueryProcessor implements IQueryProcessor {
 		for (T topic : types) {
 			ids[i++] = Long.parseLong(topic.getId());
 		}
-		stmt.setArray(1, this.connection.createArrayOf("bigint", ids));
+		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, matchAll);
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toTopics(topicMap, rs, "id");

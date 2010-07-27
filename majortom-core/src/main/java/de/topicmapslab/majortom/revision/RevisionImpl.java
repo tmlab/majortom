@@ -18,6 +18,7 @@ package de.topicmapslab.majortom.revision;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -26,6 +27,7 @@ import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * Base implementation of {@link IRevision}
@@ -38,8 +40,10 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 	/**
 	 * constructor
 	 * 
-	 * @param store the parent store
-	 * @param id the version number
+	 * @param store
+	 *            the parent store
+	 * @param id
+	 *            the version number
 	 */
 	public RevisionImpl(ITopicMapStore store, long id) {
 		this.store = store;
@@ -49,15 +53,8 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Calendar getBegin() {
-		return (Calendar) store.doRead(null, TopicMapStoreParameterType.REVISION_BEGIN, this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Calendar getEnd() {
-		return (Calendar) store.doRead(null, TopicMapStoreParameterType.REVISION_END, this);
+	public Calendar getTimestamp() {
+		return (Calendar) store.doRead(null, TopicMapStoreParameterType.REVISION_TIMESTAMP, this);
 	}
 
 	/**
@@ -79,6 +76,28 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 	 */
 	public Changeset getChangeset() {
 		return (Changeset) store.doRead(null, TopicMapStoreParameterType.CHANGESET, this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addMetaData(String key, String value) {
+		store.doModify(null, TopicMapStoreParameterType.META_DATA, this, key, value);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getMetadata() {
+		return HashUtil.getHashMap((Map<String, String>) store.doRead(null, TopicMapStoreParameterType.META_DATA, this));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getMetaData(String key) {
+		return (String) store.doRead(null, TopicMapStoreParameterType.META_DATA, this, key);
 	}
 
 	/**
@@ -106,7 +125,7 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 		revision.getAttributes().setNamedItem(attId);
 
 		Node attTime = doc.createAttribute("timestamp");
-		attTime.setTextContent(new SimpleDateFormat().format(getBegin().getTime()));
+		attTime.setTextContent(new SimpleDateFormat().format(getTimestamp().getTime()));
 		revision.getAttributes().setNamedItem(attTime);
 
 		revision.appendChild(getChangeset().toXml(doc));

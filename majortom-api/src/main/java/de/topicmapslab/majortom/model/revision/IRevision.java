@@ -1,6 +1,7 @@
 package de.topicmapslab.majortom.model.revision;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -52,14 +53,7 @@ public interface IRevision {
 	 * 
 	 * @return the creation time
 	 */
-	public Calendar getBegin();
-
-	/**
-	 * Returns the end timestamp of this revision.
-	 * 
-	 * @return the end timestamp
-	 */
-	public Calendar getEnd();
+	public Calendar getTimestamp();
 
 	/**
 	 * Returns all changes of the change set
@@ -67,12 +61,39 @@ public interface IRevision {
 	 * @return a list containing all changes sorted by the happening time.
 	 */
 	public Changeset getChangeset();
-	
+
 	/**
 	 * Exports the information of this history item as XML node.
 	 * 
-	 * @param doc the parent document
+	 * @param doc
+	 *            the parent document
 	 * @return the node
 	 */
 	public Node toXml(Document doc);
+
+	/**
+	 * Add a new data set to the meta data of this revision.
+	 * 
+	 * @param key
+	 *            the key of the meta data set
+	 * @param value
+	 *            the value of the meta data set
+	 */
+	public void addMetaData(final String key, final String value);
+
+	/**
+	 * Returns the value of the meta data set identified by the given key.
+	 * 
+	 * @param key
+	 *            the key
+	 * @return the value or <code>null</code> if the key is unknown
+	 */
+	public String getMetaData(final String key);
+
+	/**
+	 * Returns the whole meta data values
+	 * 
+	 * @return a map containing all meta data values
+	 */
+	public Map<String, String> getMetadata();
 }

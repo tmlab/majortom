@@ -21,6 +21,7 @@ package de.topicmapslab.majortom.database.store;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -748,6 +749,13 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected void doModifyMetaData(IRevision revision, String key, String value) throws TopicMapStoreException {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadAssociation(t, type);
@@ -1043,7 +1051,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadPreviousRevision(IRevision r) throws TopicMapStoreException {
+	protected IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Not implemented!");
 	}
 
@@ -1072,17 +1080,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Calendar doReadRevisionBegin(IRevision r) throws TopicMapStoreException {
+	protected Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Not implemented!");
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Calendar doReadRevisionEnd(IRevision r) throws TopicMapStoreException {
-		throw new UnsupportedOperationException("Not implemented!");
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1342,6 +1343,20 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String doReadMetaData(IRevision revision, String key) throws TopicMapStoreException {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
 		try {
 			Set<IAssociationRole> roles = HashUtil.getHashSet(provider.getProcessor().doReadRoles(association));
@@ -1403,7 +1418,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * notify listener
 			 */
-			notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null,occurrence);
+			notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1419,7 +1434,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * notify listener
 			 */
-			notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null,role);
+			notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1497,7 +1512,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doRemoveTopic(topic, cascade);			
+			provider.getProcessor().doRemoveTopic(topic, cascade);
 			/*
 			 * notify listener
 			 */
@@ -1670,4 +1685,25 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		return provider.getProcessor();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected IRevision createRevision() {
+		try {
+			return provider.getProcessor().doCreateRevision(getTopicMap());
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void storeRevision(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
+		try {
+			provider.getProcessor().doCreateChangeSet(revision, type, context, newValue, oldValue);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
 }

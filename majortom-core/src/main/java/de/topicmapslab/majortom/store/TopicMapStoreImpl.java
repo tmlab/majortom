@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.store;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -694,7 +695,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		case ITEM_IDENTIFIER: {
 			if (params.length == 1 && params[0] instanceof ILocator) {
 				ITopic other = checkMergeConditionOfItemIdentifier(context, (ILocator) params[0]);
-				if ( other != null ){
+				if (other != null) {
 					doMerge(context, other);
 				}
 				doModifyItemIdentifier(context, (ILocator) params[0]);
@@ -731,9 +732,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		}
 			break;
 		case SUBJECT_IDENTIFIER: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {				
+			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
 				ITopic other = checkMergeConditionOfSubjectIdentifier((ITopic) context, (ILocator) params[0]);
-				if ( other != null ){
+				if (other != null) {
 					doMerge(context, other);
 				}
 				doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
@@ -745,10 +746,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		case SUBJECT_LOCATOR: {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
 				ITopic other = checkMergeConditionOfSubjectLocator((ITopic) context, (ILocator) params[0]);
-				if ( other != null ){
+				if (other != null) {
 					doMerge(context, other);
 				}
-				doModifySubjectLocator((ITopic) context, (ILocator) params[0]);				
+				doModifySubjectLocator((ITopic) context, (ILocator) params[0]);
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -791,6 +792,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 				doModifyValue((IDatatypeAware) context, params[0]);
 			} else if (context instanceof IDatatypeAware && params.length == 2 && params[0] instanceof String && params[1] instanceof ILocator) {
 				doModifyValue((IDatatypeAware) context, (String) params[0], (ILocator) params[1]);
+			} else {
+				throw new OperationSignatureException(context, paramType, params);
+			}
+		}
+			break;
+		case META_DATA: {
+			if (context == null && params.length == 3 && params[0] instanceof IRevision && params[1] instanceof String && params[2] instanceof String) {
+				doModifyMetaData((IRevision) params[0], params[1].toString(), params[2].toString());
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -1200,6 +1209,20 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	protected abstract void doModifyValue(IDatatypeAware t, Object value) throws TopicMapStoreException;
 
+	/**
+	 * Add a new meta data set to the given revision
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @param key
+	 *            the key of the meta data set
+	 * @param value
+	 *            the value of the meta data set
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract void doModifyMetaData(IRevision revision, final String key, final String value) throws TopicMapStoreException;
+
 	// ********************
 	// * MERGE OPERATIONS *
 	// ********************
@@ -1355,15 +1378,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
-		case REVISION_BEGIN: {
+		case REVISION_TIMESTAMP: {
 			if (context == null && params.length == 1 && params[0] instanceof IRevision) {
-				return doReadRevisionBegin((IRevision) params[0]);
-			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case REVISION_END: {
-			if (context == null && params.length == 1 && params[0] instanceof IRevision) {
-				return doReadRevisionEnd((IRevision) params[0]);
+				return doReadRevisionTimestamp((IRevision) params[0]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -1375,7 +1392,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		}
 		case PREVIOUS_REVISION: {
 			if (context == null && params.length == 1 && params[0] instanceof IRevision) {
-				return doReadPreviousRevision((IRevision) params[0]);
+				return doReadPastRevision((IRevision) params[0]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -1530,6 +1547,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		case LOCATOR: {
 			if (context instanceof ITopicMap) {
 				return doReadLocator((ITopicMap) context);
+			}
+			throw new OperationSignatureException(context, paramType, params);
+		}
+		case META_DATA: {
+			if ( context == null && params.length == 1 && params[0] instanceof IRevision){
+				return doReadMetaData((IRevision) params[0]);
+			}else if ( context == null && params.length == 2 && params[0] instanceof IRevision && params[1] instanceof String){
+				return doReadMetaData((IRevision) params[0], params[1].toString());
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -1894,7 +1919,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	protected abstract ITopic doReadPlayer(IAssociationRole role) throws TopicMapStoreException;
 
 	/**
-	 * Read the next revision of the revision.
+	 * Read the past revision of the revision.
 	 * 
 	 * @param r
 	 *            the revision
@@ -1902,7 +1927,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IRevision doReadPreviousRevision(IRevision r) throws TopicMapStoreException;
+	protected abstract IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read the reified item of the given topic.
@@ -1935,18 +1960,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract Calendar doReadRevisionBegin(IRevision r) throws TopicMapStoreException;
-
-	/**
-	 * Read the time-stamp of the revision end.
-	 * 
-	 * @param r
-	 *            the revision
-	 * @return the read information
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract Calendar doReadRevisionEnd(IRevision r) throws TopicMapStoreException;
+	protected abstract Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException;
 
 	/**
 	 * Read the change set of a revision.
@@ -2210,6 +2224,31 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract Set<IVariant> doReadVariants(IName n, IScope scope) throws TopicMapStoreException;
+
+	/**
+	 * Read the whole meta data sets of the given revision
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @return a map containing all key-value-pairs of the revisions meta data
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException;
+
+	/**
+	 * Read the value of the meta set of the given revision identified by the
+	 * given key.
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @param key
+	 *            the key
+	 * @return the value of the revision
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract String doReadMetaData(IRevision revision, final String key) throws TopicMapStoreException;
 
 	// ********************
 	// * REMOVE OPERATION *
@@ -3158,4 +3197,49 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
+	
+	/**
+	 * Store a change set for the given revision. The change set will be created
+	 * by the given arguments.
+	 * 
+	 * @param revision
+	 *            the revision the change set should add to
+	 * @param type
+	 *            the type of change
+	 * @param context
+	 *            the context of change
+	 * @param newValue
+	 *            the new value after change
+	 * @param oldValue
+	 *            the old value before change
+	 */
+	public abstract void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue);
+	
+	/**
+	 * Store a change set for the given revision. The change set will be created
+	 * by the given arguments.
+	 * 
+	 * @param revision
+	 *            the revision the change set should add to
+	 * @param type
+	 *            the type of change
+	 * @param context
+	 *            the context of change
+	 * @param newValue
+	 *            the new value after change
+	 * @param oldValue
+	 *            the old value before change
+	 */
+	public void storeRevision(TopicMapEventType type, IConstruct context, Object newValue, Object oldValue){
+		storeRevision(createRevision(), type, context, newValue, oldValue);
+	}
+	
+	/**
+	 * Creating a new revision object.
+	 * 
+	 * @return the new revision object
+	 */
+	protected abstract IRevision createRevision();
+	
+	
 }

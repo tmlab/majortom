@@ -87,6 +87,8 @@ public class RevisionStore implements IDataStore {
 
 	private Map<String, IConstruct> lazyCopies;
 
+	private Map<IRevision, Map<String, String>> metaData;
+
 	/**
 	 * constructor
 	 * 
@@ -135,6 +137,10 @@ public class RevisionStore implements IDataStore {
 
 		if (associationCreations != null) {
 			associationCreations.clear();
+		}
+
+		if (metaData != null) {
+			metaData.clear();
 		}
 	}
 
@@ -246,9 +252,9 @@ public class RevisionStore implements IDataStore {
 			storeDependentRevisionChanges((ITopic) change.getContext().getParent().getParent(), change);
 		} else if (change.getContext() instanceof IAssociation) {
 			storeDependentRevision((IAssociation) change.getContext(), revision);
-			storeDependentRevisionChanges((IAssociation) change.getContext(), change);			
+			storeDependentRevisionChanges((IAssociation) change.getContext(), change);
 			storeDependentRevision((IAssociation) change.getContext(), revision);
-			storeDependentRevisionChanges((IAssociation) change.getContext(), change);			
+			storeDependentRevisionChanges((IAssociation) change.getContext(), change);
 		}
 		/*
 		 * check if old value is a topic
@@ -287,13 +293,12 @@ public class RevisionStore implements IDataStore {
 		/*
 		 * check if new value is an association
 		 */
-		else if ( change.getNewValue() instanceof IAssociation){
-			if (change.getType() == TopicMapEventType.ASSOCIATION_ADDED) {
-				if ( associationCreations == null ){
-					associationCreations = HashUtil.getHashMap();
-				}
-				associationCreations.put((IAssociation)change.getNewValue(), change);
-			}
+		else if (change.getNewValue() instanceof IAssociation) {
+			/*
+			 * changes depends on the association
+			 */
+			storeDependentRevision(((IAssociation) change.getNewValue()), revision);
+			storeDependentRevisionChanges(((IAssociation) change.getNewValue()), change);
 		}
 		/*
 		 * check if new value is a role indicates the deletion of a role item
@@ -371,8 +376,8 @@ public class RevisionStore implements IDataStore {
 		LinkedList<IRevision> revisions = associationRevisions.get(association.getType().getId());
 		if (revisions == null) {
 			revisions = new LinkedList<IRevision>();
-		}		
-		
+		}
+
 		if (!revisions.contains(revision)) {
 			revisions.add(revision);
 			associationRevisions.put(association.getType().getId(), revisions);
@@ -397,18 +402,18 @@ public class RevisionStore implements IDataStore {
 		if (changeset == null) {
 			changeset = new Changeset();
 		}
-		
+
 		/*
 		 * add creation if exists
 		 */
-		if ( associationCreations != null && associationCreations.containsKey(association)){
+		if (associationCreations != null && associationCreations.containsKey(association)) {
 			changeset.add(associationCreations.get(association));
 			associationCreations.remove(association);
-			if ( associationCreations.isEmpty()){
+			if (associationCreations.isEmpty()) {
 				associationCreations = null;
 			}
 		}
-		
+
 		if (!changeset.contains(change)) {
 			changeset.add(change);
 			associationChangesets.put(association.getType().getId(), changeset);
@@ -422,27 +427,12 @@ public class RevisionStore implements IDataStore {
 	 *            the revision
 	 * @return the time stamp
 	 */
-	public Calendar getRevisionBegin(IRevision revision) {
+	public Calendar getRevisionTimestamp(IRevision revision) {
 		if (revisions == null || !revisions.contains(revision)) {
 			throw new TopicMapStoreException("Revision is unknown!");
 		}
 
 		return timestamps.get(revision);
-	}
-
-	/**
-	 * Return the time stamp representing the end of the given revision
-	 * 
-	 * @param revision
-	 *            the revision
-	 * @return the time stamp or <code>null</code> if this is the last revision
-	 */
-	public Calendar getRevisionEnd(IRevision revision) {
-		if (revisions == null || !revisions.contains(revision)) {
-			throw new TopicMapStoreException("Revision is unknown!");
-		}
-		IRevision next = getNextRevision(revision);
-		return next == null ? null : getRevisionBegin(next);
 	}
 
 	/**
@@ -472,7 +462,7 @@ public class RevisionStore implements IDataStore {
 	 * @return the previous revision or <code>null</code> if this is the first
 	 *         revision
 	 */
-	public IRevision getPreviousRevision(IRevision revision) {
+	public IRevision getPastRevision(IRevision revision) {
 		if (revisions == null || !revisions.contains(revision)) {
 			throw new TopicMapStoreException("Revision is unknown!");
 		}
@@ -536,7 +526,7 @@ public class RevisionStore implements IDataStore {
 		if (revisions == null || !topicRevisions.containsKey(topic.getId())) {
 			return null;
 		}
-		return topicRevisions.get(topic.getId()).getLast().getBegin();
+		return topicRevisions.get(topic.getId()).getLast().getTimestamp();
 	}
 
 	/**
@@ -590,7 +580,7 @@ public class RevisionStore implements IDataStore {
 		}
 
 		IRevision revision = getLastRevision();
-		while (revision != null && revision.getBegin().after(timestamp)) {
+		while (revision != null && revision.getTimestamp().after(timestamp)) {
 			revision = revision.getPast();
 		}
 		return revision;
@@ -837,6 +827,68 @@ public class RevisionStore implements IDataStore {
 			return lazyCopies.get(id);
 		}
 		return null;
+	}
+
+	/**
+	 * Add the new key-value-pair to the meta data of the given revision
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @param key
+	 *            the key of meta data
+	 * @param value
+	 *            the value of meta data
+	 */
+	public void addMetaData(IRevision revision, final String key, final String value) {
+		if (revisions == null || !revisions.contains(revision)) {
+			throw new TopicMapStoreException("The given revision is unknown. Not stored in the current store." + (revision == null ? "null" : revision.getId()));
+		}
+		if (metaData == null) {
+			metaData = HashUtil.getHashMap();
+		}
+		Map<String, String> map = metaData.get(revision);
+		if (map == null) {
+			map = HashUtil.getHashMap();
+		}
+		map.put(key, value);
+		metaData.put(revision, map);
+	}
+
+	/**
+	 * Returns the value of the meta set of the given revision identified by the
+	 * given key
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @param key
+	 *            the key
+	 * @return the value or <code>null</code> if the key is unknown
+	 */
+	public String getMetaData(final IRevision revision, final String key) {
+		if (revisions == null || !revisions.contains(revision)) {
+			throw new TopicMapStoreException("The given revision is unknown. Not stored in the current store." + (revision == null ? "null" : revision.getId()));
+		}
+		if (metaData == null || !metaData.containsKey(revision)) {
+			return null;
+		}
+		return metaData.get(revision).get(key);
+	}
+
+	/**
+	 * Returns all meta data sets of the given revision as copy.
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @return the copy of all meta data sets
+	 */
+	public Map<String, String> getMetaData(final IRevision revision) {
+		if (revisions == null || !revisions.contains(revision)) {
+			throw new TopicMapStoreException("The given revision is unknown. Not stored in the current store." + (revision == null ? "null" : revision.getId()));
+		}
+		if (metaData == null || !metaData.containsKey(revision)) {
+			return HashUtil.getHashMap();
+		}
+		return HashUtil.getHashMap(metaData.get(revision));
 	}
 
 }

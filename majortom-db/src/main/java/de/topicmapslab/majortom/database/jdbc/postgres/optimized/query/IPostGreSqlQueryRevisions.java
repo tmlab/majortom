@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests.index;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class IndexTestSuite {
+public interface IPostGreSqlQueryRevisions {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.index");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(TestIdentityIndex.class);
-		suite.addTestSuite(TestLiteralIndex.class);
-		suite.addTestSuite(TestSupertypeSubtypeIndex.class);
-		suite.addTestSuite(TestTransitiveTypeInstanceIndex.class);
-		suite.addTestSuite(TestScopeIndex.class);
-//		suite.addTest(PagedIndexTestSuite.suite());
-		// $JUnit-END$
-		return suite;
-	}
+	public static final String QUERY_CREATE_REVISION = "INSER INTO revisions(time, id_topicmap) VALUES(now(),?)";
+	
+	public static final String QUERY_CREATE_CHANGESET = "INSER INTO changesets(id_revision,type,id_notifier, newValue, oldValue,time) VALUES(?,?,?,?,?,now())";
 
+	
 }

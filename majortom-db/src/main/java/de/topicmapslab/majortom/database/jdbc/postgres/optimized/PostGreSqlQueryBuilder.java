@@ -24,13 +24,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlDeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlIndexQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlInsertQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlPerformQueries;
+import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlQueryRevisions;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlSelectQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlUpdateQueries;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryBuilder;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.IConstruct;
@@ -44,7 +45,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class PostGreSqlQueryBuilder implements IQueryBuilder {
+public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 
 	/**
 	 * the JDBC connection
@@ -56,6 +57,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 	 *            the JDBC connection to create the {@link PreparedStatement}
 	 */
 	public PostGreSqlQueryBuilder(Connection connection) {
+		super(connection);
 		this.connection = connection;
 	}
 
@@ -1230,7 +1232,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		}
 		return this.preparedStatementIndexOccurrencesByTypeTransitive;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1241,7 +1243,7 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 		}
 		return this.preparedStatementIndexTopicsByTypeTransitive;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2170,6 +2172,35 @@ public class PostGreSqlQueryBuilder implements IQueryBuilder {
 			preparedStatementPerformMergeTopics = connection.prepareStatement(IPostGreSqlPerformQueries.PERFORM_MERGE_TOPICS);
 		}
 		return preparedStatementPerformMergeTopics;
+	}
+
+	// ******************
+	// * REVISION QUERY *
+	// ******************
+
+	private PreparedStatement preparedStatementQueryCreateRevision;
+	private PreparedStatement preparedStatementQueryCreateChangeset;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryCreateRevision() throws SQLException {
+		if (preparedStatementQueryCreateRevision == null) {
+			preparedStatementQueryCreateRevision = connection
+					.prepareStatement(IPostGreSqlQueryRevisions.QUERY_CREATE_REVISION, Statement.RETURN_GENERATED_KEYS);
+		}
+		return preparedStatementQueryCreateRevision;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryCreateChangeset() throws SQLException {
+		if (preparedStatementQueryCreateChangeset == null) {
+			preparedStatementQueryCreateChangeset = connection.prepareStatement(IPostGreSqlQueryRevisions.QUERY_CREATE_CHANGESET,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return preparedStatementQueryCreateChangeset;
 	}
 
 }

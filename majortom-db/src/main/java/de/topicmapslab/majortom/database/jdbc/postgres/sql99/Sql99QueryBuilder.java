@@ -29,6 +29,7 @@ import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99Constra
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99DeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99IndexQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99InsertQueries;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99QueryRevisions;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99SelectQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99UpdateQueries;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -596,9 +597,8 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementReadScopeByThemes;
 	}
-	
-	
-	public PreparedStatement getQueryReadEmptyScope() throws SQLException{
+
+	public PreparedStatement getQueryReadEmptyScope() throws SQLException {
 		if (this.preparedStatementReadEmptyScope == null) {
 			this.preparedStatementReadEmptyScope = connection.prepareStatement(ISql99SelectQueries.QUERY_READ_EMPTY_SCOPE);
 		}
@@ -2120,7 +2120,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	// ********************
 	// * CONSTRAINT QUERY *
 	// ********************
-	
+
 	private PreparedStatement preparedStatementDuplicateName;
 	private PreparedStatement preparedStatementMoveVariants;
 	private PreparedStatement preparedStatementMoveItemIdentifiers;
@@ -2128,54 +2128,213 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementDuplicateVariant;
 	private PreparedStatement preparedStatementDuplicateAssociations;
 	private PreparedStatement preparedStatementDuplicateRoles;
-	
-	public PreparedStatement getQueryDuplicateName() throws SQLException{
-		if ( this.preparedStatementDuplicateName == null ){
+
+	public PreparedStatement getQueryDuplicateName() throws SQLException {
+		if (this.preparedStatementDuplicateName == null) {
 			this.preparedStatementDuplicateName = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_NAME);
 		}
 		return preparedStatementDuplicateName;
 	}
-	
-	public PreparedStatement getQueryMoveVariants() throws SQLException{
-		if ( this.preparedStatementMoveVariants == null ){
+
+	public PreparedStatement getQueryMoveVariants() throws SQLException {
+		if (this.preparedStatementMoveVariants == null) {
 			this.preparedStatementMoveVariants = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_MOVE_VARIANTS);
 		}
 		return preparedStatementMoveVariants;
 	}
-	
-	public PreparedStatement getQueryMoveItemIdentifiers() throws SQLException{
-		if ( this.preparedStatementMoveItemIdentifiers == null ){
+
+	public PreparedStatement getQueryMoveItemIdentifiers() throws SQLException {
+		if (this.preparedStatementMoveItemIdentifiers == null) {
 			this.preparedStatementMoveItemIdentifiers = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_MOVE_ITEM_IDENTIFIERS);
 		}
 		return preparedStatementMoveItemIdentifiers;
 	}
-	
-	public PreparedStatement getQueryDuplicateOccurrence() throws SQLException{
-		if ( this.preparedStatementDuplicateOccurrence == null ){
+
+	public PreparedStatement getQueryDuplicateOccurrence() throws SQLException {
+		if (this.preparedStatementDuplicateOccurrence == null) {
 			this.preparedStatementDuplicateOccurrence = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_OCCURRENCE);
 		}
 		return preparedStatementDuplicateOccurrence;
 	}
-	
-	public PreparedStatement getQueryDuplicateVariant() throws SQLException{
-		if ( this.preparedStatementDuplicateVariant == null ){
+
+	public PreparedStatement getQueryDuplicateVariant() throws SQLException {
+		if (this.preparedStatementDuplicateVariant == null) {
 			this.preparedStatementDuplicateVariant = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_VARIANTS);
 		}
 		return preparedStatementDuplicateVariant;
 	}
-	
-	public PreparedStatement getQueryDuplicateAssociations() throws SQLException{
-		if ( this.preparedStatementDuplicateAssociations == null ){
+
+	public PreparedStatement getQueryDuplicateAssociations() throws SQLException {
+		if (this.preparedStatementDuplicateAssociations == null) {
 			this.preparedStatementDuplicateAssociations = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_ASSOCIATIONS);
 		}
 		return preparedStatementDuplicateAssociations;
 	}
-	
-	public PreparedStatement getQueryDuplicateRoles() throws SQLException{
-		if ( this.preparedStatementDuplicateRoles == null ){
+
+	public PreparedStatement getQueryDuplicateRoles() throws SQLException {
+		if (this.preparedStatementDuplicateRoles == null) {
 			this.preparedStatementDuplicateRoles = connection.prepareStatement(ISql99ConstraintsQueries.QUERY_DUPLICATE_ROLES);
 		}
 		return preparedStatementDuplicateRoles;
+	}
+
+	// ******************
+	// * REVISION QUERY *
+	// ******************
+
+	private PreparedStatement preparedStatementQueryCreateRevision;
+	private PreparedStatement preparedStatementQueryCreateChangeset;
+	private PreparedStatement preparedStatementQueryReadFirstRevision;
+	private PreparedStatement preparedStatementQueryReadLastRevision;
+	private PreparedStatement preparedStatementQueryReadPastRevision;
+	private PreparedStatement preparedStatementQueryReadFutureRevision;
+	private PreparedStatement preparedStatementQueryReadChangesets;
+	private PreparedStatement preparedStatementQueryReadTimestamp;
+	private PreparedStatement preparedStatementQueryReadRevisionsByTopic;
+	private PreparedStatement preparedStatementQueryReadChangesetsByTopic;
+	private PreparedStatement preparedStatementQueryReadRevisionsByAssociationType;
+	private PreparedStatement preparedStatementQueryReadChangesetsByAssociationType;
+	private PreparedStatement preparedStatementQueryReadLastModification;
+	private PreparedStatement preparedStatementQueryReadLastModificationOfTopic;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryCreateRevision() throws SQLException {
+		if (preparedStatementQueryCreateRevision == null) {
+			preparedStatementQueryCreateRevision = connection.prepareStatement(ISql99QueryRevisions.QUERY_CREATE_REVISION, Statement.RETURN_GENERATED_KEYS);
+		}
+		return preparedStatementQueryCreateRevision;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryCreateChangeset() throws SQLException {
+		if (preparedStatementQueryCreateChangeset == null) {
+			preparedStatementQueryCreateChangeset = connection.prepareStatement(ISql99QueryRevisions.QUERY_CREATE_CHANGESET, Statement.RETURN_GENERATED_KEYS);
+		}
+		return preparedStatementQueryCreateChangeset;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadFirstRevision() throws SQLException {
+		if (preparedStatementQueryReadFirstRevision == null) {
+			preparedStatementQueryReadFirstRevision = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_FIRST_REVISION);
+		}
+		return preparedStatementQueryReadFirstRevision;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadLastRevision() throws SQLException {
+		if (preparedStatementQueryReadLastRevision == null) {
+			preparedStatementQueryReadLastRevision = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_LAST_REVISION );
+		}
+		return preparedStatementQueryReadLastRevision;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadPastRevision() throws SQLException {
+		if (preparedStatementQueryReadPastRevision == null) {
+			preparedStatementQueryReadPastRevision = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_PAST_REVISION );
+		}
+		return preparedStatementQueryReadPastRevision;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadFutureRevision() throws SQLException {
+		if (preparedStatementQueryReadFutureRevision == null) {
+			preparedStatementQueryReadFutureRevision = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_FUTURE_REVISION );
+		}
+		return preparedStatementQueryReadFutureRevision;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadChangesets() throws SQLException {
+		if (preparedStatementQueryReadChangesets == null) {
+			preparedStatementQueryReadChangesets = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_CHANGESET );
+		}
+		return preparedStatementQueryReadChangesets;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadTimestamp() throws SQLException {
+		if (preparedStatementQueryReadTimestamp == null) {
+			preparedStatementQueryReadTimestamp = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_TIMESTAMP );
+		}
+		return preparedStatementQueryReadTimestamp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadRevisionsByTopic() throws SQLException {
+		if (preparedStatementQueryReadRevisionsByTopic == null) {
+			preparedStatementQueryReadRevisionsByTopic = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_REVISIONS_BY_TOPIC );
+		}
+		return preparedStatementQueryReadRevisionsByTopic;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadRevisionsByAssociationType() throws SQLException {
+		if (preparedStatementQueryReadRevisionsByAssociationType == null) {
+			preparedStatementQueryReadRevisionsByAssociationType = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_REVISIONS_BY_ASSOCIATIONTYPE );
+		}
+		return preparedStatementQueryReadRevisionsByAssociationType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadChangesetsByTopic() throws SQLException {
+		if (preparedStatementQueryReadChangesetsByTopic == null) {
+			preparedStatementQueryReadChangesetsByTopic = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_CHANGESETS_BY_TOPIC );
+		}
+		return preparedStatementQueryReadChangesetsByTopic;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadChangesetsByAssociationType() throws SQLException {
+		if (preparedStatementQueryReadChangesetsByAssociationType == null) {
+			preparedStatementQueryReadChangesetsByAssociationType = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_CHANGESETS_BY_ASSOCIATIONTYPE );
+		}
+		return preparedStatementQueryReadChangesetsByAssociationType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadLastModification() throws SQLException {
+		if (preparedStatementQueryReadLastModification == null) {
+			preparedStatementQueryReadLastModification = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_LAST_REVISION );
+		}
+		return preparedStatementQueryReadLastModification;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadLastModificationOfTopic() throws SQLException {
+		if (preparedStatementQueryReadLastModificationOfTopic == null) {
+			preparedStatementQueryReadLastModificationOfTopic = connection.prepareStatement(ISql99QueryRevisions.QUERY_READ_LAST_MODIFICATION_OF_TOPIC);
+		}
+		return preparedStatementQueryReadLastModificationOfTopic;
 	}
 	
 	

@@ -1519,6 +1519,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected void doModifyMetaData(IRevision revision, String key, String value) throws TopicMapStoreException {
+		getRevisionStore().addMetaData(revision, key, value);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		for (IAssociationRole r : getAssociationStore().getRoles(t)) {
@@ -2041,8 +2048,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadPreviousRevision(IRevision r) throws TopicMapStoreException {
-		return getRevisionStore().getPreviousRevision(r);
+	protected IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException {
+		return getRevisionStore().getPastRevision(r);
 	}
 
 	/**
@@ -2062,15 +2069,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Calendar doReadRevisionBegin(IRevision r) throws TopicMapStoreException {
-		return getRevisionStore().getRevisionBegin(r);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Calendar doReadRevisionEnd(IRevision r) throws TopicMapStoreException {
-		return getRevisionStore().getRevisionEnd(r);
+	protected Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException {
+		return getRevisionStore().getRevisionTimestamp(r);
 	}
 
 	/**
@@ -2310,6 +2310,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		Set<IVariant> variants = HashUtil.getHashSet(getCharacteristicsStore().getVariants(n));
 		variants.retainAll(getScopeStore().getScoped(scope));
 		return variants;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException {
+		return getRevisionStore().getMetaData(revision);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String doReadMetaData(IRevision revision, String key) throws TopicMapStoreException {
+		return getRevisionStore().getMetaData(revision, key);
 	}
 
 	/**
@@ -3558,34 +3572,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * Store a change set for the given revision. The change set will be created
-	 * by the given arguments.
 	 * 
-	 * @param revision
-	 *            the revision the change set should add to
-	 * @param type
-	 *            the type of change
-	 * @param context
-	 *            the context of change
-	 * @param newValue
-	 *            the new value after change
-	 * @param oldValue
-	 *            the old value before change
+	 * {@inheritDoc}
 	 */
 	public final void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
 		if (supportRevisions()) {
-			// getThreadPool().execute(new RevisionNotifier(revisionStore,
-			// revision, type, context, newValue, oldValue));
 			getRevisionStore().addChange(revision, type, context, newValue, oldValue);
 		}
 	}
 
 	/**
-	 * Creating a new revision object
 	 * 
-	 * @return the new revision object
+	 * {@inheritDoc}
 	 */
-	synchronized IRevision createRevision() {
+	protected synchronized IRevision createRevision() {
 		if (supportRevisions()) {
 			return getRevisionStore().createRevision();
 		}
