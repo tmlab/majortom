@@ -16,27 +16,19 @@
 package de.topicmapslab.majortom.revision.core;
 
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IVariant;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyVariant extends ReadOnlyDatatypeAware implements IVariant {
+public abstract class ReadOnlyVariant extends ReadOnlyDatatypeAware implements IVariant {
 
 	/**
 	 * @param clone
 	 */
 	public ReadOnlyVariant(IDatatypeAware clone) {
 		super(clone);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IName getParent() {
-		return (IName) super.getParent();
 	}
 
 }

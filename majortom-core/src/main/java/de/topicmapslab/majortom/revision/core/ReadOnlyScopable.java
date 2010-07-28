@@ -20,11 +20,8 @@ import java.util.Set;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.model.core.IReifiable;
 import de.topicmapslab.majortom.model.core.IScopable;
-import de.topicmapslab.majortom.model.core.IScope;
-import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -33,51 +30,16 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyScopable extends ReadOnlyReifiable implements IScopable {
-
-	private final Set<String> themeIds = HashUtil.getHashSet();
-
-	/*
-	 * cached values
-	 */
-	private Set<ITopic> cachedThemes;
+public abstract class ReadOnlyScopable extends ReadOnlyReifiable implements IScopable {
 
 	/**
 	 * constructor
 	 * 
-	 * @param clone the construct to clone
+	 * @param clone
+	 *            the construct to clone
 	 */
 	public ReadOnlyScopable(IScopable clone) {
 		super((IReifiable) clone);
-
-		for (Topic theme : clone.getScope()) {
-			themeIds.add(theme.getId());
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IScope getScopeObject() {
-		Set<ITopic> themes = HashUtil.getHashSet();
-		if (cachedThemes != null) {
-			themes.addAll(cachedThemes);
-		}
-		if (!themeIds.isEmpty()) {
-			Set<String> ids = HashUtil.getHashSet(themeIds);
-			for (String id : ids) {
-				ITopic theme = (ITopic) getTopicMap().getConstructById(id);
-				if (theme instanceof ReadOnlyTopic) {
-					if (cachedThemes == null) {
-						cachedThemes = HashUtil.getHashSet();
-					}
-					themeIds.remove(id);
-					cachedThemes.add(theme);
-				}
-				themes.add(theme);
-			}
-		}
-		return new ScopeImpl(themes);
 	}
 
 	/**
@@ -92,23 +54,7 @@ public class ReadOnlyScopable extends ReadOnlyReifiable implements IScopable {
 	 */
 	public Set<Topic> getScope() {
 		Set<Topic> themes = HashUtil.getHashSet();
-		if (cachedThemes != null) {
-			themes.addAll(cachedThemes);
-		}
-		if (!themeIds.isEmpty()) {
-			Set<String> ids = HashUtil.getHashSet(themeIds);
-			for (String id : ids) {
-				ITopic theme = (ITopic) getTopicMap().getConstructById(id);
-				if (theme instanceof ReadOnlyTopic) {
-					if (cachedThemes == null) {
-						cachedThemes = HashUtil.getHashSet();
-					}
-					themeIds.remove(id);
-					cachedThemes.add(theme);
-				}
-				themes.add(theme);
-			}
-		}
+		themes.addAll(getScopeObject().getThemes());
 		return themes;
 	}
 

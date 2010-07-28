@@ -17,50 +17,19 @@ package de.topicmapslab.majortom.revision.core;
 
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyAssociationRole extends ReadOnlyReifiable implements IAssociationRole {
-
-	private final String typeId, playerId;
-
-	/*
-	 * cached values
-	 */
-	private Topic cachedPlayer, cachedType;
+public abstract class ReadOnlyAssociationRole extends ReadOnlyReifiable implements IAssociationRole {
 
 	/**
 	 * @param clone
 	 */
 	public ReadOnlyAssociationRole(IAssociationRole clone) {
 		super(clone);
-		typeId = clone.getType().getId();
-		playerId = clone.getPlayer().getId();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IAssociation getParent() {
-		return (IAssociation) super.getParent();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Topic getPlayer() {
-		if (cachedPlayer != null) {
-			return cachedPlayer;
-		}
-		Topic player = (Topic) getTopicMap().getConstructById(playerId);
-		if (player instanceof ReadOnlyTopic) {
-			cachedPlayer = player;
-		}
-		return player;
 	}
 
 	/**
@@ -68,20 +37,6 @@ public class ReadOnlyAssociationRole extends ReadOnlyReifiable implements IAssoc
 	 */
 	public void setPlayer(Topic arg0) {
 		throw new UnsupportedOperationException("Construct is read only!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Topic getType() {
-		if (cachedType != null) {
-			return cachedType;
-		}
-		Topic type = (Topic) getTopicMap().getConstructById(typeId);
-		if (type instanceof ReadOnlyTopic) {
-			cachedType = type;
-		}
-		return type;
 	}
 
 	/**

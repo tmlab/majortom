@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.tests.revision;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -79,14 +78,14 @@ public class TestRevisions extends MaJorToMTestCase {
 
 			topic.addType(type);
 			assertEquals(3, index.getRevisions(topic).size());
-			assertEquals(3, index.getRevisions(topic).get(2).getChangeset().size());
+			assertEquals(4, index.getRevisions(topic).get(2).getChangeset().size());
 			assertEquals(3, index.getChangeset(topic).size());
 			assertEquals(2, index.getRevisions(type).size());
-			assertEquals(3, index.getRevisions(type).get(1).getChangeset().size());
+			assertEquals(4, index.getRevisions(type).get(1).getChangeset().size());
 			assertEquals(2, index.getChangeset(type).size());
 
-			File file = new File("src/test/resources/history.xml");
-			index.toXml(file);
+			// File file = new File("src/test/resources/history.xml");
+			// index.toXml(file);
 
 			topic.createName(type, "Name", new Topic[0]);
 			assertEquals(2, index.getChangeset(type).size());
@@ -134,6 +133,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		IRevision revision = index.getLastRevision();
+		System.out.println(revision.getChangeset());
 		assertEquals(3, revision.getChangeset().size());
 		Changeset set = revision.getChangeset();
 		assertEquals(topic, set.get(2).getOldValue());
@@ -282,9 +282,6 @@ public class TestRevisions extends MaJorToMTestCase {
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		IRevision revision = index.getLastRevision();
-		System.out.println(revision.getChangeset());
-		System.out.println(revision.getPast().getChangeset());
 
 		topic = createTopic();
 
@@ -297,9 +294,6 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
 		topic.remove();
-
-		revision = index.getLastRevision();
-		System.out.println(revision.getChangeset());
 	}
 
 	public void testMetaData() {

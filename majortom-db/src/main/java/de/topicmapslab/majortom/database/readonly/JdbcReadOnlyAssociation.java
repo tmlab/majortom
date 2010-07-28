@@ -13,66 +13,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.revision.core;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.database.readonly;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import org.tmapi.core.ModelConstraintException;
+import org.tmapi.core.Locator;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.IScope;
+import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
 
 /**
  * @author Sven Krosse
- * 
+ *
  */
-public abstract class ReadOnlyAssociation extends ReadOnlyScopable implements IAssociation {
+public class JdbcReadOnlyAssociation extends ReadOnlyAssociation {
 
 	/**
 	 * @param clone
 	 */
-	public ReadOnlyAssociation(IAssociation clone) {
+	public JdbcReadOnlyAssociation(IAssociation clone) {
 		super(clone);
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Role createRole(Topic arg0, Topic arg1) throws ModelConstraintException {
-		throw new UnsupportedOperationException("Construct is read only!");
+	public ITopicMap getParent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Topic> getRoleTypes() {
-		Set<Topic> set = new HashSet<Topic>();
-		for (Role r : getRoles()) {
-			set.add(r.getType());
-		}
-		return set;
+	public Set<Role> getRoles() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<Role> getRoles(Topic arg0) {
-		Set<Role> roles = new HashSet<Role>();
-		for (Role r : getRoles()) {
-			if (r.getType().equals(arg0)) {
-				roles.add(r);
-			}
-		}
-		return roles;
+	public Topic getReifier() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setType(Topic arg0) {
-		throw new UnsupportedOperationException("Construct is read only!");
+	public Set<Locator> getItemIdentifiers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Topic getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IScope getScopeObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

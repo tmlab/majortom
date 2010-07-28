@@ -15,18 +15,12 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.revision.core;
 
-import java.util.Set;
-
-import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.TopicInUseException;
 
-import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopicMap;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
-import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * Read only implementation of a construct
@@ -34,31 +28,20 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyConstruct implements IConstruct {
+public abstract class ReadOnlyConstruct implements IConstruct {
 
-	private ITopicMap topicMap;
 	private String id;
-	private Set<Locator> itemIdentifiers = HashUtil.getHashSet();
-	private String parentId;
-	
-	/*
-	 * cached values
-	 */
-	private Construct cachedParent;
+	private ITopicMap topicMap;
 
 	/**
 	 * constructor
 	 * 
-	 * @param clone the construct to clone
+	 * @param clone
+	 *            the construct to clone
 	 */
 	protected ReadOnlyConstruct(IConstruct clone) {
 		this.id = clone.getId();
 		this.topicMap = clone.getTopicMap();
-		this.parentId = clone.getParent().getId();
-
-		for (Locator itemIdentifier : clone.getItemIdentifiers()) {
-			itemIdentifiers.add(new LocatorImpl(itemIdentifier.getReference()));
-		}
 	}
 
 	/**
@@ -73,27 +56,6 @@ public class ReadOnlyConstruct implements IConstruct {
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<Locator> getItemIdentifiers() {
-		return itemIdentifiers;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Construct getParent() {
-		if ( cachedParent != null ){
-			return cachedParent;
-		}
-		Construct parent = (Construct) getTopicMap().getStore().doRead(getTopicMap(), TopicMapStoreParameterType.BY_ID, parentId);
-		if ( parent instanceof ReadOnlyConstruct){
-			cachedParent = parent;
-		}
-		return parent;
 	}
 
 	/**

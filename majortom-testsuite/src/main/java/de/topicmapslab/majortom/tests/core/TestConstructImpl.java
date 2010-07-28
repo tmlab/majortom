@@ -73,7 +73,6 @@ public class TestConstructImpl extends MaJorToMTestCase {
 		a.createRole(createTopic(), createTopic());
 		a.createRole(createTopic(), createTopic());
 		a.remove();
-
 		assertTrue(topicMap.getAssociations().isEmpty());
 	}
 

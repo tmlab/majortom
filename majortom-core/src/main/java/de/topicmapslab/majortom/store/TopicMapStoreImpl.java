@@ -2981,20 +2981,19 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
 				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
 						&& association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
 					doRemoveAssociation(association, false);
-					return true;
+					break;
 				}
 			} catch (NoSuchElementException e) {
 				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
 			}
 		}
-		return false;
 	}
 
 	/**

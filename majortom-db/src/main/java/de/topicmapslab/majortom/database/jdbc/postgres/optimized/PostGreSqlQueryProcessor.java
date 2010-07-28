@@ -1305,10 +1305,11 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
+	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.execute();
+		return false;
 	}
 
 	/**
@@ -1324,10 +1325,11 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveName(IName name, boolean cascade) throws SQLException {
+	public boolean doRemoveName(IName name, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
 		stmt.setLong(1, Long.parseLong(name.getId()));
 		stmt.execute();
+		return false;
 	}
 
 	/**
@@ -1395,10 +1397,11 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
+	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		stmt.execute();
+		return false;
 	}
 
 	/**

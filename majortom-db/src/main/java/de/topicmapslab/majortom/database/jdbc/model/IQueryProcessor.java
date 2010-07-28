@@ -259,13 +259,27 @@ public interface IQueryProcessor {
 
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException;
 
-	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException;
+	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException;
 
-	public void doRemoveName(IName name, boolean cascade) throws SQLException;
+	public boolean doRemoveName(IName name, boolean cascade) throws SQLException;
 
 	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException;
 
-	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException;
+	/**
+	 * Using JDBC to remove an association instance and all roles.
+	 * 
+	 * @param association
+	 *            the association
+	 * @param cascade
+	 *            cascading deletion
+	 * @param revision
+	 *            the revision to store changes
+	 * @throws SQLException
+	 *             thrown if JDBC command fails
+	 */
+	public void doRemoveAssociation(IAssociation association, boolean cascade, IRevision revision) throws SQLException;
+	
+	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException;
 
 	public void doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException;
 
@@ -486,4 +500,16 @@ public interface IQueryProcessor {
 	public Map<String, String> doReadMetadata(final IRevision revision) throws SQLException;
 	
 	public String doReadMetadataByKey(final IRevision revision, final String key) throws SQLException;
+	
+	public void dump(final IRevision revision, final IAssociationRole role) throws SQLException;
+	
+	public void dump(final IRevision revision, final IAssociation association) throws SQLException;
+	
+	public void dump(final IRevision revision, final IVariant variant) throws SQLException;
+	
+	public void dump(final IRevision revision, final IName name) throws SQLException;
+	
+	public void dump(final IRevision revision, final IOccurrence occurrence) throws SQLException;
+	
+	public void dump(final IRevision revision, final ITopic topic) throws SQLException;
 }

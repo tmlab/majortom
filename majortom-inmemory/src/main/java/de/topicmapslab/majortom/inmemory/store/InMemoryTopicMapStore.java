@@ -259,7 +259,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store revision
 		 */
-		storeRevision(createRevision(), TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
+		storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
 		return a;
 	}
 
@@ -1396,10 +1396,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void modifyType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		if (!getTopicTypeStore().getTypes(t).contains(type)) {
-			getTopicTypeStore().addType(t, type);
-			if (recognizingTypeInstanceAssociation()) {
-				createTypeInstanceAssociation(t, type, revision);
-			}
+			getTopicTypeStore().addType(t, type);			
 			if (revision != null) {
 				/*
 				 * notify listeners
@@ -1409,6 +1406,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				 * store revision
 				 */
 				storeRevision(revision, TopicMapEventType.TYPE_ADDED, t, type, null);
+			}
+			if (recognizingTypeInstanceAssociation()) {
+				createTypeInstanceAssociation(t, type, revision);
 			}
 		}
 	}
@@ -3227,20 +3227,19 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected boolean removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
 				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
 						&& association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
 					removeAssocaition(association, false, revision);
-					return true;
+					break;
 				}
 			} catch (NoSuchElementException e) {
 				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
 			}
 		}
-		return false;
 	}
 
 	/**
