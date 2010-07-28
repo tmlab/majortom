@@ -1605,13 +1605,40 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
+	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
+		doRemoveAssociation(association, cascade, getConnectionProvider().getTopicMapStore().createRevision());
+		return true;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void doRemoveAssociation(IAssociation association, boolean cascade, IRevision revision) throws SQLException {
+		/*
+		 * dump association
+		 */
+		dump(revision, association);
 		/*
 		 * remove roles
 		 */
 		for (IAssociationRole role : doReadRoles(association)) {
+			/*
+			 * dump role
+			 */
+			dump(revision, role);
+			/*
+			 * remove role
+			 */
 			doRemoveRole(role, cascade);
-//			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+			/*
+			 * notify listener
+			 */
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, association, null, role);
 		}
 		/*
 		 * remove association
@@ -1619,6 +1646,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.execute();
+		/*
+		 * notify listener
+		 */
+		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, association.getTopicMap(), null, association);
+		/*
+		 * store history
+		 */
+		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, association.getTopicMap(), null, association);
 	}
 
 	/**
@@ -1634,13 +1669,48 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveName(IName name, boolean cascade) throws SQLException {
+	public boolean doRemoveName(IName name, boolean cascade) throws SQLException {
+		doRemoveName(name, cascade, getConnectionProvider().getTopicMapStore().createRevision());
+		return true;
+	}
+
+	/**
+	 * Using JDBC to remove a name instance and all variants.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param cascade
+	 *            cascading deletion
+	 * @param revision
+	 *            the revision to store changes
+	 * @throws SQLException
+	 *             thrown if JDBC command fails
+	 */
+	protected void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException {
+		/*
+		 * dump name
+		 */
+		dump(revision, name);
 		/*
 		 * remove variants
 		 */
 		for (IVariant variant : doReadVariants(name)) {
+			/*
+			 * dump variant
+			 */
+			dump(revision, variant);
+			/*
+			 * remove variant
+			 */
 			doRemoveVariant(variant, cascade);
-//			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+			/*
+			 * notify listener
+			 */
+			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, name, null, variant);
 		}
 		/*
 		 * remove name
@@ -1648,6 +1718,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
 		stmt.setLong(1, Long.parseLong(name.getId()));
 		stmt.execute();
+		/*
+		 * notify listener
+		 */
+		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
+		/*
+		 * store history
+		 */
+		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 	}
 
 	/**
@@ -1713,33 +1791,52 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	}
 
 	/**
+	 * 
 	 * {@inheritDoc}
 	 */
-	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
-		IRevision revision = getConnectionProvider().getTopicMapStore().createRevision();
+	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
+		doRemoveTopic(topic, cascade, getConnectionProvider().getTopicMapStore().createRevision());
+		return true;
+	}
+
+	/**
+	 * Using JDBC to remove a topic and all its dependent constructs.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param cascade
+	 *            the cascading flag
+	 * @param revision
+	 *            the revision
+	 * @throws SQLException
+	 *             thrown if the JDBC command fails
+	 */
+	protected void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
+		/*
+		 * dump topic
+		 */
+		dump(revision, topic);
 		/*
 		 * remove all names of the topic
 		 */
 		for (IName name : doReadNames(topic)) {
-			doRemoveName(name, cascade);
-			/*
-			 * notify listener
-			 */
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, topic, null, name);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, topic, null, name);
+			doRemoveName(name, cascade, revision);
 		}
 		/*
 		 * remove all occurrences of the topic
 		 */
 		for (IOccurrence occurrence : doReadOccurrences(topic)) {
+			/*
+			 * dump occurrence
+			 */
+			dump(revision, occurrence);
+			/*
+			 * remove occurrence
+			 */
 			doRemoveOccurrence(occurrence, cascade);
 			/*
 			 * notify listener
 			 */
-			
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, topic, null, occurrence);
 			/*
 			 * store history
@@ -1750,55 +1847,35 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * remove all played-association
 		 */
 		for (IAssociation association : doReadAssociation(topic)) {
-			doRemoveAssociation(association, cascade);
-			/*
-			 * notify listener
-			 */
-			
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic, null, association);
+			doRemoveAssociation(association, cascade, revision);
 		}
 		/*
 		 * remove all instance
 		 */
 		for (ITopic instance : doReadTopics(topic.getTopicMap(), topic)) {
-			doRemoveTopic(instance, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, instance);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, instance);
+			doRemoveTopic(instance, cascade, revision);
 		}
 		/*
 		 * remove all subtypes
 		 */
 		for (ITopic subtype : getSubtypes(topic.getTopicMap(), topic)) {
-			doRemoveTopic(subtype, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, subtype);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, subtype);
+			doRemoveTopic(subtype, cascade, revision);
 		}
 		/*
 		 * remove typed associations
 		 */
 		for (IAssociation association : getAssociationsByType(topic)) {
-			doRemoveAssociation(association, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+			doRemoveAssociation(association, cascade, revision);
 		}
 		/*
 		 * remove typed roles
 		 */
 		for (IAssociationRole role : getRolesByType(topic)) {
 			IAssociation parent = role.getParent();
+			/*
+			 * dump role
+			 */
+			dump(revision, role);
 			doRemoveRole(role, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
 			/*
@@ -1810,19 +1887,20 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * remove typed name
 		 */
 		for (IName name : getNamesByType(topic)) {
-			ITopic parent = name.getParent();
-			doRemoveName(name, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
-			/*
-			 * store history
-			 */
-			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
+			doRemoveName(name, cascade, revision);
 		}
 		/*
 		 * remove typed occurrences
 		 */
 		for (IOccurrence occurrence : getOccurrencesByType(topic)) {
 			ITopic parent = occurrence.getParent();
+			/*
+			 * dump occurrence
+			 */
+			dump(revision, occurrence);
+			/*
+			 * remove occurrence
+			 */
 			doRemoveOccurrence(occurrence, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 			/*
@@ -1840,36 +1918,57 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 * remove scoped associations
 			 */
 			for (IAssociation association : getAssociationsByScope(topic.getTopicMap(), scope)) {
-				doRemoveAssociation(association, cascade);
-				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
-				/*
-				 * store history
-				 */
-				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+				doRemoveAssociation(association, cascade, revision);
 			}
 			/*
 			 * remove scoped name
 			 */
 			for (IName name : getNamesByScope(topic.getTopicMap(), scope)) {
-				ITopic parent = name.getParent();
-				doRemoveName(name, cascade);
-				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
-				/*
-				 * store history
-				 */
-				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
+				doRemoveName(name, cascade, revision);
 			}
 			/*
 			 * remove scoped occurrences
 			 */
 			for (IOccurrence occurrence : getOccurrencesByScope(topic.getTopicMap(), scope)) {
 				ITopic parent = occurrence.getParent();
+				/*
+				 * dump occurrence
+				 */
+				dump(revision, occurrence);
+				/*
+				 * remove occurrence
+				 */
 				doRemoveOccurrence(occurrence, cascade);
+				/*
+				 * notify listener
+				 */
 				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 				/*
 				 * store history
 				 */
 				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+			}
+			/*
+			 * remove scoped variants
+			 */
+			for (IVariant variant : getVariantsByScope(topic.getTopicMap(), scope)) {
+				IName parent = variant.getParent();
+				/*
+				 * dump variant
+				 */
+				dump(revision, variant);
+				/*
+				 * remove variant
+				 */
+				doRemoveVariant(variant, cascade);
+				/*
+				 * notify listener
+				 */
+				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
+				/*
+				 * store history
+				 */
+				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
 			}
 		}
 		/*
@@ -1879,6 +1978,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		long id = Long.parseLong(topic.getId());
 		stmt.setLong(1, id);
 		stmt.execute();
+		/*
+		 * notify listener
+		 */
+		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
+		/*
+		 * store revision
+		 */
+		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
 	}
 
 	/**
@@ -3220,21 +3327,46 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doCreateTag(String tag, Calendar time) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateTag();
-		stmt.setString(1, tag);
-		stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
-		stmt.execute();
+		PreparedStatement stmt = null;
+		/*
+		 * try to update time if tag exists
+		 */
+		stmt = queryBuilder.getQueryModifyTag();
+		stmt.setTimestamp(1, new Timestamp(time.getTimeInMillis()));
+		stmt.setString(2, tag);
+		/*
+		 * tag was not found -> create tag
+		 */
+		if (stmt.executeUpdate() == 0) {
+			stmt = queryBuilder.getQueryCreateTag();
+			stmt.setString(1, tag);
+			stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
+			stmt.execute();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doCreateMetadata(IRevision revision, String key, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateMetadata();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, key);
-		stmt.setString(3, value);
-		stmt.execute();
+		PreparedStatement stmt = null;
+		/*
+		 * try to update value if key exists
+		 */
+		stmt = queryBuilder.getQueryModifyMetadata();
+		stmt.setString(1, value);
+		stmt.setLong(2, revision.getId());
+		stmt.setString(3, key);
+		/*
+		 * key was not found -> create key
+		 */
+		if (stmt.executeUpdate() == 0) {
+			stmt = queryBuilder.getQueryCreateMetadata();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, key);
+			stmt.setString(3, value);
+			stmt.execute();
+		}
 	}
 
 	/**
@@ -3261,7 +3393,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Changeset doReadChangesetsByTopic(ITopic topic) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByTopic();
-		stmt.setLong(1, Long.parseLong(topic.getId()));
+		long topicId = Long.parseLong(topic.getId());
+		stmt.setLong(1, topicId);
+		stmt.setString(2, topic.getId());
+		stmt.setString(3, topic.getId());
 		return Jdbc2Construct.toChangeSet(this, topic.getTopicMap(), stmt.executeQuery());
 	}
 
@@ -3320,7 +3455,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Calendar doReadLastModificationOfTopic(ITopic topic) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadLastModificationOfTopic();
-		stmt.setLong(1, Long.parseLong(topic.getId()));
+		long topicId = Long.parseLong(topic.getId());
+		stmt.setLong(1, topicId);
+		stmt.setString(2, topic.getId());
+		stmt.setString(3, topic.getId());
 		ResultSet rs = stmt.executeQuery();
 		Calendar c = null;
 		if (rs.next()) {
@@ -3385,7 +3523,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public List<IRevision> doReadRevisionsByTopic(ITopic topic) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByTopic();
-		stmt.setLong(1, Long.parseLong(topic.getId()));
+		long topicId = Long.parseLong(topic.getId());
+		stmt.setLong(1, topicId);
+		stmt.setString(2, topic.getId());
+		stmt.setString(3, topic.getId());
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
@@ -3477,5 +3618,65 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		} finally {
 			rs.close();
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, IAssociationRole role) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryRoleDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(role.getId()));
+		stmt.execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, IAssociation association) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(association.getId()));
+		stmt.execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, IVariant variant) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(variant.getId()));
+		stmt.execute();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, IName name) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNameDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(name.getId()));
+		stmt.execute();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, IOccurrence occurrence) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(occurrence.getId()));
+		stmt.execute();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void dump(IRevision revision, ITopic topic) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryTopicDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.execute();
 	}
 }

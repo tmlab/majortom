@@ -19,7 +19,6 @@ import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IReifiable;
-import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * Read only implementation of {@link IReifiable}
@@ -27,45 +26,16 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyReifiable extends ReadOnlyConstruct implements IReifiable {
-
-	private final String reifierId;
-
-	/*
-	 * cached values
-	 */
-	private Topic cachedReifier;
+public abstract class ReadOnlyReifiable extends ReadOnlyConstruct implements IReifiable {
 
 	/**
 	 * constructor
 	 * 
-	 * @param clone the construct to clone
+	 * @param clone
+	 *            the construct to clone
 	 */
 	public ReadOnlyReifiable(IReifiable clone) {
 		super(clone);
-		if (clone.getReifier() != null) {
-			reifierId = clone.getReifier().getId();
-		} else {
-			reifierId = null;
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Topic getReifier() {
-		if (reifierId == null) {
-			return null;
-		}
-		if (cachedReifier != null) {
-			return cachedReifier;
-		}
-		Topic reifier = (Topic) getTopicMap().getStore().doRead(getTopicMap(), TopicMapStoreParameterType.BY_ID, reifierId);
-		if (reifier instanceof ReadOnlyTopic) {
-			cachedReifier = reifier;
-		}
-		return reifier;
 	}
 
 	/**

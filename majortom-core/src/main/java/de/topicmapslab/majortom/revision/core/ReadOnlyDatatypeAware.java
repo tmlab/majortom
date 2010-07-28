@@ -27,7 +27,6 @@ import org.tmapi.core.ModelConstraintException;
 
 import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.geotype.model.IGeoSurface;
-import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IScopable;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
@@ -36,24 +35,20 @@ import de.topicmapslab.majortom.util.DatatypeAwareUtils;
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatypeAware {
-
-	private final String value;
-	private final Locator datatype;
+public abstract class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatypeAware {
 
 	/**
 	 * @param clone
 	 */
 	public ReadOnlyDatatypeAware(IDatatypeAware clone) {
 		super((IScopable) clone);
-		this.value = clone.getValue();
-		this.datatype = new LocatorImpl(clone.getDatatype().getReference());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Boolean booleanValue() throws ParseException {
+		final String value = getValue();
 		try {
 			return (Boolean) DatatypeAwareUtils.toValue(value, Boolean.class);
 		} catch (NumberFormatException e) {
@@ -67,6 +62,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public IGeoCoordinate coordinateValue() throws ParseException {
+		final String value = getValue();
 		try {
 			return (IGeoCoordinate) DatatypeAwareUtils.toValue(value, IGeoCoordinate.class);
 		} catch (NumberFormatException e) {
@@ -80,6 +76,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public Calendar dateTimeValue() throws ParseException {
+		final String value = getValue();
 		try {
 			return (Calendar) DatatypeAwareUtils.toValue(value, Calendar.class);
 		} catch (NumberFormatException e) {
@@ -93,6 +90,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public Double doubleValue() throws NumberFormatException {
+		final String value = getValue();
 		try {
 			return (Double) DatatypeAwareUtils.toValue(value, Double.class);
 		} catch (ParseException e) {
@@ -148,6 +146,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public IGeoSurface<?> surfaceValue() throws ParseException {
+		final String value = getValue();
 		try {
 			return (IGeoSurface<?>) DatatypeAwareUtils.toValue(value, IGeoSurface.class);
 		} catch (NumberFormatException e) {
@@ -161,6 +160,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public URI uriValue() throws URISyntaxException {
+		final String value = getValue();
 		try {
 			return (URI) DatatypeAwareUtils.toValue(value, URI.class);
 		} catch (NumberFormatException e) {
@@ -174,6 +174,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public BigDecimal decimalValue() {
+		final String value = getValue();
 		try {
 			return (BigDecimal) DatatypeAwareUtils.toValue(value, BigDecimal.class);
 		} catch (Exception e) {
@@ -185,6 +186,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public float floatValue() {
+		final String value = getValue();
 		try {
 			return (Float) DatatypeAwareUtils.toValue(value, Float.class);
 		} catch (ParseException e) {
@@ -197,21 +199,8 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	/**
 	 * {@inheritDoc}
 	 */
-	public Locator getDatatype() {
-		return datatype;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public int intValue() {
+		final String value = getValue();
 		try {
 			return (Integer) DatatypeAwareUtils.toValue(value, Integer.class);
 		} catch (ParseException e) {
@@ -225,6 +214,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public BigInteger integerValue() {
+		final String value = getValue();
 		try {
 			return (BigInteger) DatatypeAwareUtils.toValue(value, BigInteger.class);
 		} catch (Exception e) {
@@ -236,6 +226,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public Locator locatorValue() {
+		final String value = getValue();
 		try {
 			return (Locator) DatatypeAwareUtils.toValue(value, Locator.class);
 		} catch (Exception e) {
@@ -247,6 +238,7 @@ public class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatype
 	 * {@inheritDoc}
 	 */
 	public long longValue() {
+		final String value = getValue();
 		try {
 			return (Long) DatatypeAwareUtils.toValue(value, Long.class);
 		} catch (ParseException e) {

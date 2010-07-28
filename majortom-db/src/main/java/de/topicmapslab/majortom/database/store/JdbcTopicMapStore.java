@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,6 +39,7 @@ import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcIdentityIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
+import de.topicmapslab.majortom.database.jdbc.index.JdbcRevisionIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTransitiveTypeInstanceIndex;
@@ -65,6 +67,7 @@ import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
+import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
@@ -106,6 +109,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	private IScopedIndex scopedIndex;
 	private ILiteralIndex literalIndex;
 	private IIdentityIndex identityIndex;
+	private IRevisionIndex revisionIndex;
 
 	/**
 	 * constructor
@@ -784,7 +788,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * store history
 			 */
 			IRevision r = createRevision();
-			storeRevision(r, TopicMapEventType.TYPE_SET, t, type, null);
+			storeRevision(r, TopicMapEventType.TYPE_ADDED, t, type, null);
 			/*
 			 * create association if necessary
 			 */
@@ -1544,24 +1548,29 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		try {
 			Set<IAssociationRole> roles = HashUtil.getHashSet(provider.getProcessor().doReadRoles(association));
 			/*
-			 * store history
-			 */
-			IRevision r = createRevision();
-			for (IAssociationRole role : roles) {
-				storeRevision(r, TopicMapEventType.ROLE_REMOVED, association, null, role);
-			}
-			storeRevision(r, TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
-			/*
 			 * remove association
 			 */
-			provider.getProcessor().doRemoveAssociation(association, cascade);
-			/*
-			 * notify listener
-			 */
-			for (IAssociationRole role : roles) {
-				notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+			if (!provider.getProcessor().doRemoveAssociation(association, cascade)) {
+				IRevision revision = createRevision();
+				for (IAssociationRole role : roles) {
+					/*
+					 * notify listener
+					 */
+					notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+					/*
+					 * store history
+					 */
+					storeRevision(revision, TopicMapEventType.ROLE_REMOVED, association, null, role);
+				}
+				/*
+				 * notify listener
+				 */
+				notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
+				/*
+				 * store history
+				 */
+				storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
 			}
-			notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1594,24 +1603,32 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			ITopic parent = name.getParent();
 			Set<IVariant> variants = HashUtil.getHashSet(provider.getProcessor().doReadVariants(name));
 			/*
-			 * store history
-			 */
-			IRevision r = createRevision();
-			for (IVariant variant : variants) {
-				storeRevision(r, TopicMapEventType.VARIANT_REMOVED, name, null, variant);
-			}
-			storeRevision(r, TopicMapEventType.NAME_REMOVED, parent, null, name);
-			/*
 			 * remove name and variants
 			 */
-			provider.getProcessor().doRemoveName(name, cascade);
-			/*
-			 * notify listener
-			 */
-			for (IVariant variant : variants) {
-				notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+			if (!provider.getProcessor().doRemoveName(name, cascade)) {
+				IRevision revision = createRevision();
+				/*
+				 * notify listener
+				 */
+				for (IVariant variant : variants) {
+					/*
+					 * notify listener
+					 */
+					notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+					/*
+					 * store history
+					 */
+					storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+				}
+				/*
+				 * notify listener
+				 */
+				notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
+				/*
+				 * store history
+				 */
+				storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
 			}
-			notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1623,10 +1640,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
 		try {
 			ITopic parent = occurrence.getParent();
+			IRevision revision = createRevision();
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+			storeRevision(revision,TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+			/*
+			 * dump occurrence
+			 */
+			provider.getProcessor().dump(revision, occurrence);
 			/*
 			 * remove occurrence
 			 */
@@ -1646,10 +1668,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
 		try {
 			IAssociation parent = role.getParent();
+			IRevision revision = createRevision();
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.ROLE_REMOVED, parent, null, role);
+			storeRevision(revision, TopicMapEventType.ROLE_REMOVED, parent, null, role);
+			/*
+			 * dump role
+			 */
+			provider.getProcessor().dump(revision, role);
 			/*
 			 * remove role
 			 */
@@ -1736,7 +1763,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * store history
 			 */
 			IRevision r = createRevision();
-			storeRevision(r,TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
+			storeRevision(r, TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 			/*
 			 * remove supertype-association if necessary
 			 */
@@ -1751,14 +1778,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO store history
 	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doRemoveTopic(topic, cascade);
-			/*
-			 * notify listener
-			 */
-			notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1789,7 +1811,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * store history
 			 */
 			IRevision r = createRevision();
-			storeRevision(r,TopicMapEventType.TYPE_REMOVED, t, null, type);
+			storeRevision(r, TopicMapEventType.TYPE_REMOVED, t, null, type);
 			/*
 			 * remove type-association if necessary
 			 */
@@ -1807,10 +1829,15 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
 		try {
 			IName parent = variant.getParent();
+			IRevision revision = createRevision();
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
+			storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
+			/*
+			 * dump variant
+			 */
+			provider.getProcessor().dump(revision, variant);
 			/*
 			 * remove variant
 			 */
@@ -1872,6 +1899,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 				this.supertSubtypeIndex = new JdbcSupertypeSubtypeIndex(this);
 			}
 			return (I) this.supertSubtypeIndex;
+		} else if (IRevisionIndex.class.isAssignableFrom(clazz)) {
+			if (this.revisionIndex == null) {
+				this.revisionIndex = new JdbcRevisionIndex(this);
+			}
+			return (I) this.revisionIndex;
 		}
 		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");
@@ -1958,6 +1990,116 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			provider.getProcessor().doCreateChangeSet(revision, type, context, newValue, oldValue);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	// /***********
+	// * UTILITY *
+	// ***********/
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	protected void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
+		try {
+			/*
+			 * create association
+			 */
+			IAssociation association = getProcessor().doCreateAssociation(getTopicMap(), getTmdmTypeInstanceAssociationType());
+			/*
+			 * create roles
+			 */
+			IAssociationRole roleInstance = getProcessor().doCreateRole(association, getTmdmInstanceRoleType(), instance);
+			IAssociationRole roleType = getProcessor().doCreateRole(association, getTmdmTypeRoleType(), type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, getTopicMap(), association, null);
+			notifyListeners(TopicMapEventType.ROLE_ADDED, association, roleInstance, null);
+			notifyListeners(TopicMapEventType.ROLE_ADDED, association, roleType, null);
+			/*
+			 * store history
+			 */
+			storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, getTopicMap(), association, null);
+			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleInstance, null);
+			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleType, null);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	protected void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
+		try {
+			/*
+			 * create association
+			 */
+			IAssociation association = getProcessor().doCreateAssociation(getTopicMap(), getTmdmSupertypeSubtypeAssociationType());
+			/*
+			 * create roles
+			 */
+			IAssociationRole roleSubtype = getProcessor().doCreateRole(association, getTmdmSubtypeRoleType(), type);
+			IAssociationRole roleSupertype = getProcessor().doCreateRole(association, getTmdmSupertypeRoleType(), supertype);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, getTopicMap(), association, null);
+			notifyListeners(TopicMapEventType.ROLE_ADDED, association, roleSubtype, null);
+			notifyListeners(TopicMapEventType.ROLE_ADDED, association, roleSupertype, null);
+			/*
+			 * store history
+			 */
+			storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, getTopicMap(), association, null);
+			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleSubtype, null);
+			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleSupertype, null);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
+		for (IAssociation association : associations) {
+			try {
+				if (association.getRoles(getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)
+						&& association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(supertype)) {
+					getProcessor().doRemoveAssociation(association, true, revision);
+					break;
+				}
+			} catch (NoSuchElementException e) {
+				throw new TopicMapStoreException("Invalid meta model! Missing supertype or subtype role!", e);
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Internal database error!", e);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
+		for (IAssociation association : associations) {
+			try {
+				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
+						&& association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
+					getProcessor().doRemoveAssociation(association, true, revision);
+					break;
+				}
+			} catch (NoSuchElementException e) {
+				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Internal database error!", e);
+			}
 		}
 	}
 }

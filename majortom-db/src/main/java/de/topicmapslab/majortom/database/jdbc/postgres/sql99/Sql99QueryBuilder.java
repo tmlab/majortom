@@ -27,6 +27,7 @@ import java.util.Map;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99ConstraintsQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99DeleteQueries;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99DumpQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99IndexQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99InsertQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99RevisionQueries;
@@ -2185,7 +2186,9 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryCreateRevision;
 	private PreparedStatement preparedStatementQueryCreateChangeset;
 	private PreparedStatement preparedStatementQueryCreateTag;
+	private PreparedStatement preparedStatementQueryModifyTag;
 	private PreparedStatement preparedStatementQueryCreateMetadata;
+	private PreparedStatement preparedStatementQueryModifyMetadata;
 	private PreparedStatement preparedStatementQueryReadFirstRevision;
 	private PreparedStatement preparedStatementQueryReadLastRevision;
 	private PreparedStatement preparedStatementQueryReadPastRevision;
@@ -2203,6 +2206,13 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryReadMetadata;
 	private PreparedStatement preparedStatementQueryReadMetadataByKey;
 
+	private PreparedStatement preparedStatementQueryAssociationDump;
+	private PreparedStatement preparedStatementQueryRoleDump;
+	private PreparedStatement preparedStatementQueryVariantDump;
+	private PreparedStatement preparedStatementQueryNameDump;
+	private PreparedStatement preparedStatementQueryOccurrenceDump;
+	private PreparedStatement preparedStatementQueryTopicDump;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2242,7 +2252,27 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementQueryCreateMetadata;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyTag() throws SQLException {
+		if (preparedStatementQueryModifyTag == null) {
+			preparedStatementQueryModifyTag = connection.prepareStatement(ISql99RevisionQueries.QUERY_MODIFY_TAG);
+		}
+		return preparedStatementQueryModifyTag;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyMetadata() throws SQLException {
+		if (preparedStatementQueryModifyMetadata == null) {
+			preparedStatementQueryModifyMetadata = connection.prepareStatement(ISql99RevisionQueries.QUERY_MODIFY_METADATA);
+		}
+		return preparedStatementQueryModifyMetadata;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2348,7 +2378,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadLastModification() throws SQLException {
 		if (preparedStatementQueryReadLastModification == null) {
-			preparedStatementQueryReadLastModification = connection.prepareStatement(ISql99RevisionQueries.QUERY_READ_LAST_REVISION);
+			preparedStatementQueryReadLastModification = connection.prepareStatement(ISql99RevisionQueries.QUERY_READ_LAST_MODIFICATION);
 		}
 		return preparedStatementQueryReadLastModification;
 	}
@@ -2401,6 +2431,48 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			preparedStatementQueryReadMetadataByKey = connection.prepareStatement(ISql99RevisionQueries.QUERY_READ_METADATA_BY_KEY);
 		}
 		return preparedStatementQueryReadMetadataByKey;
+	}
+	
+	public PreparedStatement getQueryRoleDump() throws SQLException {
+		if (preparedStatementQueryRoleDump == null) {
+			preparedStatementQueryRoleDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_ROLE);
+		}
+		return preparedStatementQueryRoleDump;
+	}
+	
+	public PreparedStatement getQueryAssociationDump() throws SQLException {
+		if (preparedStatementQueryAssociationDump == null) {
+			preparedStatementQueryAssociationDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_ASSOCIATION);
+		}
+		return preparedStatementQueryAssociationDump;
+	}
+	
+	public PreparedStatement getQueryVariantDump() throws SQLException {
+		if (preparedStatementQueryVariantDump == null) {
+			preparedStatementQueryVariantDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_VARIANT);
+		}
+		return preparedStatementQueryVariantDump;
+	}
+	
+	public PreparedStatement getQueryNameDump() throws SQLException {
+		if (preparedStatementQueryNameDump == null) {
+			preparedStatementQueryNameDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_NAME);
+		}
+		return preparedStatementQueryNameDump;
+	}
+	
+	public PreparedStatement getQueryOccurrenceDump() throws SQLException {
+		if (preparedStatementQueryOccurrenceDump == null) {
+			preparedStatementQueryOccurrenceDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_OCCURRENCE);
+		}
+		return preparedStatementQueryOccurrenceDump;
+	}
+	
+	public PreparedStatement getQueryTopicDump() throws SQLException {
+		if (preparedStatementQueryTopicDump == null) {
+			preparedStatementQueryTopicDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_TOPIC);
+		}
+		return preparedStatementQueryTopicDump;
 	}
 
 }
