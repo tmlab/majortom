@@ -29,6 +29,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyAssociation;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyAssociationRole;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyName;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyOccurrence;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyTopic;
+import de.topicmapslab.majortom.inmemory.store.revision.readonly.InMemoryReadOnlyVariant;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -45,12 +51,6 @@ import de.topicmapslab.majortom.model.revision.IRevisionChange;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.revision.RevisionChangeImpl;
 import de.topicmapslab.majortom.revision.RevisionImpl;
-import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
-import de.topicmapslab.majortom.revision.core.ReadOnlyAssociationRole;
-import de.topicmapslab.majortom.revision.core.ReadOnlyName;
-import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
-import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
-import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -721,7 +721,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(topic.getId(), new ReadOnlyTopic(topic));
+		lazyCopies.put(topic.getId(), new InMemoryReadOnlyTopic(topic));
 	}
 
 	/**
@@ -736,7 +736,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(occurrence.getId(), new ReadOnlyOccurrence(occurrence));
+		lazyCopies.put(occurrence.getId(), new InMemoryReadOnlyOccurrence(occurrence));
 	}
 
 	/**
@@ -751,7 +751,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(name.getId(), new ReadOnlyName(name));
+		lazyCopies.put(name.getId(), new InMemoryReadOnlyName(name));
 	}
 
 	/**
@@ -766,7 +766,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(variant.getId(), new ReadOnlyVariant(variant));
+		lazyCopies.put(variant.getId(), new InMemoryReadOnlyVariant(variant));
 	}
 
 	/**
@@ -781,7 +781,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(association.getId(), new ReadOnlyAssociation(association));
+		lazyCopies.put(association.getId(), new InMemoryReadOnlyAssociation(association));
 	}
 
 	/**
@@ -796,7 +796,7 @@ public class RevisionStore implements IDataStore {
 		if (lazyCopies == null) {
 			lazyCopies = HashUtil.getHashMap();
 		}
-		lazyCopies.put(role.getId(), new ReadOnlyAssociationRole(role));
+		lazyCopies.put(role.getId(), new InMemoryReadOnlyAssociationRole(role));
 	}
 
 	/**

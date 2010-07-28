@@ -18,48 +18,18 @@ package de.topicmapslab.majortom.revision.core;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.ITopic;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyOccurrence extends ReadOnlyDatatypeAware implements IOccurrence {
-
-	private final String typeId;
-	
-	/*
-	 * cached values
-	 */
-	private Topic cachedType;
+public abstract class ReadOnlyOccurrence extends ReadOnlyDatatypeAware implements IOccurrence {
 
 	/**
 	 * @param clone
 	 */
 	public ReadOnlyOccurrence(IOccurrence clone) {
 		super(clone);
-		typeId = clone.getType().getId();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITopic getParent() {
-		return (ITopic) super.getParent();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Topic getType() {
-		if (cachedType != null) {
-			return cachedType;
-		}
-		Topic type = (Topic) getTopicMap().getConstructById(typeId);
-		if (type instanceof ReadOnlyTopic) {
-			cachedType = type;
-		}
-		return type;
 	}
 
 	/**

@@ -24,18 +24,18 @@ package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
  */
 public interface ISql99ConstraintsQueries {
 
-	public static final String QUERY_DUPLICATE_NAME = "SELECT id, id_parent FROM names WHERE id_parent = ? AND id <> ? AND id_type = ? AND value = ? AND id_scope = ? AND NOT removed";
+	public static final String QUERY_DUPLICATE_NAME = "SELECT id, id_parent FROM names WHERE id_parent = ? AND id <> ? AND id_type = ? AND value = ? AND id_scope = ?";
 	
 	public static final String QUERY_MOVE_VARIANTS = "UPDATE variants SET id_parent = ? WHERE id_parent = ?;";
 	
 	public static final String QUERY_MOVE_ITEM_IDENTIFIERS = "UPDATE rel_item_identifiers SET id_construct = ? WHERE id_construct = ?;";
 
-	public static final String QUERY_DUPLICATE_OCCURRENCE = "SELECT id, id_parent FROM occurrences WHERE id_parent = ? AND id <> ? AND id_type = ? AND value = ? AND id_datatype IN ( SELECT id FROM locators WHERE reference = ? ) AND id_scope = ?  AND NOT removed";
+	public static final String QUERY_DUPLICATE_OCCURRENCE = "SELECT id, id_parent FROM occurrences WHERE id_parent = ? AND id <> ? AND id_type = ? AND value = ? AND id_datatype IN ( SELECT id FROM locators WHERE reference = ? ) AND id_scope = ?";
 
-	public static final String QUERY_DUPLICATE_VARIANTS = "SELECT id, id_parent FROM variants WHERE id_parent = ? AND id <> ? AND value = ? AND id_datatype IN ( SELECT id FROM locators WHERE reference = ? ) AND id_scope = ?  AND NOT removed";
+	public static final String QUERY_DUPLICATE_VARIANTS = "SELECT id, id_parent FROM variants WHERE id_parent = ? AND id <> ? AND value = ? AND id_datatype IN ( SELECT id FROM locators WHERE reference = ? ) AND id_scope = ?";
 	
-	public static final String QUERY_DUPLICATE_ASSOCIATIONS = "SELECT DISTINCT  a.id, a.id_reifier FROM roles  AS r, associations AS a WHERE 0 IN ( SELECT COUNT (r) FROM ( SELECT id_type , id_player FROM roles WHERE id_parent = r.id_parent EXCEPT SELECT id_type, id_player FROM roles WHERE id_parent = ? ) AS r ) AND r.id_parent <> ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ? AND NOT a.removed;";
+	public static final String QUERY_DUPLICATE_ASSOCIATIONS = "SELECT DISTINCT  a.id, a.id_reifier FROM roles  AS r, associations AS a WHERE 0 IN ( SELECT COUNT (r) FROM ( SELECT id_type , id_player FROM roles WHERE id_parent = r.id_parent EXCEPT SELECT id_type, id_player FROM roles WHERE id_parent = ? ) AS r ) AND r.id_parent <> ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ?;";
 	
-	public static final String QUERY_DUPLICATE_ROLES = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ? AND id_player = ? AND NOT removed;";
+	public static final String QUERY_DUPLICATE_ROLES = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ? AND id_player = ?;";
 
 }

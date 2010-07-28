@@ -25,50 +25,33 @@ import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
-import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class ReadOnlyName extends ReadOnlyScopable implements IName {
-
-	private Set<String> variantIds = HashUtil.getHashSet();
-	private final String typeId;
-	private final String value;
-
-	/*
-	 * cached values
-	 */
-	private Topic cachedType;
-	private Set<Variant> cachedVariants;
+public abstract class ReadOnlyName extends ReadOnlyScopable implements IName {
 
 	/**
 	 * @param clone
 	 */
 	public ReadOnlyName(IName clone) {
 		super(clone);
-		typeId = clone.getType().getId();
-		value = clone.getValue();
-
-		for (Variant variant : clone.getVariants()) {
-			variantIds.add(variant.getId());
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITopic getParent() {
-		return (ITopic) super.getParent();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Set<Variant> getVariants(IScope scope) {
-		throw new UnsupportedOperationException("Method not supported by the read only construct!");
+		Set<Variant> variants = HashUtil.getHashSet();
+		for (Variant v : getVariants()) {
+			if (((IVariant) v).getScopeObject().equals(scope)) {
+				variants.add(v);
+			}
+		}
+		return variants;
 	}
 
 	/**
@@ -116,59 +99,8 @@ public class ReadOnlyName extends ReadOnlyScopable implements IName {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<Variant> getVariants() {
-		Set<Variant> variants = HashUtil.getHashSet();
-		if (cachedVariants != null) {
-			variants.addAll(cachedVariants);
-		}
-
-		if (!variantIds.isEmpty()) {
-			Set<String> ids = HashUtil.getHashSet(variantIds);
-			for (String id : ids) {
-				Variant v = (Variant) getTopicMap().getConstructById(id);
-				/*
-				 * is read-only component -> cache access
-				 */
-				if (v instanceof ReadOnlyVariant) {
-					if (cachedVariants == null) {
-						cachedVariants = HashUtil.getHashSet();
-					}
-					cachedVariants.add(v);
-					variantIds.remove(id);
-				}
-				variants.add(v);
-			}
-		}
-
-		return variants;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setValue(String arg0) throws ModelConstraintException {
 		throw new UnsupportedOperationException("Construct is read only!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Topic getType() {
-		if (cachedType != null) {
-			return cachedType;
-		}
-		Topic type = (Topic) getTopicMap().getConstructById(typeId);
-		if (type instanceof ReadOnlyTopic) {
-			cachedType = type;
-		}
-		return type;
 	}
 
 	/**

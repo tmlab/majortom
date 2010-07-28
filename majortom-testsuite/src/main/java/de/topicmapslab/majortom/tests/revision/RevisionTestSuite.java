@@ -29,6 +29,7 @@ public class RevisionTestSuite {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestRevisions.class);
 		suite.addTestSuite(TestTopicRevisions.class);
+		suite.addTestSuite(TestVariantRevisions.class);
 		//$JUnit-END$
 		return suite;
 	}

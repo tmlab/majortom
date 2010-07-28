@@ -34,17 +34,17 @@ public interface ISql99DeleteQueries {
 	
 	public static final String QUERY_DELETE_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + QUERY_DELETE_HISTORY + "DELETE FROM topicmaps WHERE id = ?;";
 
-	public static final String QUERY_DELETE_TOPIC = "UPDATE topics SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_TOPIC = "DELETE FROM topics WHERE id = ?;";
 
-	public static final String QUERY_DELETE_NAME = "UPDATE names SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_NAME = "DELETE FROM  names WHERE id = ?;";
 
-	public static final String QUERY_DELETE_OCCURRENCE = "UPDATE occurrences SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_OCCURRENCE = "DELETE FROM  occurrences WHERE id = ?;";
 
-	public static final String QUERY_DELETE_VARIANT = "UPDATE variants SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_VARIANT = "DELETE FROM  variants WHERE id = ?;";
 
-	public static final String QUERY_DELETE_ASSOCIATION = "UPDATE associations SET removed = TRUE WHERE id = ?; ";
+	public static final String QUERY_DELETE_ASSOCIATION = "DELETE FROM  associations WHERE id = ?; ";
 
-	public static final String QUERY_DELETE_ROLE = "UPDATE roles SET removed = TRUE WHERE id = ?;";
+	public static final String QUERY_DELETE_ROLE = "DELETE FROM  roles WHERE id = ?;";
 
 	// ***************
 	// * DELETE DATA *
