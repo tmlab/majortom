@@ -36,6 +36,7 @@ import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
@@ -46,6 +47,13 @@ import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.revision.RevisionChangeImpl;
+import de.topicmapslab.majortom.revision.RevisionImpl;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociationRole;
+import de.topicmapslab.majortom.revision.core.ReadOnlyName;
+import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
+import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -254,10 +262,10 @@ public class Jdbc2Construct {
 	}
 
 	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs, IRevision parent) throws SQLException {
-		
 		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
 		while (rs.next()) {
 			RevisionChangeData data = new RevisionChangeData();
+			data.revision = parent;
 			data.idNotifier = rs.getLong("id_notifier");
 			data.type = TopicMapEventType.valueOf(rs.getString("type"));
 			data.newValue = rs.getString("newValue");
@@ -265,77 +273,185 @@ public class Jdbc2Construct {
 			list.add(data);
 		}
 		rs.close();
+		return toChangeSet(processor, topicMap, list);
+	}
+
+	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs) throws SQLException {
+		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
+		while (rs.next()) {
+			RevisionChangeData data = new RevisionChangeData();
+			data.revision = new RevisionImpl(processor.getConnectionProvider().getTopicMapStore(), rs.getLong("id_revision")) {};
+			data.idNotifier = rs.getLong("id_notifier");
+			data.type = TopicMapEventType.valueOf(rs.getString("type"));
+			data.newValue = rs.getString("newValue");
+			data.oldValue = rs.getString("oldValue");
+			list.add(data);
+		}
+		rs.close();
+		return toChangeSet(processor, topicMap, list);
+	}
+	
+	private static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, List<RevisionChangeData> list) throws SQLException {
+
 		Changeset changeset = new Changeset();
 		for (RevisionChangeData data : list) {
+			IConstruct notifier = null;
+			Object oldValue = null, newValue = null;
 			switch (data.type) {
 			case ASSOCIATION_ADDED: {
+				notifier = topicMap;
+				newValue = new ReadOnlyAssociation(new AssociationImpl(new JdbcIdentity(data.newValue), topicMap));
 			}
+				break;
 			case ASSOCIATION_REMOVED: {
+				notifier = topicMap;
+				oldValue = new ReadOnlyAssociation(new AssociationImpl(new JdbcIdentity(data.oldValue), topicMap));
 			}
+				break;
 			case DATATYPE_SET: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = data.newValue;
+				oldValue = data.oldValue;
 			}
+				break;
 			case ITEM_IDENTIFIER_ADDED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = data.newValue;
 			}
+				break;
 			case ITEM_IDENTIFIER_REMOVED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				oldValue = data.oldValue;
 			}
+				break;
 			case MERGE: {
+				notifier = topicMap;
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
 			}
+				break;
 			case NAME_ADDED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = new ReadOnlyName(new NameImpl(new JdbcIdentity(data.newValue), (ITopic) notifier));
 			}
+				break;
 			case NAME_REMOVED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				oldValue = new ReadOnlyName(new NameImpl(new JdbcIdentity(data.oldValue), (ITopic) notifier));
 			}
+				break;
 			case OCCURRENCE_ADDED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = new ReadOnlyOccurrence(new OccurrenceImpl(new JdbcIdentity(data.newValue), (ITopic) notifier));
 			}
+				break;
 			case OCCURRENCE_REMOVED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				oldValue = new ReadOnlyOccurrence(new OccurrenceImpl(new JdbcIdentity(data.oldValue), (ITopic) notifier));
 			}
+				break;
 			case PLAYER_MODIFIED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				if (data.oldValue != null) {
+					oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				}
 			}
+				break;
 			case REIFIER_SET: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				if (data.oldValue != null) {
+					oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				}
 			}
+				break;
 			case ROLE_ADDED: {
+				notifier = new ReadOnlyAssociation(new AssociationImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				newValue = new ReadOnlyAssociationRole(new AssociationRoleImpl(new JdbcIdentity(data.newValue), (IAssociation) notifier));
 			}
+				break;
 			case ROLE_REMOVED: {
+				notifier = new ReadOnlyAssociation(new AssociationImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				oldValue = new ReadOnlyAssociationRole(new AssociationRoleImpl(new JdbcIdentity(data.oldValue), (IAssociation) notifier));
 			}
+				break;
 			case SCOPE_MODIFIED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = new ScopeImpl(data.newValue, processor.doReadThemes(topicMap, Long.parseLong(data.newValue)));
+				if (data.oldValue != null) {
+					oldValue = new ScopeImpl(data.oldValue, processor.doReadThemes(topicMap, Long.parseLong(data.oldValue)));
+				}
 			}
+				break;
+			case SUBJECT_LOCATOR_ADDED:
 			case SUBJECT_IDENTIFIER_ADDED: {
+				notifier = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				newValue = data.newValue;
 			}
-			case SUBJECT_IDENTIFIER_REMOVED: {
-			}
-			case SUBJECT_LOCATOR_ADDED: {
-			}
+				break;
+			case SUBJECT_IDENTIFIER_REMOVED:
 			case SUBJECT_LOCATOR_REMOVED: {
+				notifier = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				oldValue = data.oldValue;
 			}
+				break;
+			case TYPE_ADDED:
 			case SUPERTYPE_ADDED: {
+				notifier = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
 			}
+				break;
+			case TYPE_REMOVED:
 			case SUPERTYPE_REMOVED: {
+				notifier = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
 			}
+				break;
 			case TOPIC_ADDED: {
+				notifier = topicMap;
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
 			}
+				break;
 			case TOPIC_REMOVED: {
+				notifier = topicMap;
+				oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
 			}
-			case TYPE_ADDED: {
-			}
-			case TYPE_REMOVED: {
-			}
+				break;
 			case TYPE_SET: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				if (data.oldValue != null) {
+					oldValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				}
+				newValue = new ReadOnlyTopic(new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
 			}
+				break;
 			case VALUE_MODIFIED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				oldValue = data.oldValue;
+				newValue = data.newValue;
 			}
+				break;
 			case VARIANT_ADDED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				newValue = processor.doReadConstruct(topicMap, data.newValue);
 			}
+				break;
 			case VARIANT_REMOVED: {
+				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier));
+				oldValue = processor.doReadConstruct(topicMap, data.oldValue);
 			}
+				break;
 			}
+			changeset.add(new RevisionChangeImpl(data.revision, data.type, notifier, newValue, oldValue));
 		}
 		return changeset;
 	}
 
-	
-
 }
 
-  class RevisionChangeData {
+class RevisionChangeData {
+	IRevision revision;
 	long idNotifier;
 	TopicMapEventType type;
 	String newValue;

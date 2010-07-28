@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Topic;
@@ -177,8 +178,6 @@ public interface IQueryProcessor {
 
 	public Set<IName> doReadNames(ITopic t, IScope scope) throws SQLException;
 
-	public IRevision doReadFutureRevision(IRevision r) throws SQLException;
-
 	public Set<IOccurrence> doReadOccurrences(ITopic t) throws SQLException;
 
 	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException;
@@ -189,17 +188,9 @@ public interface IQueryProcessor {
 
 	public ITopic doReadPlayer(IAssociationRole role) throws SQLException;
 
-	public IRevision doReadPreviousRevision(IRevision r) throws SQLException;
-
 	public IReifiable doReadReification(ITopic t) throws SQLException;
 
 	public ITopic doReadReification(IReifiable r) throws SQLException;
-
-	public Calendar doReadRevisionBegin(IRevision r) throws SQLException;
-
-	public Calendar doReadRevisionEnd(IRevision r) throws SQLException;
-
-	public Changeset doReadChangeSet(IRevision r) throws SQLException;
 
 	public Set<IAssociationRole> doReadRoles(IAssociation association) throws SQLException;
 
@@ -222,6 +213,19 @@ public interface IQueryProcessor {
 	public ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws SQLException;
 
 	public ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws SQLException;
+
+	/**
+	 * Internal method to read all themes of a scope
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @param scopeId
+	 *            the scope id
+	 * @return a collection of all themes
+	 * @throws SQLException
+	 *             thrown if a database error occurrs
+	 */
+	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException;
 
 	public Set<ITopic> doReadTopics(ITopicMap t) throws SQLException;
 
@@ -447,6 +451,10 @@ public interface IQueryProcessor {
 
 	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue, Object oldValue) throws SQLException;
 
+	public void doCreateTag(final String tag, final Calendar time) throws SQLException;
+	
+	public void doCreateMetadata(final IRevision revision, final String key, final String value) throws SQLException;
+
 	public IRevision doReadFirstRevision(ITopicMap topicMap) throws SQLException;
 
 	public IRevision doReadLastRevision(ITopicMap topicMap) throws SQLException;
@@ -455,7 +463,7 @@ public interface IQueryProcessor {
 
 	public IRevision doReadFutureRevision(ITopicMap topicMap, IRevision revision) throws SQLException;
 
-	public Changeset doReadChangesets(ITopicMap topicMap, IRevision revision) throws SQLException;
+	public Changeset doReadChangeset(ITopicMap topicMap, IRevision revision) throws SQLException;
 
 	public Calendar doReadLastModification(ITopicMap topicMap) throws SQLException;
 
@@ -470,4 +478,12 @@ public interface IQueryProcessor {
 	public Changeset doReadChangesetsByTopic(ITopic topic) throws SQLException;
 
 	public Changeset doReadChangesetsByAssociationType(ITopic type) throws SQLException;
+
+	public IRevision doReadRevisionByTag(final ITopicMap topicMap, final String tag) throws SQLException;
+
+	public IRevision doReadRevisionByTimestamp(final ITopicMap topicMap, final Calendar time) throws SQLException;
+	
+	public Map<String, String> doReadMetadata(final IRevision revision) throws SQLException;
+	
+	public String doReadMetadataByKey(final IRevision revision, final String key) throws SQLException;
 }

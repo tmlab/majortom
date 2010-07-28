@@ -28,6 +28,7 @@ public class RevisionTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.revision");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestRevisions.class);
+		suite.addTestSuite(TestTopicRevisions.class);
 		//$JUnit-END$
 		return suite;
 	}

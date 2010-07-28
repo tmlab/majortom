@@ -61,8 +61,6 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
-import de.topicmapslab.majortom.model.revision.Changeset;
-import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
@@ -84,7 +82,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	public PostGreSqlQueryProcessor(IConnectionProvider provider, Connection connection) {
 		super(provider, connection);
 		this.queryBuilder = new PostGreSqlQueryBuilder(connection);
-	}	
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -789,13 +787,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Changeset doReadChangeSet(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t));
@@ -952,13 +943,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadFutureRevision(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadItemIdentifiers();
 		stmt.setLong(1, Long.parseLong(c.getId()));
@@ -1064,13 +1048,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadPreviousRevision(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public IReifiable doReadReification(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadReified();
 		stmt.setLong(1, Long.parseLong(t.getId()));
@@ -1100,20 +1077,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		}
 		result.close();
 		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Calendar doReadRevisionBegin(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Calendar doReadRevisionEnd(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
 	}
 
 	/**
@@ -1184,21 +1147,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		set.next();
 		long scopeId = set.getLong("id_scope");
 		set.close();
-		return new ScopeImpl(Long.toString(scopeId), readThemes(s.getTopicMap(), scopeId));
+		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));
 	}
 
 	/**
-	 * Internal method to read all themes of a scope
 	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @param scopeId
-	 *            the scope id
-	 * @return a collection of all themes
-	 * @throws SQLException
-	 *             thrown if a database error occurrs
+	 * {@inheritDoc}
 	 */
-	private Collection<ITopic> readThemes(ITopicMap topicMap, long scopeId) throws SQLException {
+	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadThemes();
 		stmt.setLong(1, scopeId);
 		ResultSet set = stmt.executeQuery();
@@ -1738,9 +1694,9 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, all);
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap,set, "id");
+		return Jdbc2Construct.toTopics(topicMap, set, "id");
 	}
-	
+
 	// ScopedIndex
 
 	/**
@@ -1770,7 +1726,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : list) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -1861,7 +1817,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -1961,7 +1917,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -2061,7 +2017,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -2158,7 +2114,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}

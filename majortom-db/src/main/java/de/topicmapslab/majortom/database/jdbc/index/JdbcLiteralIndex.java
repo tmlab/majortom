@@ -66,7 +66,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		try {
 			return getStore().getProcessor().getNames(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), literal));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		try {
 			return getStore().getProcessor().getOccurrences(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), literal, XmlSchemeDatatypes.XSD_STRING));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.getReference(), XmlSchemeDatatypes.XSD_ANYURI));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, datatype.getReference()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -175,7 +175,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), value));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			}
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -242,7 +242,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			}
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -262,7 +262,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getNamesByPattern(getStore().getTopicMap(), regExp));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -287,7 +287,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			}
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -335,7 +335,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_GEOCOORDINATE));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -369,7 +369,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getVariantsByDatatype(getStore().getTopicMap(), dataType.getReference()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -389,7 +389,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 					DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME), XmlSchemeDatatypes.XSD_DATETIME));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -417,7 +417,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), lower, upper));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -433,7 +433,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Double.toString(value), XmlSchemeDatatypes.XSD_DOUBLE));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -449,7 +449,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -465,7 +465,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -481,7 +481,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -497,7 +497,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -513,7 +513,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -529,7 +529,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -545,7 +545,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -564,7 +564,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -578,7 +578,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		try {
 			return getStore().getProcessor().getVariants(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -597,7 +597,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getVariants(getStore().getTopicMap(), value, XmlSchemeDatatypes.XSD_STRING));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -616,7 +616,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getVariants(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -638,7 +638,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 			col.addAll(getStore().getProcessor().getVariants(getStore().getTopicMap(), value, datatype.getReference()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 

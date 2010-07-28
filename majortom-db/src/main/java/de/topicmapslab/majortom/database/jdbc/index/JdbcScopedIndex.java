@@ -60,7 +60,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getAssociationScopes(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationsByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -111,7 +111,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationsByScopes(getStore().getTopicMap(), scopes));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationThemes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationsByTheme(getStore().getTopicMap(), theme));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getAssociationsByThemes(getStore().getTopicMap(), themes, all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByScopes(getStore().getTopicMap(), c));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getNameScopes(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getNamesByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getNamesByScopes(getStore().getTopicMap(), scopes));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -284,7 +284,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getNameThemes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -300,7 +300,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getNamesByTheme(getStore().getTopicMap(), theme));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -319,7 +319,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getNamesByThemes(getStore().getTopicMap(), themes, all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -333,7 +333,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getOccurrenceScopes(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -352,7 +352,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -384,7 +384,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByScopes(getStore().getTopicMap(), scopes));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -400,7 +400,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrenceThemes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -416,7 +416,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByTheme(getStore().getTopicMap(), theme));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -435,7 +435,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getOccurrencesByThemes(getStore().getTopicMap(), themes, all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -457,7 +457,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getVariantsByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -482,7 +482,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			}
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -525,7 +525,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getScopesByThemes(getStore().getTopicMap(), Arrays.asList(themes), false);
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -542,7 +542,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getScopesByThemes(getStore().getTopicMap(), Arrays.asList(themes), matchAll);
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -559,7 +559,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getScopesByThemes(getStore().getTopicMap(), themes, matchAll);
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -573,7 +573,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 		try {
 			return getStore().getProcessor().getVariantScopes(getStore().getTopicMap());
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -592,7 +592,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getVariantsByScope(getStore().getTopicMap(), scope));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -626,7 +626,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			}
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -642,7 +642,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getVariantThemes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -661,7 +661,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getVariantsByTheme(getStore().getTopicMap(), theme));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -680,7 +680,7 @@ public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
 			col.addAll(getStore().getProcessor().getVariantsByThemes(getStore().getTopicMap(), themes, all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 

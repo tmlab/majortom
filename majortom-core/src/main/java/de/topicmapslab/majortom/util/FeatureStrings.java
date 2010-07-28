@@ -48,8 +48,6 @@ public class FeatureStrings {
 	
 	private static final String MAJORTOM_PREFIX = "de.topicmapslab.majortom";
 	
-	public static final String TYPEHIERARCHY_AS_ASSOCIATION = MAJORTOM_PREFIX + ".model.typehierarchy-as-associations";
-	
 	public static final String SUPPORT_HISTORY = MAJORTOM_PREFIX + ".topicmapstore.history";
 	
 	public static final String SUPPORT_TRANSACTION = MAJORTOM_PREFIX + ".topicmapstore.transaction";
@@ -75,7 +73,6 @@ public class FeatureStrings {
 		FEATURES.add(LOCATOR_ADDRESS_NOTATION_FEATURE_URI_NOTATION);
 		FEATURES.add(READ_ONLY_SYSTEM);
 		
-		FEATURES.add(TYPEHIERARCHY_AS_ASSOCIATION);
 		FEATURES.add(SUPPORT_HISTORY);
 		FEATURES.add(DELETION_CONSTRAINTS_REIFICATION);
 	}

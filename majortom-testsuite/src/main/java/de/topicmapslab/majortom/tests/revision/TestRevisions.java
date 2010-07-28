@@ -186,7 +186,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		IAssociation other = createAssociation(assoicationType);
 		set = index.getAssociationChangeset(assoicationType);
 		assertEquals(4, set.size());
-		
+
 		other.createRole(createTopic(), createTopic());
 		set = index.getAssociationChangeset(assoicationType);
 		assertEquals(5, set.size());
@@ -224,7 +224,6 @@ public class TestRevisions extends MaJorToMTestCase {
 
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
@@ -311,15 +310,15 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(revision);
 
 		for (long l = 1; l < 100; l++) {
-			revision.addMetaData("key#" + Long.toString(l), "value#"+Long.toString(l));
-			assertEquals("value#"+Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
+			revision.addMetaData("key#" + Long.toString(l), "value#" + Long.toString(l));
+			assertEquals("value#" + Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
 			assertEquals(l, revision.getMetadata().size());
 		}
-		
+
 		for (long l = 1; l < 100; l++) {
-			revision.addMetaData("key#" + Long.toString(l), "new#"+Long.toString(l));
-			assertEquals("new#"+Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
-			assertEquals("Number of meta-data should be keep constants because of overwrite key",99, revision.getMetadata().size());
+			revision.addMetaData("key#" + Long.toString(l), "new#" + Long.toString(l));
+			assertEquals("new#" + Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
+			assertEquals("Number of meta-data should be keep constants because of overwrite key", 99, revision.getMetadata().size());
 		}
 	}
 }

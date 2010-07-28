@@ -22,11 +22,15 @@ package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
  * @author Sven Krosse
  * 
  */
-public interface ISql99QueryRevisions {
+public interface ISql99RevisionQueries {
 
 	public static final String QUERY_CREATE_REVISION = "INSER INTO revisions(time, id_topicmap) VALUES(now(),?)";
 
 	public static final String QUERY_CREATE_CHANGESET = "INSER INTO changesets(id_revision,type,id_notifier, newValue, oldValue,time) VALUES(?,?,?,?,?,now())";
+
+	public static final String QUERY_CREATE_TAG = "INSERT INTO tags(tag, time) VALUES (?,?)";
+	
+	public static final String QUERY_CREATE_METADATA = "INSERT INTO metadata(id_revision, key, value) VALUES (?,?,?)";
 
 	public static final String QUERY_READ_FIRST_REVISION = "SELECT id FROM revisions WHERE id_topicmap = ? ORDER BY id ASC LIMIT 1;";
 
@@ -51,4 +55,12 @@ public interface ISql99QueryRevisions {
 	public static final String QUERY_READ_CHANGESETS_BY_TOPIC = "SELECT id_revision, type, id_notifier, newValue, oldValue FROM changesets WHERE id_notifier = ? OR oldValue = ? OR newValue = ? ORDER BY id ASC;";
 
 	public static final String QUERY_READ_CHANGESETS_BY_ASSOCIATIONTYPE = "WITH ids AS ( SELECT id FROM associations WHERE id_type = ? ) SELECT id_revision, type, id_notifier, newValue, oldValue FROM changesets WHERE id_notifier IN ( SELECT id FROM ids ) OR oldValue IN ( SELECT id FROM ids ) OR newValue IN ( SELECT id FROM ids ) ORDER BY id ASC;";
+
+	public static final String QUERY_READ_REVISION_BY_TIMESTAMP = "SELECT id FROM revisions WHERE id_topicmap = ? AND time <= ? ORDER BY time DESC LIMIT 1";
+
+	public static final String QUERY_READ_REVISION_BY_TAG = "SELECT id FROM revisions WHERE id_topicmap = ? AND time <= ( SELECT time FROM tags WHERE tag = ? ) ORDER BY time DESC LIMIT 1";
+
+	public static final String QUERY_READ_METADATA = "SELECT key, value FROM metadata WHERE id_revision = ?;";
+
+	public static final String QUERY_READ_METADATA_BY_KEY = "SELECT value FROM metadata WHERE id_revision = ? AND key = ?;";
 }

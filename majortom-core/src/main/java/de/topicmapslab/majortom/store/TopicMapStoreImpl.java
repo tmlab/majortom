@@ -2834,21 +2834,6 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	}
 
 	/**
-	 * Method returns the value of the property indicates if a type-hierarchy
-	 * should be materialized as association.
-	 * 
-	 * @return <code>true</code> if the type-hierarchy should be materialized as
-	 *         association, <code>false</code> otherwise.
-	 */
-	public boolean typeHiearchyAsAssociation() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
-	}
-
-	/**
 	 * Method returns checks if the deletion constraint contains the constraint,
 	 * that topics used as reifier cannot be removed until the reification was
 	 * destroyed.

@@ -113,7 +113,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic type = createTopic();
 
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
+		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
@@ -139,7 +139,6 @@ public class TestEventModel extends MaJorToMTestCase {
 
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
@@ -571,7 +570,6 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void testEventTypeRemoved() throws Exception {
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
@@ -599,7 +597,6 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void testEventSupertypeRemoved() throws Exception {
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
@@ -646,7 +643,6 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void _testEventConstructRemoved(final Construct parent, final Construct construct) throws Exception {
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -699,7 +695,6 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void _testEventTypeSet(final Typed typeable, final ITopic newType, final ITopic oldType) throws Exception {
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -743,7 +738,6 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void _testEventReifierSet(final Reifiable reifiable, final ITopic newReifier, final ITopic oldReifier) throws Exception {
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, false);
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {

@@ -46,7 +46,6 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		SUPPORTED_FEATURES.add(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		SUPPORTED_FEATURES.add(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
 		SUPPORTED_FEATURES.add(FeatureStrings.SUPPORT_HISTORY);
-		SUPPORTED_FEATURES.add(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION);
 	}
 
 	/**
@@ -60,7 +59,6 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		features.put(FeatureStrings.AUTOMATIC_MERGING, true);
 		features.put(FeatureStrings.SUPPORT_HISTORY, false);
 		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
-		features.put(FeatureStrings.TYPEHIERARCHY_AS_ASSOCIATION, true);
 	}
 
 	/**

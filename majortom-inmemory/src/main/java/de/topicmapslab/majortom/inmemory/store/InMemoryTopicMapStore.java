@@ -1310,7 +1310,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create type-hierarchy as association
 			 */
-			if (typeHiearchyAsAssociation()) {
+			if (recognizingSupertypeSubtypeAssociation()) {
 				createSupertypeSubtypeAssociation(t, type, revision);
 			}
 			notifyListeners(TopicMapEventType.SUPERTYPE_ADDED, t, type, null);
@@ -1397,7 +1397,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	void modifyType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		if (!getTopicTypeStore().getTypes(t).contains(type)) {
 			getTopicTypeStore().addType(t, type);
-			if (typeHiearchyAsAssociation()) {
+			if (recognizingTypeInstanceAssociation()) {
 				createTypeInstanceAssociation(t, type, revision);
 			}
 			if (revision != null) {
@@ -3006,7 +3006,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		if (getTopicTypeStore().getSupertypes(t).contains(type)) {
 			IRevision revision = createRevision();
 			getTopicTypeStore().removeSupertype(t, type);
-			if (typeHiearchyAsAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
+			if (recognizingSupertypeSubtypeAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
 				removeSupertypeSubtypeAssociation(t, type, revision);
 			}
 			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
@@ -3024,7 +3024,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		if (getTopicTypeStore().getTypes(t).contains(type)) {
 			IRevision revision = createRevision();
 			getTopicTypeStore().removeType(t, type);
-			if (recognizingTypeInstanceAssociation() && typeHiearchyAsAssociation() && existsTmdmTypeInstanceAssociationType()) {
+			if (recognizingTypeInstanceAssociation() && existsTmdmTypeInstanceAssociationType()) {
 				removeTypeInstanceAssociation(t, type, revision);
 			}
 			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);

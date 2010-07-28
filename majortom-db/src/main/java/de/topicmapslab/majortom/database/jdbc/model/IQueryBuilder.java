@@ -393,6 +393,10 @@ public interface IQueryBuilder {
 	
 	public PreparedStatement getQueryCreateChangeset() throws SQLException;
 	
+	public PreparedStatement getQueryCreateTag() throws SQLException;
+	
+	public PreparedStatement getQueryCreateMetadata() throws SQLException;
+	
 	public PreparedStatement getQueryReadFirstRevision() throws SQLException;
 	
 	public PreparedStatement getQueryReadLastRevision() throws SQLException;
@@ -417,4 +421,11 @@ public interface IQueryBuilder {
 	
 	public PreparedStatement getQueryReadChangesetsByAssociationType() throws SQLException;
 
+	public PreparedStatement getQueryReadRevisionByTag() throws SQLException;
+	
+	public PreparedStatement getQueryReadRevisionByTimestamp() throws SQLException;
+	
+	public PreparedStatement getQueryReadMetadata() throws SQLException;
+	
+	public PreparedStatement getQueryReadMetadataByKey() throws SQLException;
 }

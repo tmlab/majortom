@@ -26,7 +26,10 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -358,7 +361,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 
 			Set<IScope> temp = HashUtil.getHashSet();
 			for (Long id : ids) {
-				temp.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+				temp.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 			}
 			if (first) {
 				first = false;
@@ -1077,13 +1080,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Changeset doReadChangeSet(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t));
@@ -1248,13 +1244,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadFutureRevision(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadItemIdentifiers();
 		stmt.setLong(1, Long.parseLong(c.getId()));
@@ -1360,13 +1349,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadPreviousRevision(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public IReifiable doReadReification(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadReified();
 		stmt.setLong(1, Long.parseLong(t.getId()));
@@ -1396,20 +1378,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		result.close();
 		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Calendar doReadRevisionBegin(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Calendar doReadRevisionEnd(IRevision r) throws SQLException {
-		throw new UnsupportedOperationException("Not Implemented yet!");
 	}
 
 	/**
@@ -1480,21 +1448,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		set.next();
 		long scopeId = set.getLong("id_scope");
 		set.close();
-		return new ScopeImpl(Long.toString(scopeId), readThemes(s.getTopicMap(), scopeId));
+		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));
 	}
 
 	/**
-	 * Internal method to read all themes of a scope
 	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @param scopeId
-	 *            the scope id
-	 * @return a collection of all themes
-	 * @throws SQLException
-	 *             thrown if a database error occurrs
+	 * {@inheritDoc}
 	 */
-	private Collection<ITopic> readThemes(ITopicMap topicMap, long scopeId) throws SQLException {
+	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadThemes();
 		stmt.setLong(1, scopeId);
 		ResultSet set = stmt.executeQuery();
@@ -1650,7 +1611,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		for (IAssociationRole role : doReadRoles(association)) {
 			doRemoveRole(role, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
+//			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
 		}
 		/*
 		 * remove association
@@ -1679,7 +1640,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		for (IVariant variant : doReadVariants(name)) {
 			doRemoveVariant(variant, cascade);
-			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
+//			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
 		}
 		/*
 		 * remove name
@@ -1755,26 +1716,50 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
+		IRevision revision = getConnectionProvider().getTopicMapStore().createRevision();
 		/*
 		 * remove all names of the topic
 		 */
 		for (IName name : doReadNames(topic)) {
 			doRemoveName(name, cascade);
+			/*
+			 * notify listener
+			 */
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, topic, null, name);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, topic, null, name);
 		}
 		/*
 		 * remove all occurrences of the topic
 		 */
 		for (IOccurrence occurrence : doReadOccurrences(topic)) {
 			doRemoveOccurrence(occurrence, cascade);
+			/*
+			 * notify listener
+			 */
+			
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, topic, null, occurrence);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, topic, null, occurrence);
 		}
 		/*
 		 * remove all played-association
 		 */
 		for (IAssociation association : doReadAssociation(topic)) {
 			doRemoveAssociation(association, cascade);
+			/*
+			 * notify listener
+			 */
+			
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic, null, association);
 		}
 		/*
 		 * remove all instance
@@ -1782,6 +1767,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (ITopic instance : doReadTopics(topic.getTopicMap(), topic)) {
 			doRemoveTopic(instance, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, instance);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, instance);
 		}
 		/*
 		 * remove all subtypes
@@ -1789,6 +1778,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (ITopic subtype : getSubtypes(topic.getTopicMap(), topic)) {
 			doRemoveTopic(subtype, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, subtype);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, subtype);
 		}
 		/*
 		 * remove typed associations
@@ -1796,6 +1789,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (IAssociation association : getAssociationsByType(topic)) {
 			doRemoveAssociation(association, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
 		}
 		/*
 		 * remove typed roles
@@ -1804,6 +1801,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			IAssociation parent = role.getParent();
 			doRemoveRole(role, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, parent, null, role);
 		}
 		/*
 		 * remove typed name
@@ -1812,6 +1813,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ITopic parent = name.getParent();
 			doRemoveName(name, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
 		}
 		/*
 		 * remove typed occurrences
@@ -1820,6 +1825,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ITopic parent = occurrence.getParent();
 			doRemoveOccurrence(occurrence, cascade);
 			getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+			/*
+			 * store history
+			 */
+			getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 		}
 		/*
 		 * get all scopes
@@ -1833,6 +1842,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			for (IAssociation association : getAssociationsByScope(topic.getTopicMap(), scope)) {
 				doRemoveAssociation(association, cascade);
 				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
+				/*
+				 * store history
+				 */
+				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, topic.getTopicMap(), null, association);
 			}
 			/*
 			 * remove scoped name
@@ -1841,6 +1854,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				ITopic parent = name.getParent();
 				doRemoveName(name, cascade);
 				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
+				/*
+				 * store history
+				 */
+				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
 			}
 			/*
 			 * remove scoped occurrences
@@ -1849,6 +1866,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				ITopic parent = occurrence.getParent();
 				doRemoveOccurrence(occurrence, cascade);
 				getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
+				/*
+				 * store history
+				 */
+				getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 			}
 		}
 		/*
@@ -2266,7 +2287,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 
 				Set<IScope> temp = HashUtil.getHashSet();
 				for (Long id : ids) {
-					temp.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+					temp.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 				}
 				if (first || !all) {
 					first = false;
@@ -2368,7 +2389,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -2468,7 +2489,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -2568,7 +2589,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -2649,7 +2670,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), readThemes(topicMap, id)));
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
 		}
 		return scopes;
 	}
@@ -3198,102 +3219,263 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Changeset doReadChangesets(ITopicMap topicMap, IRevision revision) throws SQLException {
+	public void doCreateTag(String tag, Calendar time) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryCreateTag();
+		stmt.setString(1, tag);
+		stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
+		stmt.execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doCreateMetadata(IRevision revision, String key, String value) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryCreateMetadata();
+		stmt.setLong(1, revision.getId());
+		stmt.setString(2, key);
+		stmt.setString(3, value);
+		stmt.execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Changeset doReadChangeset(ITopicMap topicMap, IRevision revision) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadChangesets();
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
-		Changeset changeset = new Changeset();
-		while (rs.next()) {
-
-		}
-		return changeset;
+		return Jdbc2Construct.toChangeSet(this, topicMap, rs, revision);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangesetsByAssociationType(ITopic type) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByAssociationType();
+		stmt.setLong(1, Long.parseLong(type.getId()));
+		return Jdbc2Construct.toChangeSet(this, type.getTopicMap(), stmt.executeQuery());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangesetsByTopic(ITopic topic) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByTopic();
+		stmt.setLong(1, Long.parseLong(topic.getId()));
+		return Jdbc2Construct.toChangeSet(this, topic.getTopicMap(), stmt.executeQuery());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadFirstRevision(ITopicMap topicMap) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadFirstRevision();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		ResultSet rs = stmt.executeQuery();
+		IRevision revision = null;
+		if (rs.next()) {
+			revision = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return revision;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadFutureRevision(ITopicMap topicMap, IRevision revision) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadFutureRevision();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, revision.getId());
+		ResultSet rs = stmt.executeQuery();
+		IRevision r = null;
+		if (rs.next()) {
+			r = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return r;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadLastModification(ITopicMap topicMap) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadLastModification();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		ResultSet rs = stmt.executeQuery();
+		Calendar c = null;
+		if (rs.next()) {
+			Timestamp ts = rs.getTimestamp("time");
+			c = new GregorianCalendar();
+			c.setTimeInMillis(ts.getTime());
+		}
+		rs.close();
+		return c;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadLastModificationOfTopic(ITopic topic) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadLastModificationOfTopic();
+		stmt.setLong(1, Long.parseLong(topic.getId()));
+		ResultSet rs = stmt.executeQuery();
+		Calendar c = null;
+		if (rs.next()) {
+			Timestamp ts = rs.getTimestamp("time");
+			c = new GregorianCalendar();
+			c.setTimeInMillis(ts.getTime());
+		}
+		rs.close();
+		return c;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadLastRevision(ITopicMap topicMap) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadLastRevision();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		ResultSet rs = stmt.executeQuery();
+		IRevision revision = null;
+		if (rs.next()) {
+			revision = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return revision;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadPastRevision(ITopicMap topicMap, IRevision revision) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadPastRevision();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, revision.getId());
+		ResultSet rs = stmt.executeQuery();
+		IRevision r = null;
+		if (rs.next()) {
+			r = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return r;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public List<IRevision> doReadRevisionsByAssociationType(ITopic type) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByAssociationType();
+		stmt.setLong(1, Long.parseLong(type.getId()));
+		List<IRevision> revisions = new LinkedList<IRevision>();
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			});
+		}
+		return revisions;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public List<IRevision> doReadRevisionsByTopic(ITopic topic) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByTopic();
+		stmt.setLong(1, Long.parseLong(topic.getId()));
+		List<IRevision> revisions = new LinkedList<IRevision>();
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			});
+		}
+		return revisions;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadTimestamp(IRevision revision) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement stmt = queryBuilder.getQueryReadTimestamp();
+		stmt.setLong(1, revision.getId());
+		ResultSet rs = stmt.executeQuery();
+		Calendar c = null;
+		if (rs.next()) {
+			Timestamp ts = rs.getTimestamp("time");
+			c = new GregorianCalendar();
+			c.setTimeInMillis(ts.getTime());
+		}
+		rs.close();
+		return c;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IRevision doReadRevisionByTag(ITopicMap topicMap, String tag) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadRevisionByTag();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, tag);
+		ResultSet rs = stmt.executeQuery();
+		IRevision r = null;
+		if (rs.next()) {
+			r = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return r;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IRevision doReadRevisionByTimestamp(ITopicMap topicMap, Calendar time) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadRevisionByTimestamp();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
+		ResultSet rs = stmt.executeQuery();
+		IRevision r = null;
+		if (rs.next()) {
+			r = new RevisionImpl(topicMap.getStore(), rs.getLong("id")) {
+			};
+		}
+		rs.close();
+		return r;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, String> doReadMetadata(IRevision revision) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadMetadata();
+		stmt.setLong(1, revision.getId());
+		Map<String, String> metadata = HashUtil.getHashMap();
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			metadata.put(rs.getString("key"), rs.getString("value"));
+		}
+		rs.close();
+		return metadata;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadMetadataByKey(IRevision revision, String key) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadMetadataByKey();
+		stmt.setLong(1, revision.getId());
+		stmt.setString(2, key);
+		ResultSet rs = stmt.executeQuery();
+		try {
+			if (rs.next()) {
+				return rs.getString("value");
+			}
+			return null;
+		} finally {
+			rs.close();
+		}
 	}
 }

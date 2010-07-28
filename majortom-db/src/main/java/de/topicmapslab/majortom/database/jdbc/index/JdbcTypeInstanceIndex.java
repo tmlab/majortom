@@ -64,7 +64,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getAssociationsByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getNamesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getOccurrencesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -262,7 +262,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getRolesByType((ITopic) type));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -306,7 +306,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(), type));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -322,7 +322,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -338,7 +338,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), false));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -354,7 +354,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicsByTypes(types, false));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -370,7 +370,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicsByTypes(types, all));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -386,7 +386,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getAssociationTypes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -402,7 +402,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getNameTypes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -418,7 +418,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getOccurrenceTypes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -434,7 +434,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getRoleTypes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
@@ -450,7 +450,7 @@ public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceInd
 			col.addAll(getStore().getProcessor().getTopicTypes(getStore().getTopicMap()));
 			return col;
 		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot close connection to database!", e);
+			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
 
