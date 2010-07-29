@@ -81,7 +81,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 			/*
 			 * create 20 topics
 			 */
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 10; i++) {
 				ITopic t = createTopic();
 				/*
 				 * add n types

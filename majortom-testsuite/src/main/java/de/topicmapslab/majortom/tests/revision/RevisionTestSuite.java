@@ -30,8 +30,13 @@ public class RevisionTestSuite {
 		suite.addTestSuite(TestRevisions.class);
 		suite.addTestSuite(TestTopicRevisions.class);
 		suite.addTestSuite(TestVariantRevisions.class);
+		suite.addTestSuite(TestNameRevivions.class);
+		suite.addTestSuite(TestOccurrenceRevisions.class);
+		suite.addTestSuite(TestAssociationRevisions.class);
+		suite.addTestSuite(TestRoleRevisions.class);
 		//$JUnit-END$
 		return suite;
 	}
 
 }
+

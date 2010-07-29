@@ -2213,6 +2213,8 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryOccurrenceDump;
 	private PreparedStatement preparedStatementQueryTopicDump;
 	
+	private PreparedStatement preparedStatementQueryReadHistory;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2473,6 +2475,16 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			preparedStatementQueryTopicDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_TOPIC);
 		}
 		return preparedStatementQueryTopicDump;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadHistory() throws SQLException {
+		if (preparedStatementQueryReadHistory == null) {
+			preparedStatementQueryReadHistory = connection.prepareStatement(ISql99RevisionQueries.QUERY_READ_HISTORY);
+		}
+		return preparedStatementQueryReadHistory;
 	}
 
 }

@@ -22,10 +22,10 @@ import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
-import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyName;
@@ -53,7 +53,7 @@ public class InMemoryReadOnlyVariant extends ReadOnlyVariant {
 	/**
 	 * @param clone
 	 */
-	public InMemoryReadOnlyVariant(IDatatypeAware clone) {
+	public InMemoryReadOnlyVariant(IVariant clone) {
 		super(clone);
 
 		this.parentId = clone.getParent().getId();

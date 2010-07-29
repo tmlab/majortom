@@ -46,6 +46,7 @@ import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
  * @author Sven Krosse
@@ -160,7 +161,7 @@ public interface IQueryProcessor {
 
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws SQLException;
 
-	public IConstruct doReadConstruct(ITopicMap t, String id) throws SQLException;
+	public IConstruct doReadConstruct(ITopicMap t, String id, boolean lookupHistory) throws SQLException;
 
 	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws SQLException;
 
@@ -263,7 +264,7 @@ public interface IQueryProcessor {
 
 	public boolean doRemoveName(IName name, boolean cascade) throws SQLException;
 
-	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException;
+	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException;
 
 	/**
 	 * Using JDBC to remove an association instance and all roles.
@@ -278,12 +279,12 @@ public interface IQueryProcessor {
 	 *             thrown if JDBC command fails
 	 */
 	public void doRemoveAssociation(IAssociation association, boolean cascade, IRevision revision) throws SQLException;
-	
+
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException;
 
-	public void doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException;
+	public boolean doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException;
 
-	public void doRemoveVariant(IVariant variant, boolean cascade) throws SQLException;
+	public boolean doRemoveVariant(IVariant variant, boolean cascade) throws SQLException;
 
 	// ****************
 	// * INDEX METHOD *
@@ -466,7 +467,7 @@ public interface IQueryProcessor {
 	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue, Object oldValue) throws SQLException;
 
 	public void doCreateTag(final String tag, final Calendar time) throws SQLException;
-	
+
 	public void doCreateMetadata(final IRevision revision, final String key, final String value) throws SQLException;
 
 	public IRevision doReadFirstRevision(ITopicMap topicMap) throws SQLException;
@@ -496,20 +497,22 @@ public interface IQueryProcessor {
 	public IRevision doReadRevisionByTag(final ITopicMap topicMap, final String tag) throws SQLException;
 
 	public IRevision doReadRevisionByTimestamp(final ITopicMap topicMap, final Calendar time) throws SQLException;
-	
+
 	public Map<String, String> doReadMetadata(final IRevision revision) throws SQLException;
-	
+
 	public String doReadMetadataByKey(final IRevision revision, final String key) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final IAssociationRole role) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final IAssociation association) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final IVariant variant) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final IName name) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final IOccurrence occurrence) throws SQLException;
-	
+
 	public void dump(final IRevision revision, final ITopic topic) throws SQLException;
+
+	public Map<TopicMapStoreParameterType, Object> doReadHistory(IConstruct c, TopicMapStoreParameterType... arguments) throws SQLException;
 }

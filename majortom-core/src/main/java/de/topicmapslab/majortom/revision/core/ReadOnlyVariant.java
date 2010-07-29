@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.revision.core;
 
-import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IVariant;
 
 /**
@@ -27,7 +26,7 @@ public abstract class ReadOnlyVariant extends ReadOnlyDatatypeAware implements I
 	/**
 	 * @param clone
 	 */
-	public ReadOnlyVariant(IDatatypeAware clone) {
+	public ReadOnlyVariant(IVariant clone) {
 		super(clone);
 	}
 

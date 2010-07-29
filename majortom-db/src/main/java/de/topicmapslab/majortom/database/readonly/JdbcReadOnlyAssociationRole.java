@@ -18,67 +18,97 @@
  */
 package de.topicmapslab.majortom.database.readonly;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
+import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
+import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
 import de.topicmapslab.majortom.revision.core.ReadOnlyAssociationRole;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
- *
+ * 
  */
 public class JdbcReadOnlyAssociationRole extends ReadOnlyAssociationRole {
+
+	private final ReadOnlyAssociation parent;
+	private final IQueryProcessor processor;
 
 	/**
 	 * @param clone
 	 */
-	public JdbcReadOnlyAssociationRole(IAssociationRole clone) {
+	public JdbcReadOnlyAssociationRole(IQueryProcessor processor, IAssociationRole clone) {
 		super(clone);
-		// TODO Auto-generated constructor stub
+		this.parent = new JdbcReadOnlyAssociation(processor, clone.getParent());
+		this.processor = processor;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IAssociation getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return parent;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getPlayer() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.PLAYER);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getReifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.REIFICATION);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Set<Locator> getItemIdentifiers() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<ILocator> set = doReadHistoryValue(TopicMapStoreParameterType.ITEM_IDENTIFIER);
+		Set<Locator> r = HashUtil.getHashSet();
+		r.addAll(set);
+		return r;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
+		return set.iterator().next();
+	}
+	
+
+	/**
+	 * Internal method to read the history values
+	 * 
+	 * @param <T>
+	 *            the type of returned values
+	 * @param type
+	 *            the argument specifies the value to fetch
+	 * @return the value
+	 */
+	@SuppressWarnings("unchecked")
+	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+		try {
+			return (T) processor.doReadHistory(this, type).get(type);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException(e);
+		}
 	}
 
 }

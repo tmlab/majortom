@@ -69,4 +69,6 @@ public interface ISql99RevisionQueries {
 
 	public static final String QUERY_READ_METADATA_BY_KEY = "SELECT value FROM metadata WHERE id_revision = ? AND key = ?;";
 	
+	
+	public static final String QUERY_READ_HISTORY = "SELECT * FROM history WHERE id = ?;";
 }

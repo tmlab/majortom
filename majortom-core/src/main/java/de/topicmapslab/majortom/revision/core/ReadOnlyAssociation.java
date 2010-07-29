@@ -23,6 +23,7 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.ITopicMap;
 
 /**
  * @author Sven Krosse
@@ -35,6 +36,13 @@ public abstract class ReadOnlyAssociation extends ReadOnlyScopable implements IA
 	 */
 	public ReadOnlyAssociation(IAssociation clone) {
 		super(clone);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITopicMap getParent() {
+		return getTopicMap();
 	}
 
 	/**

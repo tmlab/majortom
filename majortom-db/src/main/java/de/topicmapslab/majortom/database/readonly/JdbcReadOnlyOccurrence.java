@@ -18,84 +18,110 @@
  */
 package de.topicmapslab.majortom.database.readonly;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
+import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
- *
+ * 
  */
 public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
+
+	private final ReadOnlyTopic parent;
+	private final IQueryProcessor processor;
 
 	/**
 	 * @param clone
 	 */
-	public JdbcReadOnlyOccurrence(IOccurrence clone) {
+	public JdbcReadOnlyOccurrence(IQueryProcessor processor, IOccurrence clone) {
 		super(clone);
-		// TODO Auto-generated constructor stub
+		this.parent = new JdbcReadOnlyTopic(processor,clone.getParent());
+		this.processor = processor;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ITopic getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return parent;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
+		return set.iterator().next();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Set<Locator> getItemIdentifiers() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<ILocator> set = doReadHistoryValue(TopicMapStoreParameterType.ITEM_IDENTIFIER);
+		Set<Locator> r = HashUtil.getHashSet();
+		r.addAll(set);
+		return r;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Locator getDatatype() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.DATATYPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected Object objectValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.VALUE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Topic getReifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.REIFICATION);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScope getScopeObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return doReadHistoryValue(TopicMapStoreParameterType.SCOPE);
+	}
+
+	/**
+	 * Internal method to read the history values
+	 * 
+	 * @param <T>
+	 *            the type of returned values
+	 * @param type
+	 *            the argument specifies the value to fetch
+	 * @return the value
+	 */
+	@SuppressWarnings("unchecked")
+	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+		try {
+			return (T) processor.doReadHistory(this, type).get(type);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException(e);
+		}
 	}
 
 }

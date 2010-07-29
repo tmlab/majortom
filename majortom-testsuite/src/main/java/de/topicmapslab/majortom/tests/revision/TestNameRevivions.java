@@ -19,48 +19,50 @@
 package de.topicmapslab.majortom.tests.revision;
 
 import org.tmapi.core.Name;
-import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
+import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
-import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
+import de.topicmapslab.majortom.revision.core.ReadOnlyName;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class TestVariantRevisions extends MaJorToMTestCase {
+public class TestNameRevivions extends MaJorToMTestCase {
 
 	public void testRevision() throws Exception {
 		ITopic topic = createTopic();
-		ITopic reifier = createTopic();
-		Name n = topic.createName("Value", new Topic[0]);
+		ITopic type = createTopic();
 		ITopic theme = createTopic();
-		Variant v = n.createVariant("Var", theme);
-		v.setReifier(reifier);
-		
-		v.remove();
-		
+		ITopic reifier = createTopic();
+		Name n = topic.createName(type, "Value", theme);
+		Variant v = n.createVariant("Var", createTopic());
+		Variant other = n.createVariant("Var2", createTopic());
+		n.setReifier(reifier);
+		n.remove();
+
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		
+
 		IRevision revision = index.getLastRevision();
-		assertEquals(2, revision.getChangeset().size());
-		assertEquals(v, revision.getChangeset().get(1).getOldValue());
-		assertTrue(revision.getChangeset().get(1).getOldValue() instanceof ReadOnlyVariant);
-		
-		v = (IVariant) revision.getChangeset().get(1).getOldValue();
-		
-		assertEquals("Var", v.getValue());
-		assertEquals(reifier, v.getReifier());
-		assertEquals(XmlSchemeDatatypes.XSD_STRING, v.getDatatype().getReference());
-		assertEquals(n, v.getParent());
-		assertTrue(v.getScope().contains(theme));
+		assertEquals(4, revision.getChangeset().size());
+		assertEquals(n, revision.getChangeset().get(3).getOldValue());
+		assertTrue(revision.getChangeset().get(3).getOldValue() instanceof ReadOnlyName);
+
+		n = (IName) revision.getChangeset().get(3).getOldValue();
+
+		assertEquals("Value", n.getValue());
+		assertEquals(reifier, n.getReifier());
+		assertEquals(topic, n.getParent());
+		assertTrue(n.getScope().contains(theme));
+		assertEquals(type, n.getType());
+		assertEquals(2, n.getVariants().size());
+		assertTrue(n.getVariants().contains(v));
+		assertTrue(n.getVariants().contains(other));
 	}
 
 }
