@@ -25,10 +25,8 @@ import java.util.Calendar;
 
 import org.tmapi.core.Locator;
 
-import de.topicmapslab.geotype.mecator.MecatorCircuit;
-import de.topicmapslab.geotype.mecator.MecatorCoordinate;
-import de.topicmapslab.geotype.model.IGeoCoordinate;
-import de.topicmapslab.geotype.model.IGeoSurface;
+import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
@@ -58,7 +56,7 @@ public class DatatypeAwareUtils {
 	public static final String toString(Object value, ILocator datatype) {
 		return toString(value, datatype.getReference());
 	}
-	
+
 	/**
 	 * Transform the given values to its string representations dependent from
 	 * the given data type.
@@ -168,18 +166,124 @@ public class DatatypeAwareUtils {
 				return (Boolean) value;
 			}
 			return Boolean.parseBoolean(value.toString());
-		} else if (IGeoCoordinate.class.equals(clazz)) {
-			if (value instanceof IGeoCoordinate) {
-				return (IGeoCoordinate) value;
+		} else if (Wgs84Coordinate.class.equals(clazz)) {
+			if (value instanceof Wgs84Coordinate) {
+				return (Wgs84Coordinate) value;
 			}
-			return new MecatorCoordinate(value.toString());
-		} else if (IGeoSurface.class.equals(clazz)) {
-			if (value instanceof IGeoSurface<?>) {
-				return (IGeoSurface<?>) value;
+			return new Wgs84Coordinate(value.toString());
+		} else if (Wgs84Circuit.class.equals(clazz)) {
+			if (value instanceof Wgs84Circuit) {
+				return (Wgs84Circuit) value;
 			}
-			return new MecatorCircuit(value.toString());
+			return new Wgs84Circuit(value.toString());
 		}
 		return value;
 	}
+
+	/**
+	 * Transform the given value to a representation of the given class
+	 * 
+	 * @param obj
+	 *            the datatype-aware
+	 * @return the converted value
+	 * @throws Exception
+	 *             if the given value cannot convert to the given class
+	 */
+	public static final Object toValue(IDatatypeAware obj) throws NumberFormatException, URISyntaxException, ParseException {
+		return toValue(obj, XmlSchemeDatatypes.xsdToJava(obj.getDatatype()));
+	}
+	
+	/**
+	 * Transform the given value to a representation of the given class
+	 * 
+	 * @param obj
+	 *            the datatype-aware
+	 * @param clazz
+	 *            the class to transform
+	 * @return the converted value
+	 * @throws Exception
+	 *             if the given value cannot convert to the given class
+	 */
+	public static final Object toValue(IDatatypeAware obj, Class<?> clazz) throws NumberFormatException, URISyntaxException, ParseException {
+		if (Integer.class.equals(clazz)) {
+			try {
+				return obj.intValue();
+			} catch (Exception e) {
+				return Integer.valueOf((int) Math.round((Double) toValue(obj.getValue(), Double.class)));
+			}
+		} else if (Long.class.equals(clazz)) {
+			try {
+				return obj.longValue();
+			} catch (Exception e) {
+				return Math.round((Double) toValue(obj.getValue(), Double.class));
+			}
+		} else if (Float.class.equals(clazz)) {
+			try {
+				return obj.floatValue();
+			} catch (Exception e) {
+				return Float.parseFloat(obj.getValue().toString());
+			}
+		} else if (Double.class.equals(clazz)) {
+			try {
+				return obj.doubleValue();
+			} catch (Exception e) {
+				return Double.parseDouble(obj.getValue());
+			}
+		} else if (BigInteger.class.equals(clazz)) {
+			try {
+				return obj.integerValue();
+			} catch (Exception e) {
+				return BigInteger.valueOf(Math.round((Double) toValue(obj.getValue(), Double.class)));
+			}
+		} else if (BigDecimal.class.equals(clazz)) {
+			try {
+				return obj.decimalValue();
+			} catch (Exception e) {
+				double v1 = (Double) toValue(obj.getValue(), Double.class);
+				if (v1 == Math.round(v1)) {
+					return BigDecimal.valueOf(Math.round(v1));
+				}
+				return BigDecimal.valueOf(v1);
+			}
+		} else if (Locator.class.equals(clazz)) {
+			try {
+				return obj.locatorValue();
+			} catch (Exception e) {
+				return new LocatorImpl(obj.getValue());
+			}
+		} else if (URI.class.equals(clazz)) {
+			try {
+				return obj.uriValue();
+			} catch (Exception e) {
+				return new URI(obj.getValue());
+			}
+		} else if (Calendar.class.equals(clazz)) {
+			try {
+				return obj.dateTimeValue();
+			} catch (Exception e) {
+				if (LiteralUtils.isTime(obj.getValue())) {
+					return LiteralUtils.asTime(obj.getValue());
+				} else if (LiteralUtils.isDate(obj.getValue())) {
+					return LiteralUtils.asDate(obj.getValue());
+				} else if (LiteralUtils.isDateTime(obj.getValue())) {
+					return LiteralUtils.asDateTime(obj.getValue());
+				}
+				throw new IllegalArgumentException("Cannot cast date literal " + obj.getValue());
+			}
+		} else if (Boolean.class.equals(clazz)) {
+			try {
+				return obj.booleanValue();
+			} catch (Exception e) {
+				return Boolean.parseBoolean(obj.getValue());
+			}
+		} else if (Wgs84Coordinate.class.equals(clazz)) {
+			return obj.coordinateValue();
+		} else if (Wgs84Circuit.class.equals(clazz)) {
+			return obj.surfaceValue();
+		}
+		return obj.getValue();
+	}
+	
+	
 
 }

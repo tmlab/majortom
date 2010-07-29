@@ -24,6 +24,8 @@ import org.tmapi.core.Locator;
 
 import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.geotype.model.IGeoSurface;
+import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 
 /**
  * Utility class for XSD data-types and any extension types for example for
@@ -276,7 +278,8 @@ public class XmlSchemeDatatypes {
 	 * with the XML scheme definition prefix 'xsd' otherwise the string returned
 	 * unmodified.
 	 * 
-	 * @param identifier the identifier to transform
+	 * @param identifier
+	 *            the identifier to transform
 	 * @return the transformed or unmodified string-represented IRI.
 	 */
 	public static String toExternalForm(final String identifier) {
@@ -289,7 +292,8 @@ public class XmlSchemeDatatypes {
 	/**
 	 * Transform the given java class to one of the contained identifiers.
 	 * 
-	 * @param clazz the java class
+	 * @param clazz
+	 *            the java class
 	 * @return the identifier
 	 */
 	public static String javaToXsd(final Class<?> clazz) {
@@ -321,6 +325,45 @@ public class XmlSchemeDatatypes {
 			return XSD_STRING;
 		} else {
 			return XSD_ANY;
+		}
+	}
+
+	/**
+	 * Transform the given XSD identifier to its java class.
+	 * 
+	 * @param locator
+	 *            the locator
+	 * @return the java class
+	 */
+	public static Class<?> xsdToJava(final Locator loc) {
+		if (XSD_DATETIME.equals(loc.getReference())) {
+			return Calendar.class;
+		} else if (XSD_INT.equals(loc.getReference())) {
+			return Integer.class;
+		} else if (XSD_LONG.equals(loc.getReference())) {
+			return Long.class;
+		} else if (XSD_FLOAT.equals(loc.getReference())) {
+			return Float.class;
+		} else if (XSD_DOUBLE.equals(loc.getReference())) {
+			return Double.class;
+		} else if (XSD_INTEGER.equals(loc.getReference())) {
+			return BigInteger.class;
+		} else if (XSD_DECIMAL.equals(loc.getReference())) {
+			return BigDecimal.class;
+		} else if (XSD_DOUBLE.equals(loc.getReference())) {
+			return Double.class;
+		} else if (XSD_GEOCOORDINATE.equals(loc.getReference())) {
+			return Wgs84Coordinate.class;
+		} else if (XSD_GEOSURFACE.equals(loc.getReference())) {
+			return Wgs84Circuit.class;
+		} else if (XSD_ANYURI.equals(loc.getReference())) {
+			return Locator.class;
+		} else if (XSD_BOOLEAN.equals(loc.getReference())) {
+			return Boolean.class;
+		} else if (XSD_STRING.equals(loc.getReference())) {
+			return String.class;
+		} else {
+			return Object.class;
 		}
 	}
 

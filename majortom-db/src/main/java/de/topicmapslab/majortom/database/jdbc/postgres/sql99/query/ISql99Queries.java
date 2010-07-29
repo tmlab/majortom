@@ -39,7 +39,7 @@ public interface ISql99Queries {
 	 * <b>parameters(2):</b> the reference twice
 	 * </p>
 	 */
-	public static final String SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS = "INSERT INTO locators (reference) SELECT ? WHERE NOT EXISTS (SELECT id FROM locators WHERE reference LIKE ?);";	
+	public static final String SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS = "INSERT INTO locators (reference) SELECT ? WHERE NOT EXISTS (SELECT id FROM locators WHERE reference = ?);";	
 	/**
 	 * snippet to create a new topic only if there is not topic bound to the
 	 * given subject-identifier

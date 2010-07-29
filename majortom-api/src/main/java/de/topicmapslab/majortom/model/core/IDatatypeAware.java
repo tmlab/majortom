@@ -22,8 +22,9 @@ import java.util.Calendar;
 
 import org.tmapi.core.DatatypeAware;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.geotype.model.IGeoSurface;
+import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 
 /**
  * Interface definition of a data type aware extensions handling extended data
@@ -67,7 +68,7 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * 
 	 * @return the geographic coordinate of this characteristics
 	 */
-	public IGeoCoordinate coordinateValue() throws ParseException;
+	public Wgs84Coordinate coordinateValue() throws ParseException;
 
 	/**
 	 * Returns the characteristics value as geographic surface literal.
@@ -80,7 +81,8 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:boolean.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
 	public void setValue(final Boolean value);
 
@@ -88,7 +90,8 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:double.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
 	public void setValue(final Double value);
 
@@ -96,7 +99,8 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:dateTime.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
 	public void setValue(final Calendar value);
 
@@ -104,7 +108,8 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:anyURI.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
 	public void setValue(final URI value);
 
@@ -112,16 +117,18 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:geoCoordinate.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
-	public void setValue(final IGeoCoordinate value);
+	public void setValue(final Wgs84Coordinate value);
 
 	/**
 	 * Changes the value of this characteristics to the given value. The
 	 * datatype will be changed to xsd:surface.
 	 * 
-	 * @param value the new value
+	 * @param value
+	 *            the new value
 	 */
-	public void setValue(final IGeoSurface<?> value);
+	public void setValue(final Wgs84Circuit value);
 
 }

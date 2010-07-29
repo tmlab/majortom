@@ -1,8 +1,6 @@
 package de.topicmapslab.geotype.model;
 
-import java.text.ParseException;
-
-public interface IGeoCoordinate {
+public interface IGeoCoordinate<T extends IGeoCoordinate<?>> {
 
 	/**
 	 * Returns the distance between the given coordinate and the current
@@ -12,13 +10,5 @@ public interface IGeoCoordinate {
 	 *            the other coordinates
 	 * @return the distance in meters
 	 */
-	double getDistance(IGeoCoordinate coord);
-	
-	/**
-	 * Parse the internal values from the given string.
-	 * 
-	 * @param value the value
-	 * @throws ParseException thrown if the value cannot parse or the pattern is invalid
-	 */
-	public void parse(final String value) throws ParseException;
+	double getDistance(T coord);
 }
