@@ -44,6 +44,7 @@ import de.topicmapslab.majortom.database.jdbc.index.JdbcScopedIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcTypeInstanceIndex;
+import de.topicmapslab.majortom.database.jdbc.index.paged.JdbcPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -72,6 +73,7 @@ import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -110,6 +112,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	private ILiteralIndex literalIndex;
 	private IIdentityIndex identityIndex;
 	private IRevisionIndex revisionIndex;
+
+	// Paged Indexes
+	private IPagedTypeInstanceIndex pagedTypeInstanceIndex;
 
 	/**
 	 * constructor
@@ -582,7 +587,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.MERGE, getTopicMap(), context, other);			
+			storeRevision(TopicMapEventType.MERGE, getTopicMap(), context, other);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1904,7 +1909,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	@SuppressWarnings("unchecked")
 	public <I extends Index> I getIndex(Class<I> clazz) {
-		if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+		if (IPagedTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (this.pagedTypeInstanceIndex == null) {
+				this.pagedTypeInstanceIndex = new JdbcPagedTypeInstanceIndex(this);
+			}
+			return (I)pagedTypeInstanceIndex;
+		} else if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.transitiveTypeInstanceIndex == null) {
 				transitiveTypeInstanceIndex = new JdbcTransitiveTypeInstanceIndex(this);
 			}

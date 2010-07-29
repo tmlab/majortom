@@ -219,25 +219,25 @@ public interface IQueryBuilder {
 
 	// TypeInstanceIndex
 
-	public PreparedStatement getQuerySelectAssociationTypes() throws SQLException;
+	public PreparedStatement getQuerySelectAssociationTypes(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectNameTypes() throws SQLException;
+	public PreparedStatement getQuerySelectNameTypes(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrenceTypes() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrenceTypes(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectRoleTypes() throws SQLException;
+	public PreparedStatement getQuerySelectRoleTypes(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicTypes() throws SQLException;
+	public PreparedStatement getQuerySelectTopicTypes(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectAssociationsByType() throws SQLException;
+	public PreparedStatement getQuerySelectAssociationsByType(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectNamesByType() throws SQLException;
+	public PreparedStatement getQuerySelectNamesByType(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByType() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByType(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectRolesByType() throws SQLException;
+	public PreparedStatement getQuerySelectRolesByType(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all) throws SQLException;
+	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all, boolean withLimit) throws SQLException;
 
 	// TransitiveTypeInstanceIndex
 	

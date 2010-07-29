@@ -152,6 +152,9 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public ITopicMapStore getStore() {
+		if ( store == null ){
+			throw new RuntimeException("Store is null!");
+		}
 		return store;
 	}
 
@@ -399,6 +402,10 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 */
 	public void remove(boolean cascade) throws TopicInUseException {
 		getStore().doRemove(this, cascade);
+		/*
+		 * set store to null
+		 */
+		this.store = null;
 	}
 
 	/**
