@@ -292,27 +292,27 @@ public interface IQueryProcessor {
 
 	// TypeInstanceIndex
 
-	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getNameTypes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getNameTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getRoleTypes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getRoleTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getTopicTypes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getTopicTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociation> getAssociationsByType(ITopic type) throws SQLException;
+	public Collection<IAssociation> getAssociationsByType(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByType(ITopic type) throws SQLException;
+	public Collection<IName> getNamesByType(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByType(ITopic type) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByType(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociationRole> getRolesByType(ITopic type) throws SQLException;
+	public Collection<IAssociationRole> getRolesByType(ITopic type, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type) throws SQLException;
+	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> type, boolean all) throws SQLException;
+	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> type, boolean all, long offset, long limit) throws SQLException;
 
 	// TransitiveTypeInstanceIndex
 

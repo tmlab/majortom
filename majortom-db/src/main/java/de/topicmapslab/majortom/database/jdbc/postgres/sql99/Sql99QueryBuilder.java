@@ -1055,12 +1055,32 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private Map<Boolean, Map<Long, PreparedStatement>> preparedStatementsIndexTopicsByTypes;
 	private PreparedStatement preparedStatementIndexTopicsWithoutType;
 
+	private PreparedStatement preparedStatementIndexAssociationTypesWithLimit;
+	private PreparedStatement preparedStatementIndexNameTypesWithLimit;
+	private PreparedStatement preparedStatementIndexOccurrenceTypesWithLimit;
+	private PreparedStatement preparedStatementIndexRoleTypesWithLimit;
+	private PreparedStatement preparedStatementIndexTopicTypesWithLimit;
+	private PreparedStatement preparedStatementIndexAssociationsByTypeWithLimit;
+	private PreparedStatement preparedStatementIndexRolesByTypeWithLimit;
+	private PreparedStatement preparedStatementIndexNamesByTypeWithLimit;
+	private PreparedStatement preparedStatementIndexOccurrencesByTypeWithLimit;
+	private Map<Boolean, Map<Long, PreparedStatement>> preparedStatementsIndexTopicsByTypesWithLimit;
+	private PreparedStatement preparedStatementIndexTopicsWithoutTypeWithLimit;
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectAssociationTypes() throws SQLException {
+	public PreparedStatement getQuerySelectAssociationTypes(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexAssociationTypesWithLimit == null) {
+				this.preparedStatementIndexAssociationTypesWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONTYPES);
+			}
+			return this.preparedStatementIndexAssociationTypesWithLimit;
+		}
 		if (this.preparedStatementIndexAssociationTypes == null) {
-			this.preparedStatementIndexAssociationTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_ASSOCIATIONTYPES);
+			this.preparedStatementIndexAssociationTypes = connection
+					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONTYPES);
 		}
 		return this.preparedStatementIndexAssociationTypes;
 	}
@@ -1068,9 +1088,15 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectNameTypes() throws SQLException {
+	public PreparedStatement getQuerySelectNameTypes(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexNameTypesWithLimit == null) {
+				this.preparedStatementIndexNameTypesWithLimit = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_NAMETYPES);
+			}
+			return this.preparedStatementIndexNameTypesWithLimit;
+		}
 		if (this.preparedStatementIndexNameTypes == null) {
-			this.preparedStatementIndexNameTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_NAMETYPES);
+			this.preparedStatementIndexNameTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMETYPES);
 		}
 		return this.preparedStatementIndexNameTypes;
 	}
@@ -1078,16 +1104,30 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrenceTypes() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrenceTypes(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexOccurrenceTypesWithLimit == null) {
+				this.preparedStatementIndexOccurrenceTypesWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCETYPES);
+			}
+			return this.preparedStatementIndexOccurrenceTypesWithLimit;
+		}
 		if (this.preparedStatementIndexOccurrenceTypes == null) {
-			this.preparedStatementIndexOccurrenceTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_OCCURRENCETYPES);
+			this.preparedStatementIndexOccurrenceTypes = connection
+					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCETYPES);
 		}
 		return this.preparedStatementIndexOccurrenceTypes;
 	}
 
-	public PreparedStatement getQuerySelectRoleTypes() throws SQLException {
+	public PreparedStatement getQuerySelectRoleTypes(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexRoleTypesWithLimit == null) {
+				this.preparedStatementIndexRoleTypesWithLimit = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ROLETYPES);
+			}
+			return this.preparedStatementIndexRoleTypesWithLimit;
+		}
 		if (this.preparedStatementIndexRoleTypes == null) {
-			this.preparedStatementIndexRoleTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_ROLETYPES);
+			this.preparedStatementIndexRoleTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLETYPES);
 		}
 		return this.preparedStatementIndexRoleTypes;
 	}
@@ -1095,9 +1135,15 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectTopicTypes() throws SQLException {
+	public PreparedStatement getQuerySelectTopicTypes(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexTopicTypesWithLimit == null) {
+				this.preparedStatementIndexTopicTypesWithLimit = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPICTYPES);
+			}
+			return this.preparedStatementIndexTopicTypesWithLimit;
+		}
 		if (this.preparedStatementIndexTopicTypes == null) {
-			this.preparedStatementIndexTopicTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_TOPICTYPES);
+			this.preparedStatementIndexTopicTypes = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPICTYPES);
 		}
 		return this.preparedStatementIndexTopicTypes;
 	}
@@ -1105,10 +1151,17 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectAssociationsByType() throws SQLException {
+	public PreparedStatement getQuerySelectAssociationsByType(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexAssociationsByTypeWithLimit == null) {
+				this.preparedStatementIndexAssociationsByTypeWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
+			}
+			return this.preparedStatementIndexAssociationsByTypeWithLimit;
+		}
 		if (this.preparedStatementIndexAssociationsByType == null) {
 			this.preparedStatementIndexAssociationsByType = connection
-					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
+					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
 		}
 		return this.preparedStatementIndexAssociationsByType;
 	}
@@ -1116,9 +1169,16 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectRolesByType() throws SQLException {
+	public PreparedStatement getQuerySelectRolesByType(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexRolesByTypeWithLimit == null) {
+				this.preparedStatementIndexRolesByTypeWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ROLES_BY_TYPE);
+			}
+			return this.preparedStatementIndexRolesByTypeWithLimit;
+		}
 		if (this.preparedStatementIndexRolesByType == null) {
-			this.preparedStatementIndexRolesByType = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_ROLES_BY_TYPE);
+			this.preparedStatementIndexRolesByType = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLES_BY_TYPE);
 		}
 		return this.preparedStatementIndexRolesByType;
 	}
@@ -1126,9 +1186,16 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectNamesByType() throws SQLException {
+	public PreparedStatement getQuerySelectNamesByType(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexNamesByTypeWithLimit == null) {
+				this.preparedStatementIndexNamesByTypeWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_NAMES_BY_TYPE);
+			}
+			return this.preparedStatementIndexNamesByTypeWithLimit;
+		}
 		if (this.preparedStatementIndexNamesByType == null) {
-			this.preparedStatementIndexNamesByType = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_NAMES_BY_TYPE);
+			this.preparedStatementIndexNamesByType = connection.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMES_BY_TYPE);
 		}
 		return this.preparedStatementIndexNamesByType;
 	}
@@ -1136,10 +1203,17 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByType() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByType(boolean withLimit) throws SQLException {
+		if (withLimit) {
+			if (this.preparedStatementIndexOccurrencesByTypeWithLimit == null) {
+				this.preparedStatementIndexOccurrencesByTypeWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
+			}
+			return this.preparedStatementIndexOccurrencesByTypeWithLimit;
+		}
 		if (this.preparedStatementIndexOccurrencesByType == null) {
 			this.preparedStatementIndexOccurrencesByType = connection
-					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_OCCURRENCES_BY_TYPE);
+					.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
 		}
 		return this.preparedStatementIndexOccurrencesByType;
 	}
@@ -1147,36 +1221,53 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all) throws SQLException {
+	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all, boolean withLimit) throws SQLException {
+		/*
+		 * check if number of types is zero
+		 */
 		if (typeCount == 0) {
+			if (withLimit) {
+				if (this.preparedStatementIndexTopicsWithoutTypeWithLimit == null) {
+					this.preparedStatementIndexTopicsWithoutTypeWithLimit = connection
+							.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPIC_WITHOUT_TYPE);
+				}
+				return this.preparedStatementIndexTopicsWithoutTypeWithLimit;
+			}
 			if (this.preparedStatementIndexTopicsWithoutType == null) {
 				this.preparedStatementIndexTopicsWithoutType = connection
-						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_TOPIC_WITHOUT_TYPE);
+						.prepareStatement(ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPIC_WITHOUT_TYPE);
 			}
 			return this.preparedStatementIndexTopicsWithoutType;
 		}
 
+		Map<Boolean, Map<Long, PreparedStatement>> sourceMap;
+		final String query;
+		if (withLimit) {
+			query = all ? ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL
+					: ISql99IndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPIC_BY_TYPES;
+			sourceMap = preparedStatementsIndexTopicsByTypesWithLimit;
+		} else {
+			query = all ? ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL
+					: ISql99IndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPIC_BY_TYPES;
+			sourceMap = preparedStatementsIndexTopicsByTypes;
+		}
 		/*
 		 * check if cache is initialized
 		 */
-		if (preparedStatementsIndexTopicsByTypes == null) {
-			preparedStatementsIndexTopicsByTypes = HashUtil.getHashMap();
+		if (sourceMap == null) {
+			sourceMap = HashUtil.getHashMap();
 		}
-		/*
-		 * check if binding exists
-		 */
-		Map<Long, PreparedStatement> map = preparedStatementsIndexTopicsByTypes.get(all);
+		Map<Long, PreparedStatement> map = sourceMap.get(all);
 		if (map == null) {
 			map = HashUtil.getHashMap();
-			preparedStatementsIndexTopicsByTypes.put(all, map);
+			sourceMap.put(all, map);
 		}
 		/*
 		 * check if statement exists
 		 */
 		PreparedStatement stmt = map.get(typeCount);
 		if (stmt == null) {
-			stmt = createPreparedStatementForMatchingThemes(all ? ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL
-					: ISql99IndexQueries.QueryTypeInstanceIndex.QUERY_SELECT_TOPIC_BY_TYPES, "id_type", typeCount, all);
+			stmt = createPreparedStatementForMatchingThemes(query, "id_type", typeCount, all);
 			map.put(typeCount, stmt);
 		}
 		return stmt;
@@ -2212,9 +2303,9 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryNameDump;
 	private PreparedStatement preparedStatementQueryOccurrenceDump;
 	private PreparedStatement preparedStatementQueryTopicDump;
-	
+
 	private PreparedStatement preparedStatementQueryReadHistory;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2254,7 +2345,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementQueryCreateMetadata;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2274,7 +2365,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementQueryModifyMetadata;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2434,49 +2525,49 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementQueryReadMetadataByKey;
 	}
-	
+
 	public PreparedStatement getQueryRoleDump() throws SQLException {
 		if (preparedStatementQueryRoleDump == null) {
 			preparedStatementQueryRoleDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_ROLE);
 		}
 		return preparedStatementQueryRoleDump;
 	}
-	
+
 	public PreparedStatement getQueryAssociationDump() throws SQLException {
 		if (preparedStatementQueryAssociationDump == null) {
 			preparedStatementQueryAssociationDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_ASSOCIATION);
 		}
 		return preparedStatementQueryAssociationDump;
 	}
-	
+
 	public PreparedStatement getQueryVariantDump() throws SQLException {
 		if (preparedStatementQueryVariantDump == null) {
 			preparedStatementQueryVariantDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_VARIANT);
 		}
 		return preparedStatementQueryVariantDump;
 	}
-	
+
 	public PreparedStatement getQueryNameDump() throws SQLException {
 		if (preparedStatementQueryNameDump == null) {
 			preparedStatementQueryNameDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_NAME);
 		}
 		return preparedStatementQueryNameDump;
 	}
-	
+
 	public PreparedStatement getQueryOccurrenceDump() throws SQLException {
 		if (preparedStatementQueryOccurrenceDump == null) {
 			preparedStatementQueryOccurrenceDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_OCCURRENCE);
 		}
 		return preparedStatementQueryOccurrenceDump;
 	}
-	
+
 	public PreparedStatement getQueryTopicDump() throws SQLException {
 		if (preparedStatementQueryTopicDump == null) {
 			preparedStatementQueryTopicDump = connection.prepareStatement(ISql99DumpQueries.QUERY_DUMP_TOPIC);
 		}
 		return preparedStatementQueryTopicDump;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

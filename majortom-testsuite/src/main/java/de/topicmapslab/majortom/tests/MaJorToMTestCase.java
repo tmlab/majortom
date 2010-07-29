@@ -53,7 +53,7 @@ public class MaJorToMTestCase extends TestCase {
 	 * {@inheritDoc}
 	 */
 	protected void tearDown() throws Exception {
-		topicMap.remove(true);
+		topicMap.remove(true);		
 	}
 
 	protected Locator createLocator(final String reference) {

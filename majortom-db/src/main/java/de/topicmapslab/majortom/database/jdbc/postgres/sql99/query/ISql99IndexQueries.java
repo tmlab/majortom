@@ -38,31 +38,63 @@ public interface ISql99IndexQueries {
 	 */
 	interface QueryTypeInstanceIndex {
 
-		public static final String QUERY_SELECT_ASSOCIATIONTYPES = "SELECT DISTINCT id_type FROM associations WHERE id_topicmap = ?  ;";
+		interface NonPaged {
 
-		public static final String QUERY_SELECT_NAMETYPES = "SELECT DISTINCT id_type FROM names WHERE id_topicmap = ?  ;";
+			public static final String QUERY_SELECT_ASSOCIATIONTYPES = "SELECT DISTINCT id_type FROM associations WHERE id_topicmap = ?  ;";
 
-		public static final String QUERY_SELECT_OCCURRENCETYPES = "SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ?  ;";
+			public static final String QUERY_SELECT_NAMETYPES = "SELECT DISTINCT id_type FROM names WHERE id_topicmap = ?  ;";
 
-		public static final String QUERY_SELECT_ROLETYPES = "SELECT DISTINCT id_type FROM roles WHERE id_topicmap = ?  ;";
+			public static final String QUERY_SELECT_OCCURRENCETYPES = "SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ?  ;";
 
-		public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type   AND id_instance IN ( SELECT id FROM topics AS t WHERE t.id = id_instance );";
+			public static final String QUERY_SELECT_ROLETYPES = "SELECT DISTINCT id_type FROM roles WHERE id_topicmap = ?  ;";
 
-		public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?  ;";
+			public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type   AND id_instance IN ( SELECT id FROM topics AS t WHERE t.id = id_instance );";
 
-		public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type = ?  ;";
+			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?  ;";
 
-		public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type = ?  ;";
+			public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type = ?  ;";
 
-		public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type = ?  ;";
+			public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type = ?  ;";
 
-		public static final String QUERY_SELECT_TOPIC_WITHOUT_TYPE = "SELECT id FROM topics WHERE id_topicmap = ? AND NOT id IN ( SELECT id_instance FROM rel_instance_of )   ";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type = ?  ;";
 
-		public static final String QUERY_SELECT_TOPIC_BY_TYPE = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type = ?   ;";
+			public static final String QUERY_SELECT_TOPIC_WITHOUT_TYPE = "SELECT id FROM topics WHERE id_topicmap = ? AND NOT id IN ( SELECT id_instance FROM rel_instance_of )   ";
 
-		public static final String QUERY_SELECT_TOPIC_BY_TYPES = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND  id_topicmap = ? AND ( %SUBQUERY% )   ";
+			public static final String QUERY_SELECT_TOPIC_BY_TYPE = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type = ?   ;";
 
-		public static final String QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL = "SELECT DISTINCT id_instance FROM rel_instance_of AS r, topics WHERE id = id_instance AND  id_topicmap = ?  AND  ARRAY ( SELECT id_type FROM rel_instance_of AS r2 WHERE r.id_instance = r2.id_instance ) @> CAST ( ARRAY[ %ARRAY%] AS bigint[] )   ";
+			public static final String QUERY_SELECT_TOPIC_BY_TYPES = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND  id_topicmap = ? AND ( %SUBQUERY% )   ";
+
+			public static final String QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL = "SELECT DISTINCT id_instance FROM rel_instance_of AS r, topics WHERE id = id_instance AND  id_topicmap = ?  AND  ARRAY ( SELECT id_type FROM rel_instance_of AS r2 WHERE r.id_instance = r2.id_instance ) @> CAST ( ARRAY[ %ARRAY%] AS bigint[] )   ";
+		}
+
+		interface Paged {
+			
+			public static final String QUERY_SELECT_ASSOCIATIONTYPES = "SELECT DISTINCT id_type FROM associations WHERE id_topicmap = ? ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_NAMETYPES = "SELECT DISTINCT id_type FROM names WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_OCCURRENCETYPES = "SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_ROLETYPES = "SELECT DISTINCT id_type FROM roles WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type   AND id_instance IN ( SELECT id FROM topics AS t WHERE t.id = id_instance ) ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_TOPIC_WITHOUT_TYPE = "SELECT id FROM topics WHERE id_topicmap = ? AND NOT id IN ( SELECT id_instance FROM rel_instance_of )  ORDER BY id OFFSET ? LIMIT ?  ";
+
+			public static final String QUERY_SELECT_TOPIC_BY_TYPE = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND id_topicmap = ? AND id_type = ?   ORDER BY id_instance OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_TOPIC_BY_TYPES = "SELECT id_instance FROM rel_instance_of, topics WHERE id = id_instance AND  id_topicmap = ? AND ( %SUBQUERY% )  ORDER BY id_instance OFFSET ? LIMIT ?  ";
+
+			public static final String QUERY_SELECT_TOPIC_BY_TYPES_MATCHES_ALL = "SELECT DISTINCT id_instance FROM rel_instance_of AS r, topics WHERE id = id_instance AND  id_topicmap = ?  AND  ARRAY ( SELECT id_type FROM rel_instance_of AS r2 WHERE r.id_instance = r2.id_instance ) @> CAST ( ARRAY[ %ARRAY%] AS bigint[] )   ORDER BY id_instance OFFSET ? LIMIT ? ";
+		}
 
 	}
 
