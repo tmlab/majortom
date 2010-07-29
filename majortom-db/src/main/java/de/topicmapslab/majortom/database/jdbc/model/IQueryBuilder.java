@@ -428,4 +428,6 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryReadMetadata() throws SQLException;
 	
 	public PreparedStatement getQueryReadMetadataByKey() throws SQLException;
+	
+	public PreparedStatement getQueryReadHistory() throws SQLException;
 }

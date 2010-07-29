@@ -33,14 +33,9 @@ import java.util.Set;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
-import de.topicmapslab.majortom.core.AssociationImpl;
-import de.topicmapslab.majortom.core.AssociationRoleImpl;
 import de.topicmapslab.majortom.core.LocatorImpl;
-import de.topicmapslab.majortom.core.NameImpl;
-import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
-import de.topicmapslab.majortom.core.VariantImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
@@ -827,92 +822,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConstruct doReadConstruct(ITopicMap t, String id) throws SQLException {
-		if (t.getId().equalsIgnoreCase(id)) {
-			return t;
-		}
-		PreparedStatement stmt = null;
-		ResultSet set = null;
-		long topicmapId = Long.parseLong(t.getId());
-		long id_ = Long.parseLong(id);
-		try {
-			/*
-			 * check for topic
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(ITopic.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new TopicImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for name
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IName.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new NameImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for occurrence
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IOccurrence.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new OccurrenceImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for association
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IAssociation.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for role
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IAssociationRole.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationRoleImpl(new JdbcIdentity(set.getString("id")), new AssociationImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for variant
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IVariant.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new VariantImpl(new JdbcIdentity(set.getString(1)), new NameImpl(new JdbcIdentity(set.getString(2)), new TopicImpl(new JdbcIdentity(set
-						.getString(2)), t)));
-			}
-			return null;
-
-		}
-		/*
-		 * finally close the result set
-		 */
-		finally {
-			if (set != null) {
-				set.close();
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet set = null;
@@ -925,7 +834,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		if (set.next()) {
 			final String id_ = set.getString("id");
 			set.close();
-			return doReadConstruct(t, id_);
+			return doReadConstruct(t, id_, false);
 		}
 		set.close();
 		return null;
@@ -1055,7 +964,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		if (result.next()) {
 			String id = result.getString("id");
 			result.close();
-			return (IReifiable) doReadConstruct(t.getTopicMap(), id);
+			return (IReifiable) doReadConstruct(t.getTopicMap(), id, false);
 		}
 		result.close();
 		return null;
@@ -1335,24 +1244,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteOccurrence();
-		stmt.setLong(1, Long.parseLong(occurrence.getId()));
-		stmt.execute();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteRole();
-		stmt.setLong(1, Long.parseLong(role.getId()));
-		stmt.execute();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void doRemoveScope(IScopable s, ITopic theme) throws SQLException {
 		IScope oldScope = doReadScope(s);
 		Set<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
@@ -1425,15 +1316,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
-		stmt.execute();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void doRemoveVariant(IVariant variant, boolean cascade) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteVariant();
-		stmt.setLong(1, Long.parseLong(variant.getId()));
 		stmt.execute();
 	}
 
@@ -2379,7 +2261,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		}
 		rs.close();
 		for (Long id : ids) {
-			set.add(doReadConstruct(topicMap, Long.toString(id)));
+			set.add(doReadConstruct(topicMap, Long.toString(id), false));
 		}
 		return set;
 	}
@@ -2400,7 +2282,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		rs.close();
 		Set<IConstruct> set = HashUtil.getHashSet();
 		for (Long id : ids) {
-			set.add(doReadConstruct(topicMap, Long.toString(id)));
+			set.add(doReadConstruct(topicMap, Long.toString(id), false));
 		}
 		return set;
 	}

@@ -18,15 +18,11 @@
  */
 package de.topicmapslab.majortom.tests.revision;
 
-import org.tmapi.core.Name;
-import org.tmapi.core.Topic;
-import org.tmapi.core.Variant;
-
+import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
-import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
+import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
@@ -34,33 +30,33 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class TestVariantRevisions extends MaJorToMTestCase {
+public class TestOccurrenceRevisions extends MaJorToMTestCase {
 
 	public void testRevision() throws Exception {
 		ITopic topic = createTopic();
-		ITopic reifier = createTopic();
-		Name n = topic.createName("Value", new Topic[0]);
 		ITopic theme = createTopic();
-		Variant v = n.createVariant("Var", theme);
-		v.setReifier(reifier);
-		
-		v.remove();
-		
+		ITopic type = createTopic();
+		ITopic reifier = createTopic();
+		IOccurrence o = (IOccurrence) topic.createOccurrence(type, "Value", theme);
+		o.setReifier(reifier);
+		o.remove();
+
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		
+
 		IRevision revision = index.getLastRevision();
 		assertEquals(2, revision.getChangeset().size());
-		assertEquals(v, revision.getChangeset().get(1).getOldValue());
-		assertTrue(revision.getChangeset().get(1).getOldValue() instanceof ReadOnlyVariant);
-		
-		v = (IVariant) revision.getChangeset().get(1).getOldValue();
-		
-		assertEquals("Var", v.getValue());
-		assertEquals(reifier, v.getReifier());
-		assertEquals(XmlSchemeDatatypes.XSD_STRING, v.getDatatype().getReference());
-		assertEquals(n, v.getParent());
-		assertTrue(v.getScope().contains(theme));
+		assertEquals(o, revision.getChangeset().get(1).getOldValue());
+		assertTrue(revision.getChangeset().get(1).getOldValue() instanceof ReadOnlyOccurrence);
+
+		o = (IOccurrence) revision.getChangeset().get(1).getOldValue();
+
+		assertEquals("Value", o.getValue());
+		assertEquals(reifier, o.getReifier());
+		assertEquals(topic, o.getParent());
+		assertTrue(o.getScope().contains(theme));
+		assertEquals(type, o.getType());
+		assertTrue(o.getDatatype().getReference().equals(XmlSchemeDatatypes.XSD_STRING));
 	}
 
 }
