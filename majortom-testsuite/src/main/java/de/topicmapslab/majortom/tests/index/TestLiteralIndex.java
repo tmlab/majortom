@@ -16,7 +16,6 @@
 package de.topicmapslab.majortom.tests.index;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
@@ -25,8 +24,8 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.geotype.mecator.MecatorCoordinate;
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
@@ -376,8 +375,13 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
 		IOccurrence otherOccurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
 
-		MecatorCoordinate coordinate = new MecatorCoordinate(22.12, 12.22);
-		MecatorCoordinate other = new MecatorCoordinate(22.12, 52.22);
+		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
+		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Coordinate coordinate = new Wgs84Coordinate(lng, lat);
+
+		lng = new Wgs84Degree(22.12, Wgs84Degree.Orientation.E);
+		lat = new Wgs84Degree(52.22, Wgs84Degree.Orientation.N);
+		Wgs84Coordinate other = new Wgs84Coordinate(lng, lat);
 
 		assertEquals(0, index.getCoordinates(coordinate).size());
 		assertEquals(0, index.getCoordinates(other).size());
@@ -403,35 +407,13 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 		assertTrue(index.getCoordinates(other).contains(occurrence));
 		assertTrue(index.getCoordinates(other).contains(otherOccurrence));
 		assertEquals(0, index.getCoordinates(coordinate).size());
-		
+
 		otherOccurrence.remove();
 		assertEquals(1, index.getCoordinates(other).size());
 		assertTrue(index.getCoordinates(other).contains(occurrence));
-		
+
 		occurrence.setValue(0D);
-		assertEquals(0, index.getCoordinates(other).size());		
-		
-		occurrence.setValue(new IGeoCoordinate() {
-			
-			@Override
-			public void parse(String value) throws ParseException {
-				//NOTHING TO DO					
-			}
-			
-			@Override
-			public double getDistance(IGeoCoordinate coord) {					
-				return 0;
-			}
-		});
-		
-		try{
-			index.getCoordinates(coordinate,0); 
-			fail("Invalid type!");
-		}catch(IllegalArgumentException e){
-			//NOTHING TO DO
-		}catch(UnsupportedOperationException e){
-			//NOTHING TO DO
-		}
+		assertEquals(0, index.getCoordinates(other).size());
 	}
 
 	/**

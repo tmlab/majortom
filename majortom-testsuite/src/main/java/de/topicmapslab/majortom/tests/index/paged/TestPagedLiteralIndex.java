@@ -32,8 +32,8 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.geotype.mecator.MecatorCoordinate;
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.comparator.ConstructByItemIdentifierComparator;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
@@ -557,7 +557,9 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		IGeoCoordinate value = new MecatorCoordinate(20, 20);
+		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
+		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Coordinate value = new Wgs84Coordinate(lng, lat);
 		IOccurrence[] occurrences = new IOccurrence[101];
 		String base = "http://psi.example.org/";
 		int j = 0;

@@ -26,8 +26,8 @@ import java.util.Calendar;
 import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
-import de.topicmapslab.geotype.model.IGeoSurface;
+import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ITopicMap;
@@ -46,9 +46,12 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	/**
 	 * constructor
 	 * 
-	 * @param identity the {@link ITopicMapStoreIdentity}
-	 * @param topicMap the topic map
-	 * @param parent the parent construct
+	 * @param identity
+	 *            the {@link ITopicMapStoreIdentity}
+	 * @param topicMap
+	 *            the topic map
+	 * @param parent
+	 *            the parent construct
 	 */
 	public DataTypeAwareImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		super(identity, topicMap, parent);
@@ -71,9 +74,9 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	/**
 	 * {@inheritDoc}
 	 */
-	public IGeoCoordinate coordinateValue() throws ParseException {
+	public Wgs84Coordinate coordinateValue() throws ParseException {
 		try {
-			return (IGeoCoordinate) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, IGeoCoordinate.class);
+			return (Wgs84Coordinate) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Wgs84Coordinate.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -153,7 +156,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(IGeoCoordinate value) {
+	public void setValue(Wgs84Coordinate value) {
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}
@@ -275,9 +278,9 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	/**
 	 * {@inheritDoc}
 	 */
-	public IGeoSurface<?> surfaceValue() throws ParseException {
+	public Wgs84Circuit surfaceValue() throws ParseException {
 		try {
-			return (IGeoSurface<?>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, IGeoSurface.class);
+			return (Wgs84Circuit) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.VALUE, Wgs84Circuit.class);
 		} catch (TopicMapStoreException e) {
 			if (e.getCause() instanceof ParseException) {
 				throw (ParseException) e.getCause();
@@ -350,7 +353,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(IGeoSurface<?> value) {
+	public void setValue(Wgs84Circuit value) {
 		if (value == null) {
 			throw new ModelConstraintException(this, "Value cannot be null.");
 		}

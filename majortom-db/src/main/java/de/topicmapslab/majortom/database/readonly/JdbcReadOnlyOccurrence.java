@@ -77,7 +77,7 @@ public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getValue() {
+	protected Object objectValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

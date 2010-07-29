@@ -16,19 +16,6 @@ package de.topicmapslab.majortom.util;
  * 
  */
 public class TmdmSubjectIdentifier {
-
-	/**
-	 * subject-identifier of the topic-type of the topic maps data model
-	 */
-	public static final String TMDM_TOPIC_TYPE = "http://psi.topicmaps.org/iso13250/glossary/topic-type";
-	/**
-	 * subject-identifier of the name-type of the topic maps data model
-	 */
-	public static final String TMDM_NAME_TYPE = "http://psi.topicmaps.org/iso13250/glossary/topic-name-type";
-	/**
-	 * subject-identifier of the name-type of the topic maps data model
-	 */
-	public static final String TMDM_OCCURRENCE_TYPE = "http://psi.topicmaps.org/iso13250/glossary/occurrence-type";
 	/**
 	 * subject-identifier of the name-type of the topic maps data model
 	 */
@@ -54,14 +41,6 @@ public class TmdmSubjectIdentifier {
 	 */
 	public static final String TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION = "http://psi.topicmaps.org/iso13250/model/supertype-subtype";
 	/**
-	 * subject-identifier of the name-type of the topic maps data model
-	 */
-	public static final String TMDM_ASSOCIATION_TYPE = "http://psi.topicmaps.org/iso13250/glossary/association-type";
-	/**
-	 * subject-identifier of the name-type of the topic maps data model
-	 */
-	public static final String TMDM_ASSOCIATION_ROLE_TYPE = "http://psi.topicmaps.org/iso13250/glossary/association-role-type";
-	/**
 	 * subject-identifier of the default name-type of the topic maps data model
 	 */
 	public static final String TMDM_DEFAULT_NAME_TYPE = "http://psi.topicmaps.org/iso13250/model/topic-name";
@@ -77,20 +56,9 @@ public class TmdmSubjectIdentifier {
 	 *         <code>false</code> otherwise.
 	 */
 	public static boolean isTmdmSubjectIdentifier(final String identifier) {
-		return identifier.equalsIgnoreCase(TMDM_ASSOCIATION_ROLE_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_ASSOCIATION_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_DEFAULT_NAME_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_INSTANCE_ROLE_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_NAME_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_OCCURRENCE_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_SUBTYPE_ROLE_TYPE)
-				|| identifier.equalsIgnoreCase(TMDM_SUPERTYPE_ROLE_TYPE)
-				|| identifier
-						.equalsIgnoreCase(TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION)
-				|| identifier.equalsIgnoreCase(TMDM_TOPIC_TYPE)
-				|| identifier
-						.equalsIgnoreCase(TMDM_TYPE_INSTANCE_ASSOCIATION)
-				|| identifier.equalsIgnoreCase(TMDM_TYPE_ROLE_TYPE);
+		return identifier.equals(TMDM_DEFAULT_NAME_TYPE) || identifier.equals(TMDM_INSTANCE_ROLE_TYPE) || identifier.equals(TMDM_SUBTYPE_ROLE_TYPE)
+				|| identifier.equals(TMDM_SUPERTYPE_ROLE_TYPE) || identifier.equals(TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION)
+				|| identifier.equals(TMDM_TYPE_INSTANCE_ASSOCIATION) || identifier.equals(TMDM_TYPE_ROLE_TYPE);
 	}
 
 }

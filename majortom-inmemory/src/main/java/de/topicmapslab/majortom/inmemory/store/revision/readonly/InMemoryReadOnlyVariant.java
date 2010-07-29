@@ -26,9 +26,11 @@ import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyName;
 import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
+import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -40,7 +42,7 @@ public class InMemoryReadOnlyVariant extends ReadOnlyVariant {
 	private final String reifierId;
 	private String parentId;
 	private final Set<String> themeIds = HashUtil.getHashSet();
-	private final String value;
+	private final Object value;
 	private final Locator datatype;
 
 	private Topic cachedReifier;
@@ -67,7 +69,11 @@ public class InMemoryReadOnlyVariant extends ReadOnlyVariant {
 		for (Topic theme : clone.getScope()) {
 			themeIds.add(theme.getId());
 		}
-		this.value = clone.getValue();
+		try {
+			this.value = DatatypeAwareUtils.toValue(clone);
+		} catch (Exception e) {
+			throw new TopicMapStoreException(e);
+		}
 		this.datatype = new LocatorImpl(clone.getDatatype().getReference());
 	}
 
@@ -81,7 +87,7 @@ public class InMemoryReadOnlyVariant extends ReadOnlyVariant {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getValue() {
+	protected Object objectValue() {
 		return value;
 	}
 

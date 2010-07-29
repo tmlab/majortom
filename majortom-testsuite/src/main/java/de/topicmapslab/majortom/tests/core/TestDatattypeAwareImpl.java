@@ -26,10 +26,9 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.geotype.mecator.MecatorCircuit;
-import de.topicmapslab.geotype.mecator.MecatorCoordinate;
-import de.topicmapslab.geotype.model.IGeoCoordinate;
-import de.topicmapslab.geotype.model.IGeoSurface;
+import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
@@ -95,21 +94,24 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#coordinateValue()}.
+	 * {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#coordinateValue()}
+	 * .
 	 */
 	public void testCoordinateValue() throws Exception {
 		Topic topic = createTopic();
-		MecatorCoordinate coord = new MecatorCoordinate(12.263102, 50.430539);		
-		final String ref = coord.toString();		
+		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
+		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Coordinate coord = new Wgs84Coordinate(lng, lat);
+		final String ref = coord.toString();
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
 		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
-		assertTrue(occurrence.coordinateValue().equals(coord));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));		
+		assertTrue(occurrence.coordinateValue().equals(coord));		
 
 		try {
-			occurrence.setValue((IGeoCoordinate) null);
+			occurrence.setValue((Wgs84Coordinate) null);
 			fail("Null is not allowed!");
 		} catch (ModelConstraintException e) {
 			// NOTHING TO DO
@@ -130,7 +132,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(variant.coordinateValue().equals(coord));
 
 		try {
-			variant.setValue((IGeoCoordinate) null);
+			variant.setValue((Wgs84Coordinate) null);
 			fail("Null is not allowed!");
 		} catch (ModelConstraintException e) {
 			// NOTHING TO DO
@@ -148,7 +150,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 	 * Test method for
 	 * {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#dateTimeValue()}.
 	 */
-	public void testDateTimeValue() throws Exception {		
+	public void testDateTimeValue() throws Exception {
 		Topic topic = createTopic();
 		Calendar calendar = new GregorianCalendar();
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSS+HH:mm");
@@ -555,11 +557,13 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 	 * Test method for
 	 * {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#surfaceValue()}.
 	 */
-	public void testSurfaceValue() throws Exception{
+	public void testSurfaceValue() throws Exception {
 		Topic topic = createTopic();
-		MecatorCoordinate coord = new MecatorCoordinate(12.263102, 50.430539);
-		MecatorCircuit circuit = new MecatorCircuit(coord, 1000);
-		final String ref = circuit.toString();		
+		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
+		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Coordinate coord = new Wgs84Coordinate(lng, lat);
+		Wgs84Circuit circuit = new Wgs84Circuit(coord, 1000D);
+		final String ref = circuit.toString();
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(circuit));
@@ -568,7 +572,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(occurrence.surfaceValue().equals(circuit));
 
 		try {
-			occurrence.setValue((IGeoSurface<?>) null);
+			occurrence.setValue((Wgs84Circuit) null);
 			fail("Null is not allowed!");
 		} catch (ModelConstraintException e) {
 			// NOTHING TO DO
@@ -589,7 +593,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(variant.surfaceValue().equals(circuit));
 
 		try {
-			variant.setValue((IGeoSurface<?>) null);
+			variant.setValue((Wgs84Circuit) null);
 			fail("Null is not allowed!");
 		} catch (ModelConstraintException e) {
 			// NOTHING TO DO

@@ -1,7 +1,7 @@
 package de.topicmapslab.geotype.wgs84;
 
 import junit.framework.TestCase;
-import de.topicmapslab.geotype.wgs84.Wgs84Coordinate.Orientation;
+import de.topicmapslab.geotype.wgs84.Wgs84Degree.Orientation;
 
 public class WGS84Test extends TestCase {
 
@@ -18,7 +18,7 @@ public class WGS84Test extends TestCase {
 	}
 
 	public void testFromDegree() {
-		System.out.println(new Wgs84Coordinate(16.324525, Orientation.N).toString());
+		System.out.println(new Wgs84Degree(16.324525, Orientation.N).toString());
 	}
 
 }

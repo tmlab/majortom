@@ -61,7 +61,7 @@ public class JdbcReadOnlyVariant extends ReadOnlyVariant {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getValue() {
+	protected Object objectValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

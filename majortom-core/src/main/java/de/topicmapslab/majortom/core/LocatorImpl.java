@@ -40,7 +40,8 @@ public class LocatorImpl implements ILocator {
 	/**
 	 * constructor
 	 * 
-	 * @param reference the reference
+	 * @param reference
+	 *            the reference
 	 */
 	public LocatorImpl(final String reference) throws MalformedIRIException {
 		if (reference == null || reference.isEmpty()) {
@@ -63,7 +64,8 @@ public class LocatorImpl implements ILocator {
 	/**
 	 * constructor
 	 * 
-	 * @param uri the URI
+	 * @param uri
+	 *            the URI
 	 */
 	public LocatorImpl(final URI uri) throws MalformedIRIException {
 		try {
@@ -79,7 +81,7 @@ public class LocatorImpl implements ILocator {
 	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof Locator) {
-			return getReference().equalsIgnoreCase(((Locator) obj).getReference());
+			return getReference().equals(((Locator) obj).getReference());
 		}
 		return false;
 	}
