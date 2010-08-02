@@ -488,4 +488,11 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	public void removedDuplicates() {
 		getStore().removedDuplicates();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		getStore().clear();
+	}
 }

@@ -110,4 +110,12 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 		return getId().hashCode();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isRemoved() {
+		return false;
+	}
+	
+	
 }

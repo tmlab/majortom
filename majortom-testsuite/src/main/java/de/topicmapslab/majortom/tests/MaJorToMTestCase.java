@@ -15,11 +15,16 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.tests;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMapSystemFactory;
+import org.tmapix.io.XTMTopicMapReader;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -80,4 +85,13 @@ public class MaJorToMTestCase extends TestCase {
 		return (IAssociation) topicMap.createAssociation(type, new Topic[0]);
 	}
 
+	protected void readTopicMap(String filename) throws IOException {
+		InputStream is = getClass().getResourceAsStream("/"+filename);
+		if (is==null)
+			throw new FileNotFoundException("The file is not in the main/resource folder");
+		
+		XTMTopicMapReader reader = new XTMTopicMapReader(topicMap, is, "http://majortomtest.de/");
+		reader.read();
+	}
+	
 }

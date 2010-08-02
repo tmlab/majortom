@@ -2147,4 +2147,12 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			}
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		// TODO Sven implmeent it into the SQLProcessor(s)
+		
+	}
 }

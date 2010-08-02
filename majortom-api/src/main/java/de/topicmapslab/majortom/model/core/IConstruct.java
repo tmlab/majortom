@@ -27,4 +27,11 @@ public interface IConstruct extends Construct, Comparable<IConstruct> {
 	 */
 	public ITopicMap getTopicMap();
 
+	
+	/**
+	 * Indicates if the construct is removed
+	 * 
+	 * @return the removed <code>true</code> if the construct was removed
+	 */
+	public boolean isRemoved();
 }

@@ -236,4 +236,9 @@ public interface ITopicMapStore {
 	 * Method removes all duplicated from the topic map
 	 */
 	public void removedDuplicates();
+	
+	/**
+	 * Removes everything from the topic map
+	 */
+	public void clear();
 }
