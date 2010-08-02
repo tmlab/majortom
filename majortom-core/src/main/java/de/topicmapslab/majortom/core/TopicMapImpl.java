@@ -152,7 +152,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public ITopicMapStore getStore() {
-		if ( store == null ){
+		if (store == null) {
 			throw new RuntimeException("Store is null!");
 		}
 		return store;
@@ -426,7 +426,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public ITransaction createTransaction() {
-		if ( !getStore().isTransactable()){
+		if (!getStore().isTransactable()) {
 			throw new UnsupportedOperationException("The current topic map store does not support transactions.");
 		}
 		return getStore().createTransaction();
@@ -480,5 +480,12 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 */
 	public String toString() {
 		return "Topic-Map{Base-Locator:" + getLocator().toExternalForm() + "}";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removedDuplicates() {
+		getStore().removedDuplicates();
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
+import org.tmapi.core.Construct;
 import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
@@ -312,15 +313,20 @@ public class MergeUtils {
 	 *            the store
 	 * @param association
 	 *            the association to check
+	 * @param excluded
+	 *            a set of excluded associations
 	 * @return the duplicated association or <code>null</code>
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IAssociation getDuplette(TopicMapStoreImpl store, IAssociation association) throws TopicMapStoreException {
+	public static IAssociation getDuplette(TopicMapStoreImpl store, IAssociation association, Set<IAssociation> excluded) throws TopicMapStoreException {
 		/*
 		 * iterate over all filtered associations
 		 */
 		for (Association a : store.getTopicMap().getAssociations(association.getType(), association.getScopeObject())) {
+			if (a.equals(association) || excluded.contains(a)) {
+				continue;
+			}
 			boolean duplette = true;
 			/*
 			 * iterate over all roles of an association
@@ -1116,4 +1122,377 @@ public class MergeUtils {
 		return false;
 
 	}
+
+	/**
+	 * Method removes all duplicates from the given topic map.
+	 * 
+	 * @param store
+	 *            the topic map store
+	 * @param topicMap
+	 *            the topic map itselfs
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	public static void removeDuplicates(final TopicMapStoreImpl store, final ITopicMap topicMap) throws TopicMapStoreException {
+		// ThreadPoolExecutor executor = (ThreadPoolExecutor)
+		// Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()
+		// * 4);
+
+		for (final Topic topic : topicMap.getTopics()) {
+			// Thread thread = new Thread() {
+			// /**
+			// * {@inheritDoc}
+			// */
+			// public void run() {
+			Set<Construct> removed = HashUtil.getHashSet();
+			/*
+			 * check name duplicates
+			 */
+			for (Name name : topic.getNames()) {
+				if (removed.contains(name)) {
+					continue;
+				}
+				for (Name duplicate : topic.getNames()) {
+					if (duplicate.equals(name) || removed.contains(duplicate)) {
+						continue;
+					}
+					/*
+					 * names are equal if the value, the type and scope property
+					 * are equal
+					 */
+					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue())
+							&& ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : duplicate.getItemIdentifiers()) {
+							duplicate.removeItemIdentifier(ii);
+							name.addItemIdentifier(ii);
+						}
+						/*
+						 * copy variants
+						 */
+						for (Variant v : duplicate.getVariants()) {
+							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
+									.getThemes());
+							if (copy == null) {
+								copy = name.createVariant(v.getValue(), v.getDatatype(), v.getScope());
+							}
+							/*
+							 * copy item-identifier
+							 */
+							for (Locator ii : v.getItemIdentifiers()) {
+								v.removeItemIdentifier(ii);
+								copy.addItemIdentifier(ii);
+							}
+							/*
+							 * check reification
+							 */
+
+							doMergeReifiable(store, (IVariant) copy, (IVariant) v, null);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IName) name, (IName) duplicate, null);
+						/*
+						 * remove duplicate
+						 */
+						duplicate.remove();
+						removed.add(duplicate);
+					}
+				}
+				/*
+				 * check variants
+				 */
+				for (Variant v : name.getVariants()) {
+					if (removed.contains(v)) {
+						continue;
+					}
+					for (IVariant dup : getDuplettes(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes())) {
+						if (v.equals(dup) || removed.contains(dup)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							dup.removeItemIdentifier(ii);
+							v.addItemIdentifier(ii);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IVariant) v, (IVariant) dup, null);
+						/*
+						 * remove duplicate
+						 */
+						removed.add(dup);
+						dup.remove();
+					}
+				}
+			}
+			removed.clear();
+			/*
+			 * check occurrences
+			 */
+			for (Occurrence occurrence : topic.getOccurrences()) {
+				if (removed.contains(occurrence)) {
+					continue;
+				}
+				for (Occurrence duplicate : topic.getOccurrences()) {
+					if (duplicate.equals(occurrence) || removed.contains(duplicate)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : duplicate.getItemIdentifiers()) {
+						duplicate.removeItemIdentifier(ii);
+						occurrence.addItemIdentifier(ii);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, null);
+					/*
+					 * remove duplicate
+					 */
+					duplicate.remove();
+					removed.add(duplicate);
+				}
+			}
+			// }
+			// };
+			// executor.execute(thread);
+		}
+		// Thread thread = new Thread() {
+		// /**
+		// * {@inheritDoc}
+		// */
+		// public void run() {
+		Set<Construct> removed = HashUtil.getHashSet();
+		/*
+		 * check associations
+		 */
+		for (final Association association : topicMap.getAssociations()) {
+			if (removed.contains(association)) {
+				continue;
+			}
+			for (IAssociation duplicate : getDuplettes(store, (IAssociation) association)) {
+				if (removed.contains(duplicate)) {
+					continue;
+				}
+				/*
+				 * copy item-identifier
+				 */
+				for (Locator ii : duplicate.getItemIdentifiers()) {
+					duplicate.removeItemIdentifier(ii);
+					association.addItemIdentifier(ii);
+				}
+				/*
+				 * check roles
+				 */
+				for (Role r : association.getRoles()) {
+					for (IAssociationRole dup : getDuplettes(duplicate, (IAssociationRole) r)) {
+						if (removed.contains(dup)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							dup.removeItemIdentifier(ii);
+							r.addItemIdentifier(ii);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IAssociationRole) r, dup, null);
+						/*
+						 * store removed
+						 */
+						removed.add(dup);
+					}
+				}
+				/*
+				 * check reification
+				 */
+				doMergeReifiable(store, (IAssociation) association, (IAssociation) duplicate, null);
+				/*
+				 * remove duplicate
+				 */
+				removed.add(duplicate);
+				duplicate.remove();
+			}
+			/*
+			 * check roles
+			 */
+			for (Role r : association.getRoles()) {
+				if (removed.contains(r)) {
+					continue;
+				}
+				for (IAssociationRole dup : getDuplettes((IAssociation) association, (IAssociationRole) r)) {
+					if (dup.equals(r) || removed.contains(dup)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : dup.getItemIdentifiers()) {
+						dup.removeItemIdentifier(ii);
+						r.addItemIdentifier(ii);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IAssociationRole) r, dup, null);
+					/*
+					 * remove duplicate
+					 */
+					removed.add(dup);
+					dup.remove();
+				}
+			}
+		}
+		// }
+		// };
+		// executor.execute(thread);
+		// /*
+		// * shut-down thread pool
+		// */
+		// executor.shutdown();
+		// /*
+		// * wait
+		// */
+		// try {
+		// executor.awaitTermination(10, TimeUnit.MINUTES);
+		// } catch (InterruptedException e) {
+		// throw new TopicMapStoreException(e);
+		// }
+	}
+
+	/**
+	 * Returns a set the duplicated role of the given association with the same
+	 * type and player than the given one.
+	 * 
+	 * @param association
+	 *            the association
+	 * @param role
+	 *            the role
+	 * @return a set of duplicated roles
+	 */
+	public static Set<IAssociationRole> getDuplettes(IAssociation association, IAssociationRole role) {
+		Set<IAssociationRole> set = HashUtil.getHashSet();
+		for (Role r : association.getRoles(role.getType())) {
+			if (role.equals(r)) {
+				continue;
+			}
+			if (r.getPlayer().equals(role.getPlayer())) {
+				set.add((IAssociationRole) r);
+			}
+		}
+		return set;
+	}
+
+	/**
+	 * Method returns a set of duplicated association of the given one
+	 * 
+	 * @param store
+	 *            the store
+	 * @param association
+	 *            the association to check
+	 * @return a set of duplicated associations
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	public static Set<IAssociation> getDuplettes(TopicMapStoreImpl store, IAssociation association) throws TopicMapStoreException {
+		Set<IAssociation> associations = HashUtil.getHashSet();
+		/*
+		 * iterate over all filtered associations
+		 */
+		for (Association a : store.getTopicMap().getAssociations(association.getType(), association.getScopeObject())) {
+			if (a.equals(association)) {
+				continue;
+			}
+			boolean duplette = true;
+			/*
+			 * iterate over all roles of an association
+			 */
+			for (Role role : a.getRoles()) {
+				boolean containsRole = false;
+				/*
+				 * get typed roles of the other association
+				 */
+				Set<Role> roles = association.getRoles(role.getType());
+				/*
+				 * look for duplicated role
+				 */
+				for (Role r : roles) {
+					/*
+					 * same player or players are the topics to merge
+					 */
+					if (r.getPlayer().equals(role.getPlayer())) {
+						containsRole = true;
+						break;
+					}
+				}
+				/*
+				 * role is not a duplicated one
+				 */
+				if (!containsRole) {
+					duplette = false;
+					break;
+				}
+			}
+			/*
+			 * association is a duplicated one
+			 */
+			if (duplette) {
+				associations.add((IAssociation) a);
+			}
+		}
+
+		/*
+		 * no duplicated association found
+		 */
+		return associations;
+	}
+
+	/**
+	 * Method returns the duplicated variant of the given name with the scope,
+	 * datatype and value
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            the topic
+	 * @param value
+	 *            the value
+	 * @param locator
+	 *            the locator of datatype
+	 * @param themes
+	 *            the themes of scope
+	 * @return the duplicated variant or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	public static Set<IVariant> getDuplettes(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes)
+			throws TopicMapStoreException {
+		Set<IVariant> variants = HashUtil.getHashSet();
+		/*
+		 * get scope as filter
+		 */
+		IScope scope = store.doCreateScope(store.getTopicMap(), themes);
+		/*
+		 * check for variant value
+		 */
+		for (Variant v : name.getVariants(scope)) {
+			if (v.getValue().equalsIgnoreCase(value) && v.getDatatype().equals(locator)) {
+				variants.add((IVariant) v);
+			}
+		}
+		return variants;
+	}
+
 }

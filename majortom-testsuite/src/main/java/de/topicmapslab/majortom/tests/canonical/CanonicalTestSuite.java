@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests;
+/**
+ * 
+ */
+package de.topicmapslab.majortom.tests.canonical;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.canonical.CanonicalTestSuite;
-import de.topicmapslab.majortom.tests.core.CoreTestSuite;
-import de.topicmapslab.majortom.tests.event.EventTestSuite;
-import de.topicmapslab.majortom.tests.index.IndexTestSuite;
-import de.topicmapslab.majortom.tests.merge.MergeTestSuite;
-import de.topicmapslab.majortom.tests.revision.RevisionTestSuite;
-import de.topicmapslab.majortom.tests.transaction.TransactionSuite;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class MaJorToMTestSuite {
+public class CanonicalTestSuite {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.canonical");
 		// $JUnit-BEGIN$
-		suite.addTest(CoreTestSuite.suite());
-		suite.addTest(EventTestSuite.suite());
-		suite.addTest(IndexTestSuite.suite());
-		suite.addTest(MergeTestSuite.suite());
-		// suite.addTest(IOTestSuite.suite());
-		suite.addTest(RevisionTestSuite.suite());
-		suite.addTest(TransactionSuite.suite());
-		suite.addTest(org.tmapi.AllTests.suite());
-		suite.addTest(CanonicalTestSuite.suite());
+		suite.addTestSuite(TestCanonicals.class);
 		// $JUnit-END$
 		return suite;
 	}
