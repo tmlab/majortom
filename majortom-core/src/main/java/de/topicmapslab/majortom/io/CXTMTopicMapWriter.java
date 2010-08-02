@@ -193,8 +193,11 @@ public final class CXTMTopicMapWriter {
 	 * @param topicMap
 	 */
 	private void removeDuplicates(TopicMap topicMap) {
-		// TODO trigger merge
-
+		if (topicMap instanceof ITopicMap) {
+			((ITopicMap) topicMap).removedDuplicates();
+		} else {
+			throw new RuntimeException("Unsupported topic map type.");
+		}
 	}
 
 	/**

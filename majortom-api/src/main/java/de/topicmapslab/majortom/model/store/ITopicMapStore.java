@@ -231,4 +231,9 @@ public interface ITopicMapStore {
 	 *             thrown if the method was called by another thread before
 	 */
 	public void commit() throws ConcurrentThreadsException;
+	
+	/**
+	 * Method removes all duplicated from the topic map
+	 */
+	public void removedDuplicates();
 }

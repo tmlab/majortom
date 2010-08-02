@@ -3225,5 +3225,11 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	protected abstract IRevision createRevision();
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removedDuplicates() {
+		MergeUtils.removeDuplicates(this, getTopicMap());
+	}
 	
 }

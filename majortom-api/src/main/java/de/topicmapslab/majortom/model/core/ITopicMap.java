@@ -28,7 +28,8 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	/**
 	 * Returns all topics being an instance of the given type.
 	 * 
-	 * @param type the topic type
+	 * @param type
+	 *            the topic type
 	 * @return the topics
 	 */
 	public <T extends Topic> Collection<T> getTopics(Topic type);
@@ -37,7 +38,8 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * Returns all associations of the current topic map being an instance of
 	 * the given type
 	 * 
-	 * @param type the association type
+	 * @param type
+	 *            the association type
 	 * @return the associations
 	 */
 	public <T extends Association> Collection<T> getAssociations(Topic type);
@@ -46,7 +48,8 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * Returns all associations of the current topic map being valid in the
 	 * given scope
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 * @return the associations
 	 */
 	public <T extends Association> Collection<T> getAssociations(IScope scope);
@@ -55,8 +58,10 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * Returns all associations of the current topic map being an instance of
 	 * the given type and being valid in the given scope.
 	 * 
-	 * @param type the association type
-	 * @param scope the scope
+	 * @param type
+	 *            the association type
+	 * @param scope
+	 *            the scope
 	 * @return the associations
 	 */
 	public <T extends Association> Collection<T> getAssociations(Topic type, IScope scope);
@@ -66,7 +71,8 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * of the time-stamp to access revisions.
 	 * 
 	 * @see #addTag(String, Calendar)
-	 * @param name the tag name
+	 * @param name
+	 *            the tag name
 	 */
 	public void addTag(final String name);
 
@@ -74,22 +80,26 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * Add new tag name to the given time-stamp. The tag can be used instead of
 	 * the time-stamp to access revisions.
 	 * 
-	 * @param name the tag name
-	 * @param timestamp the timestamp
+	 * @param name
+	 *            the tag name
+	 * @param timestamp
+	 *            the timestamp
 	 */
 	public void addTag(final String name, final Calendar timestamp);
 
 	/**
 	 * Registers the listener to the topic map.
 	 * 
-	 * @param listener the listener to register
+	 * @param listener
+	 *            the listener to register
 	 */
 	public void addTopicMapListener(ITopicMapListener listener);
 
 	/**
 	 * Removes the listener to the topic map.
 	 * 
-	 * @param listener the listener to remove
+	 * @param listener
+	 *            the listener to remove
 	 */
 	public void removeTopicMapListener(ITopicMapListener listener);
 
@@ -119,17 +129,24 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	 * Return the scope object representing the scope containing all this
 	 * themes.
 	 * 
-	 * @param themes the themes
+	 * @param themes
+	 *            the themes
 	 * @return the scope object
 	 */
 	public IScope createScope(Topic... themes);
-	
+
 	/**
 	 * Return the scope object representing the scope containing all this
 	 * themes.
 	 * 
-	 * @param themes the themes
+	 * @param themes
+	 *            the themes
 	 * @return the scope object
 	 */
 	public IScope createScope(Collection<Topic> themes);
+
+	/**
+	 * Method removes all duplicated from the topic map
+	 */
+	public void removedDuplicates();
 }

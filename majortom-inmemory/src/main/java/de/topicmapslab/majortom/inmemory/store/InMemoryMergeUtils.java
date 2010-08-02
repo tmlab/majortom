@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
+import org.tmapi.core.Construct;
 import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
@@ -43,6 +44,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
@@ -57,11 +59,16 @@ public class InMemoryMergeUtils {
 	/**
 	 * Method checks if there is a topic with the same name
 	 * 
-	 * @param store the in-memory store
-	 * @param topic the topic, the name should added to
-	 * @param nameType the type of the name
-	 * @param value the name value
-	 * @param themes a set of themes
+	 * @param store
+	 *            the in-memory store
+	 * @param topic
+	 *            the topic, the name should added to
+	 * @param nameType
+	 *            the type of the name
+	 * @param value
+	 *            the name value
+	 * @param themes
+	 *            a set of themes
 	 * @return the merging candidate-name combination or <code>null</code>
 	 */
 	public static Map<ITopic, IName> detectMergeByNameCandidate(InMemoryTopicMapStore store, ITopic topic, ITopic nameType, String value,
@@ -75,6 +82,17 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returns the topic of the given store which is equal to the given one.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            a topic of another store
+	 * @return the duplicated topic or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static ITopic getDuplette(InMemoryTopicMapStore store, Topic topic) throws TopicMapStoreException {
 		for (Locator locator : topic.getItemIdentifiers()) {
 			ILocator loc = store.getIdentityStore().createLocator(locator.getReference());
@@ -116,6 +134,24 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returning the duplicated name with the given type, parent, value and
+	 * scope.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            the parent
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the value
+	 * @param themes
+	 *            the scope
+	 * @return the duplicated name or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static IName getDuplette(InMemoryTopicMapStore store, ITopic topic, ITopic type, String value, Collection<ITopic> themes)
 			throws TopicMapStoreException {
 		Set<IName> names = HashUtil.getHashSet();
@@ -144,6 +180,24 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returning the duplicated variant with the given parent, value, datatype
+	 * and scope.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param name
+	 *            the parent
+	 * @param value
+	 *            the value
+	 * @param locator
+	 *            the datatype
+	 * @param themes
+	 *            the scope
+	 * @return the duplicated variant or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static IVariant getDuplette(InMemoryTopicMapStore store, IName name, String value, ILocator locator, Collection<ITopic> themes)
 			throws TopicMapStoreException {
 		Set<IVariant> set = HashUtil.getHashSet();
@@ -168,6 +222,26 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returning the duplicated occurrence with the given type, parent, value,
+	 * datatype and scope.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            the parent
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the value
+	 * @param locator
+	 *            the datatype
+	 * @param themes
+	 *            the scope
+	 * @return the duplicated occurrences or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static IOccurrence getDuplette(InMemoryTopicMapStore store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes)
 			throws TopicMapStoreException {
 		Set<IOccurrence> set = HashUtil.getHashSet();
@@ -196,6 +270,23 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returning the duplicated association with the same type, roles and scope
+	 * than the given one. All roles played by the source topic can be played by
+	 * the target topic without changing the equality of associations.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            the target topic
+	 * @param other
+	 *            the source topic
+	 * @param association
+	 *            the association
+	 * @return the duplicated association or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static IAssociation getDuplette(InMemoryTopicMapStore store, ITopic topic, ITopic other, IAssociation association) throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		/*
@@ -259,6 +350,18 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Returning the duplicated association with the same type, roles and scope
+	 * than the given one.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param association
+	 *            the association
+	 * @return the duplicated association or <code>null</code>
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static IAssociation getDuplette(InMemoryTopicMapStore store, IAssociation association) throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		/*
@@ -322,6 +425,20 @@ public class InMemoryMergeUtils {
 		return null;
 	}
 
+	/**
+	 * Merging the given topics without creating duplicates.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topic
+	 *            the target topic
+	 * @param other
+	 *            the source topic
+	 * @param revision
+	 *            the revision to store changes
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static void doMerge(InMemoryTopicMapStore store, ITopic topic, ITopic other, IRevision revision) throws TopicMapStoreException {
 		/*
 		 * move names
@@ -536,6 +653,22 @@ public class InMemoryMergeUtils {
 		store.removeTopic(other, true, revision);
 	}
 
+	/**
+	 * Handling reification after merging the given constructs. If both are
+	 * reified, the reifier topics are merged. Otherwise the existing reifier
+	 * are moved to the target construct.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param reifiable
+	 *            the target construct
+	 * @param other
+	 *            the source construct
+	 * @param revision
+	 *            the revision to store changes
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static void doMergeReifiable(InMemoryTopicMapStore store, IReifiable reifiable, IReifiable other, IRevision revision) throws TopicMapStoreException {
 		ITopic reifierOfOther = store.getReificationStore().getReifier(other);
 		if (reifierOfOther != null) {
@@ -567,6 +700,19 @@ public class InMemoryMergeUtils {
 		}
 	}
 
+	/**
+	 * Merging all information items of the second topic map into the first
+	 * topic map, without duplicates
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topicMap
+	 *            the target topic map
+	 * @param other
+	 *            the source topic map
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	public static void doMergeTopicMaps(InMemoryTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
 		/*
 		 * create revision
@@ -635,8 +781,8 @@ public class InMemoryMergeUtils {
 				ILocator datatype = store.getIdentityStore().createLocator(occ.getDatatype().getReference());
 				IOccurrence occurrence = getDuplette(store, duplette, type, occ.getValue(), datatype, scope.getThemes());
 				if (occurrence == null) {
-					occurrence = store.createOccurrence(duplette, type, occ.getValue(), store.getIdentityStore().createLocator(occ.getDatatype().getReference()),
-							getCorrespondingScope(store, occ.getScope()).getThemes(), revision);
+					occurrence = store.createOccurrence(duplette, type, occ.getValue(), store.getIdentityStore()
+							.createLocator(occ.getDatatype().getReference()), getCorrespondingScope(store, occ.getScope()).getThemes(), revision);
 				}
 				/*
 				 * copy item-identifiers of the occurrence
@@ -686,12 +832,13 @@ public class InMemoryMergeUtils {
 				 */
 				for (Variant v : name.getVariants()) {
 					scope = getCorrespondingScope(store, v.getScope());
-					ILocator datatype = store.getIdentityStore().createLocator(v.getDatatype().getReference());					
+					ILocator datatype = store.getIdentityStore().createLocator(v.getDatatype().getReference());
 					IVariant variant = getDuplette(store, n, v.getValue(), datatype, scope.getThemes());
-					if ( variant == null ){
-						variant = store.createVariant(n, v.getValue(), store.getIdentityStore().createLocator(v.getDatatype().getReference()),scope.getThemes(), revision);
+					if (variant == null) {
+						variant = store.createVariant(n, v.getValue(), store.getIdentityStore().createLocator(v.getDatatype().getReference()), scope
+								.getThemes(), revision);
 					}
-							
+
 					/*
 					 * copy item-identifiers of the variant
 					 */
@@ -765,6 +912,16 @@ public class InMemoryMergeUtils {
 		}
 	}
 
+	/**
+	 * Returns the IScope object representing all the given themes in the given
+	 * topic map store.
+	 * 
+	 * @param store
+	 *            the store.
+	 * @param themes
+	 *            the themes
+	 * @return the scope object and never <code>null</code>
+	 */
 	public static IScope getCorrespondingScope(InMemoryTopicMapStore store, final Set<Topic> themes) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		for (Topic t : themes) {
@@ -775,6 +932,23 @@ public class InMemoryMergeUtils {
 		return store.getScopeStore().getScope(set);
 	}
 
+	/**
+	 * Method checks if the given association is a TMDM type-instance or
+	 * supertype-subtype association
+	 * 
+	 * @param store
+	 *            the store
+	 * @param association
+	 *            the association to check
+	 * @param topicMap
+	 *            the topic map
+	 * @param other
+	 *            the other topic map
+	 * @return <code>true</code> if the associations is a TMDM type-instance or
+	 *         supertype-subtype association, <code>false</code> otherwise.
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
 	private static boolean checkTmdmAssociation(InMemoryTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other)
 			throws TopicMapStoreException {
 		Locator typeInstanceLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
@@ -848,4 +1022,280 @@ public class InMemoryMergeUtils {
 		return false;
 
 	}
+
+	/**
+	 * Method removes all duplicates from the given topic map.
+	 * 
+	 * @param store
+	 *            the topic map store
+	 * @param topicMap
+	 *            the topic map itself
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	public static void removeDuplicates(final InMemoryTopicMapStore store, final ITopicMap topicMap) throws TopicMapStoreException {
+		// ThreadPoolExecutor executor = (ThreadPoolExecutor)
+		// Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()
+		// * 4);
+		final IRevision revision = store.createRevision();
+
+		for (final Topic topic : topicMap.getTopics()) {
+			// Thread thread = new Thread() {
+			// /**
+			// * {@inheritDoc}
+			// */
+			// public void run() {
+			Set<Construct> removed = HashUtil.getHashSet();
+			/*
+			 * check name duplicates
+			 */
+			for (Name name : topic.getNames()) {
+				if (removed.contains(name)) {
+					continue;
+				}
+				for (Name duplicate : topic.getNames()) {
+					if (duplicate.equals(name) || removed.contains(duplicate)) {
+						continue;
+					}
+					/*
+					 * names are equal if the value, the type and scope property
+					 * are equal
+					 */
+					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue())
+							&& ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : duplicate.getItemIdentifiers()) {
+							store.removeItemIdentifier((IName) duplicate, (ILocator) ii, revision);
+							store.modifyItemIdentifier((IName) name, (ILocator) ii, revision);
+						}
+						/*
+						 * copy variants
+						 */
+						for (Variant v : duplicate.getVariants()) {
+							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
+									.getThemes());
+							if (copy == null) {
+								copy = store.createVariant((IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes(),
+										revision);
+							}
+							/*
+							 * copy item-identifier
+							 */
+							for (Locator ii : v.getItemIdentifiers()) {
+								store.removeItemIdentifier((IVariant) v, (ILocator) ii, revision);
+								store.modifyItemIdentifier((IVariant) copy, (ILocator) ii, revision);
+							}
+							/*
+							 * check reification
+							 */
+							doMergeReifiable(store, (IVariant) v, (IVariant) copy, revision);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IName) name, (IName) duplicate, revision);
+						/*
+						 * remove duplicate
+						 */
+						store.removeName((IName) duplicate, true, revision);
+						removed.add(duplicate);
+					}
+				}
+				/*
+				 * check variants
+				 */
+				for (Variant v : name.getVariants()) {
+					if (removed.contains(v)) {
+						continue;
+					}
+					for (IVariant dup : MergeUtils.getDuplettes(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
+							.getThemes())) {
+						if (v.equals(dup) || removed.contains(dup)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							dup.removeItemIdentifier(ii);
+							v.addItemIdentifier(ii);
+						}
+						/*
+						 * check reification
+						 */
+						ITopic reifier = (ITopic) dup.getReifier();
+						ITopic otherReifier = (ITopic) v.getReifier();
+						if (reifier != null) {
+							dup.setReifier(null);
+							if (otherReifier != null) {
+								doMerge(store, otherReifier, reifier, revision);
+							} else {
+								v.setReifier(reifier);
+							}
+						}
+						/*
+						 * remove duplicate
+						 */
+						removed.add(dup);
+						dup.remove();
+					}
+				}
+			}
+			removed.clear();
+			/*
+			 * check occurrences
+			 */
+			for (Occurrence occurrence : topic.getOccurrences()) {
+				if (removed.contains(occurrence)) {
+					continue;
+				}
+				for (Occurrence duplicate : topic.getOccurrences()) {
+					if (duplicate.equals(occurrence) || removed.contains(duplicate)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : duplicate.getItemIdentifiers()) {
+						store.removeItemIdentifier((IOccurrence) duplicate, (ILocator) ii, revision);
+						store.modifyItemIdentifier((IOccurrence) occurrence, (ILocator) ii, revision);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, revision);
+					/*
+					 * remove duplicate
+					 */
+					store.removeOccurrence((IOccurrence) duplicate, true, revision);
+					removed.add(duplicate);
+				}
+			}
+			// }
+			// };
+			// executor.execute(thread);
+		}
+		// Thread thread = new Thread() {
+		// /**
+		// * {@inheritDoc}
+		// */
+		// public void run() {
+		Set<Construct> removed = HashUtil.getHashSet();
+		/*
+		 * check associations
+		 */
+		for (final Association association : topicMap.getAssociations()) {
+			if (removed.contains(association)) {
+				continue;
+			}
+			for (IAssociation duplicate : MergeUtils.getDuplettes(store, (IAssociation) association)) {
+				if (duplicate.equals(association) || removed.contains(duplicate)) {
+					continue;
+				}
+				/*
+				 * copy item-identifier
+				 */
+				for (Locator ii : duplicate.getItemIdentifiers()) {
+					store.removeItemIdentifier(duplicate, (ILocator) ii, revision);
+					store.modifyItemIdentifier((IAssociation) association, (ILocator) ii, revision);
+				}
+				/*
+				 * check roles
+				 */
+				for (Role r : association.getRoles()) {
+					for (IAssociationRole dup : MergeUtils.getDuplettes(duplicate, (IAssociationRole) r)) {
+						if (removed.contains(dup)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							store.removeItemIdentifier(dup, (ILocator) ii, revision);
+							store.modifyItemIdentifier((IAssociationRole) r, (ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IAssociationRole) r, dup, revision);
+					}
+				}
+				/*
+				 * check reification
+				 */
+				doMergeReifiable(store, (IAssociation) association, duplicate, revision);
+				/*
+				 * remove duplicate
+				 */
+				store.removeAssocaition(duplicate, true, revision);
+				removed.add(duplicate);
+			}
+			/*
+			 * check roles
+			 */
+			for (Role r : association.getRoles()) {
+				if (removed.contains(r)) {
+					continue;
+				}
+				for (IAssociationRole dup : MergeUtils.getDuplettes((IAssociation) association, (IAssociationRole) r)) {
+					if (dup.equals(r) || removed.contains(dup)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : dup.getItemIdentifiers()) {
+						store.removeItemIdentifier(dup, (ILocator) ii, revision);
+						store.modifyItemIdentifier((IAssociationRole) r, (ILocator) ii, revision);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IAssociationRole) r, dup, revision);
+					/*
+					 * remove duplicate
+					 */
+					removed.add(dup);
+					store.removeRole(dup, false, revision);
+				}
+			}
+		}
+		// }
+		// };
+		// executor.execute(thread);
+		// /*
+		// * shut-down thread pool
+		// */
+		// executor.shutdown();
+		// /*
+		// * wait
+		// */
+		// try {
+		// executor.awaitTermination(10, TimeUnit.MINUTES);
+		// } catch (InterruptedException e) {
+		// throw new TopicMapStoreException(e);
+		// }
+	}
+
+	/**
+	 * Returns the duplicated role of the given association with the same type
+	 * and player than the given one.
+	 * 
+	 * @param association
+	 *            the association
+	 * @param role
+	 *            the role
+	 * @return the duplicated role or <code>null</code>
+	 */
+	public static IAssociationRole getDuplette(IAssociation association, IAssociationRole role) {
+		for (Role r : association.getRoles(role.getType())) {
+			if (r.getPlayer().equals(role.getPlayer())) {
+				return (IAssociationRole) r;
+			}
+		}
+		return null;
+	}
+
 }

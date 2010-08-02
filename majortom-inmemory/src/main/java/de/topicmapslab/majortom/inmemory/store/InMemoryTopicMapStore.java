@@ -3629,4 +3629,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		}
 		queue.clear();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removedDuplicates() {
+		InMemoryMergeUtils.removeDuplicates(this, getTopicMap());
+	}
 }
