@@ -3232,4 +3232,23 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		MergeUtils.removeDuplicates(this, getTopicMap());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		
+		doModifyReifier(getTopicMap(), null);
+
+		// everything is removed because topics are used as types, players, reifier or themes
+		for (ITopic t : doReadTopics(getTopicMap())) {
+			if (!t.isRemoved()) {
+				
+				try {
+					t.remove(true);
+				} catch (Exception e) {
+					// noop sais Sven
+				}
+			}
+		}
+	}
 }

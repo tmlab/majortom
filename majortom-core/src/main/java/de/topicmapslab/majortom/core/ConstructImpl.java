@@ -187,11 +187,9 @@ public abstract class ConstructImpl implements IConstruct {
 	}
 
 	/**
-	 * Indicates if the construct is removed
-	 * 
-	 * @return the removed <code>true</code> if the construct was removed
+	 * {@inheritDoc}
 	 */
-	protected boolean isRemoved() {
+	public boolean isRemoved() {
 		return removed;
 	}
 

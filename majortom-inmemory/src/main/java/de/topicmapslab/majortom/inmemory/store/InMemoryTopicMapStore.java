@@ -3636,4 +3636,27 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	public void removedDuplicates() {
 		InMemoryMergeUtils.removeDuplicates(this, getTopicMap());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		getIdentityStore().close();
+		getCharacteristicsStore().close();
+		getTypedStore().close();
+		getScopeStore().close();
+		getTopicTypeStore().close();
+		getReificationStore().close();
+		getAssociationStore().close();
+		getRevisionStore().close();
+
+		this.identityStore = createIdentityStore(this);
+		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.typedStore = createTypedStore(this);
+		this.scopeStore = createScopeStore(this);
+		this.topicTypeStore = createTopicTypeStore(this);
+		this.reificationStore = createReificationStore(this);
+		this.associationStore = createAssociationStore(this);
+		this.revisionStore = createRevisionStore(this);
+	}
 }

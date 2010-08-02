@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.tests.core;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -534,6 +535,18 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(1, scope.getThemes().size());
 		assertTrue(scope.containsTheme(theme4));
 
+	}
+	
+	public void testClear() {
+		try {
+			readTopicMap("toytm-with-unary-assoc.xtm");
+			
+			topicMap.clear();
+			
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		
 	}
 
 }
