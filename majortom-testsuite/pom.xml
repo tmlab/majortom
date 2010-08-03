@@ -5,7 +5,7 @@
 	<artifactId>majortom-testsuite</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
 	<build>
-		<plugins>			
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -29,6 +29,10 @@
 		<repository>
 			<id>org.tmapi</id>
 			<url>http://www.tmapi.org/maven-repository/</url>
+		</repository>
+		<repository>
+			<id>Semagia Snapshot Repository</id>
+			<url>http://repository.semagia.com/snapshots/</url>
 		</repository>
 	</repositories>
 	<dependencies>

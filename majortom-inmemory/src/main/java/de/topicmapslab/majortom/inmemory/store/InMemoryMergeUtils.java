@@ -173,7 +173,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IName n : names) {
-			if (n.getValue().equalsIgnoreCase(value) && n.getParent().equals(topic)) {
+			if (n.getValue().equals(value) && n.getParent().equals(topic)) {
 				return n;
 			}
 		}
@@ -215,7 +215,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IVariant v : set) {
-			if (v.getValue().equalsIgnoreCase(value) && v.getParent().equals(name) && v.getDatatype().equals(locator)) {
+			if (v.getValue().equals(value) && v.getParent().equals(name) && v.getDatatype().equals(locator)) {
 				return v;
 			}
 		}
@@ -263,7 +263,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IOccurrence o : set) {
-			if (o.getValue().equalsIgnoreCase(value) && o.getParent().equals(topic) && o.getDatatype().equals(locator)) {
+			if (o.getValue().equals(value) && o.getParent().equals(topic) && o.getDatatype().equals(locator)) {
 				return o;
 			}
 		}
@@ -1034,17 +1034,9 @@ public class InMemoryMergeUtils {
 	 *             thrown if operation fails
 	 */
 	public static void removeDuplicates(final InMemoryTopicMapStore store, final ITopicMap topicMap) throws TopicMapStoreException {
-		// ThreadPoolExecutor executor = (ThreadPoolExecutor)
-		// Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()
-		// * 4);
 		final IRevision revision = store.createRevision();
 
 		for (final Topic topic : topicMap.getTopics()) {
-			// Thread thread = new Thread() {
-			// /**
-			// * {@inheritDoc}
-			// */
-			// public void run() {
 			Set<Construct> removed = HashUtil.getHashSet();
 			/*
 			 * check name duplicates
@@ -1156,32 +1148,32 @@ public class InMemoryMergeUtils {
 						continue;
 					}
 					/*
-					 * copy item-identifier
+					 * occurrences are equal if the value, datatype, the type
+					 * and scope property are equal
 					 */
-					for (Locator ii : duplicate.getItemIdentifiers()) {
-						store.removeItemIdentifier((IOccurrence) duplicate, (ILocator) ii, revision);
-						store.modifyItemIdentifier((IOccurrence) occurrence, (ILocator) ii, revision);
+					if (duplicate.getType().equals(duplicate.getType()) && duplicate.getValue().equals(duplicate.getValue())
+							&& ((IName) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
+							&& occurrence.getDatatype().equals(duplicate.getDatatype())) {
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : duplicate.getItemIdentifiers()) {
+							store.removeItemIdentifier((IOccurrence) duplicate, (ILocator) ii, revision);
+							store.modifyItemIdentifier((IOccurrence) occurrence, (ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, revision);
+						/*
+						 * remove duplicate
+						 */
+						store.removeOccurrence((IOccurrence) duplicate, true, revision);
+						removed.add(duplicate);
 					}
-					/*
-					 * check reification
-					 */
-					doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, revision);
-					/*
-					 * remove duplicate
-					 */
-					store.removeOccurrence((IOccurrence) duplicate, true, revision);
-					removed.add(duplicate);
 				}
 			}
-			// }
-			// };
-			// executor.execute(thread);
 		}
-		// Thread thread = new Thread() {
-		// /**
-		// * {@inheritDoc}
-		// */
-		// public void run() {
 		Set<Construct> removed = HashUtil.getHashSet();
 		/*
 		 * check associations
@@ -1262,40 +1254,5 @@ public class InMemoryMergeUtils {
 				}
 			}
 		}
-		// }
-		// };
-		// executor.execute(thread);
-		// /*
-		// * shut-down thread pool
-		// */
-		// executor.shutdown();
-		// /*
-		// * wait
-		// */
-		// try {
-		// executor.awaitTermination(10, TimeUnit.MINUTES);
-		// } catch (InterruptedException e) {
-		// throw new TopicMapStoreException(e);
-		// }
 	}
-
-	/**
-	 * Returns the duplicated role of the given association with the same type
-	 * and player than the given one.
-	 * 
-	 * @param association
-	 *            the association
-	 * @param role
-	 *            the role
-	 * @return the duplicated role or <code>null</code>
-	 */
-	public static IAssociationRole getDuplette(IAssociation association, IAssociationRole role) {
-		for (Role r : association.getRoles(role.getType())) {
-			if (r.getPlayer().equals(role.getPlayer())) {
-				return (IAssociationRole) r;
-			}
-		}
-		return null;
-	}
-
 }
