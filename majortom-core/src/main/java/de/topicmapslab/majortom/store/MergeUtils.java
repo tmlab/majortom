@@ -162,7 +162,7 @@ public class MergeUtils {
 		 * check for name construct
 		 */
 		for (Name n : topic.getNames(type, scope)) {
-			if (n.getValue().equalsIgnoreCase(value)) {
+			if (n.getValue().equals(value)) {
 				return (IName) n;
 			}
 		}
@@ -197,7 +197,7 @@ public class MergeUtils {
 		 * check for variant value
 		 */
 		for (Variant v : name.getVariants(scope)) {
-			if (v.getValue().equalsIgnoreCase(value) && v.getDatatype().equals(locator)) {
+			if (v.getValue().equals(value) && v.getDatatype().equals(locator)) {
 				return (IVariant) v;
 			}
 		}
@@ -234,7 +234,7 @@ public class MergeUtils {
 		 * check for occurrence value
 		 */
 		for (Occurrence o : topic.getOccurrences(type, scope)) {
-			if (o.getValue().equalsIgnoreCase(value) && o.getDatatype().equals(locator)) {
+			if (o.getValue().equals(value) && o.getDatatype().equals(locator)) {
 				return (IOccurrence) o;
 			}
 		}
@@ -1245,21 +1245,29 @@ public class MergeUtils {
 						continue;
 					}
 					/*
-					 * copy item-identifier
+					 * occurrences are equal if the value, datatype, the type and scope property
+					 * are equal
 					 */
-					for (Locator ii : duplicate.getItemIdentifiers()) {
-						duplicate.removeItemIdentifier(ii);
-						occurrence.addItemIdentifier(ii);
+					if (duplicate.getType().equals(duplicate.getType()) && duplicate.getValue().equals(duplicate.getValue())
+							&& ((IName) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
+							&& occurrence.getDatatype().equals(duplicate.getDatatype())) {
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : duplicate.getItemIdentifiers()) {
+							duplicate.removeItemIdentifier(ii);
+							occurrence.addItemIdentifier(ii);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, null);
+						/*
+						 * remove duplicate
+						 */
+						duplicate.remove();
+						removed.add(duplicate);
 					}
-					/*
-					 * check reification
-					 */
-					doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, null);
-					/*
-					 * remove duplicate
-					 */
-					duplicate.remove();
-					removed.add(duplicate);
 				}
 			}
 			// }
@@ -1488,7 +1496,7 @@ public class MergeUtils {
 		 * check for variant value
 		 */
 		for (Variant v : name.getVariants(scope)) {
-			if (v.getValue().equalsIgnoreCase(value) && v.getDatatype().equals(locator)) {
+			if (v.getValue().equals(value) && v.getDatatype().equals(locator)) {
 				variants.add((IVariant) v);
 			}
 		}

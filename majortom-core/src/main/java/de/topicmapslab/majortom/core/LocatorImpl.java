@@ -51,9 +51,9 @@ public class LocatorImpl implements ILocator {
 			this.reference = URLDecoder.decode(reference, "utf-8");
 			uri = new URI(this.reference.replace(" ", "%20"));
 		} catch (URISyntaxException e) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MalformedIRIException("The given IRI reference '" + this.reference +"' is invalid.");
 		} catch (UnsupportedEncodingException e) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MalformedIRIException("The given IRI reference '" + this.reference +"'is invalid.");
 		}
 
 		if (!uri.isAbsolute()) {

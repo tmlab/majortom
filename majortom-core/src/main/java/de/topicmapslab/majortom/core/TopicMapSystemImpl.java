@@ -56,7 +56,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	/**
 	 * a map of all locators created by the topic map system
 	 */
-	private final Map<String, Locator> locators = HashUtil.getHashMap();
+	private final Map<String, Locator> locators = HashUtil.getWeakHashMap();
 	/**
 	 * the property file name
 	 */
