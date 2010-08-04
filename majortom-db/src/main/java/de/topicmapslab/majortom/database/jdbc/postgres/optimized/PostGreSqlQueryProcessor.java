@@ -28,7 +28,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -586,7 +585,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyScope(IScopable s, ITopic theme) throws SQLException {
-		Set<ITopic> themes = HashUtil.getHashSet(s.getScopeObject().getThemes());
+		Collection<ITopic> themes = HashUtil.getHashSet(s.getScopeObject().getThemes());
 		themes.add(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
 		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
@@ -698,7 +697,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociation();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
@@ -708,7 +707,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithType();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
@@ -719,7 +718,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
@@ -731,7 +730,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithScope();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
@@ -742,7 +741,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadAssociation();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		return Jdbc2Construct.toAssociations(tm, stmt.executeQuery(), "id");
@@ -751,7 +750,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadAssociationWithType();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -761,7 +760,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadAssociationWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -772,7 +771,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws SQLException {
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadAssociationWithScope();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -782,8 +781,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException {
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t));
 		set.addAll(doReadOccurrences(t));
 		return set;
@@ -792,8 +791,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws SQLException {
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type));
 		set.addAll(doReadOccurrences(t, type));
 		return set;
@@ -802,8 +801,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException {
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type, scope));
 		set.addAll(doReadOccurrences(t, type, scope));
 		return set;
@@ -812,8 +811,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws SQLException {
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws SQLException {
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, scope));
 		set.addAll(doReadOccurrences(t, scope));
 		return set;
@@ -852,7 +851,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException {
+	public Collection<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadItemIdentifiers();
 		stmt.setLong(1, Long.parseLong(c.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
@@ -868,7 +867,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t) throws SQLException {
+	public Collection<IName> doReadNames(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadNames();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toNames(t, stmt.executeQuery(), "id");
@@ -877,7 +876,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, ITopic type) throws SQLException {
+	public Collection<IName> doReadNames(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -887,7 +886,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws SQLException {
+	public Collection<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -898,7 +897,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, IScope scope) throws SQLException {
+	public Collection<IName> doReadNames(ITopic t, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -908,7 +907,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t) throws SQLException {
+	public Collection<IOccurrence> doReadOccurrences(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadOccurrences();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toOccurrences(t, stmt.executeQuery(), "id");
@@ -917,7 +916,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException {
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -927,7 +926,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws SQLException {
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -938,7 +937,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws SQLException {
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -991,7 +990,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadRoleTypes(IAssociation association) throws SQLException {
+	public Collection<ITopic> doReadRoleTypes(IAssociation association) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRoleTypes();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		return Jdbc2Construct.toTopics(association.getTopicMap(), stmt.executeQuery(), "id_type");
@@ -1000,7 +999,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(IAssociation association) throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(IAssociation association) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRoles();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		return Jdbc2Construct.toRoles(association, stmt.executeQuery(), "id");
@@ -1009,7 +1008,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRolesWithType();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1019,7 +1018,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player) throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(ITopic player) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRoles();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		return Jdbc2Construct.toRoles(player.getTopicMap(), stmt.executeQuery(), "id", "id_parent");
@@ -1028,7 +1027,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRolesWithType();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1038,7 +1037,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRolesWithTypeAndAssociationType();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1078,7 +1077,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws SQLException {
+	public Collection<ILocator> doReadSubjectIdentifiers(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadSubjectIdentifiers();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
@@ -1087,7 +1086,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadSubjectLocators(ITopic t) throws SQLException {
+	public Collection<ILocator> doReadSubjectLocators(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadSubjectLocators();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
@@ -1096,7 +1095,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadSuptertypes(ITopic t) throws SQLException {
+	public Collection<ITopic> doReadSuptertypes(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadSupertypes();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
@@ -1133,7 +1132,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTopics(ITopicMap t) throws SQLException {
+	public Collection<ITopic> doReadTopics(ITopicMap t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadTopics();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id");
@@ -1142,7 +1141,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException {
+	public Collection<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadTopicsWithType();
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id_instance");
@@ -1160,7 +1159,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTypes(ITopic t) throws SQLException {
+	public Collection<ITopic> doReadTypes(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadTypes();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id_type");
@@ -1195,7 +1194,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IVariant> doReadVariants(IName n) throws SQLException {
+	public Collection<IVariant> doReadVariants(IName n) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadVariants();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		return Jdbc2Construct.toVariants(n, stmt.executeQuery(), "id");
@@ -1204,7 +1203,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IVariant> doReadVariants(IName n, IScope scope) throws SQLException {
+	public Collection<IVariant> doReadVariants(IName n, IScope scope) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadVariantsWithScope();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -1246,7 +1245,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public void doRemoveScope(IScopable s, ITopic theme) throws SQLException {
 		IScope oldScope = doReadScope(s);
-		Set<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
+		Collection<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
 		themes.remove(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
 		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
@@ -2210,7 +2209,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ILocator> getItemIdentifiers(ITopicMap topicMap) throws SQLException {
+	public Collection<ILocator> getItemIdentifiers(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectItemIdentifiers();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
@@ -2220,7 +2219,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ILocator> getSubjectIdentifiers(ITopicMap topicMap) throws SQLException {
+	public Collection<ILocator> getSubjectIdentifiers(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectIdentifiers();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
@@ -2229,7 +2228,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ILocator> getSubjectLocators(ITopicMap topicMap) throws SQLException {
+	public Collection<ILocator> getSubjectLocators(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectLocators();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
@@ -2238,7 +2237,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByIdentitifer();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
@@ -2250,8 +2249,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		stmt.setLong(6, topicMapId);
 		stmt.setString(7, pattern);
 		ResultSet rs = stmt.executeQuery();
-		Set<IConstruct> set = HashUtil.getHashSet();
-		Set<Long> ids = HashUtil.getHashSet();
+		Collection<IConstruct> set = HashUtil.getHashSet();
+		Collection<Long> ids = HashUtil.getHashSet();
 		while (rs.next()) {
 			if (rs.getString("type").equalsIgnoreCase("t")) {
 				set.add(new TopicImpl(new JdbcIdentity(rs.getString("id")), topicMap));
@@ -2269,18 +2268,18 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByItemIdentitifer();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		stmt.setString(3, "^" + regExp + "$");
-		Set<Long> ids = HashUtil.getHashSet();
+		Collection<Long> ids = HashUtil.getHashSet();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			ids.add(rs.getLong("id_construct"));
 		}
 		rs.close();
-		Set<IConstruct> set = HashUtil.getHashSet();
+		Collection<IConstruct> set = HashUtil.getHashSet();
 		for (Long id : ids) {
 			set.add(doReadConstruct(topicMap, Long.toString(id), false));
 		}
@@ -2290,7 +2289,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp) throws SQLException {
+	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectIdentitifer();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");
@@ -2300,7 +2299,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp) throws SQLException {
+	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectLocator();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");

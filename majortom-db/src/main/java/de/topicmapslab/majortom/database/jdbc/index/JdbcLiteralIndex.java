@@ -30,8 +30,9 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
@@ -47,7 +48,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
+public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements ILiteralIndex {
 
 	/**
 	 * @param store
@@ -323,7 +324,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value) {
+	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -342,7 +343,7 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance) {
+	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -385,8 +386,8 @@ public class JdbcLiteralIndex extends JdbcIndex implements ILiteralIndex {
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(),
-					DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME), XmlSchemeDatatypes.XSD_DATETIME));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
+					XmlSchemeDatatypes.XSD_DATETIME));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

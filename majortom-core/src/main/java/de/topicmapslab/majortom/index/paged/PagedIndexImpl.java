@@ -13,38 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.inmemory.index.paged;
+package de.topicmapslab.majortom.index.paged;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.tmapi.index.Index;
 
-import de.topicmapslab.majortom.inmemory.index.InMemoryIndex;
-import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
- * special in-memory index supporting paging
+ * special index implementation supporting paging
  * 
  * @author Sven Krosse
  * 
  * @param <T>
+ *            the topic map store class
+ * @param <E>
  *            the type of the dependent parent index
  */
-public abstract class InMemoryPagedIndex<T extends Index> extends InMemoryIndex implements ITopicMapListener {
+public abstract class PagedIndexImpl<T extends ITopicMapStore, E extends Index> extends IndexImpl<T> implements ITopicMapListener {
 
 	/**
 	 * the reference of the parent index
 	 */
-	private final T parentIndex;
+	private final E parentIndex;
 
 	/**
 	 * 
 	 * @param store
 	 * @param parentIndex
 	 */
-	public InMemoryPagedIndex(InMemoryTopicMapStore store, T parentIndex) {
+	public PagedIndexImpl(T store, E parentIndex) {
 		super(store);
 		this.parentIndex = parentIndex;
 	}
@@ -54,7 +56,7 @@ public abstract class InMemoryPagedIndex<T extends Index> extends InMemoryIndex 
 	 * 
 	 * @return the parent index
 	 */
-	protected final T getParentIndex() {
+	protected final E getParentIndex() {
 		return parentIndex;
 	}
 
@@ -89,7 +91,7 @@ public abstract class InMemoryPagedIndex<T extends Index> extends InMemoryIndex 
 	 *            the limit
 	 * @return an two-
 	 */
-	protected final <E> List<E> secureSubList(List<E> list, int offset, int limit) {
+	protected final <X> List<X> secureSubList(List<X> list, int offset, int limit) {
 		int from = offset;
 		if (from < 0) {
 			from = 0;

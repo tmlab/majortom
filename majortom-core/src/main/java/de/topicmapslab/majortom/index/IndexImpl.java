@@ -13,28 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/**
- * 
- */
-package de.topicmapslab.majortom.database.jdbc.index;
+package de.topicmapslab.majortom.index;
 
+import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.index.Index;
 
-import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class JdbcIndex implements Index {
-
-	private boolean open = false;
-	private final JdbcTopicMapStore store;
+public abstract class IndexImpl<T extends ITopicMapStore> implements Index {
 
 	/**
-	 * 
+	 * the parent store
 	 */
-	public JdbcIndex(final JdbcTopicMapStore store) {
+	private final T store;
+	/**
+	 * opening flag
+	 */
+	private boolean open = false;
+
+	/**
+	 * constructor
+	 * 
+	 * @param store
+	 *            the store instance
+	 */
+	public IndexImpl(T store) {
 		this.store = store;
 	}
 
@@ -42,7 +49,7 @@ public class JdbcIndex implements Index {
 	 * {@inheritDoc}
 	 */
 	public void close() {
-		this.open = false;
+		open = false;
 	}
 
 	/**
@@ -63,22 +70,25 @@ public class JdbcIndex implements Index {
 	 * {@inheritDoc}
 	 */
 	public void open() {
-		this.open = true;
+		open = true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void reindex() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
 		// NOTHING TO DO
 	}
 
 	/**
 	 * Returns the internal store reference
 	 * 
-	 * @return the store the store reference
+	 * @return the store
 	 */
-	public JdbcTopicMapStore getStore() {
+	protected T getStore() {
 		return store;
 	}
 

@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import de.topicmapslab.majortom.core.AssociationImpl;
 import de.topicmapslab.majortom.core.AssociationRoleImpl;
@@ -41,6 +40,7 @@ import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyTopic;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
+import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
@@ -50,6 +50,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.revision.RevisionChangeImpl;
@@ -150,8 +151,8 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static Set<IAssociation> toAssociations(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
-		Set<IAssociation> set = HashUtil.getHashSet();
+	public static List<IAssociation> toAssociations(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+		List<IAssociation> set = HashUtil.getList();
 		while (result.next()) {
 			set.add(new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap));
 		}
@@ -159,106 +160,123 @@ public class Jdbc2Construct {
 		return set;
 	}
 
-	public static Set<ITopic> toTopics(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
-		Set<ITopic> set = HashUtil.getHashSet();
+	public static List<ITopic> toTopics(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+		List<ITopic> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap));
+			list.add(new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IName> toNames(ITopic topic, ResultSet result, String column) throws SQLException {
-		Set<IName> set = HashUtil.getHashSet();
+	public static List<ICharacteristics> toCharacteristics(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<ICharacteristics> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new NameImpl(new JdbcIdentity(result.getString(column)), topic));
+			if ("n".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+				list
+						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
+								topicMap)));
+			} else {
+				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+			}
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IName> toNames(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
-		Set<IName> set = HashUtil.getHashSet();
+	public static List<IName> toNames(ITopic topic, ResultSet result, String column) throws SQLException {
+		List<IName> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new NameImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+			list.add(new NameImpl(new JdbcIdentity(result.getString(column)), topic));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IOccurrence> toOccurrences(ITopic topic, ResultSet result, String column) throws SQLException {
-		Set<IOccurrence> set = HashUtil.getHashSet();
+	public static List<IName> toNames(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+		List<IName> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic));
+			list.add(new NameImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IOccurrence> toOccurrences(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
-		Set<IOccurrence> set = HashUtil.getHashSet();
+	public static List<IOccurrence> toOccurrences(ITopic topic, ResultSet result, String column) throws SQLException {
+		List<IOccurrence> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+			list.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IVariant> toVariants(IName name, ResultSet result, String column) throws SQLException {
-		Set<IVariant> set = HashUtil.getHashSet();
+	public static List<IOccurrence> toOccurrences(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+		List<IOccurrence> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new VariantImpl(new JdbcIdentity(result.getString(column)), name));
+			list.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IVariant> toVariants(ITopicMap topicMap, ResultSet result) throws SQLException {
-		Set<IVariant> set = HashUtil.getHashSet();
+	public static List<IVariant> toVariants(IName name, ResultSet result, String column) throws SQLException {
+		List<IVariant> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(new JdbcIdentity(
+			list.add(new VariantImpl(new JdbcIdentity(result.getString(column)), name));
+		}
+		result.close();
+		return list;
+	}
+
+	public static List<IVariant> toVariants(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<IVariant> list = HashUtil.getList();
+		while (result.next()) {
+			list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(new JdbcIdentity(
 					result.getString(3)), topicMap))));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IVariant> toVariants(ITopicMap topicMap, ResultSet result, String column, String nameIdColumn, String topicIdColumn) throws SQLException {
-		Set<IVariant> set = HashUtil.getHashSet();
+	public static List<IVariant> toVariants(ITopicMap topicMap, ResultSet result, String column, String nameIdColumn, String topicIdColumn) throws SQLException {
+		List<IVariant> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new VariantImpl(new JdbcIdentity(result.getString(column)), new NameImpl(new JdbcIdentity(result.getString(nameIdColumn)), new TopicImpl(
+			list.add(new VariantImpl(new JdbcIdentity(result.getString(column)), new NameImpl(new JdbcIdentity(result.getString(nameIdColumn)), new TopicImpl(
 					new JdbcIdentity(result.getString(topicIdColumn)), topicMap))));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IAssociationRole> toRoles(IAssociation association, ResultSet result, String column) throws SQLException {
-		Set<IAssociationRole> set = HashUtil.getHashSet();
+	public static List<IAssociationRole> toRoles(IAssociation association, ResultSet result, String column) throws SQLException {
+		List<IAssociationRole> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association));
+			list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<IAssociationRole> toRoles(ITopicMap topicMap, ResultSet result, String column, String parentIdColumn) throws SQLException {
-		Set<IAssociationRole> set = HashUtil.getHashSet();
+	public static List<IAssociationRole> toRoles(ITopicMap topicMap, ResultSet result, String column, String parentIdColumn) throws SQLException {
+		List<IAssociationRole> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), new AssociationImpl(new JdbcIdentity(result.getString(parentIdColumn)),
-					topicMap)));
+			list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), new AssociationImpl(
+					new JdbcIdentity(result.getString(parentIdColumn)), topicMap)));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
-	public static Set<ILocator> toLocators(ResultSet result, String column) throws SQLException {
-		Set<ILocator> set = HashUtil.getHashSet();
+	public static List<ILocator> toLocators(ResultSet result, String column) throws SQLException {
+		List<ILocator> list = HashUtil.getList();
 		while (result.next()) {
-			set.add(new LocatorImpl(result.getString(column)));
+			list.add(new LocatorImpl(result.getString(column)));
 		}
 		result.close();
-		return set;
+		return list;
 	}
 
 	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs, IRevision parent) throws SQLException {

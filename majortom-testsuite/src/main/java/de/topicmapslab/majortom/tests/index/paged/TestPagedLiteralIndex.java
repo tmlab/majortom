@@ -52,7 +52,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getBooleans(boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getBooleans(boolean, int, int)}
 	 * .
 	 */
 	public void testGetBooleansBooleanIntInt() {
@@ -110,7 +110,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(java.lang.String, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(java.lang.String, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsStringIntInt() {
@@ -171,7 +171,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(org.tmapi.core.Locator, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(org.tmapi.core.Locator, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsLocatorIntInt() {
@@ -233,7 +233,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(java.lang.String, org.tmapi.core.Locator, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristics(java.lang.String, org.tmapi.core.Locator, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsStringLocatorIntInt() {
@@ -295,7 +295,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.lang.String, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.lang.String, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsMatchesStringIntInt() {
@@ -356,7 +356,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.lang.String, org.tmapi.core.Locator, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.lang.String, org.tmapi.core.Locator, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsMatchesStringLocatorIntInt() {
@@ -418,7 +418,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.util.regex.Pattern, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.util.regex.Pattern, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsMatchesPatternIntInt() {
@@ -481,7 +481,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.util.regex.Pattern, org.tmapi.core.Locator, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCharacteristicsMatches(java.util.regex.Pattern, org.tmapi.core.Locator, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsMatchesPatternLocatorIntInt() {
@@ -545,7 +545,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getCoordinates(de.topicmapslab.geotype.model.IGeoCoordinate, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getCoordinates(de.topicmapslab.geotype.model.IGeoCoordinate, int, int)}
 	 * .
 	 */
 	public void testGetCoordinatesIGeoCoordinateIntInt() {
@@ -606,7 +606,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getDatatypeAwares(de.topicmapslab.majortom.model.core.ILocator, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getDatatypeAwares(de.topicmapslab.majortom.model.core.ILocator, int, int)}
 	 * .
 	 */
 	public void testGetDatatypeAwaresILocatorIntInt() {
@@ -669,7 +669,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getDateTime(java.util.Calendar, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getDateTime(java.util.Calendar, int, int)}
 	 * .
 	 */
 	public void testGetDateTimeCalendarIntInt() {
@@ -728,7 +728,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getDateTime(java.util.Calendar, java.util.Calendar, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getDateTime(java.util.Calendar, java.util.Calendar, int, int)}
 	 * .
 	 */
 	public void testGetDateTimeCalendarCalendarIntInt() {
@@ -793,7 +793,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getDoubles(double, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getDoubles(double, int, int)}
 	 * .
 	 */
 	public void testGetDoublesDoubleIntInt() {
@@ -851,7 +851,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getDoubles(double, double, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getDoubles(double, double, int, int)}
 	 * .
 	 */
 	public void testGetDoublesDoubleDoubleIntInt() {
@@ -909,7 +909,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getFloats(float, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getFloats(float, int, int)}
 	 * .
 	 */
 	public void testGetFloatsFloatIntInt() {
@@ -967,7 +967,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getFloats(float, double, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getFloats(float, double, int, int)}
 	 * .
 	 */
 	public void testGetFloatsFloatDoubleIntInt() {
@@ -1025,7 +1025,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getIntegers(int, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getIntegers(int, int, int)}
 	 * .
 	 */
 	public void testGetIntegersIntIntInt() {
@@ -1083,7 +1083,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getIntegers(int, double, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getIntegers(int, double, int, int)}
 	 * .
 	 */
 	public void testGetIntegersIntDoubleIntInt() {
@@ -1141,7 +1141,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getLongs(long, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getLongs(long, int, int)}
 	 * .
 	 */
 	public void testGetLongsLongIntInt() {
@@ -1199,7 +1199,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getLongs(long, double, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getLongs(long, double, int, int)}
 	 * .
 	 */
 	public void testGetLongsLongDoubleIntInt() {
@@ -1257,7 +1257,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getNames(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getNames(int, int)}
 	 * .
 	 */
 	public void testGetNamesIntInt() {
@@ -1314,7 +1314,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getOccurrences(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getOccurrences(int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesIntInt() {
@@ -1371,7 +1371,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getUris(java.net.URI, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getUris(java.net.URI, int, int)}
 	 * .
 	 * 
 	 * @throws URISyntaxException
@@ -1432,7 +1432,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedLiteralIndex#getVariants(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedLiteralIndexImpl.index.paged.InMemoryPagedLiteralIndex#getVariants(int, int)}
 	 * .
 	 */
 	public void testGetVariantsIntInt() {

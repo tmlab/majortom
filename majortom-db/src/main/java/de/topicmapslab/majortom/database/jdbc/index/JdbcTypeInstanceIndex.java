@@ -30,6 +30,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
@@ -42,7 +43,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcTypeInstanceIndex extends JdbcIndex implements ITypeInstanceIndex {
+public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implements ITypeInstanceIndex {
 
 	/**
 	 * @param store

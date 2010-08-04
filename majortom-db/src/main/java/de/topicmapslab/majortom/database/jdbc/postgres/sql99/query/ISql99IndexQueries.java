@@ -46,17 +46,31 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_OCCURRENCETYPES = "SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ?  ;";
 
+			public static final String QUERY_SELECT_CHARACTERISTICTYPES = "SELECT DISTINCT id_type FROM ( SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ? UNION SELECT DISTINCT id_type FROM names WHERE id_topicmap = ? ) AS u;";
+
 			public static final String QUERY_SELECT_ROLETYPES = "SELECT DISTINCT id_type FROM roles WHERE id_topicmap = ?  ;";
 
 			public static final String QUERY_SELECT_TOPICTYPES = "SELECT DISTINCT id_type FROM rel_instance_of, topics WHERE id_topicmap = ? AND id = id_type   AND id_instance IN ( SELECT id FROM topics AS t WHERE t.id = id_instance );";
 
 			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?  ;";
 
+			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPES = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ;";
+
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_TYPE = "SELECT id, id_parent, type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_type = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_type = ? ) AS u;";
+
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_TYPES = "SELECT id, id_parent, type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_type IN ( SELECT unnest( ? ) ) UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_type IN ( SELECT unnest( ? ) ) ) AS u;";
+
 			public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type = ?  ;";
+
+			public static final String QUERY_SELECT_ROLES_BY_TYPES = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ;";
 
 			public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type = ?  ;";
 
+			public static final String QUERY_SELECT_NAMES_BY_TYPES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type IN ( SELECT unnest( ? ) )  ;";
+
 			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type = ?  ;";
+
+			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ;";
 
 			public static final String QUERY_SELECT_TOPIC_WITHOUT_TYPE = "SELECT id FROM topics WHERE id_topicmap = ? AND NOT id IN ( SELECT id_instance FROM rel_instance_of )   ";
 
@@ -68,12 +82,14 @@ public interface ISql99IndexQueries {
 		}
 
 		interface Paged {
-			
+
 			public static final String QUERY_SELECT_ASSOCIATIONTYPES = "SELECT DISTINCT id_type FROM associations WHERE id_topicmap = ? ORDER BY id_type OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_NAMETYPES = "SELECT DISTINCT id_type FROM names WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_OCCURRENCETYPES = "SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_CHARACTERISTICTYPES = "SELECT DISTINCT id_type FROM ( SELECT DISTINCT id_type FROM occurrences WHERE id_topicmap = ? UNION SELECT DISTINCT id_type FROM names WHERE id_topicmap = ? ) AS u ORDER BY id_type OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_ROLETYPES = "SELECT DISTINCT id_type FROM roles WHERE id_topicmap = ?   ORDER BY id_type OFFSET ? LIMIT ?;";
 
@@ -81,11 +97,23 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
 
+			public static final String QUERY_SELECT_ASSOCIATIONS_BY_TYPES = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_TYPE = "SELECT id, id_parent, type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_type = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_type = ? ) AS u ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_TYPES = "SELECT id, id_parent, type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_type IN ( SELECT unnest( ? ) ) UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_type IN ( SELECT unnest( ? ) ) ) AS u ORDER BY id OFFSET ? LIMIT ? ;";
+
 			public static final String QUERY_SELECT_ROLES_BY_TYPE = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_ROLES_BY_TYPES = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ORDER BY id OFFSET ? LIMIT ? ;";
 
 			public static final String QUERY_SELECT_NAMES_BY_TYPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
 
+			public static final String QUERY_SELECT_NAMES_BY_TYPES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND  id_type IN ( SELECT unnest( ? ) )  ORDER BY id OFFSET ? LIMIT ? ;";
+
 			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type = ?  ORDER BY id OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_OCCURRENCES_BY_TYPES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_type IN ( SELECT unnest( ? ) )  ORDER BY id OFFSET ? LIMIT ? ;";
 
 			public static final String QUERY_SELECT_TOPIC_WITHOUT_TYPE = "SELECT id FROM topics WHERE id_topicmap = ? AND NOT id IN ( SELECT id_instance FROM rel_instance_of )  ORDER BY id OFFSET ? LIMIT ?  ";
 
@@ -220,19 +248,39 @@ public interface ISql99IndexQueries {
 	 */
 	interface QueryIdentityIndex {
 
-		public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct;";
+		interface NonPaged {
 
-		public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
+			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct;";
 
-		public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
+			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
 
-		public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ?;";
+			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
 
-		public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ?;";
 
-		public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ;";
 
-		public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ;";
+			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ;";
+
+			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ;";
+		}
+
+		interface Paged {
+			
+			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct ORDER BY l.reference OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ? ;";
+
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id FROM ( SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ) AS u ORDER BY id OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ORDER BY id_construct OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ORDER BY id_topic OFFSET ? LIMIT ?;";
+
+			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ? ORDER BY id_topic OFFSET ? LIMIT ?;";
+		}
 
 	}
 

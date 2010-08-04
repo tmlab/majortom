@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.inmemory.index.paged;
+package de.topicmapslab.majortom.index.paged;
 
-import de.topicmapslab.majortom.index.paged.PagedScopeIndexImpl;
-import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
-import de.topicmapslab.majortom.model.index.IScopedIndex;
-import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
+import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
- * Implementation of {@link IPagedScopedIndex}
+ * Implementation of the in-memory {@link IPagedTransitiveTypeInstanceIndex}
+ * supporting paging
  * 
  * @author Sven Krosse
  * 
  */
-public class InMemoryPagedScopeIndex extends PagedScopeIndexImpl<InMemoryTopicMapStore> {
+public abstract class PagedTransitiveTypeInstanceIndexImpl<T extends ITopicMapStore> extends PagedTypeInstanceIndexImpl<T> {
 
 	/**
 	 * constructor
 	 * 
 	 * @param store
-	 *            the store
+	 *            the topic map store
 	 * @param parentIndex
-	 *            the parent index
+	 *            the parent {@link ITransitiveTypeInstanceIndex}
 	 */
-	public InMemoryPagedScopeIndex(InMemoryTopicMapStore store, IScopedIndex parentIndex) {
+	public PagedTransitiveTypeInstanceIndexImpl(T store, ITransitiveTypeInstanceIndex parentIndex) {
 		super(store, parentIndex);
 	}
 

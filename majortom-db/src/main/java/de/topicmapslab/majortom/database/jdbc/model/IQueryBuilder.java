@@ -225,17 +225,31 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQuerySelectOccurrenceTypes(boolean withLimit) throws SQLException;
 
+	public PreparedStatement getQuerySelectCharacteristicTypes(boolean withLimit) throws SQLException;
+	
 	public PreparedStatement getQuerySelectRoleTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectTopicTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectAssociationsByType(boolean withLimit) throws SQLException;
+	
+	public PreparedStatement getQuerySelectAssociationsByTypes(boolean withLimit) throws SQLException;
+
+	public PreparedStatement getQuerySelectCharacteristicsByType(boolean withLimit) throws SQLException;
+	
+	public PreparedStatement getQuerySelectCharacteristicsByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByType(boolean withLimit) throws SQLException;
 
+	public PreparedStatement getQuerySelectNamesByTypes(boolean withLimit) throws SQLException;
+
 	public PreparedStatement getQuerySelectOccurrencesByType(boolean withLimit) throws SQLException;
+	
+	public PreparedStatement getQuerySelectOccurrencesByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectRolesByType(boolean withLimit) throws SQLException;
+
+	public PreparedStatement getQuerySelectRolesByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all, boolean withLimit) throws SQLException;
 
@@ -343,19 +357,19 @@ public interface IQueryBuilder {
 
 	// IdentityIndex
 
-	public PreparedStatement getQuerySelectItemIdentifiers() throws SQLException;
+	public PreparedStatement getQuerySelectItemIdentifiers(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectSubjectIdentifiers() throws SQLException;
+	public PreparedStatement getQuerySelectSubjectIdentifiers(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectSubjectLocators() throws SQLException;
+	public PreparedStatement getQuerySelectSubjectLocators(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectConstructsByIdentitifer() throws SQLException;
+	public PreparedStatement getQuerySelectConstructsByIdentitifer(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectConstructsByItemIdentitifer() throws SQLException;
+	public PreparedStatement getQuerySelectConstructsByItemIdentitifer(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsBySubjectIdentitifer() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsBySubjectIdentitifer(boolean withLimit) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsBySubjectLocator() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsBySubjectLocator(boolean withLimit) throws SQLException;
 
 	// SupertypeSubtypeIndex
 

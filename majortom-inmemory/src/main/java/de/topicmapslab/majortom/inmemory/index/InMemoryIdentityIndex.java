@@ -11,6 +11,7 @@ import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
@@ -22,7 +23,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class InMemoryIdentityIndex extends InMemoryIndex implements IIdentityIndex {
+public class InMemoryIdentityIndex extends IndexImpl<InMemoryTopicMapStore> implements IIdentityIndex {
 
 	/**
 	 * constructor

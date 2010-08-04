@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -137,29 +136,29 @@ public interface IQueryProcessor {
 
 	public void doMergeTopicMaps(TopicMap context, TopicMap other) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopic t) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopic t) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws SQLException;
 
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws SQLException;
 
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException;
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException;
 
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws SQLException;
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws SQLException;
 
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException;
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws SQLException;
 
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws SQLException;
+	public Collection<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws SQLException;
 
 	public IConstruct doReadConstruct(ITopicMap t, String id, boolean lookupHistory) throws SQLException;
 
@@ -167,25 +166,25 @@ public interface IQueryProcessor {
 
 	public ILocator doReadDataType(IDatatypeAware d) throws SQLException;
 
-	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException;
+	public Collection<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException;
 
 	public ILocator doReadLocator(ITopicMap t) throws SQLException;
 
-	public Set<IName> doReadNames(ITopic t) throws SQLException;
+	public Collection<IName> doReadNames(ITopic t) throws SQLException;
 
-	public Set<IName> doReadNames(ITopic t, ITopic type) throws SQLException;
+	public Collection<IName> doReadNames(ITopic t, ITopic type) throws SQLException;
 
-	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws SQLException;
+	public Collection<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws SQLException;
 
-	public Set<IName> doReadNames(ITopic t, IScope scope) throws SQLException;
+	public Collection<IName> doReadNames(ITopic t, IScope scope) throws SQLException;
 
-	public Set<IOccurrence> doReadOccurrences(ITopic t) throws SQLException;
+	public Collection<IOccurrence> doReadOccurrences(ITopic t) throws SQLException;
 
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException;
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException;
 
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws SQLException;
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws SQLException;
 
-	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws SQLException;
+	public Collection<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws SQLException;
 
 	public ITopic doReadPlayer(IAssociationRole role) throws SQLException;
 
@@ -193,23 +192,23 @@ public interface IQueryProcessor {
 
 	public ITopic doReadReification(IReifiable r) throws SQLException;
 
-	public Set<IAssociationRole> doReadRoles(IAssociation association) throws SQLException;
+	public Collection<IAssociationRole> doReadRoles(IAssociation association) throws SQLException;
 
-	public Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException;
+	public Collection<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException;
 
-	public Set<IAssociationRole> doReadRoles(ITopic player) throws SQLException;
+	public Collection<IAssociationRole> doReadRoles(ITopic player) throws SQLException;
 
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws SQLException;
+	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws SQLException;
 
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws SQLException;
+	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws SQLException;
 
-	public Set<ITopic> doReadRoleTypes(IAssociation association) throws SQLException;
+	public Collection<ITopic> doReadRoleTypes(IAssociation association) throws SQLException;
 
-	public Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws SQLException;
+	public Collection<ILocator> doReadSubjectIdentifiers(ITopic t) throws SQLException;
 
-	public Set<ILocator> doReadSubjectLocators(ITopic t) throws SQLException;
+	public Collection<ILocator> doReadSubjectLocators(ITopic t) throws SQLException;
 
-	public Set<ITopic> doReadSuptertypes(ITopic t) throws SQLException;
+	public Collection<ITopic> doReadSuptertypes(ITopic t) throws SQLException;
 
 	public ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws SQLException;
 
@@ -228,13 +227,13 @@ public interface IQueryProcessor {
 	 */
 	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException;
 
-	public Set<ITopic> doReadTopics(ITopicMap t) throws SQLException;
+	public Collection<ITopic> doReadTopics(ITopicMap t) throws SQLException;
 
-	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException;
+	public Collection<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException;
 
 	public ITopic doReadType(ITypeable typed) throws SQLException;
 
-	public Set<ITopic> doReadTypes(ITopic t) throws SQLException;
+	public Collection<ITopic> doReadTypes(ITopic t) throws SQLException;
 
 	public IScope doReadScope(IScopable s) throws SQLException;
 
@@ -242,9 +241,9 @@ public interface IQueryProcessor {
 
 	public Object doReadValue(IDatatypeAware t) throws SQLException;
 
-	public Set<IVariant> doReadVariants(IName n) throws SQLException;
+	public Collection<IVariant> doReadVariants(IName n) throws SQLException;
 
-	public Set<IVariant> doReadVariants(IName n, IScope scope) throws SQLException;
+	public Collection<IVariant> doReadVariants(IName n, IScope scope) throws SQLException;
 
 	public void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException;
 
@@ -294,6 +293,8 @@ public interface IQueryProcessor {
 
 	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
+	public Collection<ITopic> getCharacteristicsTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
+	
 	public Collection<ITopic> getNameTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
 	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap, long offset, long limit) throws SQLException;
@@ -304,15 +305,27 @@ public interface IQueryProcessor {
 
 	public Collection<IAssociation> getAssociationsByType(ITopic type, long offset, long limit) throws SQLException;
 
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset, long limit) throws SQLException;
+	
+	public Collection<ICharacteristics> getCharacteristicsByType(ITopic type, long offset, long limit) throws SQLException;
+
+	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypes(Collection<T> types, long offset, long limit) throws SQLException;
+	
 	public Collection<IName> getNamesByType(ITopic type, long offset, long limit) throws SQLException;
+	
+	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrencesByType(ITopic type, long offset, long limit) throws SQLException;
+	
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit) throws SQLException;
 
 	public Collection<IAssociationRole> getRolesByType(ITopic type, long offset, long limit) throws SQLException;
+	
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit) throws SQLException;
 
 	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> type, boolean all, long offset, long limit) throws SQLException;
+	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all, long offset, long limit) throws SQLException;
 
 	// TransitiveTypeInstanceIndex
 
@@ -426,19 +439,19 @@ public interface IQueryProcessor {
 
 	// IdentityIndex
 
-	public Collection<ILocator> getItemIdentifiers(final ITopicMap topicMap) throws SQLException;
+	public Collection<ILocator> getItemIdentifiers(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ILocator> getSubjectIdentifiers(final ITopicMap topicMap) throws SQLException;
+	public Collection<ILocator> getSubjectIdentifiers(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ILocator> getSubjectLocators(final ITopicMap topicMap) throws SQLException;
+	public Collection<ILocator> getSubjectLocators(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<IConstruct> getConstructsByIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	public Collection<IConstruct> getConstructsByIdentitifer(final ITopicMap topicMap, final String regExp, long offset, long limit) throws SQLException;
 
-	public Collection<IConstruct> getConstructsByItemIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	public Collection<IConstruct> getConstructsByItemIdentitifer(final ITopicMap topicMap, final String regExp, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getTopicsBySubjectIdentitifer(final ITopicMap topicMap, final String regExp) throws SQLException;
+	public Collection<ITopic> getTopicsBySubjectIdentitifer(final ITopicMap topicMap, final String regExp, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getTopicsBySubjectLocator(final ITopicMap topicMap, final String regExp) throws SQLException;
+	public Collection<ITopic> getTopicsBySubjectLocator(final ITopicMap topicMap, final String regExp, long offset, long limit) throws SQLException;
 
 	// SupertypeSubtypeIndex
 

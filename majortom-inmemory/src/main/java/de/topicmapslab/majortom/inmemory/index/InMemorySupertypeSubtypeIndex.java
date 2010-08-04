@@ -22,6 +22,7 @@ import java.util.Set;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
@@ -33,7 +34,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class InMemorySupertypeSubtypeIndex extends InMemoryIndex implements ISupertypeSubtypeIndex {
+public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapStore> implements ISupertypeSubtypeIndex {
 
 	/**
 	 * constructor

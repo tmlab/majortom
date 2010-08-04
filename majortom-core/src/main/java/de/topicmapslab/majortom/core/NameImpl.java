@@ -303,7 +303,7 @@ public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfVariants() {
+	public long getNumberOfVariants() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();

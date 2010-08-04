@@ -162,7 +162,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation, IPag
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfRoles() {
+	public long getNumberOfRoles() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();

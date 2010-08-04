@@ -63,6 +63,6 @@ public interface IPagedName {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfVariants();
+	public long getNumberOfVariants();
 
 }

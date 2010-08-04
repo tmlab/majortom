@@ -55,7 +55,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociationScopes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociationScopes(int, int)}
 	 * .
 	 */
 	public void testGetAssociationScopesIntInt() {
@@ -120,7 +120,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociationThemes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociationThemes(int, int)}
 	 * .
 	 */
 	public void testGetAssociationThemesIntInt() {
@@ -178,7 +178,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociations(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociations(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsTopicIntInt() {
@@ -244,7 +244,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociations(org.tmapi.core.Topic[], boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociations(org.tmapi.core.Topic[], boolean, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsTopicArrayBooleanIntInt() {
@@ -358,7 +358,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociations(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociations(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsIScopeIntInt() {
@@ -427,7 +427,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getAssociations(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getAssociations(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsCollectionOfIScopeIntInt() {
@@ -508,7 +508,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getCharacteristics(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getCharacteristics(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsIScopeIntInt() {
@@ -581,7 +581,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNameScopes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNameScopes(int, int)}
 	 * .
 	 */
 	public void testGetNameScopesIntInt() {
@@ -646,7 +646,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNameThemes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNameThemes(int, int)}
 	 * .
 	 */
 	public void testGetNameThemesIntInt() {
@@ -704,7 +704,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNames(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNames(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetNamesTopicIntInt() {
@@ -760,7 +760,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNames(org.tmapi.core.Topic[], boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNames(org.tmapi.core.Topic[], boolean, int, int)}
 	 * .
 	 */
 	public void testGetNamesTopicArrayBooleanIntInt() {
@@ -863,7 +863,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNames(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNames(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetNamesIScopeIntInt() {
@@ -923,7 +923,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getNames(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getNames(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetNamesCollectionOfIScopeIntInt() {
@@ -994,7 +994,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrenceScopes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrenceScopes(int, int)}
 	 * .
 	 */
 	public void testGetOccurrenceScopesIntInt() {
@@ -1059,7 +1059,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrenceThemes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrenceThemes(int, int)}
 	 * .
 	 */
 	public void testGetOccurrenceThemesIntInt() {
@@ -1117,7 +1117,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrences(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrences(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesTopicIntInt() {
@@ -1173,7 +1173,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrences(org.tmapi.core.Topic[], boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrences(org.tmapi.core.Topic[], boolean, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesTopicArrayBooleanIntInt() {
@@ -1276,7 +1276,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrences(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrences(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesIScopeIntInt() {
@@ -1336,7 +1336,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getOccurrences(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getOccurrences(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesCollectionOfIScopeIntInt() {
@@ -1407,7 +1407,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getScopables(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getScopables(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetScopablesIScopeIntInt() {
@@ -1484,7 +1484,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getVariantScopes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getVariantScopes(int, int)}
 	 * .
 	 */
 	public void testGetVariantScopesIntInt() {
@@ -1549,7 +1549,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getVariantThemes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getVariantThemes(int, int)}
 	 * .
 	 */
 	public void testGetVariantThemesIntInt() {
@@ -1607,7 +1607,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getVariants(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getVariants(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetVariantsTopicIntInt() {
@@ -1663,7 +1663,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getVariants(org.tmapi.core.Topic[], boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getVariants(org.tmapi.core.Topic[], boolean, int, int)}
 	 * .
 	 */
 	public void testGetVariantsTopicArrayBooleanIntInt() {
@@ -1763,7 +1763,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedScopeIndex#getVariants(de.topicmapslab.majortom.model.core.IScope, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedScopeIndexImpl.index.paged.InMemoryPagedScopeIndex#getVariants(de.topicmapslab.majortom.model.core.IScope, int, int)}
 	 * .
 	 */
 	public void testGetVariantsIScopeIntInt() {

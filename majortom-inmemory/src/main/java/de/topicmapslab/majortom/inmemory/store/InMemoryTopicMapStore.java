@@ -1396,7 +1396,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void modifyType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		if (!getTopicTypeStore().getTypes(t).contains(type)) {
-			getTopicTypeStore().addType(t, type);			
+			getTopicTypeStore().addType(t, type);
 			if (revision != null) {
 				/*
 				 * notify listeners
@@ -2766,6 +2766,10 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				removeConstruct(scopable, cascade, revision);
 			}
 		}
+		// for (IScopable scopable : getScopeStore().removeScopes(topic)) {
+		// removeConstruct(scopable, cascade, revision);
+		// }
+
 		/*
 		 * remove scopes
 		 */
@@ -3349,7 +3353,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
@@ -3373,9 +3377,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the characteristicsStore
 	 */
 	protected CharacteristicsStore createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
-		if (this.characteristicsStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new CharacteristicsStore(xsdString);
 	}
 
@@ -3388,9 +3389,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the scopeStore
 	 */
 	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
-		if (this.scopeStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new ScopeStore();
 	}
 
@@ -3403,9 +3401,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the associationStore
 	 */
 	protected AssociationStore createAssociationStore(InMemoryTopicMapStore store) {
-		if (this.associationStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new AssociationStore();
 	}
 
@@ -3418,9 +3413,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the identityStore
 	 */
 	protected IdentityStore createIdentityStore(InMemoryTopicMapStore store) {
-		if (this.identityStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new IdentityStore(store);
 	}
 
@@ -3433,9 +3425,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the reificationStore
 	 */
 	protected ReificationStore createReificationStore(InMemoryTopicMapStore store) {
-		if (this.reificationStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new ReificationStore(store);
 	}
 
@@ -3448,9 +3437,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the topicTypeStore
 	 */
 	protected TopicTypeStore createTopicTypeStore(InMemoryTopicMapStore store) {
-		if (this.topicTypeStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new TopicTypeStore(store);
 	}
 
@@ -3463,9 +3449,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the typedStore
 	 */
 	protected TypedStore createTypedStore(InMemoryTopicMapStore store) {
-		if (this.typedStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new TypedStore(store);
 	}
 
@@ -3478,9 +3461,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @return the revision store
 	 */
 	protected RevisionStore createRevisionStore(InMemoryTopicMapStore store) {
-		if (this.revisionStore != null) {
-			throw new TopicMapStoreException("Store already initialized!");
-		}
 		return new RevisionStore(store);
 	}
 
@@ -3629,14 +3609,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		}
 		queue.clear();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void removedDuplicates() {
 		InMemoryMergeUtils.removeDuplicates(this, getTopicMap());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

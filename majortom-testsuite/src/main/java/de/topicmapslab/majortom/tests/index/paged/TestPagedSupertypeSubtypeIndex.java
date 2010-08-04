@@ -38,7 +38,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getDirectSubtypes(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getDirectSubtypes(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetDirectSubtypesTopicIntInt() {
@@ -97,7 +97,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getDirectSupertypes(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getDirectSupertypes(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetDirectSupertypesTopicIntInt() {
@@ -156,7 +156,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(int, int)}
 	 * .
 	 */
 	public void testGetSubtypesIntInt() {
@@ -213,7 +213,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetSubtypesTopicIntInt() {
@@ -275,7 +275,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetSubtypesCollectionOfQextendsTopicIntInt() {
@@ -346,7 +346,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(java.util.Collection, boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSubtypes(java.util.Collection, boolean, int, int)}
 	 * .
 	 */
 	public void testGetSubtypesCollectionOfQextendsTopicBooleanIntInt() {
@@ -410,7 +410,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(int, int)}
 	 * .
 	 */
 	public void testGetSupertypesIntInt() {
@@ -467,7 +467,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetSupertypesTopicIntInt() {
@@ -529,7 +529,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetSupertypesCollectionOfQextendsTopicIntInt() {
@@ -600,7 +600,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(java.util.Collection, boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedSupertypeSubtypeIndexImpl.index.paged.InMemoryPagedSupertypeSubtypeIndex#getSupertypes(java.util.Collection, boolean, int, int)}
 	 * .
 	 */
 	public void testGetSupertypesCollectionOfQextendsTopicBooleanIntInt() {

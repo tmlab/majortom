@@ -29,6 +29,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 import org.w3c.dom.Document;
 
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.IndexException;
@@ -43,7 +44,7 @@ import de.topicmapslab.majortom.model.revision.IRevision;
  * @author Sven Krosse
  * 
  */
-public class InMemoryRevisionIndex extends InMemoryIndex implements IRevisionIndex {
+public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> implements IRevisionIndex {
 
 	/**
 	 * @param store

@@ -27,6 +27,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.IndexException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -39,7 +40,7 @@ import de.topicmapslab.majortom.revision.RevisionImpl;
  * @author Sven Krosse
  * 
  */
-public class JdbcRevisionIndex extends JdbcIndex implements IRevisionIndex {
+public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements IRevisionIndex {
 
 	/**
 	 * constructor

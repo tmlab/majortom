@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import org.tmapi.core.Locator;
 import org.tmapi.index.LiteralIndex;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
@@ -253,7 +253,7 @@ public interface ILiteralIndex extends LiteralIndex {
 	 *            the value
 	 * @return the characteristics with the geographic coordinates
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value);
+	public Collection<ICharacteristics> getCoordinates(final Wgs84Coordinate value);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a
@@ -266,7 +266,7 @@ public interface ILiteralIndex extends LiteralIndex {
 	 *            the maximum distance
 	 * @return the characteristics
 	 */
-	public Collection<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance);
+	public Collection<ICharacteristics> getCoordinates(final Wgs84Coordinate value, final double deviance);
 
 	/**
 	 * Returns all variants and occurrences with the given data-type.
