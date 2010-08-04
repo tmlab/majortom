@@ -72,7 +72,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the topic whose number of types should be returned
 	 * @return the number of types
 	 */
-	public int getNumberOfTypes(Topic topic);
+	public long getNumberOfTypes(Topic topic);
 
 	/**
 	 * Returns all supetypes of the given topic as a list within the given
@@ -113,7 +113,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the topic whose number of supertypes should be returned
 	 * @return the number of supertypes
 	 */
-	public int getNumberOfSupertypes(Topic topic);
+	public long getNumberOfSupertypes(Topic topic);
 
 	/**
 	 * Returns all names of the given topic as a list within the given range.
@@ -152,7 +152,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the topic whose number of names should be returned
 	 * @return the number of names
 	 */
-	public int getNumberOfNames(Topic topic);
+	public long getNumberOfNames(Topic topic);
 
 	/**
 	 * Returns all occurrences of the given topic as a list within the given
@@ -193,7 +193,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the topic whose number of occurrences should be returned
 	 * @return the number of occurrences
 	 */
-	public int getNumberOfOccurrences(Topic topic);
+	public long getNumberOfOccurrences(Topic topic);
 
 	/**
 	 * Returns all variants of the given name as a list within the given range.
@@ -232,7 +232,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the name whose number of variants should be returned
 	 * @return the number of variants
 	 */
-	public int getNumberOfVariants(Name name);
+	public long getNumberOfVariants(Name name);
 
 	/**
 	 * Returns all roles of the given association as a list within the given
@@ -273,7 +273,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            the association whose number of roles should be returned
 	 * @return the number of roles
 	 */
-	public int getNumberOfRoles(Association association);
+	public long getNumberOfRoles(Association association);
 
 	/**
 	 * Returns all associations played by given topic as a list within the given
@@ -315,7 +315,7 @@ public interface IPagedConstructIndex extends Index {
 	 *            returned
 	 * @return the number of played associations
 	 */
-	public int getNumberOfAssociationsPlayed(Topic topic);
+	public long getNumberOfAssociationsPlayed(Topic topic);
 
 	/**
 	 * Returns all roles played by given topic as a list within the given range.
@@ -354,6 +354,6 @@ public interface IPagedConstructIndex extends Index {
 	 *            the topic whose number of played roles should be returned
 	 * @return the number of played roles
 	 */
-	public int getNumberOfRolesPlayed(Topic topic);
+	public long getNumberOfRolesPlayed(Topic topic);
 
 }

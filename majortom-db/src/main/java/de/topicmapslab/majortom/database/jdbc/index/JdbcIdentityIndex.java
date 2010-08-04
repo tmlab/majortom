@@ -30,6 +30,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -38,7 +39,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
+public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements IIdentityIndex {
 
 	/**
 	 * constructor
@@ -192,7 +193,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor().getConstructsByIdentitifer(getStore().getTopicMap(), regExp));
+			constructs.addAll(getStore().getProcessor().getConstructsByIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -225,7 +226,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor().getConstructsByItemIdentitifer(getStore().getTopicMap(), regExp));
+			constructs.addAll(getStore().getProcessor().getConstructsByItemIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -254,7 +255,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getItemIdentifiers(getStore().getTopicMap()));
+			locators.addAll(getStore().getProcessor().getItemIdentifiers(getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -270,7 +271,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectIdentifiers(getStore().getTopicMap()));
+			locators.addAll(getStore().getProcessor().getSubjectIdentifiers(getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -286,7 +287,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectLocators(getStore().getTopicMap()));
+			locators.addAll(getStore().getProcessor().getSubjectLocators(getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -357,7 +358,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getTopicsBySubjectIdentitifer(getStore().getTopicMap(), regExp));
+			topics.addAll(getStore().getProcessor().getTopicsBySubjectIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -389,7 +390,7 @@ public class JdbcIdentityIndex extends JdbcIndex implements IIdentityIndex {
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getTopicsBySubjectLocator(getStore().getTopicMap(), regExp));
+			topics.addAll(getStore().getProcessor().getTopicsBySubjectLocator(getStore().getTopicMap(), regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

@@ -31,6 +31,7 @@ import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -41,7 +42,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcScopedIndex extends JdbcIndex implements IScopedIndex {
+public class JdbcScopedIndex extends IndexImpl<JdbcTopicMapStore> implements IScopedIndex {
 
 	/**
 	 * @param store

@@ -64,5 +64,5 @@ public interface IPagedAssociation {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfRoles();
+	public long getNumberOfRoles();
 }

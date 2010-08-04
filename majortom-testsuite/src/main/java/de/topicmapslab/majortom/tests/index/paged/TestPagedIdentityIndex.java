@@ -42,7 +42,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getConstructsByIdentifier(java.util.regex.Pattern, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getConstructsByIdentifier(java.util.regex.Pattern, int, int)}
 	 * .
 	 */
 	public void testGetConstructsByIdentifierPatternIntInt() {
@@ -176,7 +176,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getConstructsByItemIdentifier(java.util.regex.Pattern, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getConstructsByItemIdentifier(java.util.regex.Pattern, int, int)}
 	 * .
 	 */
 	public void testGetConstructsByItemIdentifierPatternIntInt() {
@@ -287,7 +287,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getItemIdentifiers(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getItemIdentifiers(int, int)}
 	 * .
 	 */
 	public void testGetItemIdentifiersIntInt() {
@@ -367,7 +367,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getSubjectIdentifiers(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getSubjectIdentifiers(int, int)}
 	 * .
 	 */
 	public void testGetSubjectIdentifiersIntInt() {
@@ -434,7 +434,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getSubjectLocators(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getSubjectLocators(int, int)}
 	 * .
 	 */
 	public void testGetSubjectLocatorsIntInt() {
@@ -501,7 +501,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getTopicsBySubjectIdentifier(java.util.regex.Pattern, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getTopicsBySubjectIdentifier(java.util.regex.Pattern, int, int)}
 	 * .
 	 */
 	public void testGetTopicsBySubjectIdentifierPatternIntInt() {
@@ -594,7 +594,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedIdentityIndex#getTopicsBySubjectLocator(java.util.regex.Pattern, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedIdentityIndexImpl.index.paged.InMemoryPagedIdentityIndex#getTopicsBySubjectLocator(java.util.regex.Pattern, int, int)}
 	 * .
 	 */
 	public void testGetTopicsBySubjectLocatorPatternIntInt() {

@@ -539,10 +539,10 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	
 	public void testClear() {
 		try {
-			readTopicMap("toytm-with-unary-assoc.xtm");
-			
+			readTopicMap("toytm-with-unary-assoc.xtm");			
 			topicMap.clear();
-			
+			assertEquals(0, topicMap.getAssociations().size());
+			assertEquals(0, topicMap.getTopics().size());			
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}

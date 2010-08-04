@@ -67,7 +67,7 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfTypes();
+	public long getNumberOfTypes();
 
 	/**
 	 * Returns all supertypes of the topic as a list within the given range.
@@ -106,7 +106,7 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfSupertypes();
+	public long getNumberOfSupertypes();
 
 	/**
 	 * Returns all names of the topic as a list within the given range.
@@ -145,7 +145,7 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfNames();
+	public long getNumberOfNames();
 
 	/**
 	 * Returns all occurrences of the topic as a list within the given range.
@@ -184,7 +184,7 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfOccurrences();
+	public long getNumberOfOccurrences();
 
 	/**
 	 * Returns all associations played by the topic as a list within the given
@@ -225,7 +225,7 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfAssociationsPlayed();
+	public long getNumberOfAssociationsPlayed();
 
 	/**
 	 * Returns all roles played by the topic as a list within the given range.
@@ -264,6 +264,6 @@ public interface IPagedTopic {
 	 * @throws UnsupportedOperationException
 	 *             thrown if paging is not supported by the underlying store
 	 */
-	public int getNumberOfRolesPlayed();
+	public long getNumberOfRolesPlayed();
 
 }

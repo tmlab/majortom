@@ -3004,7 +3004,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
+	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3021,7 +3021,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
+	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3038,7 +3038,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
+	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3055,7 +3055,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
+	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3072,7 +3072,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
+	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3089,7 +3089,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
+	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
@@ -3107,7 +3107,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
+	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
@@ -3121,7 +3121,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
@@ -3135,7 +3135,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
@@ -3149,7 +3149,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
+	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
@@ -3163,7 +3163,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}

@@ -676,6 +676,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IAssociation> associations = HashUtil.getHashSet(getScopedAssociations(s));
 				for (IAssociation a : associations) {
+					removeScope(a);
 					setScope(a, newScope);
 				}
 				/*
@@ -683,6 +684,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IName> names = HashUtil.getHashSet(getScopedNames(s));
 				for (IName n : names) {
+					removeScope(n);
 					setScope(n, newScope);
 				}
 				/*
@@ -690,6 +692,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IOccurrence> occurrences = HashUtil.getHashSet(getScopedOccurrences(s));
 				for (IOccurrence o : occurrences) {
+					removeScope(o);
 					setScope(o, newScope);
 				}
 				/*
@@ -697,6 +700,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IVariant> variants = HashUtil.getHashSet(getScopedVariants(s));
 				for (IVariant v : variants) {
+					removeScope(v);
 					setScope(v, newScope);
 				}
 			}

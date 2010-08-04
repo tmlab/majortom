@@ -44,7 +44,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getAssociationTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getAssociationTypes(int, int)}
 	 * .
 	 */
 	public void testGetAssociationTypesIntInt() {
@@ -101,7 +101,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getAssociations(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getAssociations(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsTopicIntInt() {
@@ -166,7 +166,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getAssociations(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getAssociations(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetAssociationsCollectionOfQextendsTopicIntInt() {
@@ -240,7 +240,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristicTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristicTypes(int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicTypesIntInt() {
@@ -301,7 +301,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristics(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristics(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsTopicIntInt() {
@@ -371,7 +371,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristics(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getCharacteristics(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetCharacteristicsCollectionOfQextendsTopicIntInt() {
@@ -445,7 +445,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getNameTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getNameTypes(int, int)}
 	 * .
 	 */
 	public void testGetNameTypesIntInt() {
@@ -503,7 +503,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getNames(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getNames(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetNamesTopicIntInt() {
@@ -568,7 +568,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getNames(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getNames(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetNamesCollectionOfQextendsTopicIntInt() {
@@ -642,7 +642,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrenceTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrenceTypes(int, int)}
 	 * .
 	 */
 	public void testGetOccurrenceTypesIntInt() {
@@ -699,7 +699,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrences(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrences(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesTopicIntInt() {
@@ -764,7 +764,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrences(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getOccurrences(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetOccurrencesCollectionOfQextendsTopicIntInt() {
@@ -838,7 +838,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getRoleTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getRoleTypes(int, int)}
 	 * .
 	 */
 	public void testGetRoleTypesIntInt() {
@@ -895,7 +895,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getRoles(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getRoles(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetRolesTopicIntInt() {
@@ -960,7 +960,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getRoles(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getRoles(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetRolesCollectionOfQextendsTopicIntInt() {
@@ -1034,7 +1034,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getTopicTypes(int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getTopicTypes(int, int)}
 	 * .
 	 */
 	public void testGetTopicTypesIntInt() {
@@ -1091,7 +1091,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(org.tmapi.core.Topic, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(org.tmapi.core.Topic, int, int)}
 	 * .
 	 */
 	public void testGetTopicsTopicIntInt() {
@@ -1149,7 +1149,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(java.util.Collection, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(java.util.Collection, int, int)}
 	 * .
 	 */
 	public void testGetTopicsCollectionOfTopicIntInt() {
@@ -1216,7 +1216,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(java.util.Collection, boolean, int, int)}
+	 * {@link de.topicmapslab.majortom.PagedTypeInstanceIndexImpl.index.paged.InMemoryPagedTypeInstanceIndex#getTopics(java.util.Collection, boolean, int, int)}
 	 * .
 	 */
 	public void testGetTopicsCollectionOfTopicBooleanIntInt() {

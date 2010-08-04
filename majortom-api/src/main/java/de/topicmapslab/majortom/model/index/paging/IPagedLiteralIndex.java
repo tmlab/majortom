@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import org.tmapi.core.Locator;
 import org.tmapi.index.Index;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
@@ -705,7 +705,7 @@ public interface IPagedLiteralIndex extends Index {
 	 * @return the characteristics within the given range with the geographic
 	 *         coordinates
 	 */
-	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit);
+	public List<ICharacteristics> getCoordinates(final Wgs84Coordinate value, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the given value and the datatype tm:geo.
@@ -722,7 +722,7 @@ public interface IPagedLiteralIndex extends Index {
 	 * @return the characteristics within the given range with the geographic
 	 *         coordinates
 	 */
-	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, int offset, int limit, Comparator<ICharacteristics> comparator);
+	public List<ICharacteristics> getCoordinates(final Wgs84Coordinate value, int offset, int limit, Comparator<ICharacteristics> comparator);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a
@@ -740,7 +740,7 @@ public interface IPagedLiteralIndex extends Index {
 	 *            the maximum count of returned values
 	 * @return the characteristics within the given range
 	 */
-	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit);
+	public List<ICharacteristics> getCoordinates(final Wgs84Coordinate value, final double deviance, int offset, int limit);
 
 	/**
 	 * Returns all characteristics with the datatype xsd:integer and a
@@ -760,7 +760,7 @@ public interface IPagedLiteralIndex extends Index {
 	 *            the comparator
 	 * @return the characteristics within the given range
 	 */
-	public List<ICharacteristics> getCoordinates(final IGeoCoordinate value, final double deviance, int offset, int limit,
+	public List<ICharacteristics> getCoordinates(final Wgs84Coordinate value, final double deviance, int offset, int limit,
 			Comparator<ICharacteristics> comparator);
 
 	/**

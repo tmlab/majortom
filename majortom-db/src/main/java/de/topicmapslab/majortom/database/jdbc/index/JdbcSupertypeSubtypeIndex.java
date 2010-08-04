@@ -27,6 +27,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
@@ -36,7 +37,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcSupertypeSubtypeIndex extends JdbcIndex implements ISupertypeSubtypeIndex {
+public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> implements ISupertypeSubtypeIndex {
 
 	/**
 	 * constructor

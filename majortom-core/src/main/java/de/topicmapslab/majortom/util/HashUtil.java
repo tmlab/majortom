@@ -236,7 +236,7 @@ public class HashUtil {
 	 *            the type of arguments
 	 * @return the created list
 	 */
-	public static <T> List<T> getList(Collection<T> initial) {
+	public static <T> List<T> getList(Collection<? extends T> initial) {
 		if (initial == null) {
 			return getList();
 		}

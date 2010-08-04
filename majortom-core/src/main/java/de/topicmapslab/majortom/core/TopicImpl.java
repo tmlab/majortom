@@ -872,7 +872,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfAssociationsPlayed() {
+	public long getNumberOfAssociationsPlayed() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();
@@ -883,7 +883,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfNames() {
+	public long getNumberOfNames() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();
@@ -894,7 +894,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfOccurrences() {
+	public long getNumberOfOccurrences() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();
@@ -905,7 +905,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfRolesPlayed() {
+	public long getNumberOfRolesPlayed() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();
@@ -916,7 +916,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfSupertypes() {
+	public long getNumberOfSupertypes() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();
@@ -927,7 +927,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumberOfTypes() {
+	public long getNumberOfTypes() {
 		IPagedConstructIndex index = getTopicMap().getIndex(IPagedConstructIndex.class);
 		if (!index.isOpen()) {
 			index.open();

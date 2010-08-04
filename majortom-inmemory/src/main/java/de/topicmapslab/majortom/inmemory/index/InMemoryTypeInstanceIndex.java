@@ -27,6 +27,7 @@ import org.tmapi.core.Role;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -39,7 +40,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class InMemoryTypeInstanceIndex extends InMemoryIndex implements ITypeInstanceIndex {
+public class InMemoryTypeInstanceIndex extends IndexImpl<InMemoryTopicMapStore> implements ITypeInstanceIndex {
 
 	/**
 	 * constructor

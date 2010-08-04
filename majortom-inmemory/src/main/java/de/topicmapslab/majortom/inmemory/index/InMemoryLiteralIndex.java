@@ -15,7 +15,8 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
+import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
+import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
@@ -34,7 +35,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex {
+public class InMemoryLiteralIndex extends IndexImpl<InMemoryTopicMapStore> implements ILiteralIndex {
 
 	/**
 	 * constructor
@@ -227,7 +228,7 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value) {
+	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -251,7 +252,7 @@ public class InMemoryLiteralIndex extends InMemoryIndex implements ILiteralIndex
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(IGeoCoordinate value, double deviance) {
+	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
