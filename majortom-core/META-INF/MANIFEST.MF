@@ -1,0 +1,27 @@
+Bundle-SymbolicName: de.topicmapslab.majortom.core;singleton=true
+Bundle-Version: 1.1.1.SNAPSHOT
+Bundle-Name: MajorToM Core
+Provide-Package: de.topicmapslab.majortom.comparator,
+ de.topicmapslab.majortom.core,
+ de.topicmapslab.majortom.executable,
+ de.topicmapslab.majortom.io,
+ de.topicmapslab.majortom.revision,
+ de.topicmapslab.majortom.revision.core,
+ de.topicmapslab.majortom.store,
+ de.topicmapslab.majortom.transaction,
+ de.topicmapslab.majortom.util
+Import-Package: de.topicmapslab.geotype.mercator,
+ de.topicmapslab.geotype.model,
+ de.topicmapslab.geotype.wgs84,
+ de.topicmapslab.majortom.model.core,
+ de.topicmapslab.majortom.model.core.paged,
+ de.topicmapslab.majortom.model.event,
+ de.topicmapslab.majortom.model.exception,
+ de.topicmapslab.majortom.model.index,
+ de.topicmapslab.majortom.model.index.paging,
+ de.topicmapslab.majortom.model.revision,
+ de.topicmapslab.majortom.model.store,
+ de.topicmapslab.majortom.model.transaction,
+ junit.framework;optional=true;specification-version="3.8.0",
+ org.tmapi.core;specification-version="2.0.2",
+ org.tmapi.index;specification-version="2.0.2"
