@@ -15,8 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.store;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +27,8 @@ import org.tmapi.core.TopicMapSystemFactory;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreFactory;
+import de.topicmapslab.majortom.osgi.MajorToMActivator;
 
 /**
  * Factory implementation creating a topic map store object from given runtime
@@ -50,69 +50,118 @@ public class TopicMapStoreFactory {
 	 * @throws TopicMapStoreException thrown if the topic map store cannot
 	 *             create
 	 */
-	@SuppressWarnings("unchecked")
 	public static ITopicMapStore createTopicMapStore(final TopicMapSystemFactory factory, final ITopicMapSystem topicMapSystem, Locator topicMapBaseLocator) throws TopicMapStoreException {
 		Object className = factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS);
 		if (className == null) {
-			ITopicMapStore store = loadWithJavaServices();
-			factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, store.getClass().getName());
+			ITopicMapStoreFactory storeFac = loadWithJavaServices();
+			factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, storeFac.getClassName());
+			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
 			store.setTopicMapSystem(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
 			return store;
 		}
 
 		try {
-			Class<? extends ITopicMapStore> clazz = (Class<? extends ITopicMapStore>) Class.forName(className.toString());
-			Constructor<? extends ITopicMapStore> constructor = clazz.getConstructor(ITopicMapSystem.class);
-			ITopicMapStore store = constructor.newInstance(topicMapSystem);
+			ITopicMapStoreFactory storeFac = getStoreFactories().get(className.toString());
+
+			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
 			return store;
-		} catch (ClassNotFoundException e) {
+		} catch (RuntimeException e) {
 			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (InstantiationException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (IllegalAccessException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (SecurityException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (NoSuchMethodException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (IllegalArgumentException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} catch (InvocationTargetException e) {
-			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		}
+		} 
 	}
 
 	private final static List<String> defaultTopicMapStores = new LinkedList<String>();
+	private static Map<String, ITopicMapStoreFactory> storeFactories;
+	
 	static{
 		defaultTopicMapStores.add("de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore");
 	}
 	
-	private static ITopicMapStore loadWithJavaServices() {
-		ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class);
-		loader.reload();
-		Map<String, ITopicMapStore> stores = new HashMap<String, ITopicMapStore>();
-		int count = 0;
-		for (ITopicMapStore store : loader) {
-			stores.put(store.getClass().getName(), store);
-			count++;
-		}
-		switch (count) {
+	private static ITopicMapStoreFactory loadWithJavaServices() {
+		initStoreFactories();
+		switch (getStoreFactories().size()) {
 		case 0: {
 			throw new TopicMapStoreException("Implementation class of topic map store not set.");
 		}
 		case 1: {
-			return stores.values().iterator().next();
+			return getStoreFactories().values().iterator().next();
 		}
 		default: {
 			for ( String defaultTopicMapStore : defaultTopicMapStores ){
-				if ( stores.containsKey(defaultTopicMapStore)){
-					return stores.get(defaultTopicMapStore);
+				if ( getStoreFactories().containsKey(defaultTopicMapStore)){
+					return getStoreFactories().get(defaultTopicMapStore);
 				}
 			}
-			return stores.values().iterator().next();
+			return getStoreFactories().values().iterator().next();
 		}
+		}
+	}
+
+	public static Map<String, ITopicMapStoreFactory> getStoreFactories() {
+		if (storeFactories==null)
+			initStoreFactories();
+		return storeFactories;
+	}
+	
+	/**
+	 * loads the store list either from the bundle activator or from the servies
+	 */
+	private static void initStoreFactories() {
+		Iterable<ITopicMapStoreFactory> list = null;
+		// try to load the extension points via OSGi
+		try {
+			// check if we are in an OSGi environment if not an exception is thrown
+			Class.forName("org.osgi.framework.Bundle");
+			if (MajorToMActivator.getDefault()!=null) {
+				list = MajorToMActivator.getDefault().getTopicMapStoreFactories();
+				storeFactories = new HashMap<String, ITopicMapStoreFactory>();
+	
+				for (ITopicMapStoreFactory fac : list) {
+					storeFactories.put(fac.getClassName(), fac);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// we do nothing, cause we are not in an OSGi environment
+		}
+		
+		if (list==null) {
+			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class);
+			loader.reload();
+			storeFactories = new HashMap<String, ITopicMapStoreFactory>();
+
+			for (ITopicMapStore store : loader) {
+				storeFactories.put(store.getClass().getName(), new TMStoreFactory(store));
+			}
+		}
+		
+		
+	}
+	
+	private static class TMStoreFactory implements ITopicMapStoreFactory {
+		private final ITopicMapStore store;
+		
+		public TMStoreFactory(ITopicMapStore store) {
+			this.store = store;
+		}
+
+		@Override
+		public ITopicMapStore newTopicMapStore(ITopicMapSystem tmSystem) {
+			ITopicMapStore newStore;
+			try {
+				newStore = store.getClass().getConstructor().newInstance();
+				newStore.setTopicMapSystem(tmSystem);
+				return newStore;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public String getClassName() {
+			return store.getClass().getName();
 		}
 	}
 }
