@@ -22,9 +22,11 @@ import de.topicmapslab.majortom.database.transaction.TransactionTopicMapStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IReifiable;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
+import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 
 /**
@@ -43,7 +45,7 @@ public class ReificationCache implements IDataStore {
 	/**
 	 * internal storage map if reifier-reified relation
 	 */
-	private TreeBidiMap removedReification;
+	private TreeBidiMap removedReifications;
 
 	/**
 	 * the parent store
@@ -67,8 +69,8 @@ public class ReificationCache implements IDataStore {
 		if (reification != null) {
 			reification.clear();
 		}
-		if (removedReification != null) {
-			removedReification.clear();
+		if (removedReifications != null) {
+			removedReifications.clear();
 		}
 	}
 
@@ -83,33 +85,18 @@ public class ReificationCache implements IDataStore {
 		if (isRemovedConstruct(reifiable)) {
 			throw new TopicMapStoreException("Construct is already marked as removed!");
 		}
-		if (reification == null || !reification.containsValue(reifiable)) {
-			ITopic reifier = redirectGetReifier(reifiable);
-			/*
-			 * check if reification already removed
-			 */
-			if (removedReification != null && removedReification.containsKey(reifier) && removedReification.get(reifier).equals(reifiable)) {
+		ITopic reifier = null;
+		if ( reification != null && reification.containsValue(reifiable)){
+			reifier = (ITopic) reification.getKey(reifiable);
+		}
+		if (reifier == null) {
+			reifier = getTransactionStore().getIdentityStore().createLazyStub((ITopic) getTopicMapStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
+			if (isRemovedConstruct(reifier)) {
 				return null;
 			}
-		}
-		return (ITopic) reification.getKey(reifiable);
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the results
-	 * 
-	 * @param reifiable
-	 *            the reifiable
-	 * @return the reifier or <code>null</code>
-	 */
-	protected ITopic redirectGetReifier(final IReifiable reifiable) {
-		ITopic reifier = (ITopic) getTopicMapStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION);
-		if (reification == null) {
-			reification = new TreeBidiMap();
-		}
-		if (reifier != null) {
-			reification.put(reifier, reifiable);
+			if (reifier != null && removedReifications != null && reifiable.getId().equals(removedReifications.get(reifier.getId()))) {
+				return null;
+			}
 		}
 		return reifier;
 	}
@@ -122,35 +109,23 @@ public class ReificationCache implements IDataStore {
 	 * @return the reified item or <code>null</code>
 	 */
 	public IReifiable getReified(final ITopic reifier) {
-		if (reification == null || !reification.containsKey(reifier)) {
-			IReifiable reified = redirectGetReified(reifier);
-			/*
-			 * check if reification already removed
-			 */
-			if (removedReification != null && removedReification.containsKey(reifier) && removedReification.get(reifier).equals(reified)) {
+		if (isRemovedConstruct(reifier)) {
+			throw new ConstructRemovedException(reifier);
+		}
+		IReifiable reifiable = null;
+		if ( reification != null && reification.containsKey(reifier)){
+			reifiable = (IReifiable) reification.get(reifier);
+		}
+		if (reifiable == null) {
+			reifiable =  getTransactionStore().getIdentityStore().createLazyStub((IReifiable) getTopicMapStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
+			if (isRemovedConstruct(reifiable)) {
+				return null;
+			}
+			if (reifiable != null && removedReifications != null && reifier.getId().equals(removedReifications.getKey(reifiable.getId()))) {
 				return null;
 			}
 		}
-		return (IReifiable) reification.get(reifier);
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the results
-	 * 
-	 * @param reifier
-	 *            the reifier
-	 * @return the reified construct or <code>null</code>
-	 */
-	protected IReifiable redirectGetReified(final ITopic reifier) {
-		IReifiable reified = (IReifiable) getTopicMapStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION);
-		if (reification == null) {
-			reification = new TreeBidiMap();
-		}
-		if (reified != null) {
-			reification.put(reifier, reified);
-		}
-		return reified;
+		return reifiable;
 	}
 
 	/**
@@ -163,37 +138,37 @@ public class ReificationCache implements IDataStore {
 	 * @return the old reifier or <code>null</code>
 	 */
 	public ITopic setReifier(final IReifiable reifiable, final ITopic reifier) {
-		/*
-		 * load values into cache
-		 */
-		ITopic r = getReifier(reifiable);
-		if (reifier != null) {
-			getReified(reifier);
-			if (reification.containsKey(reifier)) {
+		if (isRemovedConstruct(reifiable)) {
+			throw new ConstructRemovedException(reifiable);
+		}
+		if (isRemovedConstruct(reifier)) {
+			throw new ConstructRemovedException(reifier);
+		}
+		ITopic oldReifier = storeOldReification(reifiable);
+		if (reification == null) {
+			reification = new TreeBidiMap();
+		}
 
-				/*
-				 * get old reification
-				 */
-				IReifiable old = (IReifiable) reification.get(reifier);
-				/*
-				 * check if old reifier is the same like new reifier
-				 */
-				if (!reifiable.equals(old)) {
-					throw new ModelConstraintException(reifiable, "Reifier is already bound to another reified item.");
-				}
-				return reifier;
+		if (reifier != null && reification.containsKey(reifier)) {
+			/*
+			 * get old reification
+			 */
+			IReifiable old = (IReifiable) reification.get(reifier);
+			/*
+			 * check if old reifier is the same like new reifier
+			 */
+			if (!old.equals(reifiable)) {
+				throw new ModelConstraintException(reifiable, "Reifier is already bound to another reified item.");
 			}
+			return reifier;
 		}
 
 		/*
 		 * remove old reification
 		 */
+		ITopic r = getReifier(reifiable);
 		if (r != null) {
 			reification.removeValue(reifiable);
-			if (removedReification == null) {
-				removedReification = new TreeBidiMap();
-			}
-			removedReification.put(r, reifiable);
 		}
 		/*
 		 * set new reification
@@ -201,7 +176,7 @@ public class ReificationCache implements IDataStore {
 		if (reifier != null) {
 			reification.put(reifier, reifiable);
 		}
-		return r;
+		return oldReifier;
 	}
 
 	/**
@@ -211,15 +186,12 @@ public class ReificationCache implements IDataStore {
 	 *            reified item
 	 */
 	public void removeReification(final IReifiable reifiable) {
+		storeOldReification(reifiable);
 		/*
 		 * check if reifiable is stored by the current map
 		 */
 		if (reification != null && reification.containsValue(reifiable)) {
-			ITopic reifier = (ITopic) reification.removeValue(reifiable);
-			if (removedReification == null) {
-				removedReification = new TreeBidiMap();
-			}
-			removedReification.put(reifier, reifiable);
+			reification.removeValue(reifiable);
 		}
 	}
 
@@ -231,31 +203,73 @@ public class ReificationCache implements IDataStore {
 	 * @return the reified item
 	 */
 	public IReifiable removeReifier(final ITopic reifier) {
+		storeOldReification(reifier);
 		/*
 		 * check if reifiable is stored by the current map
 		 */
 		if (reification != null && reification.containsKey(reifier)) {
-			IReifiable r = (IReifiable) reification.remove(reifier);
-			if (removedReification == null) {
-				removedReification = new TreeBidiMap();
-			}
-			removedReification.put(reifier, r);
-			return r;
+			return (IReifiable) reification.remove(reifier);
 		}
 		return null;
+	}
+	
+	/**
+	 * Internal method to store old reification
+	 * 
+	 * @param reifiable
+	 *            the reifiable
+	 * @return the old reifier
+	 */
+	private ITopic storeOldReification(IReifiable reifiable) {
+		ITopic nonTransactionReifier = null;
+		if (reifiable instanceof ITransaction) {
+			nonTransactionReifier = getTransactionStore().getIdentityStore().createLazyStub(
+					(ITopic) getTopicMapStore().doRead(reifiable.getTopicMap(), TopicMapStoreParameterType.REIFICATION));
+		} else {
+			nonTransactionReifier = getTransactionStore().getIdentityStore().createLazyStub(
+					(ITopic) getTopicMapStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
+		}
+
+		if (nonTransactionReifier != null) {
+			if (removedReifications == null || !removedReifications.containsKey(nonTransactionReifier.getId())) {
+				if (removedReifications == null) {
+					removedReifications = new TreeBidiMap();
+				}
+				removedReifications.put(nonTransactionReifier.getId(), reifiable.getId());
+			}
+		}
+		return getReifier(reifiable);
+	}
+
+	/**
+	 * Internal method to store old reification
+	 * 
+	 * @param reifier
+	 *            the reifier
+	 * @return the old reifiable
+	 */
+	private IReifiable storeOldReification(ITopic reifier) {
+		IReifiable nonTransactionReifiable = getTransactionStore().getIdentityStore().createLazyStub(
+				(IReifiable) getTopicMapStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
+		if (nonTransactionReifiable != null) {
+			if (removedReifications == null || !removedReifications.containsValue(nonTransactionReifiable.getId())) {
+				if (removedReifications == null) {
+					removedReifications = new TreeBidiMap();
+				}
+				removedReifications.put(reifier.getId(), nonTransactionReifiable.getId());
+			}
+		}
+		return getReified(reifier);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
-		IReifiable reifiable = getReified(topic);
-		getReified(replacement);
-		if (reification != null && reification.containsKey(topic)) {
-			if (reification.containsKey(replacement)) {
-				throw new ModelConstraintException((ITopic) reification.getKey(replacement), "Duplicated reifier!");
-			}
-			reification.put(replacement, reifiable);
+		IReifiable reifiable = storeOldReification(topic);
+		removeReifier(topic);
+		if (reifiable != null) {
+			setReifier(reifiable, replacement);
 		}
 	}
 
