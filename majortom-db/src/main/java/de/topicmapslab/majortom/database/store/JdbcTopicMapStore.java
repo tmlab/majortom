@@ -53,6 +53,7 @@ import de.topicmapslab.majortom.database.jdbc.index.paged.JdbcPagedTransitiveTyp
 import de.topicmapslab.majortom.database.jdbc.index.paged.JdbcPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.transaction.InMemoryTransaction;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -1919,7 +1920,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITransaction createTransaction() {
-		throw new UnsupportedOperationException();
+		return new InMemoryTransaction(getTopicMap());
 	}
 
 	/**
@@ -2042,7 +2043,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean isTransactable() {
-		return false;
+		return true;
 	}
 
 	/**

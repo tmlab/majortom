@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.transaction.TransactionSuite;
+package de.topicmapslab.majortom.database.transaction;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class MaJorToMTestSuite {
+public enum TransactionOperation {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
-		// $JUnit-BEGIN$
-		// suite.addTest(CoreTestSuite.suite());
-		// suite.addTest(EventTestSuite.suite());
-		// suite.addTest(IndexTestSuite.suite());
-		// suite.addTest(MergeTestSuite.suite());
-		// suite.addTest(IOTestSuite.suite());
-		// suite.addTest(RevisionTestSuite.suite());
-		suite.addTest(TransactionSuite.suite());
-		// suite.addTest(org.tmapi.AllTests.suite());
-		// suite.addTest(CanonicalTestSuite.suite());
-		// $JUnit-END$
-		return suite;
-	}
+	MODIFY,
+
+	REMOVE,
+
+	MERGE,
+
+	CREATE;
 
 }

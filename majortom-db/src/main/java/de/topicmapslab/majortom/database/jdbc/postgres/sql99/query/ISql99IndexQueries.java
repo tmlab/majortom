@@ -273,7 +273,7 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id FROM ( SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ) AS u ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id, type FROM ( SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ) AS u ORDER BY id OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ORDER BY id_construct OFFSET ? LIMIT ?;";
 
@@ -300,7 +300,7 @@ public interface ISql99IndexQueries {
 
 		public static final String QUERY_SELECT_SUBTYPES = "SELECT id_subtype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
 
-		public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id AS id FROM rel_kind_of WHERE id_subtype = ?;";
+		public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?;";
 
 		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
 
