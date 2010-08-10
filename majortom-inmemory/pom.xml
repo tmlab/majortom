@@ -5,8 +5,23 @@
 	<artifactId>majortom-inMemory</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
 	<build>
-		<plugins>
 
+		<!-- copying the resources form the root of the directory, necessary for 
+			OSGi testing in eclipse -->
+		<resources>
+			<resource>
+				<directory>META-INF</directory>
+				<targetPath>${project.build.directory}/classes/META-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>OSGI-INF</directory>
+				<targetPath>${project.build.directory}/classes/OSGI-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

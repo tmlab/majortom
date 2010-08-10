@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Name: MajorToM In Memory
 Bundle-SymbolicName: de.topicmapslab.majortom.inmemory;singleton=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Version: 1.1.1.SNAPSHOT
 Provide-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.index,
@@ -52,6 +51,6 @@ Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.store.revision.readonly,
  de.topicmapslab.majortom.inmemory.transaction,
  de.topicmapslab.majortom.inmemory.transaction.internal
-Bundle-Activator: de.topicmapslab.majortom.inmemory.osgi.InMemoryActivator
+Service-Component: OSGI-INF/inmemorytopicmapstore.xml
 Bundle-ActivationPolicy: lazy
-Service-Components: OSGI-INF/topicmapstore.xml
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
