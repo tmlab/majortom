@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store.internal;
 
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -472,7 +473,11 @@ public class CharacteristicsStore implements IDataStore {
 		if (values == null || !values.containsKey(obj)) {
 			throw new TopicMapStoreException("Unknown object!");
 		}
-		return values.get(obj);
+		Object value = values.get(obj);
+		if ( value instanceof Calendar ){
+			return cloneCalendar((Calendar)value);
+		}
+		return value;
 	}
 
 	/**
@@ -506,7 +511,11 @@ public class CharacteristicsStore implements IDataStore {
 		} else {
 			oldValue = values.get(obj);
 		}
-		values.put(obj, value);
+		if (value instanceof Calendar) {
+			values.put(obj, cloneCalendar((Calendar)value));
+		}else{
+			values.put(obj, value);
+		}
 		return oldValue;
 	}
 
@@ -557,6 +566,23 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	protected final boolean containsDatatype(IDatatypeAware aware) {
 		return dataTypes != null && dataTypes.containsKey(aware);
+	}
+
+	/**
+	 * Method clones the given calendar object, because the {@link Calendar} is
+	 * not immutable.
+	 * 
+	 * @param calendar
+	 *            the calendar
+	 * @return the clone
+	 */
+	private Calendar cloneCalendar(Calendar calendar) {
+		Calendar c = Calendar.getInstance();
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			c.set(field, calendar.get(field));
+		}
+		return c;
 	}
 
 }
