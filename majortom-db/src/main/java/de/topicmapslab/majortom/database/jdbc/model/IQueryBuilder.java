@@ -30,7 +30,7 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 public interface IQueryBuilder {
 
 	public void close();
-	
+
 	// ****************
 	// * INSERT QUERY *
 	// ****************
@@ -63,7 +63,7 @@ public interface IQueryBuilder {
 	// * SELECT QUERY *
 	// ****************
 
-	public PreparedStatement getQueryReadPlayedAssociation() throws SQLException;
+	public PreparedStatement getQueryReadPlayedAssociation(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadPlayedAssociationWithType() throws SQLException;
 
@@ -87,7 +87,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadItemIdentifiers() throws SQLException;
 
-	public PreparedStatement getQueryReadNames() throws SQLException;
+	public PreparedStatement getQueryReadNames(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadNamesWithType() throws SQLException;
 
@@ -95,7 +95,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadNamesWithScope() throws SQLException;
 
-	public PreparedStatement getQueryReadOccurrences() throws SQLException;
+	public PreparedStatement getQueryReadOccurrences(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadOccurrencesWithType() throws SQLException;
 
@@ -109,11 +109,11 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadReified() throws SQLException;
 
-	public PreparedStatement getQueryReadRoles() throws SQLException;
+	public PreparedStatement getQueryReadRoles(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadRolesWithType() throws SQLException;
 
-	public PreparedStatement getQueryReadPlayedRoles() throws SQLException;
+	public PreparedStatement getQueryReadPlayedRoles(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadPlayedRolesWithType() throws SQLException;
 
@@ -141,7 +141,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadType() throws SQLException;
 
-	public PreparedStatement getQueryReadTypes() throws SQLException;
+	public PreparedStatement getQueryReadTypes(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadScope() throws SQLException;
 
@@ -149,7 +149,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadValue() throws SQLException;
 
-	public PreparedStatement getQueryReadVariants() throws SQLException;
+	public PreparedStatement getQueryReadVariants(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadVariantsWithScope() throws SQLException;
 
@@ -219,6 +219,24 @@ public interface IQueryBuilder {
 	// * INDEX QUERY *
 	// ***************
 
+	// PagedConstructIndex
+
+	public PreparedStatement getQueryReadNumberOfNames() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfOccurrences() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfTypes() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfTopicsWithoutSupertypes() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfAssociationsPlayed() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfRolesPlayed() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfVariants() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfRoles() throws SQLException;
+
 	// TypeInstanceIndex
 
 	public PreparedStatement getQuerySelectAssociationTypes(boolean withLimit) throws SQLException;
@@ -228,17 +246,17 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrenceTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectCharacteristicTypes(boolean withLimit) throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectRoleTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectTopicTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectAssociationsByType(boolean withLimit) throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectAssociationsByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectCharacteristicsByType(boolean withLimit) throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectCharacteristicsByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByType(boolean withLimit) throws SQLException;
@@ -246,7 +264,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectNamesByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByType(boolean withLimit) throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectOccurrencesByTypes(boolean withLimit) throws SQLException;
 
 	public PreparedStatement getQuerySelectRolesByType(boolean withLimit) throws SQLException;
@@ -256,7 +274,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectTopicsByTypes(long typeCount, boolean all, boolean withLimit) throws SQLException;
 
 	// TransitiveTypeInstanceIndex
-	
+
 	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException;
@@ -264,15 +282,15 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException;
 
 	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException;
-	
+
 	// ScopedIndex
 
 	public PreparedStatement getQueryScopesByThemesUsed() throws SQLException;
-	
+
 	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException;
 
 	public PreparedStatement getQueryAssociationsByScopes(long scopeCount) throws SQLException;
@@ -380,19 +398,19 @@ public interface IQueryBuilder {
 	public PreparedStatement getQuerySelectTopicsWithoutSubtypes() throws SQLException;
 
 	public PreparedStatement getQuerySelectSubtypesOfTopic() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSubtypesOfTopics() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSubtypes() throws SQLException;
 
 	public PreparedStatement getQuerySelectDirectSupertypes() throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsWithoutSupertypes() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsWithoutSupertypes(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectSupertypesOfTopic() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSupertypesOfTopics() throws SQLException;
-	
+
 	public PreparedStatement getQuerySelectSupertypes() throws SQLException;
 
 	// *****************
@@ -400,50 +418,50 @@ public interface IQueryBuilder {
 	// *****************
 
 	public PreparedStatement getPerformMergeTopics() throws SQLException;
-	
+
 	// ******************
 	// * REVISION QUERY *
 	// ******************
-	
+
 	public PreparedStatement getQueryCreateRevision() throws SQLException;
-	
+
 	public PreparedStatement getQueryCreateChangeset() throws SQLException;
-	
+
 	public PreparedStatement getQueryCreateTag() throws SQLException;
-	
+
 	public PreparedStatement getQueryCreateMetadata() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadFirstRevision() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadLastRevision() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadPastRevision() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadFutureRevision() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadChangesets() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadLastModification() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadLastModificationOfTopic() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadTimestamp() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadRevisionsByTopic() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadRevisionsByAssociationType() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadChangesetsByTopic() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadChangesetsByAssociationType() throws SQLException;
 
 	public PreparedStatement getQueryReadRevisionByTag() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadRevisionByTimestamp() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadMetadata() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadMetadataByKey() throws SQLException;
-	
+
 	public PreparedStatement getQueryReadHistory() throws SQLException;
 }

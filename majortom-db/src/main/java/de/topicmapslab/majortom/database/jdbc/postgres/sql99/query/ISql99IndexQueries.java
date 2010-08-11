@@ -266,7 +266,7 @@ public interface ISql99IndexQueries {
 		}
 
 		interface Paged {
-			
+
 			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct ORDER BY l.reference OFFSET ? LIMIT ? ;";
 
 			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ?;";
@@ -292,21 +292,33 @@ public interface ISql99IndexQueries {
 	 */
 	interface QuerySupertypeSubtypeIndex {
 
-		public static final String QUERY_SELECT_DIRECT_SUBTYPES = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
+		interface NonPaged {
 
-		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_supertype FROM rel_kind_of ) AND id_parent = ?;";
+			public static final String QUERY_SELECT_DIRECT_SUBTYPES = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
 
-		public static final String QUERY_SELECT_SUBTYPES_OF_TOPIC = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
+			public static final String QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_supertype FROM rel_kind_of ) AND id_parent = ?;";
 
-		public static final String QUERY_SELECT_SUBTYPES = "SELECT id_subtype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
+			public static final String QUERY_SELECT_SUBTYPES_OF_TOPIC = "SELECT id_subtype AS id FROM rel_kind_of WHERE id_supertype = ?;";
 
-		public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?;";
+			public static final String QUERY_SELECT_SUBTYPES = "SELECT id_subtype FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
 
-		public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
+			public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?;";
 
-		public static final String QUERY_SELECT_SUPERTYPES_OF_TOPIC = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?";
+			public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
 
-		public static final String QUERY_SELECT_SUPERTYPES = "SELECT id_supertype AS id  FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
+			public static final String QUERY_SELECT_SUPERTYPES_OF_TOPIC = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ?";
+
+			public static final String QUERY_SELECT_SUPERTYPES = "SELECT id_supertype AS id  FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ?;";
+
+		}
+
+		interface Paged {
+			
+			public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ? ORDER BY id OFFSET ? LIMIT ?;";
+			
+			public static final String QUERY_SELECT_NUMBER_OF_TOPICS_WITHOUT_SUPERTYPES = "SELECT COUNT(id) AS number FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";
+			
+		}
 
 	}
 }

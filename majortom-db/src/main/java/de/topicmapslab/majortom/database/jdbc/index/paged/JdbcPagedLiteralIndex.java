@@ -19,6 +19,7 @@
 package de.topicmapslab.majortom.database.jdbc.index.paged;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +35,10 @@ import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
+import de.topicmapslab.majortom.util.HashUtil;
+import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -69,7 +73,13 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetBooleans(boolean value, int offset, int limit) {
-		return super.doGetBooleans(value, offset, limit);
+		try {
+			List<ICharacteristics> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
