@@ -38,6 +38,9 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 public class TestCanonicals extends MaJorToMTestCase {
 
 	public void testNameDuplicates() {
+		if ( topicMap.getStore().supportRevisionManagement()){
+			topicMap.getStore().enableRevisionManagement(false);
+		}
 		ITopic type = createTopic();
 		ITopic[] topics = new ITopic[20];
 		for (int i = 0; i < topics.length; i++) {
@@ -58,7 +61,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
-		topicMap.removedDuplicates();
+		topicMap.removeDuplicates();
 		assertEquals("reifier should be merged", topics.length * 12 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
 			assertEquals("Number of names should be 1", 1, topics[i].getNames().size());
@@ -69,6 +72,9 @@ public class TestCanonicals extends MaJorToMTestCase {
 	}
 
 	public void testVariantDuplicates() {
+		if ( topicMap.getStore().supportRevisionManagement()){
+			topicMap.getStore().enableRevisionManagement(false);
+		}
 		ITopic type = createTopic();
 		ITopic parent = createTopic();
 		ITopic theme = createTopic();
@@ -90,7 +96,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
-		topicMap.removedDuplicates();
+		topicMap.removeDuplicates();
 		assertEquals("Number of names should be 1", 1, parent.getNames().size());
 		Name n = parent.getNames().iterator().next();
 		assertEquals("Name should have one variants!", 1, n.getVariants().size());
@@ -118,7 +124,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
-		topicMap.removedDuplicates();
+		topicMap.removeDuplicates();
 		assertEquals("reifier should be merged", topics.length * 2 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
 			assertEquals("Number of occurrences should be 1", 1, topics[i].getOccurrences().size());
@@ -148,7 +154,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
-		topicMap.removedDuplicates();
+		topicMap.removeDuplicates();
 		assertEquals(1, topicMap.getAssociations().size());
 		assertEquals("reifier should be merged", 3, topicMap.getTopics().size());
 		Association a = topicMap.getAssociations().iterator().next();
@@ -156,6 +162,16 @@ public class TestCanonicals extends MaJorToMTestCase {
 		Role r = a.getRoles().iterator().next();
 		assertEquals("Role should have all item-identifiers!", associations.length * 10, r.getItemIdentifiers().size());
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void setUp() throws Exception {		
+		super.setUp();
+		if ( topicMap.getStore().supportRevisionManagement()){
+			topicMap.getStore().enableRevisionManagement(false);
+		}
 	}
 
 }

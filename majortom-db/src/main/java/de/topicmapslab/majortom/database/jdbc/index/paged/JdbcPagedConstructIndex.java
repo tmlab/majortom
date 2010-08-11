@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.index.paged;
 
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,6 +31,11 @@ import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedConstructIndexImpl;
+import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.IName;
+import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
@@ -63,7 +69,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit) {
-		return super.doGetAssociationsPlayed(topic, offset, limit);
+		try {
+			List<Association> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadAssociation((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -85,7 +97,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Name> doGetNames(Topic topic, int offset, int limit) {
-		return super.doGetNames(topic, offset, limit);
+		try {
+			List<Name> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadNames((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -96,7 +114,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfAssociationsPlayed(Topic topic) {
-		return super.doGetNumberOfAssociationsPlayed(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfAssociationsPlayed((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -107,7 +129,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfNames(Topic topic) {
-		return super.doGetNumberOfNames(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfNames((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -118,7 +144,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfOccurrences(Topic topic) {
-		return super.doGetNumberOfOccurrences(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfOccurrences((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -129,7 +159,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfRoles(Association association) {
-		return super.doGetNumberOfRoles(association);
+		try {
+			return getStore().getProcessor().doReadNumberOfRoles((IAssociation)association);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -140,7 +174,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfRolesPlayed(Topic topic) {
-		return super.doGetNumberOfRolesPlayed(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfRolesPlayed((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -151,7 +189,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfSupertypes(Topic topic) {
-		return super.doGetNumberOfSupertypes(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfSupertypes((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -162,7 +204,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfTypes(Topic topic) {
-		return super.doGetNumberOfTypes(topic);
+		try {
+			return getStore().getProcessor().doReadNumberOfTypes((ITopic)topic);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -173,7 +219,11 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected long doGetNumberOfVariants(Name name) {
-		return super.doGetNumberOfVariants(name);
+		try {
+			return getStore().getProcessor().doReadNumberOfVariants((IName)name);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -195,7 +245,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit) {
-		return super.doGetOccurrences(topic, offset, limit);
+		try {
+			List<Occurrence> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadOccurrences((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -217,7 +273,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Role> doGetRoles(Association association, int offset, int limit) {
-		return super.doGetRoles(association, offset, limit);
+		try {
+			List<Role> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadRoles((IAssociation) association, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -239,7 +301,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit) {
-		return super.doGetRolesPlayed(topic, offset, limit);
+		try {
+			List<Role> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadRoles((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -261,7 +329,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit) {
-		return super.doGetSupertypes(topic, offset, limit);
+		try {
+			List<Topic> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadSuptertypes((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -283,7 +357,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit) {
-		return super.doGetTypes(topic, offset, limit);
+		try {
+			List<Topic> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadTypes((ITopic) topic, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 	/**
@@ -305,7 +385,13 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	 * </p>
 	 */
 	protected List<Variant> doGetVariants(Name name, int offset, int limit) {
-		return super.doGetVariants(name, offset, limit);
+		try {
+			List<Variant> list = HashUtil.getList();
+			list.addAll(getStore().getProcessor().doReadVariants((IName) name, offset, limit));
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 
 }

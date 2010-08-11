@@ -46,11 +46,11 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 			assertTrue(topic.getTopicMap().equals(transaction));
 
 			final String si = "http://psi.example.org/si";
-			final String si_2 = "http://psi.example.org/si_2";
+			final String si_2 = "http://psi.example.org/si/2";
 			final String ii = "http://psi.example.org/ii";
-			final String ii_2 = "http://psi.example.org/ii_2";
+			final String ii_2 = "http://psi.example.org/ii/2";
 			final String sl = "http://psi.example.org/sl";
-			final String sl_2 = "http://psi.example.org/sl_2";
+			final String sl_2 = "http://psi.example.org/sl/2";
 
 			topic.addSubjectIdentifier(transaction.createLocator(si));
 			topic.addSubjectIdentifier(transaction.createLocator(si_2));
@@ -246,12 +246,6 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		transaction.commit();
 
 		assertNull(topicMap.getConstructByItemIdentifier(loc));
-		try {
-			construct.addItemIdentifier(loc2);
-			fail("Construct should be removed");
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}
 	}
 
 	public void _testItemIdentifier(IConstruct construct) throws Exception {
@@ -463,6 +457,8 @@ public class TestIdentityTransaction extends MaJorToMTestCase {
 		assertEquals(0, otherTopic.getNames().size());
 		
 		transaction.commit();
+		topic = (ITopic)topicMap.getTopicBySubjectIdentifier(loc1);
+		assertNotNull(topic);
 		assertEquals(1, topic.getNames().size());
 		assertEquals(2, topic.getSubjectIdentifiers().size());
 		assertTrue(topic.getSubjectIdentifiers().contains(loc1));

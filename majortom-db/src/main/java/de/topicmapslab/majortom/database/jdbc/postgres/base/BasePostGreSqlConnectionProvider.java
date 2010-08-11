@@ -80,6 +80,7 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 */
 	public void closeConnection() throws SQLException {
 		if (connection != null && !connection.isClosed()) {
+			processor.close();
 			connection.close();
 			connection = null;
 		}

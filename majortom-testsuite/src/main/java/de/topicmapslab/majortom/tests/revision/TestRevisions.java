@@ -132,7 +132,6 @@ public class TestRevisions extends MaJorToMTestCase {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		IRevision revision = index.getLastRevision();
-		System.out.println(revision.getChangeset());
 		assertEquals(3, revision.getChangeset().size());
 		Changeset set = revision.getChangeset();
 		assertEquals(topic, set.get(2).getOldValue());

@@ -597,16 +597,27 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doMergeTopics(context, other);
-			((TopicImpl) other).getIdentity().setId(context.getId());
+			ITopic newTopic = provider.getProcessor().doCreateTopicWithoutIdentifier(getTopicMap());
+			provider.getProcessor().doMergeTopics(newTopic, context);
+			provider.getProcessor().doMergeTopics(newTopic, other);
+//			((TopicImpl) other).getIdentity().setId(context.getId());
 			/*
 			 * notify listener
 			 */
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, getTopicMap(), newTopic, null);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.MERGE, getTopicMap(), context, other);
+			storeRevision(TopicMapEventType.TOPIC_ADDED, getTopicMap(), newTopic, null);
+			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
+			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
+			/*
+			 * change id
+			 */
+			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.getId());
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -923,7 +934,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadAssociation(t));
+			return HashUtil.getHashSet(provider.getProcessor().doReadAssociation(t, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1149,7 +1160,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IName> doReadNames(ITopic t) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t));
+			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1193,7 +1204,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IOccurrence> doReadOccurrences(ITopic t) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadOccurrences(t));
+			return HashUtil.getHashSet(provider.getProcessor().doReadOccurrences(t, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1303,7 +1314,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IAssociationRole> doReadRoles(IAssociation association) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(association));
+			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(association, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1325,7 +1336,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IAssociationRole> doReadRoles(ITopic player) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(player));
+			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(player, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1401,7 +1412,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException {
 		try {
-			Set<ITopic> supertypes = HashUtil.getHashSet(provider.getProcessor().doReadSuptertypes(t));
+			Set<ITopic> supertypes = HashUtil.getHashSet(provider.getProcessor().doReadSuptertypes(t, -1, -1));
 			if (existsTmdmSupertypeSubtypeAssociationType()) {
 				for (IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmSupertypeSubtypeAssociationType())) {
 					supertypes.add((ITopic) association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer());
@@ -1473,7 +1484,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		try {
-			Set<ITopic> types = HashUtil.getHashSet(provider.getProcessor().doReadTypes(t));
+			Set<ITopic> types = HashUtil.getHashSet(provider.getProcessor().doReadTypes(t, -1, -1));
 			if (existsTmdmTypeInstanceAssociationType()) {
 				for (IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())) {
 					types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
@@ -1526,7 +1537,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException {
 		try {
-			return HashUtil.getHashSet(provider.getProcessor().doReadVariants(n));
+			return HashUtil.getHashSet(provider.getProcessor().doReadVariants(n, -1, -1));
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1570,7 +1581,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
 		try {
-			Set<IAssociationRole> roles = HashUtil.getHashSet(provider.getProcessor().doReadRoles(association));
+			Set<IAssociationRole> roles = HashUtil.getHashSet(provider.getProcessor().doReadRoles(association, -1, -1));
 			/*
 			 * remove association
 			 */
@@ -1626,7 +1637,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		try {
 			ITopic parent = name.getParent();
 			ITopic reifier = (ITopic) name.getReifier();
-			Set<IVariant> variants = HashUtil.getHashSet(provider.getProcessor().doReadVariants(name));
+			Set<IVariant> variants = HashUtil.getHashSet(provider.getProcessor().doReadVariants(name, -1, -1));
 			/*
 			 * remove name and variants
 			 */
@@ -2049,7 +2060,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supportRevisions() {
+	public boolean isRevisionManagementEnabled() {
 		return false;
 	}
 
@@ -2201,7 +2212,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void clear() {
-		// TODO Sven implmeent it into the SQLProcessor(s)
-
+		try {
+			getProcessor().doClearTopicMap(getTopicMap());
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 }

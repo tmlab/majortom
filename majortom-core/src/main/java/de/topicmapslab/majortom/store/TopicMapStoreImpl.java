@@ -69,6 +69,7 @@ import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 /**
  * Base implementation of {@link ITopicMapStore}.
  * 
+ * 
  * @author Sven Krosse
  * 
  */
@@ -80,6 +81,44 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	private ITopicMapSystem topicMapSystem;
 	private ITopicMap topicMap;
 	private ThreadPoolExecutor threadPool;
+
+	/**
+	 * feature {@link FeatureStrings#SUPPORT_HISTORY}
+	 */
+	private boolean featureRevisionManagement;
+	/**
+	 * feature {@link FeatureStrings#TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION}
+	 */
+	private boolean featureTypeInstanceAssociation;
+	/**
+	 * feature {@link FeatureStrings#TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION}
+	 */
+	private boolean featureSupertypeSubtypeAssociation;
+	/**
+	 * feature {@link FeatureStrings#READ_ONLY_SYSTEM}
+	 */
+	private boolean featureReadOnlyStore;
+	/**
+	 * feature {@link FeatureStrings#SUPPORT_TRANSACTION}
+	 */
+	private boolean featureSupportTransaction;
+	/**
+	 * feature {@link FeatureStrings#AUTOMATIC_MERGING}
+	 */
+	private boolean featureAutomaticMerging;
+	/**
+	 * feature {@link FeatureStrings#DELETION_CONSTRAINTS_REIFICATION}
+	 */
+	private boolean featureDeletionConstraintReification;
+	/**
+	 * feature {@link FeatureStrings#MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME}
+	 */
+	private boolean featureMergingByName;
+
+	/**
+	 * current state of revision management
+	 */
+	private boolean revisionManagementEnabled;
 
 	/**
 	 * constructor
@@ -1551,9 +1590,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			throw new OperationSignatureException(context, paramType, params);
 		}
 		case META_DATA: {
-			if ( context == null && params.length == 1 && params[0] instanceof IRevision){
+			if (context == null && params.length == 1 && params[0] instanceof IRevision) {
 				return doReadMetaData((IRevision) params[0]);
-			}else if ( context == null && params.length == 2 && params[0] instanceof IRevision && params[1] instanceof String){
+			} else if (context == null && params.length == 2 && params[0] instanceof IRevision && params[1] instanceof String) {
 				return doReadMetaData((IRevision) params[0], params[1].toString());
 			}
 			throw new OperationSignatureException(context, paramType, params);
@@ -2266,7 +2305,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		}
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
-			if (params.length == 1 && params[0] instanceof ILocator) {
+			if (context instanceof IConstruct && params.length == 1 && params[0] instanceof ILocator) {
 				doRemoveItemIdentifier(context, (ILocator) params[0]);
 			}
 		}
@@ -2422,6 +2461,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else {
 			throw new TopicMapStoreException("Unknown construct type to remove '" + context.getClass() + "'.");
 		}
+		context.setRemoved(true);
 	}
 
 	/**
@@ -2754,22 +2794,31 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	public boolean isReadOnly() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.READ_ONLY_SYSTEM);
-		} catch (FeatureNotRecognizedException e) {
-			return true;
-		}
+		return this.featureReadOnlyStore;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean supportRevisionManagement() {
+		return this.featureRevisionManagement;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supportRevisions() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.SUPPORT_HISTORY);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
+	public boolean isRevisionManagementEnabled() {
+		return supportRevisionManagement() && this.revisionManagementEnabled;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
+		if ( !supportRevisionManagement() && enabled){
+			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
 		}
+		this.revisionManagementEnabled = enabled;
 	}
 
 	/**
@@ -2780,11 +2829,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean doAutomaticMerging() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.AUTOMATIC_MERGING);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureAutomaticMerging;
 	}
 
 	/**
@@ -2796,11 +2841,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean doMergingByTopicName() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureMergingByName;
 	}
 
 	/**
@@ -2811,11 +2852,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean recognizingTypeInstanceAssociation() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureTypeInstanceAssociation;
 	}
 
 	/**
@@ -2826,11 +2863,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean recognizingSupertypeSubtypeAssociation() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureSupertypeSubtypeAssociation;
 	}
 
 	/**
@@ -2844,22 +2877,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *         reifier , <code>false</code> otherwise.
 	 */
 	public boolean isReificationDeletionRestricted() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureDeletionConstraintReification;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isTransactable() {
-		try {
-			return topicMapSystem.getFeature(FeatureStrings.SUPPORT_TRANSACTION);
-		} catch (FeatureNotRecognizedException e) {
-			return false;
-		}
+		return this.featureSupportTransaction;
 	}
 
 	/**
@@ -2906,6 +2931,18 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			throw new TopicMapStoreException("Store already connected, topic map system cannot changed!");
 		}
 		this.topicMapSystem = topicMapSystem;
+		try {
+			this.featureAutomaticMerging = topicMapSystem.getFeature(FeatureStrings.AUTOMATIC_MERGING);
+			this.featureDeletionConstraintReification = topicMapSystem.getFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
+			this.featureMergingByName = topicMapSystem.getFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME);
+			this.featureReadOnlyStore = topicMapSystem.getFeature(FeatureStrings.READ_ONLY_SYSTEM);
+			this.featureRevisionManagement = topicMapSystem.getFeature(FeatureStrings.SUPPORT_HISTORY);
+			this.featureSupertypeSubtypeAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
+			this.featureSupportTransaction = topicMapSystem.getFeature(FeatureStrings.SUPPORT_TRANSACTION);
+			this.featureTypeInstanceAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+		} catch (FeatureNotRecognizedException e) {
+			throw new TopicMapStoreException("Feature is missing", e);
+		}
 	}
 
 	// *******************
@@ -3181,7 +3218,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
-	
+
 	/**
 	 * Store a change set for the given revision. The change set will be created
 	 * by the given arguments.
@@ -3198,7 +3235,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            the old value before change
 	 */
 	public abstract void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue);
-	
+
 	/**
 	 * Store a change set for the given revision. The change set will be created
 	 * by the given arguments.
@@ -3214,39 +3251,36 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @param oldValue
 	 *            the old value before change
 	 */
-	public void storeRevision(TopicMapEventType type, IConstruct context, Object newValue, Object oldValue){
+	public void storeRevision(TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
 		storeRevision(createRevision(), type, context, newValue, oldValue);
 	}
-	
+
 	/**
 	 * Creating a new revision object.
 	 * 
 	 * @return the new revision object
 	 */
 	protected abstract IRevision createRevision();
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removedDuplicates() {
+	public void removeDuplicates() {
 		MergeUtils.removeDuplicates(this, getTopicMap());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void clear() {
-		
 		doModifyReifier(getTopicMap(), null);
-
-		// everything is removed because topics are used as types, players, reifier or themes
 		for (ITopic t : doReadTopics(getTopicMap())) {
 			if (!t.isRemoved()) {
-				
+
 				try {
 					t.remove(true);
 				} catch (Exception e) {
-					// noop sais Sven
+					// NOTHING TO DO HERE
 				}
 			}
 		}

@@ -66,7 +66,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 * .
 	 */
 	public void testAddTagString() {
-		if (topicMap.getStore().supportRevisions()) {
+		if (topicMap.getStore().isRevisionManagementEnabled()) {
 
 			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 			index.open();

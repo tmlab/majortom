@@ -26,6 +26,7 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
@@ -33,8 +34,6 @@ import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Internal data store of association and role informations
- * 
  * @author Sven Krosse
  * 
  */
@@ -58,338 +57,83 @@ public class AssociationCache implements IDataStore {
 	 */
 	private final TransactionTopicMapStore topicMapStore;
 
-	private Set<IConstruct> removedConstructs;
+	private Map<IAssociationRole, ITopic> changedPlayers;
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public void close() {
-		if (associations != null) {
-			associations.clear();
-		}
-		if (rolePlayers != null) {
-			rolePlayers.clear();
-		}
-		if (playedRoles != null) {
-			playedRoles.clear();
-		}
-		if (removedConstructs != null) {
-			removedConstructs.clear();
-		}
-	}
-
-	/**
-	 * constructor
 	 * 
-	 * @param topicMapStore
-	 *            the underlying topic map store
 	 */
 	public AssociationCache(TransactionTopicMapStore topicMapStore) {
 		this.topicMapStore = topicMapStore;
 	}
 
 	/**
-	 * Return all roles of the given association
-	 * 
-	 * @param association
-	 *            the association
-	 * @return the roles
-	 */
-	public Set<IAssociationRole> getRoles(Association association) {
-		if (isRemovedConstruct((IAssociation) association)) {
-			throw new TopicMapStoreException("Construct was removed!");
-		}
-		Set<IAssociationRole> set = null;
-		if (associations == null || !associations.containsKey(association)) {
-			set = redirectGetRoles(association);
-		} else {
-			set = associations.get(association);
-		}
-		Set<IAssociationRole> result = HashUtil.getHashSet();
-		for (IAssociationRole r : set) {
-			if (!isRemovedConstruct(r)) {
-				result.add(r);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result
-	 * 
-	 * @param association
-	 *            the association
-	 * @return the roles
-	 */
-	@SuppressWarnings("unchecked")
-	protected Set<IAssociationRole> redirectGetRoles(Association association) {
-		Set<IAssociationRole> roles = (Set<IAssociationRole>) getTopicMapStore().doRead((IAssociation) association, TopicMapStoreParameterType.ROLE);
-		if (associations == null) {
-			associations = HashUtil.getHashMap();
-		}
-		this.associations.put((IAssociation) association, roles);
-		for (IAssociationRole role : roles) {
-			redirectGetPlayer(role);
-		}
-		return roles;
-	}
-
-	/**
-	 * Return the played roles of the given role player.
-	 * 
-	 * @param player
-	 *            the player
-	 * @return the roles
-	 */
-	public Set<IAssociationRole> getRoles(ITopic player) {
-		Set<IAssociationRole> roles = null;
-		if (playedRoles == null || !playedRoles.containsKey(player)) {
-			roles = redirectGetRoles(player);
-		} else {
-			roles = playedRoles.get(player);
-		}
-		Set<IAssociationRole> set = HashUtil.getHashSet();
-		for (IAssociationRole r : roles) {
-			if (!isRemovedConstruct(r)) {
-				set.add(r);
-			}
-		}
-		return set;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the results for later call.
-	 * 
-	 * @param player
-	 *            the playing topic
-	 * @return the roles played
-	 */
-	@SuppressWarnings("unchecked")
-	protected Set<IAssociationRole> redirectGetRoles(ITopic player) {
-		Set<IAssociationRole> roles = (Set<IAssociationRole>) getTopicMapStore().doRead(player, TopicMapStoreParameterType.ROLE);
-		if (playedRoles == null) {
-			playedRoles = HashUtil.getHashMap();
-		}
-		playedRoles.put(player, roles);
-		return roles;
-	}
-
-	/**
-	 * Return the played associations of the given role player.
-	 * 
-	 * @param player
-	 *            the player
-	 * @return the associations
-	 */
-	public Set<IAssociation> getAssocaitionsPlayed(ITopic player) {
-		Set<IAssociation> associations = HashUtil.getHashSet();
-		for (IAssociationRole role : getRoles(player)) {
-			associations.add(role.getParent());
-		}
-		return associations;
-	}
-
-	/**
-	 * Return all stored associations
-	 * 
-	 * @return the associations
-	 */
-	public Set<IAssociation> getAssociations() {
-		Set<IAssociation> associations = null;
-		if (this.associations == null) {
-			associations = redirectGetAssociations();
-		} else {
-			associations = this.associations.keySet();
-		}
-		Set<IAssociation> set = HashUtil.getHashSet();
-		for (IAssociation association : associations) {
-			if (!isRemovedConstruct(association)) {
-				set.add(association);
-			}
-		}
-		return set;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the results for later reuse.
-	 * 
-	 * @return all associations of the topic map
-	 */
-	@SuppressWarnings("unchecked")
-	protected Set<IAssociation> redirectGetAssociations() {
-		Set<IAssociation> associations = (Set<IAssociation>) getTopicMapStore()
-				.doRead(getTopicMapStore().getTopicMap(), TopicMapStoreParameterType.ASSOCIATION);
-
-		if (this.associations == null) {
-			this.associations = HashUtil.getHashMap();
-		}
-		for (IAssociation association : associations) {
-			this.associations.put(association, redirectGetRoles(association));
-		}
-		return associations;
-	}
-
-	/**
-	 * Return the player of a specific role
-	 * 
-	 * @param r
-	 *            the role
-	 * @return the player
+	 * {@inheritDoc}
 	 */
 	public ITopic getPlayer(Role r) {
 		if (isRemovedConstruct((IAssociationRole) r)) {
-			throw new TopicMapStoreException("Role is already marked as removed.");
+			throw new ConstructRemovedException(r);
 		}
-		if (rolePlayers == null || !rolePlayers.containsKey(r)) {
-			return redirectGetPlayer(r);
+		/*
+		 * read from internal cache
+		 */
+		ITopic player = null;
+		if (rolePlayers != null && rolePlayers.containsKey(r)) {
+			player = rolePlayers.get(r);
 		}
-		return rolePlayers.get(r);
-	}
-
-	/**
-	 * Internal method to redirect the call to the underlying topic map store
-	 * and cache the result.
-	 * 
-	 * @param r
-	 *            the role
-	 * @return the player
-	 */
-	protected ITopic redirectGetPlayer(Role r) {
-		ITopic player = (ITopic) getTopicMapStore().doRead((IAssociationRole) r, TopicMapStoreParameterType.PLAYER);
-		if (rolePlayers == null) {
-			rolePlayers = HashUtil.getHashMap();
+		/*
+		 * not cached yet
+		 */
+		if (player == null) {
+			player = getTransactionStore().getIdentityStore().createLazyStub(
+					(ITopic) getTopicMapStore().doRead((IAssociationRole) r, TopicMapStoreParameterType.PLAYER));
 		}
-		rolePlayers.put((IAssociationRole) r, player);
 		return player;
-	}
-
-	/**
-	 * Remove an association item.
-	 * 
-	 * @param association
-	 *            the association item
-	 */
-	public void removeAssociation(IAssociation association) {
-		/*
-		 * check if role is known by the store
-		 */
-		if (associations == null || !associations.containsKey(association)) {
-			/*
-			 * get associations
-			 */
-			redirectGetAssociations();
-		}
-
-		Set<IAssociationRole> roles = HashUtil.getHashSet();
-		roles.addAll(associations.get(association));
-
-		/*
-		 * remove all roles
-		 */
-		for (IAssociationRole role : roles) {
-			removeRole(role);
-		}
-		/*
-		 * remove association
-		 */
-		associations.remove(association);
-
-		if (removedConstructs == null) {
-			removedConstructs = HashUtil.getHashSet();
-		}
-		removedConstructs.add(association);
-	}
-
-	/**
-	 * Remove a role from the internal store.
-	 * 
-	 * @param role
-	 *            the role
-	 */
-	public void removeRole(IAssociationRole role) {
-		/*
-		 * check if role is known by the store
-		 */
-		if (rolePlayers == null || !rolePlayers.containsKey(role)) {
-			redirectGetPlayer(role);
-		}
-
-		/*
-		 * get player
-		 */
-		ITopic player = rolePlayers.get(role);
-		/*
-		 * remove role from played roles
-		 */
-		if (playedRoles != null) {
-			Set<IAssociationRole> set = playedRoles.get(player);
-			if (set == null) {
-				redirectGetRoles(player);
-				set = playedRoles.get(player);
-			}
-			set.remove(role);
-			playedRoles.put(player, set);
-		}
-		/*
-		 * remove role
-		 */
-		rolePlayers.remove(role);
-
-		/*
-		 * remove role from parent association
-		 */
-		if ( associations == null){
-			redirectGetAssociations();
-		}
-		Set<IAssociationRole> set = associations.get(role.getParent());
-		if (set != null) {
-			set.remove(role);
-			associations.put(role.getParent(), set);
-		}
-
-		if (removedConstructs == null) {
-			removedConstructs = HashUtil.getHashSet();
-		}
-		removedConstructs.add(role);
 	}
 
 	/**
 	 * Register a new association item.
 	 * 
-	 * @param association
-	 *            the association item
+	 * @param association the association item
 	 */
 	public void addAssociation(IAssociation association) {
 		if (associations == null) {
-			redirectGetAssociations();
+			associations = HashUtil.getHashMap();
 		}
 		Set<IAssociationRole> set = HashUtil.getHashSet();
 		associations.put(association, set);
 	}
-
+	
 	/**
-	 * Register a new association role item at the internal store.
-	 * 
-	 * @param association
-	 *            the parent association
-	 * @param role
-	 *            the association role item
-	 * @param player
-	 *            the role player
+	 * {@inheritDoc}
 	 */
 	public void addRole(IAssociation association, IAssociationRole role, ITopic player) {
-		/*
-		 * redirect get roles played
-		 */
-		redirectGetRoles(player);
+		if (isRemovedConstruct(association)) {
+			throw new ConstructRemovedException(association);
+		} else if (isRemovedConstruct(player)) {
+			throw new ConstructRemovedException(player);
+		}
+		IAssociation a = getTransactionStore().getIdentityStore().createLazyStub(association);
+		IAssociationRole r = getTransactionStore().getIdentityStore().createLazyStub(role);
+		ITopic p = getTransactionStore().getIdentityStore().createLazyStub(player);
+		if (!getAssociations().contains(association)) {
+			addAssociation(a);
+		}
+		internalAddRole(a, r, p);
+	}
+	
+	/**
+	 * Internal method to register a new association role item at the internal store.
+	 * 
+	 * @param association the parent association
+	 * @param role the association role item
+	 * @param player the role player
+	 */
+	private void internalAddRole(IAssociation association, IAssociationRole role, ITopic player) {		
 		/*
 		 * check if association is known by the data store
 		 */
-		if (associations == null || !associations.containsKey(association)) {
-			redirectGetAssociations();
+		if (associations == null ) {
+			associations = HashUtil.getHashMap();
 		}
 		/*
 		 * add role to association store
@@ -405,7 +149,7 @@ public class AssociationCache implements IDataStore {
 		 * store player of new role
 		 */
 		if (rolePlayers == null) {
-			redirectGetPlayer(role);
+			rolePlayers = HashUtil.getHashMap();
 		}
 		rolePlayers.put(role, player);
 
@@ -413,7 +157,7 @@ public class AssociationCache implements IDataStore {
 		 * store backward reference of played role
 		 */
 		if (playedRoles == null) {
-			redirectGetRoles(player);
+			playedRoles = HashUtil.getHashMap();
 		}
 		set = playedRoles.get(player);
 		if (set == null) {
@@ -424,17 +168,106 @@ public class AssociationCache implements IDataStore {
 	}
 
 	/**
-	 * Modify the player of a specific role.
-	 * 
-	 * @param r
-	 *            the role
-	 * @param player
-	 *            the new player
-	 * @return the old player
+	 * {@inheritDoc}
+	 */
+	public Set<IAssociation> getAssociations() {
+		Set<IAssociation> associations = HashUtil.getHashSet();
+		if (this.associations != null) {
+			associations.addAll(this.associations.keySet());
+		}
+		for (Association association : getTopicMapStore().getTopicMap().getAssociations()) {
+			if (!isRemovedConstruct((IAssociation) association)) {
+				associations.add(getTransactionStore().getIdentityStore().createLazyStub((IAssociation) association));
+			}
+		}
+		return associations;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<IAssociationRole> getRoles(Association association) {
+		if (isRemovedConstruct((IAssociation) association)) {
+			throw new ConstructRemovedException(association);
+		}
+		Set<IAssociationRole> roles = HashUtil.getHashSet();
+		try {
+			for (IAssociationRole role : (Set<IAssociationRole>) getTopicMapStore().doRead((IAssociation) association, TopicMapStoreParameterType.ROLE)) {
+				if (!isRemovedConstruct(role)) {
+					roles.add(getTransactionStore().getIdentityStore().createLazyStub(role));
+				}
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}
+		if (associations != null && associations.containsKey(association)) {
+			roles.addAll(associations.get(association));
+		}		
+		return roles;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<IAssociationRole> getRoles(ITopic player) {
+		if (isRemovedConstruct(player)) {
+			throw new ConstructRemovedException(player);
+		}
+		Set<IAssociationRole> roles = HashUtil.getHashSet();
+		try {
+			for (IAssociationRole role : (Set<IAssociationRole>) getTopicMapStore().doRead(player, TopicMapStoreParameterType.ROLE)) {
+				/*
+				 * old player relation
+				 */
+				if (changedPlayers != null && player.equals(changedPlayers.get(role))) {
+					continue;
+				}
+				if (!isRemovedConstruct(role)) {
+					roles.add(getTransactionStore().getIdentityStore().createLazyStub(role));
+				}
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}
+		if (playedRoles != null && playedRoles.containsKey(player)) {
+			roles.addAll(playedRoles.get(player));
+		}		
+		return roles;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public ITopic setPlayer(IAssociationRole r, ITopic player) {
+		if (isRemovedConstruct(r)) {
+			throw new ConstructRemovedException(r);
+		}
+		if (isRemovedConstruct(player)) {
+			throw new ConstructRemovedException(player);
+		}
+		ITopic oldPlayer = getPlayer(r);
+		if (changedPlayers == null) {
+			changedPlayers = HashUtil.getHashMap();
+		}
+		if (!changedPlayers.containsKey(r)) {
+			changedPlayers.put(r, oldPlayer);
+		}
+		internalSetPlayer(getTransactionStore().getIdentityStore().createLazyStub(r), getTransactionStore().getIdentityStore().createLazyStub(player));
+		return oldPlayer;
+	}
+	
+	/**
+	 * Internal method to modify the player of a specific role.
+	 * 
+	 * @param r the role
+	 * @param player the new player
+	 * @return the old player
+	 */
+	private ITopic internalSetPlayer(IAssociationRole r, ITopic player) {
 		if (rolePlayers == null) {
-			redirectGetPlayer(r);
+			rolePlayers = HashUtil.getHashMap();
 		}
 		ITopic p = rolePlayers.get(r);
 		rolePlayers.put(r, player);
@@ -443,8 +276,7 @@ public class AssociationCache implements IDataStore {
 		 * store backward reference of played role
 		 */
 		if (playedRoles == null) {
-			redirectGetRoles(player);
-			redirectGetRoles(p);
+			playedRoles = HashUtil.getHashMap();
 		}
 		/*
 		 * remove old backward reference to player
@@ -470,8 +302,110 @@ public class AssociationCache implements IDataStore {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void removeRole(IAssociationRole role) {
+		if (isRemovedConstruct(role)) {
+			throw new ConstructRemovedException(role);
+		}
+		/*
+		 * check if role is known by the store
+		 */
+		if (rolePlayers == null || !rolePlayers.containsKey(role)) {			
+			return;
+		}
+
+		/*
+		 * get player
+		 */
+		ITopic player = rolePlayers.get(role);
+		/*
+		 * remove role from played roles
+		 */
+		Set<IAssociationRole> set = playedRoles.get(player);
+		if (set == null) {
+			throw new TopicMapStoreException("Unknown association role item.");
+		}
+		set.remove(role);
+		playedRoles.put(player, set);
+		/*
+		 * remove role
+		 */
+		rolePlayers.remove(role);		
+		/*
+		 * remove role from parent association
+		 */
+		set = associations.get(role.getParent());
+		set.remove(role);
+		associations.put(role.getParent(), set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeAssociation(IAssociation association) {
+		if (isRemovedConstruct(association)) {
+			throw new ConstructRemovedException(association);
+		}
+		/*
+		 * check if role is known by the store
+		 */
+		if (associations == null || !associations.containsKey(association)) {
+			return;
+		}
+
+		Set<IAssociationRole> roles = HashUtil.getHashSet();
+		roles.addAll(associations.get(association));
+
+		/*
+		 * remove all roles
+		 */
+		for (IAssociationRole role : roles) {
+			removeRole(role);
+		}
+		/*
+		 * remove association
+		 */
+		associations.remove(association);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
-		// NOTHING TO DO > DONE BY EXTERNAL MERGE UTILS
+		if (isRemovedConstruct(topic)) {
+			throw new ConstructRemovedException(topic);
+		}
+		if (isRemovedConstruct(replacement)) {
+			throw new ConstructRemovedException(replacement);
+		}
+		ITopic replace = getTransactionStore().getIdentityStore().createLazyStub(replacement);
+
+		try {
+			for (IAssociationRole role : getRoles(topic)) {
+				if (isRemovedConstruct(role)) {
+					setPlayer(role, replace);
+				}
+			}
+		} catch (TopicMapStoreException e) {
+			// NOTHING TO DO
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() {
+		if (changedPlayers != null) {
+			changedPlayers.clear();
+		}
+		if (associations != null) {
+			associations.clear();
+		}
+		if (rolePlayers != null) {
+			rolePlayers.clear();
+		}
+		if (playedRoles != null) {
+			playedRoles.clear();
+		}
 	}
 
 	/**
@@ -500,4 +434,5 @@ public class AssociationCache implements IDataStore {
 	protected boolean isRemovedConstruct(IConstruct c) {
 		return getTransactionStore().getIdentityStore().isRemovedConstruct(c);
 	}
+
 }

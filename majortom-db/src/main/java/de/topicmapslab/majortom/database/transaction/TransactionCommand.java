@@ -17,13 +17,21 @@ package de.topicmapslab.majortom.database.transaction;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+
+import org.tmapi.core.Locator;
+import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.IScope;
+import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
@@ -100,7 +108,7 @@ public class TransactionCommand {
 				boolean cascade = parameters_.length == 1 && ((Boolean) parameters_[0]);
 				store.doRemove(context_, cascade);
 				if (context_ instanceof ConstructImpl) {
-					((ConstructImpl) context_).setRemoved();
+					((ConstructImpl) context_).setRemoved(true);
 				}
 			} else {
 				store.doRemove(context_, paramterType, parameters_);
@@ -118,15 +126,54 @@ public class TransactionCommand {
 		return result;
 	}
 
-	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {		
+	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {
+		if (parameter == null) {
+			return null;
+		}
 		if (lazy.containsKey(parameter)) {
 			return lazy.get(parameter);
 		}
 		if (parameter instanceof IConstruct) {
 			if (((IConstruct) parameter).getTopicMap() instanceof ITransaction) {
 				IConstruct param = (IConstruct) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_ID, ((IConstruct) parameter).getId());
+				if (param == null) {
+					try {
+						for (Locator loc : ((IConstruct) parameter).getItemIdentifiers()) {
+							param = (IConstruct) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, loc);
+							if (param != null) {
+								return param;
+							}
+						}
+						if (parameter instanceof ITopic) {
+							for (Locator loc : ((ITopic) parameter).getSubjectIdentifiers()) {
+								param = (ITopic) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, loc);
+								if (param != null) {
+									return param;
+								}
+							}
+							for (Locator loc : ((ITopic) parameter).getSubjectLocators()) {
+								param = (ITopic) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, loc);
+								if (param != null) {
+									return param;
+								}
+							}
+						}
+					} catch (ConstructRemovedException e) {
+						// NOTHING TO DO
+					}
+				}
 				return param;
 			}
+		} else if (parameter.getClass().isArray()) {
+			Set<Topic> topics = HashUtil.getHashSet();
+			for (Object p : (Object[]) parameter) {
+				if (p instanceof Topic) {
+					topics.add((Topic) cleanParameter(store, p, lazy));
+				}
+			}
+			return topics.toArray(new Topic[0]);
+		} else if (parameter instanceof IScope) {
+			return cleanParameter(store, ((IScope) parameter).getThemes(), lazy);
 		}
 		return parameter;
 	}

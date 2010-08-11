@@ -65,7 +65,6 @@ public class TestRevisionIndex extends MaJorToMTestCase {
 		IRevision r = index.getFirstRevision();
 		assertEquals(1, r.getChangeset().size());
 		checkChange(r.getChangeset().get(0), TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
-		System.out.println(r.getChangeset().get(0));
 	}
 
 	/**

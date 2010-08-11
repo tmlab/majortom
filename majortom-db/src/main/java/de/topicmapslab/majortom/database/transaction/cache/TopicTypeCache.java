@@ -26,6 +26,7 @@ import de.topicmapslab.majortom.database.transaction.TransactionTopicMapStore;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
@@ -35,13 +36,15 @@ import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Internal data store of topic and topic type relations
- * 
  * @author Sven Krosse
  * 
  */
 public class TopicTypeCache implements IDataStore {
 
+	private Map<String, Set<String>> removedInstances;
+	private Map<String, Set<String>> removedTypes;
+	private Map<String, Set<String>> removedSupertypes;
+	private Map<String, Set<String>> removedSubtypes;
 	/**
 	 * internal storage of the type-supertypes relations
 	 */
@@ -63,13 +66,8 @@ public class TopicTypeCache implements IDataStore {
 	 */
 	private final TransactionTopicMapStore topicMapStore;
 
-	private Set<IConstruct> removedConstructs;
-
 	/**
-	 * constructor
-	 * 
 	 * @param store
-	 *            the parent store
 	 */
 	public TopicTypeCache(final TransactionTopicMapStore store) {
 		this.topicMapStore = store;
@@ -79,6 +77,18 @@ public class TopicTypeCache implements IDataStore {
 	 * {@inheritDoc}
 	 */
 	public void close() {
+		if (removedInstances != null) {
+			removedInstances.clear();
+		}
+		if (removedTypes != null) {
+			removedTypes.clear();
+		}
+		if (removedSupertypes != null) {
+			removedSupertypes.clear();
+		}
+		if (removedSubtypes != null) {
+			removedSubtypes.clear();
+		}
 		if (types != null) {
 			types.clear();
 		}
@@ -91,230 +101,347 @@ public class TopicTypeCache implements IDataStore {
 		if (instances != null) {
 			instances.clear();
 		}
-		if (removedConstructs != null) {
-			removedConstructs.clear();
-		}
 	}
 
 	/**
-	 * Return all direct-instances of the given topic type
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the direct instances
+	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getDirectInstances(ITopic type) {
+	public void addType(ITopic t, ITopic type) {
+		if (isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
+		}
 		if (isRemovedConstruct(type)) {
-			throw new TopicMapStoreException("Topic is already marked as removed.");
+			throw new ConstructRemovedException(type);
 		}
-
-		Set<ITopic> set = HashUtil.getHashSet();
-		if (instances != null && instances.containsKey(type)) {
-			set.addAll(instances.get(type));
-		} else {
-			set.addAll(redirectGetDirectInstance(type));
-		}
-		if (getStore().recognizingTypeInstanceAssociation()) {
-			set.addAll(getDirectInstancesByAssociation(type));
-		}
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
-		}
-		return results;
+		internalAddType(getTransactionStore().getIdentityStore().createLazyStub(t), getTransactionStore().getIdentityStore().createLazyStub(type));
 	}
 
 	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
+	 * Internal method to add a type-instance-relation between the given topics.
 	 * 
+	 * @param t
+	 *            the topic item
 	 * @param type
 	 *            the type
-	 * @return the instances of the given type
 	 */
-	protected Set<ITopic> redirectGetDirectInstance(ITopic type) {
-		ITypeInstanceIndex index = getStore().getIndex(ITypeInstanceIndex.class);
-		if (!index.isOpen()) {
-			index.open();
-		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic topic : index.getTopics(type)) {
-			topics.add((ITopic) topic);
-		}
-
-		if (instances == null) {
-			instances = HashUtil.getHashMap();
-		}
-		instances.put(type, topics);
-		return topics;
-	}
-
-	/**
-	 * Return all direct-instances of the given topic type by using the internal
-	 * topic map data model associations
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the direct instances
-	 */
-	@SuppressWarnings("unchecked")
-	private Set<ITopic> getDirectInstancesByAssociation(ITopic type) {
-		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmTypeInstanceAssociationType()) {
-			ITopic assocType = getStore().getTmdmTypeInstanceAssociationType();
-			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION, assocType);
-			for (Association association : associations) {
-				try {
-					if (association.getRoles(getStore().getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
-						set.add((ITopic) association.getRoles(getStore().getTmdmInstanceRoleType()).iterator().next().getPlayer());
-					}
-				} catch (NoSuchElementException e) {
-					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
-				}
-			}
-		}
-		return set;
-	}
-
-	/**
-	 * Return all direct-types of the given topic item
-	 * 
-	 * @param instance
-	 *            the topic item
-	 * @return the direct types
-	 */
-	public Set<ITopic> getDirectTypes(ITopic instance) {
-		if (isRemovedConstruct(instance)) {
-			return HashUtil.getHashSet();
-		}
-		Set<ITopic> set = HashUtil.getHashSet();
-		if (types != null && types.containsKey(instance)) {
-			set.addAll(types.get(instance));
-		}else{
-			set.addAll(redirectGetDirectTypes(instance));
-		}
-		if (getStore().recognizingTypeInstanceAssociation()) {
-			set.addAll(getDirectTypesByAssociation(instance));
-		}
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
-	 * 
-	 * @param instance
-	 *            the instance
-	 * @return the types of the given instance
-	 */
-	@SuppressWarnings("unchecked")
-	protected Set<ITopic> redirectGetDirectTypes(ITopic instance) {
-		Set<ITopic> topics = (Set<ITopic>) getStore().doRead(instance, TopicMapStoreParameterType.TYPE);
+	private void internalAddType(ITopic t, ITopic type) {
+		/*
+		 * check if the map is instantiate
+		 */
 		if (types == null) {
 			types = HashUtil.getHashMap();
 		}
-		types.put(instance, topics);
-		return topics;
+		/*
+		 * get types of the topic item
+		 */
+		Set<ITopic> set = types.get(t);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		/*
+		 * add type if not contained
+		 */
+		if (!set.contains(type)) {
+			set.add(type);
+			types.put(t, set);
+		}
+
+		/*
+		 * check if instances map is instantiated
+		 */
+		if (instances == null) {
+			instances = HashUtil.getHashMap();
+		}
+		/*
+		 * get instances of the given type
+		 */
+		set = instances.get(type);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		/*
+		 * add instance if not contained
+		 */
+		if (!set.contains(t)) {
+			set.add(t);
+			instances.put(type, set);
+		}
 	}
 
 	/**
-	 * Return all direct-types of the given topic type by using the internal
-	 * topic map data model associations
+	 * {@inheritDoc}
+	 */
+	public void addSupertype(ITopic type, ITopic supertype) {
+		if (isRemovedConstruct(type)) {
+			throw new ConstructRemovedException(type);
+		}
+		if (isRemovedConstruct(supertype)) {
+			throw new ConstructRemovedException(supertype);
+		}
+		internalAddSupertype(getTransactionStore().getIdentityStore().createLazyStub(type), getTransactionStore().getIdentityStore().createLazyStub(supertype));
+	}
+
+	/**
+	 * Removing a super-type-sub-type-relation between the given types.
 	 * 
 	 * @param type
 	 *            the topic type
-	 * @return the direct types
+	 * @param supertype
+	 *            the super type
 	 */
-	@SuppressWarnings("unchecked")
-	private Set<ITopic> getDirectTypesByAssociation(ITopic instance) {
+	private void internalAddSupertype(ITopic type, ITopic supertype) {
+		/*
+		 * check if super types map is instantiated
+		 */
+		if (supertypes == null) {
+			supertypes = HashUtil.getHashMap();
+		}
+		/*
+		 * get super types of the type
+		 */
+		Set<ITopic> set = supertypes.get(type);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		/*
+		 * add super type if not contained
+		 */
+		if (!set.contains(supertype)) {
+			set.add(supertype);
+			supertypes.put(type, set);
+		}
+
+		/*
+		 * check if sub type map is instantiated
+		 */
+		if (subtypes == null) {
+			subtypes = HashUtil.getHashMap();
+		}
+		/*
+		 * get sub types of the super type
+		 */
+		set = subtypes.get(supertype);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		/*
+		 * add sub type if not contained
+		 */
+		if (!set.contains(type)) {
+			set.add(type);
+			subtypes.put(supertype, set);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeType(ITopic t, ITopic type) {
+		if (isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
+		}
+		if (isRemovedConstruct(type)) {
+			throw new ConstructRemovedException(type);
+		}
+		storeIsaRelation(t, type);
+		/*
+		 * check if instance is known by the storage
+		 */
+		if (types != null && types.containsKey(t)) {
+			Set<ITopic> set = types.get(t);
+			if (set.contains(type)) {
+				/*
+				 * remove type
+				 */
+				set.remove(type);
+				types.put(t, set);
+			}
+		}
+		if (instances != null && instances.containsKey(type)) {
+			/*
+			 * get instances of the topic item
+			 */
+			Set<ITopic> set = instances.get(type);
+			if (set.contains(t)) {
+				/*
+				 * remove instance
+				 */
+				set.remove(t);
+				instances.put(type, set);
+			}
+		}
+	}
+
+	/**
+	 * Store the old is-instance-of relation between the given topics
+	 * 
+	 * @param t
+	 *            the instance
+	 * @param type
+	 *            the type
+	 */
+	private void storeIsaRelation(ITopic t, ITopic type) {
+		/*
+		 * store relation instance -> type
+		 */
+		if (removedTypes == null) {
+			removedTypes = HashUtil.getHashMap();
+		}
+		Set<String> set = removedTypes.get(t.getId());
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		set.add(type.getId());
+		removedTypes.put(t.getId(), set);
+
+		/*
+		 * store relation type -> instance
+		 */
+		if (removedInstances == null) {
+			removedInstances = HashUtil.getHashMap();
+		}
+		set = removedInstances.get(type.getId());
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		set.add(t.getId());
+		removedInstances.put(type.getId(), set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeSupertype(ITopic type, ITopic supertype) {
+		if (isRemovedConstruct(type)) {
+			throw new ConstructRemovedException(type);
+		}
+		if (isRemovedConstruct(supertype)) {
+			throw new ConstructRemovedException(supertype);
+		}
+		storeAkoRelation(type, supertype);
+		/*
+		 * check if type is known by the storage
+		 */
+		if (supertypes != null && supertypes.containsKey(type)) {
+			/*
+			 * get super types of the type
+			 */
+			Set<ITopic> set = supertypes.get(type);
+			if (set.contains(supertype)) {
+				/*
+				 * remove supertype
+				 */
+				set.remove(supertype);
+				supertypes.put(type, set);
+			}
+		}
+		/*
+		 * check if supertype is known by the storage
+		 */
+		if (subtypes != null && subtypes.containsKey(supertype)) {
+			/*
+			 * get sub types of the super type
+			 */
+			Set<ITopic> set = subtypes.get(supertype);
+			if (set.contains(type)) {
+				/*
+				 * remove sub type
+				 */
+				set.remove(type);
+				subtypes.put(supertype, set);
+			}
+		}
+	}
+
+	/**
+	 * Store the old a-kind-of relation between the given topics
+	 * 
+	 * @param type
+	 *            the type
+	 * @param supertype
+	 *            the supertype
+	 */
+	private void storeAkoRelation(ITopic type, ITopic supertype) {
+		/*
+		 * store relation subtype -> supertype
+		 */
+		if (removedSubtypes == null) {
+			removedSubtypes = HashUtil.getHashMap();
+		}
+		Set<String> set = removedSubtypes.get(supertype.getId());
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		set.add(type.getId());
+		removedSubtypes.put(supertype.getId(), set);
+
+		/*
+		 * store relation supertype -> subtype
+		 */
+		if (removedSupertypes == null) {
+			removedSupertypes = HashUtil.getHashMap();
+		}
+		set = removedSupertypes.get(type.getId());
+		if (set == null) {
+			set = HashUtil.getHashSet();
+		}
+		set.add(supertype.getId());
+		removedSupertypes.put(type.getId(), set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ITopic> getTypes() {
+		ITypeInstanceIndex index = getTopicMapStore().getIndex(ITypeInstanceIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmTypeInstanceAssociationType()) {
-			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(instance, TopicMapStoreParameterType.ASSOCIATION,
-					getStore().getTmdmTypeInstanceAssociationType());
-			for (Association association : associations) {
+		for (Topic t : index.getTopicTypes()) {
+			ITopic type = (ITopic) t;
+			if (isRemovedConstruct(type)) {
+				continue;
+			}
+			if (!getInstances(type).isEmpty()) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(type));
+			}
+		}
+		/*
+		 * get cached types
+		 */
+		if (types != null) {
+			for (Set<ITopic> s : types.values()) {
+				set.addAll(s);
+			}
+		}
+		/*
+		 * get types by association
+		 */
+		if (getTopicMapStore().recognizingTypeInstanceAssociation()) {
+			set.addAll(getTypesByAssociation());
+		}
+		return set;
+	}
+
+	/**
+	 * Return all types of the topic map by using the internal topic map data
+	 * model associations
+	 * 
+	 * @return the types
+	 */
+	private Set<ITopic> getTypesByAssociation() {
+		Set<ITopic> set = HashUtil.getHashSet();
+		if (getTransactionStore().existsTmdmTypeInstanceAssociationType()) {
+			for (Association association : getTransactionStore().getTopicMap().getAssociations(getTransactionStore().getTmdmTypeInstanceAssociationType())) {
 				try {
-					if (association.getRoles(getStore().getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)) {
-						set.add((ITopic) association.getRoles(getStore().getTmdmTypeRoleType()).iterator().next().getPlayer());
-					}
+					set.add((ITopic) association.getRoles(getTransactionStore().getTmdmTypeRoleType()).iterator().next().getPlayer());
 				} catch (NoSuchElementException e) {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
 			}
 		}
 		return set;
-	}
-
-	/**
-	 * Return all transitive instances of the given topic type.
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the instances
-	 */
-	public Set<ITopic> getInstances(ITopic type) {
-		if (isRemovedConstruct(type)) {
-			return HashUtil.getHashSet();
-		}
-		Set<ITopic> set = HashUtil.getHashSet();
-		set.addAll(getDirectInstances(type));
-
-		/*
-		 * iterate over all sub types
-		 */
-		for (ITopic t : getSubtypes(type)) {
-			/*
-			 * add all instances of current type
-			 */
-			set.addAll(getDirectInstances(t));
-		}
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Return all transitive instances of the topic map;
-	 * 
-	 * @return the instances
-	 */
-	public Set<ITopic> getInstances() {
-		Set<ITopic> topics = redirectGetInstances();
-		if (instances != null) {
-			for (Set<ITopic> set : instances.values()) {
-				topics.addAll(set);
-			}
-		}
-		return topics;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
-	 * 
-	 * @return all instances of the topic map
-	 */
-	protected Set<ITopic> redirectGetInstances() {
-		ITypeInstanceIndex index = getStore().getIndex(ITypeInstanceIndex.class);
-		if (!index.isOpen()) {
-			index.open();
-		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic type : index.getTopicTypes()) {
-			topics.addAll(getDirectInstances((ITopic) type));
-		}
-		return topics;
 	}
 
 	/**
@@ -325,9 +452,6 @@ public class TopicTypeCache implements IDataStore {
 	 * @return the types
 	 */
 	public Set<ITopic> getTypes(ITopic instance) {
-		if (isRemovedConstruct(instance)) {
-			return HashUtil.getHashSet();
-		}
 		Set<ITopic> set = HashUtil.getHashSet();
 
 		/*
@@ -344,114 +468,229 @@ public class TopicTypeCache implements IDataStore {
 	}
 
 	/**
-	 * Return all transitive types of the topic map.
-	 * 
-	 * @return the types
+	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getTypes() {
-		Set<ITopic> topics = redirectGetTypes();
-		if (types != null) {
-			for (Set<ITopic> set : types.values()) {
-				topics.addAll(set);
+	@SuppressWarnings("unchecked")
+	public Set<ITopic> getDirectTypes(ITopic instance) {
+		Set<ITopic> set = HashUtil.getHashSet();
+		Set<ITopic> types = (Set<ITopic>) getTopicMapStore().doRead(instance, TopicMapStoreParameterType.TYPE);
+		for (ITopic type : types) {
+			if (isRemovedConstruct(type)) {
+				continue;
+			}
+			if (removedTypes == null || !removedTypes.containsKey(instance.getId()) || !removedTypes.get(instance.getId()).contains(type.getId())) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(type));
 			}
 		}
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : topics) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
+		if (this.types != null && this.types.containsKey(instance)) {
+			set.addAll(this.types.get(instance));
 		}
-		return results;
+		if (getTopicMapStore().recognizingTypeInstanceAssociation()) {
+			set.addAll(getDirectTypesByAssociation(instance));
+		}
+		return set;
 	}
 
 	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
+	 * Return all direct-types of the given topic type by using the internal
+	 * topic map data model associations
 	 * 
-	 * @return all types of the topic map
+	 * @param type
+	 *            the topic type
+	 * @return the direct types
 	 */
-	protected Set<ITopic> redirectGetTypes() {
-		ITypeInstanceIndex index = getStore().getIndex(ITypeInstanceIndex.class);
+	@SuppressWarnings("unchecked")
+	private Set<ITopic> getDirectTypesByAssociation(ITopic instance) {
+		Set<ITopic> set = HashUtil.getHashSet();
+		if (getTransactionStore().existsTmdmTypeInstanceAssociationType()) {
+			Set<IAssociation> associations = (Set<IAssociation>) getTransactionStore().doRead(instance, TopicMapStoreParameterType.ASSOCIATION,
+					getTransactionStore().getTmdmTypeInstanceAssociationType());
+			for (Association association : associations) {
+				try {
+					if (association.getRoles(getTransactionStore().getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)) {
+						set.add((ITopic) association.getRoles(getTransactionStore().getTmdmTypeRoleType()).iterator().next().getPlayer());
+					}
+				} catch (NoSuchElementException e) {
+					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
+				}
+			}
+		}
+		return set;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ITopic> getInstances() {
+		Set<ITopic> set = HashUtil.getHashSet();
+		for (ITopic type : getTypes()) {
+			for (ITopic instance : getDirectInstances(type)) {
+				if (isRemovedConstruct(instance)) {
+					continue;
+				}
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(instance));
+			}
+		}
+		if (instances != null) {
+			for (Set<ITopic> s : instances.values()) {
+				set.addAll(s);
+			}
+		}
+		if (getTopicMapStore().recognizingTypeInstanceAssociation()) {
+			set.addAll(getInstancesByAssociation());
+		}
+		return set;
+	}
+
+	/**
+	 * Return all instances of the topic map by using the internal topic map
+	 * data model associations
+	 * 
+	 * @return the instances
+	 */
+	private Set<ITopic> getInstancesByAssociation() {
+		Set<ITopic> set = HashUtil.getHashSet();
+		if (getTransactionStore().existsTmdmTypeInstanceAssociationType()) {
+			for (Association association : getTransactionStore().getTopicMap().getAssociations(getTransactionStore().getTmdmTypeInstanceAssociationType())) {
+				try {
+					set.add((ITopic) association.getRoles(getTransactionStore().getTmdmInstanceRoleType()).iterator().next().getPlayer());
+				} catch (NoSuchElementException e) {
+					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
+				}
+			}
+		}
+		return set;
+	}
+
+	/**
+	 * Return all transitive instances of the given topic type.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * @return the instances
+	 */
+	public Set<ITopic> getInstances(ITopic type) {
+		Set<ITopic> set = HashUtil.getHashSet();
+		set.addAll(getDirectInstances(type));
+
+		/*
+		 * iterate over all sub types
+		 */
+		for (ITopic t : getSubtypes(type)) {
+			/*
+			 * add all instances of current type
+			 */
+			set.addAll(getDirectInstances(t));
+		}
+		return set;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ITopic> getDirectInstances(ITopic type) {
+		ITypeInstanceIndex index = getTopicMapStore().getIndex(ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic type : index.getTopicTypes()) {
-			topics.add((ITopic) type);
-		}
-		return topics;
-	}
-
-	/**
-	 * Return all direct super types of the given topic type
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the super types
-	 */
-	public Set<ITopic> getDirectSupertypes(ITopic type) {
-		if (isRemovedConstruct(type)) {
-			return HashUtil.getHashSet();
-		}
-		/*
-		 * create result set
-		 */
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (supertypes != null && supertypes.containsKey(type)) {
-			set.addAll(supertypes.get(type));
-		} else {
-			set.addAll(redirectGetDirectSupertypes(type));
-		}
-		if (getStore().recognizingSupertypeSubtypeAssociation()) {
-			set.addAll(getDirectSupertypesByAssociation(type));
-		}
-
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
+		/*
+		 * get all instances of the given type
+		 */
+		for (Topic inst : index.getTopics(type)) {
+			ITopic instance = (ITopic) inst;
+			/*
+			 * check if instance is removed
+			 */
+			if (isRemovedConstruct(instance)) {
+				continue;
+			}
+			/*
+			 * check that is-instance-of relation was not removed in the current
+			 * transaction context
+			 */
+			if (removedInstances == null || !removedInstances.containsKey(type.getId()) || !removedInstances.get(type.getId()).contains(instance.getId())) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(instance));
 			}
 		}
-		return results;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
-	 * 
-	 * @param type
-	 *            the type
-	 * @return the supertypes of the given type
-	 */
-	@SuppressWarnings("unchecked")
-	protected Set<ITopic> redirectGetDirectSupertypes(ITopic type) {
-		Set<ITopic> topics = (Set<ITopic>) getStore().doRead(type, TopicMapStoreParameterType.SUPERTYPE);
-		if (supertypes == null) {
-			supertypes = HashUtil.getHashMap();
+		if (instances != null && instances.containsKey(type)) {
+			set.addAll(instances.get(type));
 		}
-		supertypes.put(type, topics);
-		return topics;
+
+		if (getTopicMapStore().recognizingTypeInstanceAssociation()) {
+			set.addAll(getDirectInstancesByAssociation(type));
+		}
+		return set;
 	}
 
 	/**
-	 * Return all direct-supertypes of the given topic type by using the
-	 * internal topic map data model associations
+	 * Return all direct-instances of the given topic type by using the internal
+	 * topic map data model associations
 	 * 
 	 * @param type
 	 *            the topic type
-	 * @return the direct supertypes
+	 * @return the direct instances
 	 */
 	@SuppressWarnings("unchecked")
-	private Set<ITopic> getDirectSupertypesByAssociation(ITopic type) {
+	private Set<ITopic> getDirectInstancesByAssociation(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmSupertypeSubtypeAssociationType()) {
-			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
-					getStore().getTmdmSupertypeSubtypeAssociationType());
+		if (getTransactionStore().existsTmdmTypeInstanceAssociationType()) {
+			ITopic assocType = getTransactionStore().getTmdmTypeInstanceAssociationType();
+			Set<IAssociation> associations = (Set<IAssociation>) getTransactionStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION, assocType);
 			for (Association association : associations) {
 				try {
-					if (association.getRoles(getStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)) {
-						set.add((ITopic) association.getRoles(getStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer());
+					if (association.getRoles(getTransactionStore().getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
+						set.add((ITopic) association.getRoles(getTransactionStore().getTmdmInstanceRoleType()).iterator().next().getPlayer());
 					}
+				} catch (NoSuchElementException e) {
+					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
+				}
+			}
+		}
+		return set;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ITopic> getSupertypes() {
+		ISupertypeSubtypeIndex index = getTopicMapStore().getIndex(ISupertypeSubtypeIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		Set<ITopic> set = HashUtil.getHashSet();
+		for (Topic t : index.getSupertypes()) {
+			ITopic type = (ITopic) t;
+			if (isRemovedConstruct(type)) {
+				continue;
+			}
+			if (!getSubtypes(type).isEmpty()) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(type));
+			}
+		}
+		if (supertypes != null) {
+			for (Set<ITopic> s : supertypes.values()) {
+				set.addAll(s);
+			}
+		}
+		if (getTopicMapStore().recognizingSupertypeSubtypeAssociation()) {
+			set.addAll(getSupertypesByAssociation());
+		}
+		return set;
+	}
+
+	/**
+	 * Return all supertypes of the topic map by using the internal topic map
+	 * data model associations
+	 * 
+	 * @return the supertypes
+	 */
+	private Set<ITopic> getSupertypesByAssociation() {
+		Set<ITopic> set = HashUtil.getHashSet();
+		if (getTransactionStore().existsTmdmSupertypeSubtypeAssociationType()) {
+			for (Association association : getTransactionStore().getTopicMap().getAssociations(getTransactionStore().getTmdmSupertypeSubtypeAssociationType())) {
+				try {
+					set.add((ITopic) association.getRoles(getTransactionStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer());
 				} catch (NoSuchElementException e) {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
@@ -468,9 +707,6 @@ public class TopicTypeCache implements IDataStore {
 	 * @return the super types
 	 */
 	public Set<ITopic> getSupertypes(ITopic type) {
-		if (isRemovedConstruct(type)) {
-			return HashUtil.getHashSet();
-		}
 		Set<ITopic> set = HashUtil.getHashSet();
 		return getSupertypes(type, set);
 	}
@@ -485,9 +721,6 @@ public class TopicTypeCache implements IDataStore {
 	 * @return the super types
 	 */
 	protected Set<ITopic> getSupertypes(ITopic type, Set<ITopic> known) {
-		if (isRemovedConstruct(type)) {
-			return HashUtil.getHashSet();
-		}
 		/*
 		 * create result set
 		 */
@@ -532,53 +765,57 @@ public class TopicTypeCache implements IDataStore {
 	}
 
 	/**
-	 * Return all super types of the topic map.
-	 * 
-	 * @return the types
+	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getSupertypes() {
-		Set<ITopic> set = HashUtil.getHashSet(redirectGetSupertypes());
-		if (supertypes != null) {
-			for (Set<ITopic> s : supertypes.values()) {
-				set.addAll(s);
+	public Set<ITopic> getDirectSupertypes(ITopic subtype) {
+		ISupertypeSubtypeIndex index = getTopicMapStore().getIndex(ISupertypeSubtypeIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		Set<ITopic> set = HashUtil.getHashSet();
+		for (Topic t : index.getDirectSupertypes(subtype)) {
+			ITopic supertype = (ITopic) t;
+			if (isRemovedConstruct(supertype)) {
+				continue;
+			}
+			/*
+			 * check that a-kind-of relation was not removed in the current
+			 * transaction context
+			 */
+			if (removedSupertypes == null || !removedSupertypes.containsKey(subtype.getId())
+					|| !removedSupertypes.get(subtype.getId()).contains(supertype.getId())) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(supertype));
 			}
 		}
-		if (getStore().recognizingSupertypeSubtypeAssociation()) {
-			set.addAll(getSupertypesByAssociation());
+		if (supertypes != null && supertypes.containsKey(subtype)) {
+			set.addAll(supertypes.get(subtype));
 		}
+		if (getTopicMapStore().recognizingSupertypeSubtypeAssociation()) {
+			set.addAll(getDirectSupertypesByAssociation(subtype));
+		}
+
 		return set;
 	}
 
 	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
+	 * Return all direct-supertypes of the given topic type by using the
+	 * internal topic map data model associations
 	 * 
-	 * @return all supertypes of the topic map
+	 * @param type
+	 *            the topic type
+	 * @return the direct supertypes
 	 */
-	protected Set<ITopic> redirectGetSupertypes() {
-		ISupertypeSubtypeIndex index = getStore().getIndex(ISupertypeSubtypeIndex.class);
-		if (!index.isOpen()) {
-			index.open();
-		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic type : index.getSupertypes()) {
-			topics.add((ITopic) type);
-		}
-		return topics;
-	}
-
-	/**
-	 * Return all supertypes of the topic map by using the internal topic map
-	 * data model associations
-	 * 
-	 * @return the supertypes
-	 */
-	private Set<ITopic> getSupertypesByAssociation() {
+	@SuppressWarnings("unchecked")
+	private Set<ITopic> getDirectSupertypesByAssociation(ITopic type) {
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmSupertypeSubtypeAssociationType()) {
-			for (Association association : getStore().getTopicMap().getAssociations(getStore().getTmdmSupertypeSubtypeAssociationType())) {
+		if (getTransactionStore().existsTmdmSupertypeSubtypeAssociationType()) {
+			Set<IAssociation> associations = (Set<IAssociation>) getTransactionStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
+					getTransactionStore().getTmdmSupertypeSubtypeAssociationType());
+			for (Association association : associations) {
 				try {
-					set.add((ITopic) association.getRoles(getStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer());
+					if (association.getRoles(getTransactionStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)) {
+						set.add((ITopic) association.getRoles(getTransactionStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer());
+					}
 				} catch (NoSuchElementException e) {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
@@ -588,81 +825,46 @@ public class TopicTypeCache implements IDataStore {
 	}
 
 	/**
-	 * Return all direct sub types of the given topic type
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the super types
+	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getDirectSubtypes(ITopic type) {
-		if (isRemovedConstruct(type)) {
-			return HashUtil.getHashSet();
-		}
-		/*
-		 * create result set
-		 */
-		Set<ITopic> set = HashUtil.getHashSet();
-		if (subtypes != null && subtypes.containsKey(type)) {
-			set.addAll(subtypes.get(type));
-		} else {
-			set.addAll(redirectGetDirectSubtypes(type));
-		}
-		if (getStore().recognizingSupertypeSubtypeAssociation()) {
-			set.addAll(getDirectSubtypesByAssociation(type));
-		}
-
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
-	 * 
-	 * @param type
-	 *            the supertypes
-	 * @return all subtypes of the given type
-	 */
-	protected Set<ITopic> redirectGetDirectSubtypes(ITopic type) {
-		ISupertypeSubtypeIndex index = getStore().getIndex(ISupertypeSubtypeIndex.class);
+	public Set<ITopic> getSubtypes() {
+		ISupertypeSubtypeIndex index = getTopicMapStore().getIndex(ISupertypeSubtypeIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic sub : index.getSubtypes(type)) {
-			topics.add((ITopic) sub);
+		Set<ITopic> set = HashUtil.getHashSet();
+		for (Topic t : index.getSubtypes()) {
+			ITopic type = (ITopic) t;
+			if (isRemovedConstruct(type)) {
+				continue;
+			}
+			if (!getSupertypes(type).isEmpty()) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(type));
+			}
 		}
-		if ( subtypes == null ){
-			subtypes = HashUtil.getHashMap();
+		if (subtypes != null) {
+			for (Set<ITopic> s : subtypes.values()) {
+				set.addAll(s);
+			}
 		}
-		subtypes.put(type, topics);
-		return topics;
+		if (getTopicMapStore().recognizingSupertypeSubtypeAssociation()) {
+			set.addAll(getSubtypesByAssociation());
+		}
+		return set;
 	}
 
 	/**
-	 * Return all direct-subtypes of the given topic type by using the internal
-	 * topic map data model associations
+	 * Return all sub types of the topic map by using the internal topic map
+	 * data model associations
 	 * 
-	 * @param type
-	 *            the topic type
-	 * @return the direct subtypes
+	 * @return the subtypes
 	 */
-	@SuppressWarnings("unchecked")
-	private Set<ITopic> getDirectSubtypesByAssociation(ITopic type) {
+	private Set<ITopic> getSubtypesByAssociation() {
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmSupertypeSubtypeAssociationType()) {
-			Set<IAssociation> associations = (Set<IAssociation>) getStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
-					getStore().getTmdmSupertypeSubtypeAssociationType());
-			for (Association association : associations) {
+		if (getTransactionStore().existsTmdmSupertypeSubtypeAssociationType()) {
+			for (Association association : getTransactionStore().getTopicMap().getAssociations(getTransactionStore().getTmdmSupertypeSubtypeAssociationType())) {
 				try {
-					if (association.getRoles(getStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(type)) {
-						set.add((ITopic) association.getRoles(getStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer());
-					}
+					set.add((ITopic) association.getRoles(getTransactionStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer());
 				} catch (NoSuchElementException e) {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
@@ -737,60 +939,56 @@ public class TopicTypeCache implements IDataStore {
 	}
 
 	/**
-	 * Return all sub types of the topic map.
-	 * 
-	 * @return the types
+	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getSubtypes() {
-		Set<ITopic> set = HashUtil.getHashSet(redirectGetSubtypes());
-		if (subtypes != null) {
-			for (Set<ITopic> s : subtypes.values()) {
-				set.addAll(s);
-			}
-		}
-		if (getStore().recognizingSupertypeSubtypeAssociation()) {
-			set.addAll(getSubtypesByAssociation());
-		}
-
-		Set<ITopic> results = HashUtil.getHashSet();
-		for (ITopic topic : set) {
-			if (!isRemovedConstruct(topic)) {
-				results.add(topic);
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Internal method redirects the call to the underlying topic map store and
-	 * cache the result.
-	 * 
-	 * @return all subtypes of the topic map
-	 */
-	protected Set<ITopic> redirectGetSubtypes() {
-		ISupertypeSubtypeIndex index = getStore().getIndex(ISupertypeSubtypeIndex.class);
+	public Set<ITopic> getDirectSubtypes(ITopic type) {
+		ISupertypeSubtypeIndex index = getTopicMapStore().getIndex(ISupertypeSubtypeIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
-		Set<ITopic> topics = HashUtil.getHashSet();
-		for (Topic type : index.getSubtypes()) {
-			topics.add((ITopic) type);
-		}
-		return topics;
-	}
-
-	/**
-	 * Return all sub types of the topic map by using the internal topic map
-	 * data model associations
-	 * 
-	 * @return the subtypes
-	 */
-	private Set<ITopic> getSubtypesByAssociation() {
 		Set<ITopic> set = HashUtil.getHashSet();
-		if (getStore().existsTmdmSupertypeSubtypeAssociationType()) {
-			for (Association association : getStore().getTopicMap().getAssociations(getStore().getTmdmSupertypeSubtypeAssociationType())) {
+		for (Topic t : index.getDirectSubtypes(type)) {
+			ITopic subtype = (ITopic) t;
+			if (isRemovedConstruct(subtype)) {
+				continue;
+			}
+			/*
+			 * check that a-kind-of relation was not removed in the current
+			 * transaction context
+			 */
+			if (removedSubtypes == null || !removedSubtypes.containsKey(type.getId()) || !removedSubtypes.get(type.getId()).contains(subtype.getId())) {
+				set.add(getTransactionStore().getIdentityStore().createLazyStub(subtype));
+			}
+		}
+		if (subtypes != null && subtypes.containsKey(type)) {
+			set.addAll(subtypes.get(type));
+		}
+		if (getTopicMapStore().recognizingSupertypeSubtypeAssociation()) {
+			set.addAll(getDirectSubtypesByAssociation(type));
+		}
+
+		return set;
+	}
+	
+	/**
+	 * Return all direct-subtypes of the given topic type by using the internal
+	 * topic map data model associations
+	 * 
+	 * @param type
+	 *            the topic type
+	 * @return the direct subtypes
+	 */
+	@SuppressWarnings("unchecked")
+	private Set<ITopic> getDirectSubtypesByAssociation(ITopic type) {
+		Set<ITopic> set = HashUtil.getHashSet();
+		if (getTransactionStore().existsTmdmSupertypeSubtypeAssociationType()) {
+			Set<IAssociation> associations = (Set<IAssociation>) getTransactionStore().doRead(type, TopicMapStoreParameterType.ASSOCIATION,
+					getTransactionStore().getTmdmSupertypeSubtypeAssociationType());
+			for (Association association : associations) {
 				try {
-					set.add((ITopic) association.getRoles(getStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer());
+					if (association.getRoles(getTransactionStore().getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(type)) {
+						set.add((ITopic) association.getRoles(getTransactionStore().getTmdmSubtypeRoleType()).iterator().next().getPlayer());
+					}
 				} catch (NoSuchElementException e) {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
@@ -800,184 +998,83 @@ public class TopicTypeCache implements IDataStore {
 	}
 
 	/**
-	 * Removing a type-instance-relation between the given topics.
+	 * Returns the internal reference of the topic map store.
 	 * 
-	 * @param t
-	 *            the topic item
-	 * @param type
-	 *            the type
+	 * @return the topic map store
 	 */
-	public void removeType(ITopic t, ITopic type) {
-		/*
-		 * check if instance is known by the storage
-		 */
-		if (types == null || !types.containsKey(t)) {
-			redirectGetDirectTypes(t);
-		}
-		/*
-		 * get types of the topic item
-		 */
-		Set<ITopic> set = types.get(t);
-		if (!set.contains(type)) {
-			throw new TopicMapStoreException("ITopic type is not related to the given topic item");
-		}
-		/*
-		 * remove type
-		 */
-		set.remove(type);
-		types.put(t, set);
-		/*
-		 * get instances of the topic item
-		 */
-		set = instances.get(type);
-		if (!set.contains(t)) {
-			redirectGetDirectInstance(type);
-		}
-		/*
-		 * remove type
-		 */
-		set.remove(t);
-		instances.put(type, set);
+	protected TopicMapStoreImpl getTopicMapStore() {
+		return topicMapStore.getRealStore();
 	}
 
 	/**
-	 * Removing a super-type-sub-type-relation between the given types.
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @param supertype
-	 *            the super type
+	 * @return the topicMapStore
 	 */
-	public void removeSupertype(ITopic type, ITopic supertype) {
-		/*
-		 * check if type is known by the storage
-		 */
-		if (supertypes == null || !supertypes.containsKey(type)) {
-			redirectGetDirectSupertypes(type);
-		}
-		/*
-		 * get super types of the type
-		 */
-		Set<ITopic> set = supertypes.get(type);
-		if (!set.contains(supertype)) {
-			throw new TopicMapStoreException("Super type is not related to the given topic type");
-		}
-		/*
-		 * remove super type
-		 */
-		set.remove(supertype);
-		supertypes.put(type, set);
-
-		/*
-		 * get subtypes of the type
-		 */
-		if (subtypes == null || !subtypes.containsKey(supertype)) {
-			redirectGetDirectSubtypes(supertype);
-		}
-		set = subtypes.get(supertype);
-		/*
-		 * remove sub type
-		 */
-		set.remove(type);
-		subtypes.put(supertype, set);
+	public TransactionTopicMapStore getTransactionStore() {
+		return topicMapStore;
 	}
 
 	/**
-	 * Add a type-instance-relation between the given topics.
+	 * Redirect method call to identity store and check if construct is marked
+	 * as removed.
 	 * 
-	 * @param t
-	 *            the topic item
-	 * @param type
-	 *            the type
+	 * @param c
+	 *            the construct
+	 * @return <code>true</code> if the construct was marked as removed,
+	 *         <code>false</code> otherwise.
 	 */
-	public void addType(ITopic t, ITopic type) {
-		/*
-		 * check if the map is instantiate
-		 */
-		getDirectTypes(t);
-		/*
-		 * get types of the topic item
-		 */
-		Set<ITopic> set = types.get(t);
-		if (set == null) {
-			set = HashUtil.getHashSet();
-		}
-		/*
-		 * add type if not contained
-		 */
-		if (!set.contains(type)) {
-			set.add(type);
-			types.put(t, set);
-		}
-
-		/*
-		 * check if instances map is instantiated
-		 */
-		getDirectInstances(type);
-		/*
-		 * get instances of the given type
-		 */
-		set = instances.get(type);
-		if (set == null) {
-			set = HashUtil.getHashSet();
-		}
-		/*
-		 * add instance if not contained
-		 */
-		if (!set.contains(t)) {
-			set.add(t);
-			instances.put(type, set);
-		}
+	protected boolean isRemovedConstruct(IConstruct c) {
+		return getTransactionStore().getIdentityStore().isRemovedConstruct(c);
 	}
 
 	/**
-	 * Removing a super-type-sub-type-relation between the given types.
-	 * 
-	 * @param type
-	 *            the topic type
-	 * @param supertype
-	 *            the super type
+	 * {@inheritDoc}
 	 */
-	public void addSupertype(ITopic type, ITopic supertype) {
+	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
 		/*
-		 * check if super types map is instantiated
+		 * replace as type
 		 */
-		getDirectSupertypes(type);
-		/*
-		 * get super types of the type
-		 */
-		Set<ITopic> set = supertypes.get(type);
-		if (set == null) {
-			set = HashUtil.getHashSet();
+		for (ITopic instance : getInstances(topic)) {
+			removeType(instance, topic);
+			addType(instance, replacement);
 		}
-		/*
-		 * add super type if not contained
-		 */
-		if (!set.contains(supertype)) {
-			set.add(supertype);
-			supertypes.put(type, set);
+		if (instances != null) {
+			instances.remove(topic);
 		}
 
 		/*
-		 * check if sub type map is instantiated
+		 * replace as instances
 		 */
-		getDirectSubtypes(supertype);
-		/*
-		 * get sub types of the super type
-		 */
-		set = subtypes.get(supertype);
-		if (set == null) {
-			set = HashUtil.getHashSet();
+		for (ITopic type : getTypes(topic)) {
+			removeType(topic, type);
+			addType(replacement, type);
 		}
+		if (types != null) {
+			types.remove(topic);
+		}
+
 		/*
-		 * add sub type if not contained
+		 * replace as sub type
 		 */
-		if (!set.contains(type)) {
-			set.add(type);
-			subtypes.put(supertype, set);
+		for (ITopic supertype : getSupertypes(topic)) {
+			removeSupertype(topic, supertype);
+			addSupertype(replacement, supertype);
+		}
+		if (supertypes != null) {
+			supertypes.remove(topic);
+		}
+
+		/*
+		 * replace as super type
+		 */
+		for (ITopic t : getSubtypes(topic)) {
+			removeSupertype(t, topic);
+			addSupertype(t, replacement);
+		}
+		if (subtypes != null) {
+			subtypes.remove(topic);
 		}
 	}
-
+	
 	/**
 	 * Removing the given topic from the internal store and all dependent
 	 * relations.
@@ -1040,93 +1137,10 @@ public class TopicTypeCache implements IDataStore {
 		if (this.types != null) {
 			this.types.remove(topic);
 		}
-		if (removedConstructs == null) {
-			removedConstructs = HashUtil.getHashSet();
-		}
-		removedConstructs.addAll(removed);
-		removedConstructs.add(topic);
 		/*
 		 * return dependent removed topics
 		 */
 		return removed;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
-		/*
-		 * replace as type
-		 */
-		for (ITopic instance : getInstances(topic)) {
-			removeType(instance, topic);
-			addType(instance, replacement);
-		}
-		if (instances != null) {
-			instances.remove(topic);
-		}
-
-		/*
-		 * replace as instances
-		 */
-		for (ITopic type : getTypes(topic)) {
-			removeType(topic, type);
-			addType(replacement, type);
-		}
-		if (types != null) {
-			types.remove(topic);
-		}
-
-		/*
-		 * replace as sub type
-		 */
-		for (ITopic supertype : getSupertypes(topic)) {
-			removeSupertype(topic, supertype);
-			addSupertype(replacement, supertype);
-		}
-		if (supertypes != null) {
-			supertypes.remove(topic);
-		}
-
-		/*
-		 * replace as super type
-		 */
-		for (ITopic t : getSubtypes(topic)) {
-			removeSupertype(t, topic);
-			addSupertype(t, replacement);
-		}
-		if (subtypes != null) {
-			subtypes.remove(topic);
-		}
-
-	}
-
-	/**
-	 * Returns the internal reference of the topic map store.
-	 * 
-	 * @return the topic map store
-	 */
-	protected TopicMapStoreImpl getStore() {
-		return topicMapStore.getRealStore();
-	}
-
-	/**
-	 * @return the topicMapStore
-	 */
-	public TransactionTopicMapStore getTransactionStore() {
-		return topicMapStore;
-	}
-
-	/**
-	 * Redirect method call to identity store and check if construct is marked
-	 * as removed.
-	 * 
-	 * @param c
-	 *            the construct
-	 * @return <code>true</code> if the construct was marked as removed,
-	 *         <code>false</code> otherwise.
-	 */
-	protected boolean isRemovedConstruct(IConstruct c) {
-		return getTransactionStore().getIdentityStore().isRemovedConstruct(c);
-	}
 }

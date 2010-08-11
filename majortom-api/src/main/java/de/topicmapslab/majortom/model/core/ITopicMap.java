@@ -148,10 +148,11 @@ public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
 	/**
 	 * Method removes all duplicated from the topic map
 	 */
-	public void removedDuplicates();
+	public void removeDuplicates();
 	
 	/**
 	 * Removes everything from the topic map
 	 */
 	public void clear();
+	
 }

@@ -101,7 +101,7 @@ public class TransactionCommand {
 				boolean cascade = parameters_.length == 1 && ((Boolean) parameters_[0]);
 				store.doRemove(context_, cascade);
 				if (context_ instanceof ConstructImpl) {
-					((ConstructImpl) context_).setRemoved();
+					((ConstructImpl) context_).setRemoved(true);
 				}
 			} else {
 				store.doRemove(context_, paramterType, parameters_);

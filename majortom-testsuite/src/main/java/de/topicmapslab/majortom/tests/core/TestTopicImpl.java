@@ -26,7 +26,6 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
@@ -107,45 +106,45 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertTrue(topic.getCharacteristics(superType).contains(n));
 		IScope scope = ((ScopeableImpl) o).getScopeObject();
 		assertEquals(2, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType,scope).contains(o));
-		assertTrue(topic.getCharacteristics(superType,scope).contains(n));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 
 		ITopic theme = createTopic();
 		o.addTheme(theme);
 		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType,scope).contains(n));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		scope = ((ScopeableImpl) o).getScopeObject();
 		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType,scope).contains(o));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
 		assertEquals(1, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(o));
-		
+
 		o.removeTheme(theme);
 		assertEquals(0, topic.getCharacteristics(superType, scope).size());
 		assertEquals(0, topic.getCharacteristics(scope).size());
-		
+
 		scope = ((ScopeableImpl) o).getScopeObject();
 		assertEquals(2, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType,scope).contains(o));
-		assertTrue(topic.getCharacteristics(superType,scope).contains(n));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		assertEquals(2, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(o));
 		assertTrue(topic.getCharacteristics(scope).contains(n));
-		
+
 		o.remove();
 		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType,scope).contains(n));
+		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		assertEquals(1, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(n));
-		
+
 		n.addTheme(theme);
 		assertEquals(0, topic.getCharacteristics(superType, scope).size());
 		assertEquals(0, topic.getCharacteristics(scope).size());
 		assertEquals(1, topic.getCharacteristics(superType).size());
 		assertTrue(topic.getCharacteristics(superType).contains(n));
-		
+
 		type.removeSupertype(superType);
-		assertEquals(0,topic.getCharacteristics(superType).size());
+		assertEquals(0, topic.getCharacteristics(superType).size());
 	}
 
 	/**
@@ -221,16 +220,6 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertEquals(3, topicMap.getTopics().size());
 		assertTrue(topicMap.getTopics().contains(reifier));
 		assertTrue(topicMap.getTopics().contains(topic));
-		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
-		try {
-			reifier.remove();
-			fail("topic is use as reifier!");
-		} catch (TopicInUseException e) {
-			// NOTHING TO DO
-		}
-		assertEquals(3, topicMap.getTopics().size());
-
-		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, false);
 		try {
 			reifier.remove();
 		} catch (TopicInUseException e) {
