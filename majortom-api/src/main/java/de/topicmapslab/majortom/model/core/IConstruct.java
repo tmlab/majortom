@@ -21,17 +21,28 @@ public interface IConstruct extends Construct, Comparable<IConstruct> {
 	 *             the argument cascade is <code>false</code>
 	 */
 	public void remove(final boolean cascade) throws TopicInUseException;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public ITopicMap getTopicMap();
 
-	
 	/**
 	 * Indicates if the construct is removed
 	 * 
 	 * @return the removed <code>true</code> if the construct was removed
 	 */
 	public boolean isRemoved();
+
+	/**
+	 * Modify the internal state of deletion.
+	 * <p>
+	 * <b>Hint:</b> A construct marked as removed, causes an exception calling
+	 * any read, write or update method.
+	 * </p>
+	 * 
+	 * @param removed
+	 *            the state flag
+	 */
+	public void setRemoved(boolean removed);
 }

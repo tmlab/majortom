@@ -71,7 +71,7 @@ public interface ITopicMapStore {
 	 * @return <code>true</code> if the store save all changes of the topic map,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean supportRevisions();
+	public boolean supportRevisionManagement();
 
 	/**
 	 * Operation method to merge a set of constructs to one new construct
@@ -231,14 +231,35 @@ public interface ITopicMapStore {
 	 *             thrown if the method was called by another thread before
 	 */
 	public void commit() throws ConcurrentThreadsException;
-	
+
 	/**
 	 * Method removes all duplicated from the topic map
 	 */
 	public void removedDuplicates();
-	
+
 	/**
 	 * Removes everything from the topic map
 	 */
 	public void clear();
+
+	/**
+	 * Method to enable or disable the internal revision management mechanism.
+	 * 
+	 * @param enabled
+	 *            <code>true</code> if the revision management should be
+	 *            enabled, <code>false</code> otherwise.
+	 * @throws TopicMapStoreException
+	 *             thrown if the topic map store does not support history
+	 *             management
+	 */
+	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException;
+
+	/**
+	 * Returns the current state of revision management.
+	 * 
+	 * @return <code>true</code> if the revision management feature will be
+	 *         supported by the current topic map store and the management is
+	 *         enabled, <code>false</code> otherwise.
+	 */
+	public boolean isRevisionManagementEnabled();
 }

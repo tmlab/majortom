@@ -5,7 +5,8 @@ import org.tmapi.core.Construct;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
- * Topic map store exception thrown if the calling signature does not matching to any internal operation.
+ * Topic map store exception thrown if the calling signature does not matching
+ * to any internal operation.
  * 
  * @author Sven Krosse
  * 
@@ -43,7 +44,7 @@ public class OperationSignatureException extends TopicMapStoreException {
 		this.paramType = paramType;
 		this.params = new Class<?>[params.length];
 		for (int i = 0; i < params.length; i++) {
-			this.params[i] = params[i].getClass();
+			this.params[i] = params[i] == null ? null : params[i].getClass();
 		}
 	}
 
@@ -57,7 +58,7 @@ public class OperationSignatureException extends TopicMapStoreException {
 		builder.append("Arguments: ");
 		boolean first = true;
 		for (Class<?> c : params) {
-			builder.append((first ? "" : ",") + c.getSimpleName());
+			builder.append((first ? "" : ",") + (c == null ? "null" : c.getSimpleName()));
 			first = false;
 		}
 		builder.append("\r\n");

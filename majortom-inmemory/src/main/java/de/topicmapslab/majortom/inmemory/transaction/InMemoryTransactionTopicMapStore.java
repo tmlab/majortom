@@ -137,7 +137,6 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 			getRealStore().removeTopicMapListener(listener);
 		} catch (TransactionException e) {
 			e.printStackTrace();
-			System.out.println("Rollback " + commited.size() + " commands!");
 		}
 	}
 
@@ -244,7 +243,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supportRevisions() {
+	public boolean isRevisionManagementEnabled() {
 		return false;
 	}
 

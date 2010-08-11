@@ -140,9 +140,6 @@ public class TestImport extends TestCase implements ITopicMapListener {
 	}
 
 	public void checkImport(TopicMap topicMap) {
-
-		System.out.println("Check import");
-
 		for (String subjectIdentifier : subjectIdentifiers) {
 			assertNotNull("The topic with the subject-identifier '" + subjectIdentifier + "' is missing!", topicMap.getTopicBySubjectIdentifier(topicMap
 					.createLocator(subjectIdentifier)));

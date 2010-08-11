@@ -29,6 +29,8 @@ import de.topicmapslab.majortom.model.core.IConstruct;
  */
 public interface IQueryBuilder {
 
+	public void close();
+	
 	// ****************
 	// * INSERT QUERY *
 	// ****************

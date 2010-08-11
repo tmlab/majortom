@@ -597,16 +597,27 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
 		try {
-			provider.getProcessor().doMergeTopics(context, other);
-			((TopicImpl) other).getIdentity().setId(context.getId());
+			ITopic newTopic = provider.getProcessor().doCreateTopicWithoutIdentifier(getTopicMap());
+			provider.getProcessor().doMergeTopics(newTopic, context);
+			provider.getProcessor().doMergeTopics(newTopic, other);
+//			((TopicImpl) other).getIdentity().setId(context.getId());
 			/*
 			 * notify listener
 			 */
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, getTopicMap(), newTopic, null);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.MERGE, getTopicMap(), context, other);
+			storeRevision(TopicMapEventType.TOPIC_ADDED, getTopicMap(), newTopic, null);
+			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
+			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
+			/*
+			 * change id
+			 */
+			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.getId());
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -2049,7 +2060,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supportRevisions() {
+	public boolean isRevisionManagementEnabled() {
 		return false;
 	}
 
@@ -2201,7 +2212,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void clear() {
-		// TODO Sven implmeent it into the SQLProcessor(s)
-
+		try {
+			getProcessor().doClearTopicMap(getTopicMap());
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
 	}
 }

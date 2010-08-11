@@ -194,7 +194,7 @@ public final class CXTMTopicMapWriter {
 	 */
 	private void removeDuplicates(TopicMap topicMap) {
 		if (topicMap instanceof ITopicMap) {
-			((ITopicMap) topicMap).removedDuplicates();
+			((ITopicMap) topicMap).removeDuplicates();
 		} else {
 			throw new RuntimeException("Unsupported topic map type.");
 		}

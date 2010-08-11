@@ -85,7 +85,7 @@ public class CharacteristicsCache implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param store
+	 * @param topicMapStore
 	 *            the transaction store
 	 * @param xsdString
 	 *            the locator of XSD string
@@ -123,7 +123,12 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Add the given name to the internal data store.
+	 * 
+	 * @param t
+	 *            the parent topic
+	 * @param n
+	 *            the name
 	 */
 	public void addName(ITopic t, IName n) {
 		if (isRemovedConstruct(t)) {
@@ -135,6 +140,7 @@ public class CharacteristicsCache implements IDataStore {
 		if (names == null) {
 			names = HashUtil.getHashMap();
 		}
+
 		Set<IName> set = names.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
@@ -144,7 +150,12 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Add the given occurrence to the internal data store.
+	 * 
+	 * @param t
+	 *            the parent topic
+	 * @param n
+	 *            the occurrence
 	 */
 	public void addOccurrence(ITopic t, IOccurrence o) {
 		if (isRemovedConstruct(t)) {
@@ -156,6 +167,7 @@ public class CharacteristicsCache implements IDataStore {
 		if (occurrences == null) {
 			occurrences = HashUtil.getHashMap();
 		}
+
 		Set<IOccurrence> set = occurrences.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
@@ -167,7 +179,12 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Add the given variant to the internal data store.
+	 * 
+	 * @param n
+	 *            the name
+	 * @param v
+	 *            the variant
 	 */
 	public void addVariant(IName n, IVariant v) {
 		if (isRemovedConstruct(n)) {
@@ -190,15 +207,17 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the data type of the given data-type-aware
+	 * 
+	 * @param dataTypeAware
+	 *            the data-type-aware
+	 * @return the data type
 	 */
 	public ILocator getDatatype(IDatatypeAware dataTypeAware) {
 		if (containsDatatype(dataTypeAware)) {
 			return dataTypes.get(dataTypeAware);
 		}
-		ILocator loc = (ILocator) getTopicMapStore().doRead(dataTypeAware, TopicMapStoreParameterType.DATATYPE);
-		setDatatype(dataTypeAware, loc);
-		return loc;
+		return (ILocator) getTopicMapStore().doRead(dataTypeAware, TopicMapStoreParameterType.DATATYPE);
 	}
 
 	/**
@@ -215,7 +234,11 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns all data-typed items with the given data type.
+	 * 
+	 * @param locator
+	 *            the data type
+	 * @return a set
 	 */
 	public Set<IDatatypeAware> getDatatypeAwares(ILocator locator) {
 		ILiteralIndex index = getTopicMapStore().getIndex(ILiteralIndex.class);
@@ -231,14 +254,16 @@ public class CharacteristicsCache implements IDataStore {
 				set.add(getTransactionStore().getIdentityStore().createLazyStub(datatypeAware));
 			}
 		}
-		if (dataTyped != null && !dataTyped.containsKey(locator)) {
+		if (dataTyped != null && dataTyped.containsKey(locator)) {
 			set.addAll(dataTyped.get(locator));
 		}
 		return set;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the names of all topics.
+	 * 
+	 * @return the names
 	 */
 	public Set<IName> getNames() {
 		ILiteralIndex index = getTopicMapStore().getIndex(ILiteralIndex.class);
@@ -260,7 +285,11 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the names of the given topic.
+	 * 
+	 * @param t
+	 *            the topic
+	 * @return the names
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<IName> getNames(ITopic t) {
@@ -277,7 +306,9 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the occurrences of all topics.
+	 * 
+	 * @return the occurrences
 	 */
 	public Set<IOccurrence> getOccurrences() {
 		ILiteralIndex index = getTopicMapStore().getIndex(ILiteralIndex.class);
@@ -299,7 +330,11 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the occurrences of the given topic.
+	 * 
+	 * @param t
+	 *            the topic
+	 * @return the occurrences
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<IOccurrence> getOccurrences(ITopic t) {
@@ -316,7 +351,9 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the variants of the all names.
+	 * 
+	 * @return the variants
 	 */
 	public Set<IVariant> getVariants() {
 		ILiteralIndex index = getTopicMapStore().getIndex(ILiteralIndex.class);
@@ -338,7 +375,11 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the variants of the given name.
+	 * 
+	 * @param n
+	 *            the name
+	 * @return the variants
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<IVariant> getVariants(IName n) {
@@ -355,22 +396,31 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the value of the given object
+	 * 
+	 * @param obj
+	 *            the object
+	 * @return the value
 	 */
 	public Object getValue(IConstruct obj) {
+		Object value = null;
 		if (values != null && values.containsKey(obj)) {
-			return values.get(obj);
+			value = values.get(obj);
 		}
-		Object value = getTopicMapStore().doRead(obj, TopicMapStoreParameterType.VALUE);
-		if (values == null) {
-			values = HashUtil.getHashMap();
+		if (value == null) {
+			value = getTopicMapStore().doRead(obj, TopicMapStoreParameterType.VALUE);
 		}
-		values.put(obj, value);
 		return value;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Modify the value of the given object
+	 * 
+	 * @param obj
+	 *            the object
+	 * @param value
+	 *            the new value
+	 * @return the old value
 	 */
 	public Object setValue(IConstruct obj, Object value) {
 		if (isRemovedConstruct(obj)) {
@@ -385,7 +435,13 @@ public class CharacteristicsCache implements IDataStore {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Modify the data type of the given data-type-aware
+	 * 
+	 * @param dataTypeAware
+	 *            the data-type-aware
+	 * @param dataType
+	 *            the new data type
+	 * @return the old data type
 	 */
 	public ILocator setDatatype(IDatatypeAware dataTypeAware, ILocator dataType) {
 		if (isRemovedConstruct(dataTypeAware)) {
@@ -428,35 +484,32 @@ public class CharacteristicsCache implements IDataStore {
 		}
 		datatypeAwares.add(dataTypeAware);
 		dataTyped.put(dataType, datatypeAwares);
-
 		return oldDatatype;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Remove the given topic as parent from the internal store
+	 * 
+	 * @param topic
+	 *            the topic to remove
 	 */
 	public void removeTopic(ITopic topic) {
-		try {
-			if (names != null) {
-				this.names.remove(topic);
-			}
-			if (occurrences != null) {
-				this.occurrences.remove(topic);
-			}
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
+		if (names != null) {
+			names.remove(topic);
+		}
+		if (occurrences != null) {
+			occurrences.remove(topic);
 		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Remove the given name from the internal data store.
+	 * 
+	 * @param n
+	 *            the name
 	 */
 	public void removeName(IName n) {
-		try {
-			if (names == null) {
-				throw new TopicMapStoreException("Unknown name " + n.toString());
-			}
-
+		if (names != null && names.containsKey(n.getParent())) {
 			Set<IName> set = names.get(n.getParent());
 			if (set == null) {
 				throw new TopicMapStoreException("Unknown topic " + n.toString());
@@ -477,20 +530,17 @@ public class CharacteristicsCache implements IDataStore {
 			if (values != null && values.containsKey(n)) {
 				values.remove(n);
 			}
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
 		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Remove the given occurrence from the internal data store.
+	 * 
+	 * @param v
+	 *            the variant
 	 */
 	public void removeVariant(IVariant v) {
-		try {
-			if (variants == null) {
-				throw new TopicMapStoreException("Unknown variant " + v.toString());
-			}
-
+		if (variants != null && variants.containsKey(v.getParent())) {
 			Set<IVariant> set = variants.get(v.getParent());
 			if (set == null) {
 				throw new TopicMapStoreException("Unknown variant " + v.toString());
@@ -518,20 +568,17 @@ public class CharacteristicsCache implements IDataStore {
 			if (values != null && values.containsKey(v)) {
 				values.remove(v);
 			}
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
 		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Remove the given occurrence from the internal data store.
+	 * 
+	 * @param o
+	 *            the occurrence
 	 */
 	public void removeOccurrence(IOccurrence o) {
-		try {
-			if (occurrences == null) {
-				throw new TopicMapStoreException("Unknown occurrence " + o.toString());
-			}
-
+		if (occurrences != null && occurrences.containsKey(o.getParent())) {
 			Set<IOccurrence> set = occurrences.get(o.getParent());
 			if (set == null) {
 				throw new TopicMapStoreException("Unknown occurrence " + o.toString());
@@ -559,8 +606,6 @@ public class CharacteristicsCache implements IDataStore {
 			if (values != null && values.containsKey(o)) {
 				values.remove(o);
 			}
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
 		}
 	}
 
@@ -568,9 +613,9 @@ public class CharacteristicsCache implements IDataStore {
 	 * {@inheritDoc}
 	 */
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
-		// TODO Auto-generated method stub
+		// NOTHING TO DO
 	}
-	
+
 	/**
 	 * Returns the characteristics of the given topic.
 	 * 
@@ -596,7 +641,7 @@ public class CharacteristicsCache implements IDataStore {
 		set.addAll(getOccurrences());
 		return set;
 	}
-	
+
 	/**
 	 * Returns the value of the given object
 	 * 

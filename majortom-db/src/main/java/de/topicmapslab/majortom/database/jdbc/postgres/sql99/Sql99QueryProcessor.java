@@ -123,6 +123,13 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IConnectionProvider getConnectionProvider() {
 		return provider;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() {
+		queryBuilder.close();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -1577,7 +1584,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryReadValue();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		ResultSet result = stmt.executeQuery();
-		result.next();
+		if ( !result.next()){
+			return null;
+		}
 		String value = result.getString("value");
 		result.close();
 		return value;
@@ -1590,7 +1599,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryReadValue();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		ResultSet result = stmt.executeQuery();
-		result.next();
+		if ( !result.next()){
+			return null;
+		}
 		String value = result.getString("value");
 		result.close();
 		return value;
@@ -2035,6 +2046,20 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(5, Long.parseLong(topicMap.getId()));
 		stmt.execute();
 		// TODO remove all prepared statements
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
+		/*
+		 * remove all information
+		 */
+		doRemoveTopicMap(topicMap, true);
+		/*
+		 * add new instance
+		 */
+		doCreateTopicMap((ILocator)topicMap.getLocator());
 	}
 
 	/**
@@ -2958,7 +2983,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		ResultSet set = stmt.executeQuery();
-		System.out.println(stmt);
 		return Jdbc2Construct.toVariants(topicMap, set);
 	}
 

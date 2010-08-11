@@ -52,6 +52,8 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  * 
  */
 public interface IQueryProcessor {
+	
+	public void close();
 
 	/**
 	 * Returns the connection handler of the current query processor
@@ -258,12 +260,14 @@ public interface IQueryProcessor {
 	public void doRemoveType(ITopic t, ITopic type) throws SQLException;
 
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException;
-
+	
 	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException;
 
 	public boolean doRemoveName(IName name, boolean cascade) throws SQLException;
 
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException;
+	
+	public void doClearTopicMap(ITopicMap topicMap) throws SQLException;
 
 	/**
 	 * Using JDBC to remove an association instance and all roles.
