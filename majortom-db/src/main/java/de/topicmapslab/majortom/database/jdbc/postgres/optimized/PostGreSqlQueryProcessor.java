@@ -1923,7 +1923,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		ResultSet set = stmt.executeQuery();
-		System.out.println(stmt);
 		return Jdbc2Construct.toVariants(topicMap, set);
 	}
 

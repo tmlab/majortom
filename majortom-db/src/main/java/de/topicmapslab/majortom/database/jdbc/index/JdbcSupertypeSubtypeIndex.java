@@ -56,9 +56,6 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (type != null && !type.getTopicMap().equals(getStore().getTopicMap())) {
-			throw new IllegalArgumentException("Topic has to be a part of this topic map.");
-		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
 			topics.addAll(getStore().getProcessor().getDirectSubtypes(getStore().getTopicMap(), (ITopic) type));
@@ -74,9 +71,6 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	public Collection<Topic> getDirectSupertypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
-		}
-		if (type != null && !type.getTopicMap().equals(getStore().getTopicMap())) {
-			throw new IllegalArgumentException("Topic has to be a part of this topic map.");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();

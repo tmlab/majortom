@@ -107,9 +107,6 @@ public abstract class ConstructImpl implements IConstruct {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Locator> getItemIdentifiers() {
-//		if (isRemoved()) {
-//			throw new ConstructRemovedException(this);
-//		}
 		return Collections.unmodifiableSet((Set<Locator>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 	}
 
@@ -194,9 +191,10 @@ public abstract class ConstructImpl implements IConstruct {
 	}
 
 	/**
-	 * Modify the internal state of deletion.
+	 * 
+	 * {@inheritDoc}
 	 */
-	public void setRemoved() {
-		this.removed = true;
+	public void setRemoved(boolean removed) {
+		this.removed = removed;
 	}
 }

@@ -313,7 +313,6 @@ public class TestScopeIndex extends MaJorToMTestCase {
 		assertEquals(1, index.getScopables(scope4).size());
 		assertTrue(index.getScopables(scope4).contains(occurrence));
 		assertEquals(0, index.getScopables(scope7).size());
-		System.out.println(scope5.getId());
 		assertEquals(1, index.getScopables(scope5).size());
 		assertTrue(index.getScopables(scope5).contains(variant));
 

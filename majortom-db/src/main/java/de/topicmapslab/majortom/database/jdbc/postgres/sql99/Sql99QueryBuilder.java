@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -59,6 +61,25 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 */
 	public Sql99QueryBuilder(Connection connection) {
 		this.connection = connection;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() {
+		try {
+			for ( Field field : getClass().getDeclaredFields()){
+				if ( PreparedStatement.class.equals(field.getType())){
+					PreparedStatement stmt = (PreparedStatement) field.get(this);
+					if ( stmt != null ){
+						stmt.cancel();
+						stmt.close();
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new TopicMapStoreException("Cannot close prepared statements!", e);
+		}
 	}
 
 	// ****************
@@ -2130,12 +2151,14 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectItemIdentifiers(boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexItemIdentifiersWithLimit == null) {
-				this.preparedStatementIndexItemIdentifiersWithLimit = connection.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_ITEM_IDENTIFIERS);
+				this.preparedStatementIndexItemIdentifiersWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_ITEM_IDENTIFIERS);
 			}
 			return this.preparedStatementIndexItemIdentifiersWithLimit;
 		}
 		if (this.preparedStatementIndexItemIdentifiers == null) {
-			this.preparedStatementIndexItemIdentifiers = connection.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_ITEM_IDENTIFIERS);
+			this.preparedStatementIndexItemIdentifiers = connection
+					.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_ITEM_IDENTIFIERS);
 		}
 		return this.preparedStatementIndexItemIdentifiers;
 	}
@@ -2152,7 +2175,8 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			return this.preparedStatementIndexSubjectIdentifiersWithLimit;
 		}
 		if (this.preparedStatementIndexSubjectIdentifiers == null) {
-			this.preparedStatementIndexSubjectIdentifiers = connection.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_IDENTIFIERS);
+			this.preparedStatementIndexSubjectIdentifiers = connection
+					.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_IDENTIFIERS);
 		}
 		return this.preparedStatementIndexSubjectIdentifiers;
 	}
@@ -2160,12 +2184,14 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectSubjectLocators(boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexSubjectLocatorsWithLimit == null) {
-				this.preparedStatementIndexSubjectLocatorsWithLimit= connection.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_SUBJECT_LOCATORS);
+				this.preparedStatementIndexSubjectLocatorsWithLimit = connection
+						.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_SUBJECT_LOCATORS);
 			}
 			return this.preparedStatementIndexSubjectLocatorsWithLimit;
 		}
 		if (this.preparedStatementIndexSubjectLocators == null) {
-			this.preparedStatementIndexSubjectLocators = connection.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_LOCATORS);
+			this.preparedStatementIndexSubjectLocators = connection
+					.prepareStatement(ISql99IndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_LOCATORS);
 		}
 		return this.preparedStatementIndexSubjectLocators;
 	}

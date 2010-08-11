@@ -1062,7 +1062,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
 			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
 			((InMemoryIdentity) ((TopicImpl) context).getIdentity()).setId(newTopic.getId());
+			context.setRemoved(false);
 			((InMemoryIdentity) ((TopicImpl) other).getIdentity()).setId(newTopic.getId());
+			other.setRemoved(false);
 			/*
 			 * notify listeners
 			 */
@@ -2437,7 +2439,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store lazy copy
 		 */
-		if (supportRevisions()) {
+		if (isRevisionManagementEnabled()) {
 			getRevisionStore().createLazyCopy(name);
 		}
 		/*
@@ -3555,7 +3557,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public final void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
-		if (supportRevisions()) {
+		if (isRevisionManagementEnabled()) {
 			getRevisionStore().addChange(revision, type, context, newValue, oldValue);
 		}
 	}
@@ -3565,7 +3567,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected synchronized IRevision createRevision() {
-		if (supportRevisions()) {
+		if (isRevisionManagementEnabled()) {
 			return getRevisionStore().createRevision();
 		}
 		return null;
