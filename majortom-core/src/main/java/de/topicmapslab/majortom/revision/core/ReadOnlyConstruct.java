@@ -117,5 +117,12 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setRemoved(boolean removed) {
+		// NOTHING TO DO		
+	}
+	
 	
 }

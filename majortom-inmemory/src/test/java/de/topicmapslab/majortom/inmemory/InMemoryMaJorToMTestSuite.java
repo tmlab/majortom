@@ -26,11 +26,8 @@ import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
 public class InMemoryMaJorToMTestSuite {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.inmemory");
-		
-		System.out.println(suite.getClass().getClassLoader().getResourceAsStream("/META-INF/services/de.topicmapslab.majortom.model.store.ITopicMapStore"));
-		
-		
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.inmemory");		
+//		System.out.println(suite.getClass().getClassLoader().getResourceAsStream("/META-INF/services/de.topicmapslab.majortom.model.store.ITopicMapStore"));				
 		// $JUnit-BEGIN$
 		suite.addTest(MaJorToMTestSuite.suite());
 		// $JUnit-END$

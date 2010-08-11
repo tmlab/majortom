@@ -850,7 +850,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * notify listeners
 		 */
 		notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
-		MergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
+		TransactionMergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
 
 	}
 
@@ -872,14 +872,17 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			 * merge into
 			 */
 			ITopic newTopic = createTopic(getTopicMap(), revision);
-			MergeUtils.doMerge(this, newTopic, context, revision);
-			MergeUtils.doMerge(this, newTopic, other, revision);
-			((JdbcIdentity) ((TopicImpl) context).getIdentity()).setId(newTopic.getId());
-			((JdbcIdentity) ((TopicImpl) other).getIdentity()).setId(newTopic.getId());
+			TransactionMergeUtils.doMerge(this, newTopic, context, revision);
+			TransactionMergeUtils.doMerge(this, newTopic, other, revision);
+			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			context.setRemoved(false);
+			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			other.setRemoved(false);
 			/*
 			 * notify listeners
 			 */
 			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
 		}
 	}
 
@@ -2195,10 +2198,6 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			removeVariant(v, true, revision);
 		}
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(name);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeName(name);
@@ -2218,6 +2217,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * remove typed
 		 */
 		getTypedStore().removeType(name);
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(name);
 		/*
 		 * notify listeners
 		 */
@@ -2245,10 +2248,6 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 */
 	void removeOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(occurrence);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeOccurrence(occurrence);
@@ -2268,6 +2267,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * remove typed
 		 */
 		getTypedStore().removeType(occurrence);
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(occurrence);
 		/*
 		 * notify listeners
 		 */
@@ -2345,10 +2348,6 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 */
 	void removeVariant(IVariant variant, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(variant);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeVariant(variant);
@@ -2364,6 +2363,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			removeConstruct(reifier, cascade, revision);
 			getReificationStore().removeReification(variant);
 		}
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(variant);
 		/*
 		 * notify listeners
 		 */
@@ -3188,7 +3191,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removedDuplicates() {
+	public void removeDuplicates() {
 		MergeUtils.removeDuplicates(this, getTopicMap());
 	}
 
@@ -3229,7 +3232,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			lazy.put(transaction, transaction.getTopicMap());
 			ITopicMapListener listener = new ITopicMapListener() {
 				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-					if (event == TopicMapEventType.MERGE) {
+					switch (event) {
+					case MERGE: {
 						Object oldValue_ = null;
 						/* find old value */
 						// By subject-identifier
@@ -3257,8 +3261,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 								}
 							}
 						}
-						// store mapping
-						lazy.put(oldValue_, newValue);
+						// store mapping						
+						lazy.put(oldValue_, newValue);						
+					}
+						break;
 					}
 				}
 			};
@@ -3274,7 +3280,6 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			getRealStore().removeTopicMapListener(listener);
 		} catch (TransactionException e) {
 			e.printStackTrace();
-			System.out.println("Rollback " + commited.size() + " commands!");
 		}
 	}
 
@@ -3329,7 +3334,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		return obj;
 	}
 
-	protected ITopicMapStoreIdentity generateIdentity() {
+	public ITopicMapStoreIdentity generateIdentity() {
 		return new JdbcIdentity(Long.toString(Math.round(Math.random() * Long.MAX_VALUE)));
 	}
 }

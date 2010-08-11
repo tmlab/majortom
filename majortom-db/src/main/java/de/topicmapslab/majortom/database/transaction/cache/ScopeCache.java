@@ -103,6 +103,7 @@ public class ScopeCache implements IDataStore {
 	 */
 	public ScopeCache(TransactionTopicMapStore topicMapStore) {
 		this.topicMapStore = topicMapStore;
+		emptyScope = new ScopeImpl(getTransactionStore().generateIdentity().getId());
 	}
 
 	/**
@@ -277,7 +278,7 @@ public class ScopeCache implements IDataStore {
 		}
 		Set<ITopic> set = HashUtil.getHashSet();
 		set.addAll(themes_);
-		IScope scope = new ScopeImpl(set);
+		IScope scope = new ScopeImpl(getTransactionStore().generateIdentity().getId(), set);
 		scopes.put(scope, set);
 		return scope;
 	}
@@ -288,7 +289,7 @@ public class ScopeCache implements IDataStore {
 	public IScope getScope(ITopic... themes) {
 		return getScope(Arrays.asList(themes));
 	}
-	
+
 	/**
 	 * Returns the scope of the scoped construct
 	 * 
@@ -309,7 +310,7 @@ public class ScopeCache implements IDataStore {
 			throw new TopicMapStoreException("Type of scoped item is unknown '" + scoped.getClass() + "'.");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -514,6 +515,7 @@ public class ScopeCache implements IDataStore {
 		}
 		return scopes;
 	}
+
 	/**
 	 * Store the relation between the given scoped item and the scope.
 	 * 
@@ -535,6 +537,7 @@ public class ScopeCache implements IDataStore {
 			throw new TopicMapStoreException("Type of scoped item is unknown '" + scoped.getClass() + "'.");
 		}
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -642,7 +645,7 @@ public class ScopeCache implements IDataStore {
 			modifiedScopeables.add(scoped.getId());
 		}
 	}
-	
+
 	/**
 	 * Remove the relation between the scoped construct and the stored scope.
 	 * 
@@ -671,12 +674,14 @@ public class ScopeCache implements IDataStore {
 		IScope scope = getScope(scoped);
 		if (associationScopes != null && associationScopes.containsKey(scoped)) {
 			IScope s = associationScopes.remove(scoped);
-			Set<IAssociation> set = scopedAssociations.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedAssociations.remove(s);
-			} else {
-				scopedAssociations.put(s, set);
+			if (scopedAssociations != null && scopedAssociations.containsKey(s)) {
+				Set<IAssociation> set = scopedAssociations.get(s);
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedAssociations.remove(s);
+				} else {
+					scopedAssociations.put(s, set);
+				}
 			}
 		}
 		return scope;
@@ -689,12 +694,14 @@ public class ScopeCache implements IDataStore {
 		IScope scope = getScope(scoped);
 		if (nameScopes != null && nameScopes.containsKey(scoped)) {
 			IScope s = nameScopes.remove(scoped);
-			Set<IName> set = scopedNames.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedNames.remove(s);
-			} else {
-				scopedNames.put(s, set);
+			if (scopedNames != null && scopedNames.containsKey(s)) {
+				Set<IName> set = scopedNames.get(s);
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedNames.remove(s);
+				} else {
+					scopedNames.put(s, set);
+				}
 			}
 		}
 		return scope;
@@ -707,12 +714,14 @@ public class ScopeCache implements IDataStore {
 		IScope scope = getScope(scoped);
 		if (occurrenceScopes != null && occurrenceScopes.containsKey(scoped)) {
 			IScope s = occurrenceScopes.remove(scoped);
-			Set<IOccurrence> set = scopedOccurrences.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedOccurrences.remove(s);
-			} else {
-				scopedOccurrences.put(s, set);
+			if (scopedOccurrences != null && scopedOccurrences.containsKey(s)) {
+				Set<IOccurrence> set = scopedOccurrences.get(s);
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedOccurrences.remove(s);
+				} else {
+					scopedOccurrences.put(s, set);
+				}
 			}
 		}
 		return scope;
@@ -725,12 +734,14 @@ public class ScopeCache implements IDataStore {
 		IScope scope = getScope(scoped);
 		if (variantScopes != null && variantScopes.containsKey(scoped)) {
 			IScope s = variantScopes.remove(scoped);
-			Set<IVariant> set = scopedVariants.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedVariants.remove(s);
-			} else {
-				scopedVariants.put(s, set);
+			if (scopedVariants != null && scopedVariants.containsKey(s)) {
+				Set<IVariant> set = scopedVariants.get(s);
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedVariants.remove(s);
+				} else {
+					scopedVariants.put(s, set);
+				}
 			}
 		}
 		return scope;
@@ -839,14 +850,13 @@ public class ScopeCache implements IDataStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean usedAsTheme(ITopic theme) {
-		for ( IScope scope : getScopes(theme)){
-			if ( !getScoped(scope).isEmpty()){
+		for (IScope scope : getScopes(theme)) {
+			if (!getScoped(scope).isEmpty()) {
 				return true;
 			}
 		}
 		return false;
 	}
-
 
 	/**
 	 * Returns the empty scope object.
@@ -856,7 +866,7 @@ public class ScopeCache implements IDataStore {
 	public IScope getEmptyScope() {
 		return emptyScope;
 	}
-	
+
 	/**
 	 * Removing the theme and all dependent scopes and scoped objects.
 	 * 
@@ -925,5 +935,5 @@ public class ScopeCache implements IDataStore {
 		}
 		return removed;
 	}
-	
+
 }

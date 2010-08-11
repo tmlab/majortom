@@ -54,10 +54,10 @@ public interface ISql99DeleteQueries {
 
 	public static final String QUERY_DELETE_SUPERTYPE = "DELETE FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ?;";
 
-	public static final String QUERY_DELETE_SUBJECT_IDENTIFIER = "DELETE FROM rel_subject_identifiers WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+	public static final String QUERY_DELETE_SUBJECT_IDENTIFIER = "DELETE FROM rel_subject_identifiers WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference = ? )";
 
-	public static final String QUERY_DELETE_SUBJECT_LOCATOR = "DELETE FROM rel_subject_locators WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+	public static final String QUERY_DELETE_SUBJECT_LOCATOR = "DELETE FROM rel_subject_locators WHERE id_topic = ? and id_locator = ( SELECT id FROM locators WHERE reference = ? )";
 
-	public static final String QUERY_DELETE_ITEM_IDENTIFIER = "DELETE FROM rel_item_identifiers WHERE id_construct = ? and id_locator = ( SELECT id FROM locators WHERE reference LIKE ? )";
+	public static final String QUERY_DELETE_ITEM_IDENTIFIER = "DELETE FROM rel_item_identifiers WHERE id_construct = ? and id_locator = ( SELECT id FROM locators WHERE reference = ? )";
 
 }
