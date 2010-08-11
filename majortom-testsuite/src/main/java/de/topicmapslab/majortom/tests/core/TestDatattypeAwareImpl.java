@@ -107,8 +107,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
 		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));		
-		assertTrue(occurrence.coordinateValue().equals(coord));		
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
+		assertTrue(occurrence.coordinateValue().equals(coord));
 
 		try {
 			occurrence.setValue((Wgs84Coordinate) null);
@@ -196,6 +196,81 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
 		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));
 		assertTrue(variant.dateTimeValue().equals(calendar));
+
+		calendar = new GregorianCalendar(2000, 1, 1, 1, 1, 1);
+		occurrence.setValue(calendar);
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			int oldValue = calendar.get(field);
+			calendar.set(field, oldValue + 1);
+			assertEquals(oldValue + 1, calendar.get(field));
+			assertEquals(oldValue, occurrence.dateTimeValue().get(field));
+		}
+	}
+
+	/**
+	 * Test immutable calendar instance
+	 * 
+	 * @throws Exception
+	 */
+	public void testImmutableCalendar() throws Exception {
+		Topic topic = createTopic();
+		/*
+		 * check for occurrence
+		 */
+		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "value", new Topic[0]);
+		Calendar calendar = new GregorianCalendar(2000, 1, 1, 1, 1, 1);
+		occurrence.setValue(calendar);
+		/*
+		 * modify field values of initial calendar instance
+		 */
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			int oldValue = calendar.get(field);
+			calendar.set(field, oldValue + 1);
+			assertEquals(oldValue + 1, calendar.get(field));
+			assertEquals(oldValue, occurrence.dateTimeValue().get(field));
+		}
+
+		/*
+		 * modify field values of returned calendar instance
+		 */
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			calendar = occurrence.dateTimeValue();
+			int oldValue = calendar.get(field);
+			calendar.set(field, oldValue + 1);
+			assertEquals(oldValue + 1, calendar.get(field));
+			assertEquals(oldValue, occurrence.dateTimeValue().get(field));
+		}
+		/*
+		 * check for variants
+		 */
+		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("Value", createTopic());
+		calendar = new GregorianCalendar(2000, 1, 1, 1, 1, 1);
+		variant.setValue(calendar);
+		/*
+		 * modify field values of initial calendar instance
+		 */
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			int oldValue = calendar.get(field);
+			calendar.set(field, oldValue + 1);
+			assertEquals(oldValue + 1, calendar.get(field));
+			assertEquals(oldValue, variant.dateTimeValue().get(field));
+		}
+
+		/*
+		 * modify field values of returned calendar instance
+		 */
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
+				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			calendar = variant.dateTimeValue();
+			int oldValue = calendar.get(field);
+			calendar.set(field, oldValue + 1);
+			assertEquals(oldValue + 1, calendar.get(field));
+			assertEquals(oldValue, variant.dateTimeValue().get(field));
+		}
 	}
 
 	/**

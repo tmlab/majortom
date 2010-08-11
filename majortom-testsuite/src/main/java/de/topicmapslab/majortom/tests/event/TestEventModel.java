@@ -145,13 +145,15 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (!checked) {
-					assertEquals(SUPERTYPE_ADDED, event);
-					assertEquals(topic, notifier);
-					assertTrue(newValue instanceof ITopic);
-					assertEquals(type, newValue);
-					assertNull(oldValue);
+					if (event == SUPERTYPE_ADDED) {
+						assertEquals(SUPERTYPE_ADDED, event);
+						assertEquals(topic, notifier);
+						assertTrue(newValue instanceof ITopic);
+						assertEquals(type, newValue);
+						assertNull(oldValue);
+						checked = true;
+					}
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -579,13 +581,15 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (!checked) {
-					assertEquals(TYPE_REMOVED, event);
-					assertEquals(topic, notifier);
-					assertTrue(oldValue instanceof ITopic);
-					assertEquals(type, oldValue);
-					assertNull(newValue);
+					if (event == TYPE_REMOVED) {
+						assertEquals(TYPE_REMOVED, event);
+						assertEquals(topic, notifier);
+						assertTrue(oldValue instanceof ITopic);
+						assertEquals(type, oldValue);
+						assertNull(newValue);
+						checked = true;
+					}
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -606,13 +610,15 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (!checked) {
-					assertEquals(SUPERTYPE_REMOVED, event);
-					assertEquals(topic, notifier);
-					assertTrue(oldValue instanceof ITopic);
-					assertEquals(type, oldValue);
-					assertNull(newValue);
+					if (event == SUPERTYPE_REMOVED) {
+						assertEquals(SUPERTYPE_REMOVED, event);
+						assertEquals(topic, notifier);
+						assertTrue(oldValue instanceof ITopic);
+						assertEquals(type, oldValue);
+						assertNull(newValue);
+						checked = true;
+					}
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);

@@ -2943,6 +2943,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} catch (FeatureNotRecognizedException e) {
 			throw new TopicMapStoreException("Feature is missing", e);
 		}
+		this.revisionManagementEnabled = featureRevisionManagement;
 	}
 
 	// *******************
