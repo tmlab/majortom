@@ -24,7 +24,6 @@ Import-Package: de.topicmapslab.geotype.mercator,
  de.topicmapslab.majortom.model.revision,
  de.topicmapslab.majortom.model.store,
  de.topicmapslab.majortom.model.transaction,
- junit.framework;optional=true;specification-version="3.8.0",
  org.osgi.framework;specification-version="1.5.0",
  org.tmapi.core;specification-version="2.0.2",
  org.tmapi.index;specification-version="2.0.2"

@@ -13,6 +13,5 @@ Provide-Package: de.topicmapslab.majortom.model.core,
 Import-Package: de.topicmapslab.geotype.mercator,
  de.topicmapslab.geotype.model,
  de.topicmapslab.geotype.wgs84,
- junit.framework;optional=true;specification-version="3.8.0",
  org.tmapi.core;specification-version="2.0.2",
  org.tmapi.index;specification-version="2.0.2"
