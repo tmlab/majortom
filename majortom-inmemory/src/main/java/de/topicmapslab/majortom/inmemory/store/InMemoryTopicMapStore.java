@@ -3615,7 +3615,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removedDuplicates() {
+	public void removeDuplicates() {
 		InMemoryMergeUtils.removeDuplicates(this, getTopicMap());
 	}
 

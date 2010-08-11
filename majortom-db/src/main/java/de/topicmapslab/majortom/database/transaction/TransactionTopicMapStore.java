@@ -3191,7 +3191,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removedDuplicates() {
+	public void removeDuplicates() {
 		MergeUtils.removeDuplicates(this, getTopicMap());
 	}
 

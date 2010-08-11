@@ -697,16 +697,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> doReadAssociation(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociation();
-		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
-		stmt.setLong(2, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toAssociations(t.getTopicMap(), stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithType();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
@@ -783,8 +773,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public Collection<ICharacteristics> doReadCharacteristics(ITopic t) throws SQLException {
 		Collection<ICharacteristics> set = HashUtil.getHashSet();
-		set.addAll(doReadNames(t));
-		set.addAll(doReadOccurrences(t));
+		set.addAll(doReadNames(t, -1, -1));
+		set.addAll(doReadOccurrences(t, -1, -1));
 		return set;
 	}
 
@@ -867,15 +857,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> doReadNames(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNames();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toNames(t, stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Collection<IName> doReadNames(ITopic t, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
@@ -902,15 +883,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toNames(t, stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> doReadOccurrences(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadOccurrences();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toOccurrences(t, stmt.executeQuery(), "id");
 	}
 
 	/**
@@ -999,29 +971,11 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> doReadRoles(IAssociation association) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRoles();
-		stmt.setLong(1, Long.parseLong(association.getId()));
-		return Jdbc2Construct.toRoles(association, stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Collection<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRolesWithType();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toRoles(association, stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IAssociationRole> doReadRoles(ITopic player) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRoles();
-		stmt.setLong(1, Long.parseLong(player.getId()));
-		return Jdbc2Construct.toRoles(player.getTopicMap(), stmt.executeQuery(), "id", "id_parent");
 	}
 
 	/**
@@ -1095,7 +1049,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> doReadSuptertypes(ITopic t) throws SQLException {
+	public Collection<ITopic> doReadSuptertypes(ITopic t, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadSupertypes();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
@@ -1159,15 +1113,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> doReadTypes(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTypes();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id_type");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Object doReadValue(IName n) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadValue();
 		stmt.setLong(1, Long.parseLong(n.getId()));
@@ -1189,15 +1134,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		String value = result.getString("value");
 		result.close();
 		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> doReadVariants(IName n) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadVariants();
-		stmt.setLong(1, Long.parseLong(n.getId()));
-		return Jdbc2Construct.toVariants(n, stmt.executeQuery(), "id");
 	}
 
 	/**
@@ -2328,7 +2264,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes();
+			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(false);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
 			stmt = queryBuilder.getQuerySelectDirectSupertypes();
@@ -2380,10 +2316,10 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes();
+			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
 			stmt = queryBuilder.getQuerySelectSupertypesOfTopic();

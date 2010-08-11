@@ -1152,7 +1152,7 @@ public class InMemoryMergeUtils {
 					 * and scope property are equal
 					 */
 					if (duplicate.getType().equals(duplicate.getType()) && duplicate.getValue().equals(duplicate.getValue())
-							&& ((IName) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
+							&& ((IOccurrence) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
 							&& occurrence.getDatatype().equals(duplicate.getDatatype())) {
 						/*
 						 * copy item-identifier

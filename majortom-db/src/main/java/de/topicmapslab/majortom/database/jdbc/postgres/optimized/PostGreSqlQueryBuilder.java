@@ -370,7 +370,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadNames() throws SQLException {
+	public PreparedStatement getQueryReadNames(boolean paged) throws SQLException {
 		if (this.preparedStatementReadNames == null) {
 			this.preparedStatementReadNames = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_NAMES);
 		}
@@ -410,7 +410,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadOccurrences() throws SQLException {
+	public PreparedStatement getQueryReadOccurrences(boolean paged) throws SQLException {
 		if (this.preparedStatementReadOccurrences == null) {
 			this.preparedStatementReadOccurrences = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_OCCURRENCES);
 		}
@@ -451,7 +451,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadPlayedAssociation() throws SQLException {
+	public PreparedStatement getQueryReadPlayedAssociation(boolean paged) throws SQLException {
 		if (this.preparedStatementReadPlayedAssociation == null) {
 			this.preparedStatementReadPlayedAssociation = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_PLAYED_ASSOCIATIONS);
 		}
@@ -494,7 +494,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadPlayedRoles() throws SQLException {
+	public PreparedStatement getQueryReadPlayedRoles(boolean paged) throws SQLException {
 		if (this.preparedStatementReadPlayedRoles == null) {
 			this.preparedStatementReadPlayedRoles = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_PLAYED_ROLES);
 		}
@@ -565,7 +565,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadRoles() throws SQLException {
+	public PreparedStatement getQueryReadRoles(boolean paged) throws SQLException {
 		if (this.preparedStatementReadRoles == null) {
 			this.preparedStatementReadRoles = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_ROLES);
 		}
@@ -705,7 +705,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadTypes() throws SQLException {
+	public PreparedStatement getQueryReadTypes(boolean paged) throws SQLException {
 		if (this.preparedStatementReadTypes == null) {
 			this.preparedStatementReadTypes = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_TYPES);
 		}
@@ -725,7 +725,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadVariants() throws SQLException {
+	public PreparedStatement getQueryReadVariants(boolean paged) throws SQLException {
 		if (this.preparedStatementReadVariants == null) {
 			this.preparedStatementReadVariants = connection.prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_VARIANTS);
 		}
@@ -2114,7 +2114,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectTopicsWithoutSupertypes() throws SQLException {
+	public PreparedStatement getQuerySelectTopicsWithoutSupertypes(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexTopicsWithoutSupertypes == null) {
 			this.preparedStatementIndexTopicsWithoutSupertypes = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES);

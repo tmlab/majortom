@@ -186,7 +186,7 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), (ITopic) type));
+			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
