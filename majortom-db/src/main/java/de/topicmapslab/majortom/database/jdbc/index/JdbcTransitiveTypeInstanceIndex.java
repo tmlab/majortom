@@ -75,7 +75,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByTypeTransitive(getStore().getTopicMap(), types));
+			col.addAll(getStore().getProcessor().getAssociationsByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -106,8 +106,8 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByTypeTransitive((ITopic) type));
-			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type));
+			col.addAll(getStore().getProcessor().getNamesByTypeTransitive((ITopic) type, -1, -1));
+			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -139,8 +139,8 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByTypeTransitive(getStore().getTopicMap(), types));
-			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive(getStore().getTopicMap(), types));
+			col.addAll(getStore().getProcessor().getNamesByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
+			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -172,7 +172,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByTypeTransitive(getStore().getTopicMap(), types));
+			col.addAll(getStore().getProcessor().getNamesByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -204,7 +204,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive(getStore().getTopicMap(), types));
+			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -236,7 +236,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRolesByTypeTransitive(getStore().getTopicMap(), types));
+			col.addAll(getStore().getProcessor().getRolesByTypeTransitive(getStore().getTopicMap(), types, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -281,7 +281,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypesTransitive(getStore().getTopicMap(), types, all));
+			col.addAll(getStore().getProcessor().getTopicsByTypesTransitive(getStore().getTopicMap(), types, all, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -316,7 +316,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByTypeTransitive((ITopic) type));
+			col.addAll(getStore().getProcessor().getAssociationsByTypeTransitive((ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -351,7 +351,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByTypeTransitive((ITopic) type));
+			col.addAll(getStore().getProcessor().getNamesByTypeTransitive((ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -386,7 +386,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type));
+			col.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -421,7 +421,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRolesByTypeTransitive((ITopic) type));
+			col.addAll(getStore().getProcessor().getRolesByTypeTransitive((ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -456,7 +456,7 @@ public class JdbcTransitiveTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore
 			if (type == null) {
 				col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(),type,-1,-1));
 			} else {
-				col.addAll(getStore().getProcessor().getTopicsByTypeTransitive((ITopic) type));
+				col.addAll(getStore().getProcessor().getTopicsByTypeTransitive((ITopic) type, -1, -1));
 			}
 			return col;
 		} catch (SQLException e) {

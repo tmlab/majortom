@@ -1385,7 +1385,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1396,7 +1396,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[types.size()];
@@ -1412,7 +1412,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IName> getNamesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1423,7 +1423,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[types.size()];
@@ -1439,7 +1439,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1450,7 +1450,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[types.size()];
@@ -1466,7 +1466,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1477,7 +1477,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[types.size()];
@@ -1493,7 +1493,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypeTransitive();
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -1504,7 +1504,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypesTransitive();
 		Long ids[] = new Long[types.size()];
 		int i = 0;

@@ -2538,7 +2538,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create association set and add associations directly typed by the
 		 * given type
@@ -2553,13 +2553,29 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			set.addAll(getAssociationsByType(t, -1, -1));
 		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IAssociation> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
 		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create association set
 		 */
@@ -2571,15 +2587,103 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * add associations transitive by type
 			 */
-			set.addAll(getAssociationsByTypeTransitive((ITopic) type));
+			set.addAll(getAssociationsByTypeTransitive((ITopic) type, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IAssociation> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
 		}
 		return set;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<ICharacteristics> getCharacteristicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * create characteristics set and add characteristics directly typed by the given type
+		 */
+		Collection<ICharacteristics> set = HashUtil.getHashSet(getCharacteristicsByType(type, -1, -1));
+		/*
+		 * iterate over all sub-types of the given type
+		 */
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
+			/*
+			 * add all characteristics typed by the sub-type
+			 */
+			set.addAll(getCharacteristicsByType(t, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<ICharacteristics> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypesTransitive(Collection<T> types, long offset, long limit) throws SQLException {
+		/*
+		 * create characteristics set
+		 */
+		Collection<ICharacteristics> set = HashUtil.getHashSet();
+		/*
+		 * iterate over all types
+		 */
+		for (T type : types) {
+			/*
+			 * add characteristics transitive by type
+			 */
+			set.addAll(getCharacteristicsByTypeTransitive((ITopic) type, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<ICharacteristics> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create name set and add names directly typed by the given type
 		 */
@@ -2593,13 +2697,29 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			set.addAll(getNamesByType(t, -1, -1));
 		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IName> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
 		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create name set
 		 */
@@ -2611,7 +2731,23 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * add names transitive by type
 			 */
-			set.addAll(getNamesByTypeTransitive((ITopic) type));
+			set.addAll(getNamesByTypeTransitive((ITopic) type, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IName> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
 		}
 		return set;
 	}
@@ -2619,7 +2755,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create occurrence set and add occurrences directly typed by the given
 		 * type
@@ -2634,13 +2770,29 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			set.addAll(getOccurrencesByType(t, -1, -1));
 		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IOccurrence> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
 		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create occurrences set
 		 */
@@ -2652,7 +2804,23 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * add occurrences transitive by type
 			 */
-			set.addAll(getOccurrencesByTypeTransitive((ITopic) type));
+			set.addAll(getOccurrencesByTypeTransitive((ITopic) type, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IOccurrence> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
 		}
 		return set;
 	}
@@ -2660,7 +2828,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create role set and add roles directly typed by the given type
 		 */
@@ -2674,13 +2842,29 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			set.addAll(getRolesByType(t, -1, -1));
 		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IAssociationRole> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
 		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create roles set
 		 */
@@ -2692,7 +2876,23 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * add roles transitive by type
 			 */
-			set.addAll(getRolesByTypeTransitive((ITopic) type));
+			set.addAll(getRolesByTypeTransitive((ITopic) type, -1, -1));
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<IAssociationRole> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
 		}
 		return set;
 	}
@@ -2700,7 +2900,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type) throws SQLException {
+	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create topics set and add topics directly typed by the given type
 		 */
@@ -2714,13 +2914,29 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 */
 			set.addAll(getTopicsByType(type.getTopicMap(), t, -1, -1));
 		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<ITopic> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
+		}
 		return set;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit) throws SQLException {
 		/*
 		 * flag indicates first iteration
 		 */
@@ -2738,11 +2954,27 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 * matching-all flag is false
 			 */
 			if (first || !all) {
-				set.addAll(getTopicsByTypeTransitive((ITopic) type));
+				set.addAll(getTopicsByTypeTransitive((ITopic) type, -1, -1));
 			} else {
-				set.retainAll(getTopicsByTypeTransitive((ITopic) type));
+				set.retainAll(getTopicsByTypeTransitive((ITopic) type, -1, -1));
 			}
 			first = false;
+		}
+		/*
+		 * check if paging is expected
+		 */
+		if ( offset != -1 ){
+			List<ITopic> list = HashUtil.getList(set);
+			Collections.sort(list, new Comparator<IConstruct>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(IConstruct o1, IConstruct o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			list = list.subList((int) offset, (int) ((offset + limit < list.size()) ? offset + limit : list.size()));
+			return list;
 		}
 		return set;
 	}

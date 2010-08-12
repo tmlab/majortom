@@ -351,25 +351,29 @@ public interface IQueryProcessor {
 
 	// TransitiveTypeInstanceIndex
 
-	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type) throws SQLException;
+	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByTypeTransitive(ITopic type) throws SQLException;
+	public Collection<ICharacteristics> getCharacteristicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypesTransitive(Collection<T> types, long offset, long limit) throws SQLException;
+	
+	public Collection<IName> getNamesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type) throws SQLException;
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type) throws SQLException;
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types) throws SQLException;
+	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type) throws SQLException;
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> type, boolean all) throws SQLException;
+	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException;
+
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> type, boolean all, long offset, long limit) throws SQLException;
 
 	// ScopeIndex
 

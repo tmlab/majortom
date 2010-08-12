@@ -154,7 +154,7 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ?    );";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrenes WHERE id_scope = ? ;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_scope = ? ;";
 
 			public static final String QUERY_SELECT_NAMES_BY_SCOPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_scope = ?;";
 
@@ -184,9 +184,9 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? );";
 
-			public static final String QUERY_SELECT_SCOPABLES = "SELECT id, id_parent, NULL AS other, 'a' AS type FROM associations WHERE id_scope = ? "
-					+ "UNION SELECT id, id_parent, NULL AS other, 'n' AS type FROM names WHERE id_scope = ? "
-					+ "UNION SELECT id, id_parent, NULL AS other, 'o' AS type FROM occurrences WHERE id_scope = ? "
+			public static final String QUERY_SELECT_SCOPABLES = "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_scope = ? "
+					+ "UNION SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_scope = ? "
+					+ "UNION SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id_scope = ? "
 					+ "UNION SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type  FROM variants AS v, names AS n WHERE v.id_scope = ? AND n.id = v.id_parent;";
 
 			public static final String QUERY_SELECT_VARIANTS_BY_SCOPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_scope = ?;";
@@ -221,7 +221,7 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?; ;";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrenes WHERE id_scope = ? ) AS r ORDER BY r OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_scope = ? ) AS r ORDER BY r OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_NAMES_BY_SCOPE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id_scope = ? ORDER BY id OFFSET ? LIMIT ?;";
 
@@ -251,9 +251,9 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_SCOPABLES = "SELECT r.id, r.id_parent, r.other, r.type FROM ( SELECT id, id_parent, NULL AS other, 'a' AS type FROM associations WHERE id_scope = ? "
-					+ "UNION SELECT id, id_parent, NULL AS other, 'n' AS type FROM names WHERE id_scope = ? "
-					+ "UNION SELECT id, id_parent, NULL AS other, 'o' AS type FROM occurrences WHERE id_scope = ? "
+			public static final String QUERY_SELECT_SCOPABLES = "SELECT r.id, r.id_parent, r.other, r.type FROM ( SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_scope = ? "
+					+ "UNION SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_scope = ? "
+					+ "UNION SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id_scope = ? "
 					+ "UNION SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type  FROM variants AS v, names AS n WHERE v.id_scope = ? AND n.id = v.id_parent ) AS r ORDER BY r.id OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_VARIANTS_BY_SCOPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_scope = ? ORDER BY v.id OFFSET ? LIMIT ?;";
