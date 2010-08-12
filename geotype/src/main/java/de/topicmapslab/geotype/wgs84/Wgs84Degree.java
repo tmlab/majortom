@@ -14,7 +14,7 @@ public class Wgs84Degree {
 		W
 	}
 
-	public static Pattern regExp = Pattern.compile("[0-9]+°[0-9]+'([0-9]+(.[0-9]+)?'')?( [NSEW])?");
+	public static Pattern regExp = Pattern.compile("[0-9]+Â°[0-9]+'([0-9]+(.[0-9]+)?'')?( [NSEW])?");
 
 	private final double degree;
 	private final double minute;
