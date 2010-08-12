@@ -1554,8 +1554,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScope(false);
+	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScope(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		ResultSet set = stmt.executeQuery();
@@ -1565,14 +1565,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
+	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScopes(scopes.size());
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScopes(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
 		for (IScope s : scopes) {
@@ -1585,19 +1585,19 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
+	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		/*
 		 * require empty scope
 		 */
 		if (theme == null) {
-			stmt = queryBuilder.getQueryAssociationsByScope(true);
+			stmt = queryBuilder.getQueryAssociationsByScope(null);
 		}
 		/*
 		 * require non-empty scope
 		 */
 		else {
-			stmt = queryBuilder.getQueryAssociationsByTheme();
+			stmt = queryBuilder.getQueryAssociationsByTheme(null);
 			stmt.setLong(2, Long.parseLong(theme.getId()));
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -1608,8 +1608,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByThemes(themes.length, all);
+	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByThemes(all, null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
 		for (Topic theme : themes) {
@@ -1622,8 +1622,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getAssociationScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationScopes();
+	public Collection<IScope> getAssociationScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationScopes(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
 		List<Long> ids = HashUtil.getList();
@@ -1645,8 +1645,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationThemes();
+	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationThemes(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
 	}
@@ -1654,7 +1654,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope) throws SQLException {
+	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryNamesByScope(false);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -1665,14 +1665,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
+	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryNamesByScopes(scopes.size());
+		PreparedStatement stmt = queryBuilder.getQueryNamesByScopes(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
 		for (IScope s : scopes) {
@@ -1685,7 +1685,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
+	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		/*
 		 * require empty scope
@@ -1697,7 +1697,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		 * require non-empty scope
 		 */
 		else {
-			stmt = queryBuilder.getQueryNamesByTheme();
+			stmt = queryBuilder.getQueryNamesByTheme(null);
 			stmt.setLong(2, Long.parseLong(theme.getId()));
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -1708,8 +1708,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNamesByThemes(themes.length, all);
+	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNamesByThemes(all, null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
 		for (Topic theme : themes) {
@@ -1722,8 +1722,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getNameScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNameScopes();
+	public Collection<IScope> getNameScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNameScopes(null);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
 		List<Long> ids = HashUtil.getList();
@@ -1745,7 +1745,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getNameThemes(ITopicMap topicMap) throws SQLException {
+	public Collection<ITopic> getNameThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryNameThemes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
@@ -1754,7 +1754,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScope(false);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -1765,7 +1765,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -1785,7 +1785,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		/*
 		 * require empty scope
@@ -1808,7 +1808,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByThemes(themes.length, all);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
@@ -1822,7 +1822,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap) throws SQLException {
+	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryOccurrenceScopes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
@@ -1845,7 +1845,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap) throws SQLException {
+	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryOccurrenceThemes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
@@ -1854,7 +1854,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope) throws SQLException {
+	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantsByScope();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -1865,7 +1865,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
+	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -1888,7 +1888,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
+	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantsByTheme();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(theme.getId()));
@@ -1900,7 +1900,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
+	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantsByThemes(themes.length, all);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		int n = 2;
@@ -1918,7 +1918,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getVariantScopes(ITopicMap topicMap) throws SQLException {
+	public Collection<IScope> getVariantScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantScopes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
@@ -1941,7 +1941,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getVariantThemes(ITopicMap topicMap) throws SQLException {
+	public Collection<ITopic> getVariantThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantThemes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
@@ -1949,16 +1949,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	}
 
 	// LiteralIndex
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IName> getNames(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNames();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, rs, "id", "id_parent");
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -1985,33 +1975,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange();
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
 		stmt.setTimestamp(3, new Timestamp(lower.getTimeInMillis()));
 		stmt.setTimestamp(4, new Timestamp(upper.getTimeInMillis()));
-		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance, final String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByRange();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setString(2, reference);
-		stmt.setDouble(3, value - deviance);
-		stmt.setDouble(4, value + deviance);
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
 	}
 
@@ -2029,20 +1998,8 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByValueAndDatatype();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setString(2, value);
-		stmt.setString(3, reference);
-		ResultSet rs = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype();
+	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype(offset !=-1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		ResultSet rs = stmt.executeQuery();
@@ -2070,16 +2027,6 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		stmt.setString(3, reference);
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> getVariants(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariants();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
-		return Jdbc2Construct.toVariants(topicMap, rs);
 	}
 
 	/**
@@ -2246,7 +2193,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes();
@@ -2261,7 +2208,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(false);
@@ -2276,7 +2223,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes();
@@ -2291,7 +2238,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSubtypes(ITopicMap topicMap) throws SQLException {
+	public Collection<ITopic> getSubtypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_subtype");
@@ -2300,7 +2247,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypesOfTopics();
 		Long ids[] = new Long[types.size()];
 		int i = 0;
@@ -2331,7 +2278,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSupertypes(ITopicMap topicMap) throws SQLException {
+	public Collection<ITopic> getSupertypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypes();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_supertype");
@@ -2340,7 +2287,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypesOfTopics();
 		Long ids[] = new Long[types.size()];
 		int i = 0;

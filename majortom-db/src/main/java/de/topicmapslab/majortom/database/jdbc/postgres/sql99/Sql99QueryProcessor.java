@@ -1118,7 +1118,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type));
 		set.addAll(doReadOccurrences(t, type));
-		for (ITopic type_ : getSubtypes(t.getTopicMap(), type)) {
+		for (ITopic type_ : getSubtypes(t.getTopicMap(), type, -1, -1)) {
 			set.addAll(doReadNames(t, type_));
 			set.addAll(doReadOccurrences(t, type_));
 		}
@@ -1132,7 +1132,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type, scope));
 		set.addAll(doReadOccurrences(t, type, scope));
-		for (ITopic type_ : getSubtypes(t.getTopicMap(), type)) {
+		for (ITopic type_ : getSubtypes(t.getTopicMap(), type, -1, -1)) {
 			set.addAll(doReadNames(t, type_, scope));
 			set.addAll(doReadOccurrences(t, type_, scope));
 		}
@@ -1965,7 +1965,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove all subtypes
 		 */
-		for (ITopic subtype : getSubtypes(topic.getTopicMap(), topic)) {
+		for (ITopic subtype : getSubtypes(topic.getTopicMap(), topic, -1, -1)) {
 			doRemoveTopic(subtype, cascade, revision);
 		}
 		/*
@@ -2013,7 +2013,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * remove scoped associations
 			 */
-			for (IAssociation association : getAssociationsByScope(topic.getTopicMap(), scope)) {
+			for (IAssociation association : getAssociationsByScope(topic.getTopicMap(), scope, -1, -1)) {
 				/*
 				 * remove association
 				 */
@@ -2022,7 +2022,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * remove scoped name
 			 */
-			for (IName name : getNamesByScope(topic.getTopicMap(), scope)) {
+			for (IName name : getNamesByScope(topic.getTopicMap(), scope, -1, -1)) {
 				/*
 				 * remove name
 				 */
@@ -2031,7 +2031,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * remove scoped occurrences
 			 */
-			for (IOccurrence occurrence : getOccurrencesByScope(topic.getTopicMap(), scope)) {
+			for (IOccurrence occurrence : getOccurrencesByScope(topic.getTopicMap(), scope, -1, -1)) {
 				/*
 				 * remove occurrence
 				 */
@@ -2040,7 +2040,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * remove scoped variants
 			 */
-			for (IVariant variant : getVariantsByScope(topic.getTopicMap(), scope)) {
+			for (IVariant variant : getVariantsByScope(topic.getTopicMap(), scope, -1, -1)) {
 				/*
 				 * remove variant
 				 */
@@ -2075,7 +2075,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(4, Long.parseLong(topicMap.getId()));
 		stmt.setLong(5, Long.parseLong(topicMap.getId()));
 		stmt.execute();
-		// TODO remove all prepared statements
 	}
 
 	/**
@@ -2141,9 +2140,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	// ****************
 	// * INDEX METHOD *
 	// ****************
-	
+
 	// PagedConstructIndex
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2154,7 +2153,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2165,7 +2164,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2176,7 +2175,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2187,7 +2186,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2198,20 +2197,20 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfSupertypes(ITopic topic) throws SQLException {
-		if ( topic == null ){
-			PreparedStatement stmt = queryBuilder.getQueryReadNumberOfTopicsWithoutSupertypes();			
+		if (topic == null) {
+			PreparedStatement stmt = queryBuilder.getQueryReadNumberOfTopicsWithoutSupertypes();
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			return rs.getLong(1);
-		}		
-		return doReadSuptertypes(topic, -1,-1).size();
+		}
+		return doReadSuptertypes(topic, -1, -1).size();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2222,7 +2221,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.next();
 		return rs.getLong(1);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2548,7 +2547,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * iterate over all sub-types of the given type
 		 */
-		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
 			/*
 			 * add all associations typed by the sub-type
 			 */
@@ -2588,7 +2587,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * iterate over all sub-types of the given type
 		 */
-		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
 			/*
 			 * add all names typed by the sub-type
 			 */
@@ -2629,7 +2628,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * iterate over all sub-types of the given type
 		 */
-		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
 			/*
 			 * add all occurrences typed by the sub-type
 			 */
@@ -2669,7 +2668,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * iterate over all sub-types of the given type
 		 */
-		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
 			/*
 			 * add all roles typed by the sub-type
 			 */
@@ -2709,7 +2708,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * iterate over all sub-types of the given type
 		 */
-		for (ITopic t : getSubtypes(type.getTopicMap(), type)) {
+		for (ITopic t : getSubtypes(type.getTopicMap(), type, -1, -1)) {
 			/*
 			 * add all topics typed by the sub-type
 			 */
@@ -2800,10 +2799,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScope(false);
+	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toAssociations(topicMap, set, "id");
 	}
@@ -2811,18 +2814,24 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
+	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScopes(scopes.size());
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScopes(offset != -1);
+		Long ids[] = new Long[scopes.size()];
+		int n = 0;
 		for (IScope s : scopes) {
-			stmt.setLong(n++, Long.parseLong(s.getId()));
+			ids[n++] = Long.parseLong(s.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toAssociations(topicMap, set, "id");
@@ -2831,326 +2840,60 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
-		PreparedStatement stmt = null;
+	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		/*
 		 * require empty scope
 		 */
 		if (theme == null) {
-			stmt = queryBuilder.getQueryAssociationsByScope(true);
+			Collection<ITopic> themes = HashUtil.getHashSet();
+			IScope scope = doCreateScope(topicMap, themes);
+			return getAssociationsByScope(topicMap, scope, offset, limit);
 		}
 		/*
 		 * require non-empty scope
 		 */
-		else {
-			stmt = queryBuilder.getQueryAssociationsByTheme();
-			stmt.setLong(2, Long.parseLong(theme.getId()));
-		}
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(topicMap, set, "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByThemes(themes.length, all);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (Topic theme : themes) {
-			stmt.setLong(n++, Long.parseLong(theme.getId()));
-		}
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(topicMap, set, "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IScope> getAssociationScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationScopes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
-		List<Long> ids = HashUtil.getList();
-		while (rs.next()) {
-			ids.add(rs.getLong("id_scope"));
-		}
-		rs.close();
-
-		/*
-		 * read themes of the scopes
-		 */
-		Collection<IScope> scopes = HashUtil.getHashSet();
-		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
-		}
-		return scopes;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationThemes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNamesByScope(false);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setLong(2, Long.parseLong(scope.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
-		/*
-		 * if no scope is specified return empty set
-		 */
-		if (scopes.isEmpty()) {
-			return HashUtil.getHashSet();
-		}
-		PreparedStatement stmt = queryBuilder.getQueryNamesByScopes(scopes.size());
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (IScope s : scopes) {
-			stmt.setLong(n++, Long.parseLong(s.getId()));
-		}
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
-		PreparedStatement stmt = null;
-		/*
-		 * require empty scope
-		 */
-		if (theme == null) {
-			stmt = queryBuilder.getQueryNamesByScope(true);
-		}
-		/*
-		 * require non-empty scope
-		 */
-		else {
-			stmt = queryBuilder.getQueryNamesByTheme();
-			stmt.setLong(2, Long.parseLong(theme.getId()));
-		}
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNamesByThemes(themes.length, all);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (Topic theme : themes) {
-			stmt.setLong(n++, Long.parseLong(theme.getId()));
-		}
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IScope> getNameScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNameScopes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
-		List<Long> ids = HashUtil.getList();
-		while (rs.next()) {
-			ids.add(rs.getLong("id_scope"));
-		}
-		rs.close();
-
-		/*
-		 * read themes of the scopes
-		 */
-		Collection<IScope> scopes = HashUtil.getHashSet();
-		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
-		}
-		return scopes;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<ITopic> getNameThemes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNameThemes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScope(false);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setLong(2, Long.parseLong(scope.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
-		/*
-		 * if no scope is specified return empty set
-		 */
-		if (scopes.isEmpty()) {
-			return HashUtil.getHashSet();
-		}
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScopes(scopes.size());
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (IScope s : scopes) {
-			stmt.setLong(n++, Long.parseLong(s.getId()));
-		}
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
-		PreparedStatement stmt = null;
-		/*
-		 * require empty scope
-		 */
-		if (theme == null) {
-			stmt = queryBuilder.getQueryOccurrencesByScope(true);
-		}
-		/*
-		 * require non-empty scope
-		 */
-		else {
-			stmt = queryBuilder.getQueryOccurrencesByTheme();
-			stmt.setLong(2, Long.parseLong(theme.getId()));
-		}
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByThemes(themes.length, all);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (Topic theme : themes) {
-			stmt.setLong(n++, Long.parseLong(theme.getId()));
-		}
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrenceScopes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		ResultSet rs = stmt.executeQuery();
-		List<Long> ids = HashUtil.getList();
-		while (rs.next()) {
-			ids.add(rs.getLong("id_scope"));
-		}
-		rs.close();
-
-		/*
-		 * read themes of the scopes
-		 */
-		Collection<IScope> scopes = HashUtil.getHashSet();
-		for (Long id : ids) {
-			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
-		}
-		return scopes;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrenceThemes();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByScope();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setLong(2, Long.parseLong(scope.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toVariants(topicMap, set);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException {
-		throw new UnsupportedOperationException("Unsupported by the SQL processor implementation!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByTheme();
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByTheme(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(theme.getId()));
-		stmt.setLong(3, Long.parseLong(theme.getId()));
-		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toVariants(topicMap, set);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByThemes(themes.length, all);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		int n = 2;
-		for (Topic theme : themes) {
-			stmt.setLong(n, Long.parseLong(theme.getId()));
-			if (!all) {
-				stmt.setLong(n + themes.length, Long.parseLong(theme.getId()));
-			}
-			n++;
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toVariants(topicMap, set);
+		return Jdbc2Construct.toAssociations(topicMap, set, "id");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> getVariantScopes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantScopes();
+	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationsByThemes(all, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		Long ids[] = new Long[themes.length];
+		int n = 0;
+		for (Topic t : themes) {
+			ids[n++] = Long.parseLong(t.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toAssociations(topicMap, set, "id");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IScope> getAssociationScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationScopes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		ResultSet rs = stmt.executeQuery();
 		List<Long> ids = HashUtil.getList();
 		while (rs.next()) {
@@ -3171,10 +2914,425 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getVariantThemes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantThemes();
+	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryAssociationThemes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristicsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryCharacteristicsByScope(offset != -1);
+		long scopeId = Long.parseLong(scope.getId());
+		stmt.setLong(1, scopeId);
+		stmt.setLong(2, scopeId);
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNamesByScope(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(scope.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
+		/*
+		 * if no scope is specified return empty set
+		 */
+		if (scopes.isEmpty()) {
+			return HashUtil.getHashSet();
+		}
+		PreparedStatement stmt = queryBuilder.getQueryNamesByScopes(offset != -1);
+		Long ids[] = new Long[scopes.size()];
+		int n = 0;
+		for (IScope s : scopes) {
+			ids[n++] = Long.parseLong(s.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
+		/*
+		 * require empty scope
+		 */
+		if (theme == null) {
+			Collection<ITopic> themes = HashUtil.getHashSet();
+			IScope scope = doCreateScope(topicMap, themes);
+			return getNamesByScope(topicMap, scope, offset, limit);
+		}
+		/*
+		 * require non-empty scope
+		 */
+		PreparedStatement stmt = queryBuilder.getQueryNamesByTheme(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(theme.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNamesByThemes(all, offset != -1);
+		Long ids[] = new Long[themes.length];
+		int n = 0;
+		for (Topic t : themes) {
+			ids[n++] = Long.parseLong(t.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toNames(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IScope> getNameScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNameScopes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		List<Long> ids = HashUtil.getList();
+		while (rs.next()) {
+			ids.add(rs.getLong("id_scope"));
+		}
+		rs.close();
+
+		/*
+		 * read themes of the scopes
+		 */
+		Collection<IScope> scopes = HashUtil.getHashSet();
+		for (Long id : ids) {
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
+		}
+		return scopes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getNameThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryNameThemes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScope(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(scope.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
+		/*
+		 * if no scope is specified return empty set
+		 */
+		if (scopes.isEmpty()) {
+			return HashUtil.getHashSet();
+		}
+		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScopes(offset != -1);
+		Long ids[] = new Long[scopes.size()];
+		int n = 0;
+		for (IScope s : scopes) {
+			ids[n++] = Long.parseLong(s.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
+		/*
+		 * require empty scope
+		 */
+		if (theme == null) {
+			Collection<ITopic> themes = HashUtil.getHashSet();
+			IScope scope = doCreateScope(topicMap, themes);
+			return getOccurrencesByScope(topicMap, scope, offset, limit);
+		}/*
+		 * require non-empty scope
+		 */
+		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByTheme(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(theme.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByThemes(all, offset != -1);
+		Long ids[] = new Long[themes.length];
+		int n = 0;
+		for (Topic t : themes) {
+			ids[n++] = Long.parseLong(t.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toOccurrences(topicMap, set, "id", "id_parent");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryOccurrenceScopes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		List<Long> ids = HashUtil.getList();
+		while (rs.next()) {
+			ids.add(rs.getLong("id_scope"));
+		}
+		rs.close();
+
+		/*
+		 * read themes of the scopes
+		 */
+		Collection<IScope> scopes = HashUtil.getHashSet();
+		for (Long id : ids) {
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
+		}
+		return scopes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryOccurrenceThemes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IScopable> getScopables(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryScopables(offset != -1);
+		long scopeId = Long.parseLong(scope.getId());
+		stmt.setLong(1, scopeId);
+		stmt.setLong(2, scopeId);
+		stmt.setLong(3, scopeId);
+		stmt.setLong(4, scopeId);
+		if (offset != -1) {
+			stmt.setLong(5, offset);
+			stmt.setLong(6, limit);
+		}
+		return Jdbc2Construct.toScopables(topicMap, stmt.executeQuery());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantsByScope(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(scope.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
+		/*
+		 * if no scope is specified return empty set
+		 */
+		if (scopes.isEmpty()) {
+			return HashUtil.getHashSet();
+		}
+		PreparedStatement stmt = queryBuilder.getQueryVariantsByScopes(offset != -1);
+		Long ids[] = new Long[scopes.size()];
+		int n = 0;
+		for (IScope s : scopes) {
+			ids[n++] = Long.parseLong(s.getId());
+		}
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantsByTheme(offset != -1);
+		long themeId = Long.parseLong(theme.getId());
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, themeId);
+		stmt.setLong(3, themeId);
+		if (offset != -1) {
+			stmt.setLong(4, offset);
+			stmt.setLong(5, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantsByThemes(all, offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		Long ids[] = new Long[themes.length];
+		int n = 0;
+		for (Topic t : themes) {
+			ids[n++] = Long.parseLong(t.getId());
+		}
+		Array array = connection.createArrayOf("bigint", ids);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, array);
+		n = 3;
+		if (!all) {
+			stmt.setArray(3, array);
+			n++;
+		}
+		if (offset != -1) {
+			stmt.setLong(n++, offset);
+			stmt.setLong(n, limit);
+		}
+		ResultSet set = stmt.executeQuery();
+		return Jdbc2Construct.toVariants(topicMap, set);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IScope> getVariantScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantScopes(offset != -1);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		List<Long> ids = HashUtil.getList();
+		while (rs.next()) {
+			ids.add(rs.getLong("id_scope"));
+		}
+		rs.close();
+
+		/*
+		 * read themes of the scopes
+		 */
+		Collection<IScope> scopes = HashUtil.getHashSet();
+		for (Long id : ids) {
+			scopes.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
+		}
+		return scopes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ITopic> getVariantThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryVariantThemes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_theme");
 	}
 
@@ -3183,9 +3341,138 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNames(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNames();
+	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
+		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+			Collection<ICharacteristics> col = HashUtil.getList();
+			col.addAll(getOccurrences(topicMap, value, reference, offset, limit));
+			return col;
+		}
+		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristics(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, value);
+		stmt.setString(3, reference);
+		stmt.setLong(4, topicMapId);
+		stmt.setString(5, value);
+		if (offset != -1) {
+			stmt.setLong(6, offset);
+			stmt.setLong(7, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByValue(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, value);
+		stmt.setLong(3, topicMapId);
+		stmt.setString(4, value);
+		if (offset != -1) {
+			stmt.setLong(5, offset);
+			stmt.setLong(6, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristicsByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
+		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+			Collection<ICharacteristics> col = HashUtil.getList();
+			col.addAll(getOccurrencesByDatatype(topicMap, reference, offset, limit));
+			return col;
+		}
+		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByDatatype(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, reference);
+		stmt.setLong(3, topicMapId);
+		if (offset != -1) {
+			stmt.setLong(4, offset);
+			stmt.setLong(5, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByPattern(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, value);
+		stmt.setLong(3, topicMapId);
+		stmt.setString(4, value);
+		if (offset != -1) {
+			stmt.setLong(5, offset);
+			stmt.setLong(6, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, String reference, long offset, long limit)
+			throws SQLException {
+		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+			Collection<ICharacteristics> col = HashUtil.getList();
+			col.addAll(getOccurrencesByPattern(topicMap, value, reference));
+			return col;
+		}
+		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByPatternAndDatatype(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, value);
+		stmt.setString(3, reference);
+		stmt.setLong(4, topicMapId);
+		stmt.setString(5, value);
+		if (offset != -1) {
+			stmt.setLong(6, offset);
+			stmt.setLong(7, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toCharacteristics(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IDatatypeAware> getDatatypeAwaresByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectDatatypeAwaresByDatatype(offset != -1);
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setLong(1, topicMapId);
+		stmt.setString(2, reference);
+		stmt.setLong(3, topicMapId);
+		stmt.setString(4, reference);
+		if (offset != -1) {
+			stmt.setLong(5, offset);
+			stmt.setLong(6, limit);
+		}
+		ResultSet rs = stmt.executeQuery();
+		return Jdbc2Construct.toDatatypeAwares(topicMap, rs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<IName> getNames(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectNames(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toNames(topicMap, rs, "id", "id_parent");
 	}
@@ -3215,33 +3502,45 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences();
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange();
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		// stmt.setString(2, XmlSchemeDatatypes.XSD_DATETIME);
 		stmt.setTimestamp(2, new Timestamp(lower.getTimeInMillis()));
 		stmt.setTimestamp(3, new Timestamp(upper.getTimeInMillis()));
+		if (offset != -1) {
+			stmt.setLong(4, offset);
+			stmt.setLong(5, limit);
+		}
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance, final String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByRange();
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance, final String reference, long offset, long limit)
+			throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		stmt.setDouble(3, value - deviance);
 		stmt.setDouble(4, value + deviance);
+		if (offset != -1) {
+			stmt.setLong(5, offset);
+			stmt.setLong(6, limit);
+		}
 		return Jdbc2Construct.toOccurrences(topicMap, stmt.executeQuery(), "id", "id_parent");
 	}
 
@@ -3259,11 +3558,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByValueAndDatatype();
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByValueAndDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		stmt.setString(3, reference);
+		if (offset != -1) {
+			stmt.setLong(4, offset);
+			stmt.setLong(5, limit);
+		}
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
 	}
@@ -3271,10 +3574,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype();
+	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
+		if (offset != -1) {
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
+		}
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toOccurrences(topicMap, rs, "id", "id_parent");
 	}
@@ -3305,9 +3612,13 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariants(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariants();
+	public Collection<IVariant> getVariants(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectVariants(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toVariants(topicMap, rs);
 	}
@@ -3508,14 +3819,18 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes();
+			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
-			stmt = queryBuilder.getQuerySelectDirectSubtypes();
+			stmt = queryBuilder.getQuerySelectDirectSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(type.getId()));
+		}
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
@@ -3523,14 +3838,18 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(false);
+			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
-			stmt = queryBuilder.getQuerySelectDirectSupertypes();
+			stmt = queryBuilder.getQuerySelectDirectSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(type.getId()));
+		}
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
@@ -3538,15 +3857,31 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type) throws SQLException {
+	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		if (type == null) {
 			PreparedStatement stmt = null;
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes();
+			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+			if (offset != -1) {
+				stmt.setLong(2, offset);
+				stmt.setLong(3, limit);
+			}
 			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
 		Collection<ITopic> knownSubtypes = HashUtil.getHashSet();
-		return getSubtypes(topicMap, type, knownSubtypes);
+		List<ITopic> result = HashUtil.getList(getSubtypes(topicMap, type, knownSubtypes));
+		if (offset != -1) {
+			Collections.sort(result, new Comparator<ITopic>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(ITopic o1, ITopic o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+		}
+		return result;
 	}
 
 	private Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSubtypes) throws SQLException {
@@ -3554,7 +3889,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * get sub-types of given topic
 		 */
 		PreparedStatement stmt = null;
-		stmt = queryBuilder.getQuerySelectSubtypesOfTopic();
+		stmt = queryBuilder.getQuerySelectSubtypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
@@ -3575,27 +3910,44 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSubtypes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypes();
+	public Collection<ITopic> getSubtypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_subtype");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit)
+			throws SQLException {
 		Collection<ITopic> topics = HashUtil.getHashSet();
 		boolean first = true;
 		for (T type : types) {
 			if (first || !matchAll) {
-				topics.addAll(getSubtypes(topicMap, (ITopic) type));
+				topics.addAll(getSubtypes(topicMap, (ITopic) type, -1, -1));
 			} else {
-				topics.retainAll(getSubtypes(topicMap, (ITopic) type));
+				topics.retainAll(getSubtypes(topicMap, (ITopic) type, -1, -1));
 			}
 			first = false;
 		}
-		return topics;
+		List<ITopic> result = HashUtil.getList(topics);
+		if (offset != -1) {
+			Collections.sort(result, new Comparator<ITopic>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(ITopic o1, ITopic o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+		}
+		return result;
 	}
 
 	/**
@@ -3647,7 +3999,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * get super-types of given topic
 		 */
 		PreparedStatement stmt = null;
-		stmt = queryBuilder.getQuerySelectSupertypesOfTopic();
+		stmt = queryBuilder.getQuerySelectSupertypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
@@ -3671,16 +4023,21 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSupertypes(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypes();
+	public Collection<ITopic> getSupertypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		if (offset != -1) {
+			stmt.setLong(2, offset);
+			stmt.setLong(3, limit);
+		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit)
+			throws SQLException {
 		Collection<ITopic> topics = HashUtil.getHashSet();
 		boolean first = true;
 		for (T type : types) {
@@ -3691,7 +4048,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			}
 			first = false;
 		}
-		return topics;
+		List<ITopic> result = HashUtil.getList(topics);
+		if (offset != -1) {
+			Collections.sort(result, new Comparator<ITopic>() {
+				/**
+				 * {@inheritDoc}
+				 */
+				public int compare(ITopic o1, ITopic o2) {
+					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
+				}
+			});
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+		}
+		return result;
 	}
 
 	/*

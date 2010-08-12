@@ -42,9 +42,11 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
+import de.topicmapslab.majortom.model.core.IScopable;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
@@ -186,6 +188,24 @@ public class Jdbc2Construct {
 		return list;
 	}
 
+	public static List<IDatatypeAware> toDatatypeAwares(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<IDatatypeAware> list = HashUtil.getList();
+		while (result.next()) {
+			if ("v".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
+						new JdbcIdentity(result.getString(3)), topicMap))));
+			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+				list
+						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
+								topicMap)));
+			} else {
+				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+			}
+		}
+		result.close();
+		return list;
+	}
+
 	public static List<IName> toNames(ITopic topic, ResultSet result, String column) throws SQLException {
 		List<IName> list = HashUtil.getList();
 		while (result.next()) {
@@ -265,6 +285,28 @@ public class Jdbc2Construct {
 		while (result.next()) {
 			list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), new AssociationImpl(
 					new JdbcIdentity(result.getString(parentIdColumn)), topicMap)));
+		}
+		result.close();
+		return list;
+	}
+
+	public static List<IScopable> toScopables(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<IScopable> list = HashUtil.getList();
+		while (result.next()) {
+			if ("v".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
+						new JdbcIdentity(result.getString(3)), topicMap))));
+			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+				list
+						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
+								topicMap)));
+			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new AssociationImpl(new JdbcIdentity(result.getString("id")), topicMap));
+			} else {
+				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+			}
 		}
 		result.close();
 		return list;

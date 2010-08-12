@@ -291,79 +291,95 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryScopesByThemesUsed() throws SQLException;
 
-	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException;
+	public PreparedStatement getQueryAssociationsByScope(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryAssociationsByScopes(long scopeCount) throws SQLException;
+	public PreparedStatement getQueryAssociationsByScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryAssociationsByTheme() throws SQLException;
+	public PreparedStatement getQueryAssociationsByTheme(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryAssociationsByThemes(long themeCount, boolean all) throws SQLException;
+	public PreparedStatement getQueryAssociationsByThemes(boolean all, boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryAssociationScopes() throws SQLException;
+	public PreparedStatement getQueryAssociationScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryAssociationThemes() throws SQLException;
+	public PreparedStatement getQueryAssociationThemes(boolean paged) throws SQLException;
+	
+	public PreparedStatement getQueryCharacteristicsByScope(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNamesByScope(boolean emptyScope) throws SQLException;
+	public PreparedStatement getQueryNamesByScope(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNamesByScopes(long scopeCount) throws SQLException;
+	public PreparedStatement getQueryNamesByScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNamesByTheme() throws SQLException;
+	public PreparedStatement getQueryNamesByTheme(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNamesByThemes(long themeCount, boolean all) throws SQLException;
+	public PreparedStatement getQueryNamesByThemes(boolean all, boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNameScopes() throws SQLException;
+	public PreparedStatement getQueryNameScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryNameThemes() throws SQLException;
+	public PreparedStatement getQueryNameThemes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrencesByScope(boolean emptyScope) throws SQLException;
+	public PreparedStatement getQueryOccurrencesByScope(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrencesByScopes(long scopeCount) throws SQLException;
+	public PreparedStatement getQueryOccurrencesByScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrencesByTheme() throws SQLException;
+	public PreparedStatement getQueryOccurrencesByTheme(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrencesByThemes(long themeCount, boolean all) throws SQLException;
+	public PreparedStatement getQueryOccurrencesByThemes(boolean all, boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrenceScopes() throws SQLException;
+	public PreparedStatement getQueryOccurrenceScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryOccurrenceThemes() throws SQLException;
+	public PreparedStatement getQueryOccurrenceThemes(boolean paged) throws SQLException;
+	
+	public PreparedStatement getQueryScopables(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantsByScope() throws SQLException;
+	public PreparedStatement getQueryVariantsByScope(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantsByScopes(long scopeCount) throws SQLException;
+	public PreparedStatement getQueryVariantsByScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantsByTheme() throws SQLException;
+	public PreparedStatement getQueryVariantsByTheme(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantsByThemes(long themeCount, boolean all) throws SQLException;
+	public PreparedStatement getQueryVariantsByThemes(boolean all, boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantScopes() throws SQLException;
+	public PreparedStatement getQueryVariantScopes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQueryVariantThemes() throws SQLException;
+	public PreparedStatement getQueryVariantThemes(boolean paged) throws SQLException;
 
 	// LiteralIndex
 
-	public PreparedStatement getQuerySelectNames() throws SQLException;
+	public PreparedStatement getQuerySelectCharacteristics(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectCharacteristicsByValue(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectCharacteristicsByDatatype(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectCharacteristicsByPattern(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectCharacteristicsByPatternAndDatatype(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectDatatypeAwaresByDatatype(boolean paged) throws SQLException;
+
+	public PreparedStatement getQuerySelectNames(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByValue() throws SQLException;
 
 	public PreparedStatement getQuerySelectNamesByPattern() throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrences() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrences(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByDatatype() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByDatatype(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByDateRange() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByDateRange(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByRange() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByRange(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByValue() throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByPattern() throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectOccurrencesByPatternAndDatatype() throws SQLException;
 
-	public PreparedStatement getQuerySelectVariants() throws SQLException;
+	public PreparedStatement getQuerySelectVariants(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectVariantsByDatatype() throws SQLException;
 
@@ -393,25 +409,25 @@ public interface IQueryBuilder {
 
 	// SupertypeSubtypeIndex
 
-	public PreparedStatement getQuerySelectDirectSubtypes() throws SQLException;
+	public PreparedStatement getQuerySelectDirectSubtypes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsWithoutSubtypes() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsWithoutSubtypes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSubtypesOfTopic() throws SQLException;
+	public PreparedStatement getQuerySelectSubtypesOfTopic(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSubtypesOfTopics() throws SQLException;
+	public PreparedStatement getQuerySelectSubtypesOfTopics(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSubtypes() throws SQLException;
+	public PreparedStatement getQuerySelectSubtypes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectDirectSupertypes() throws SQLException;
+	public PreparedStatement getQuerySelectDirectSupertypes(boolean paged) throws SQLException;
 
 	public PreparedStatement getQuerySelectTopicsWithoutSupertypes(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSupertypesOfTopic() throws SQLException;
+	public PreparedStatement getQuerySelectSupertypesOfTopic(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSupertypesOfTopics() throws SQLException;
+	public PreparedStatement getQuerySelectSupertypesOfTopics(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectSupertypes() throws SQLException;
+	public PreparedStatement getQuerySelectSupertypes(boolean paged) throws SQLException;
 
 	// *****************
 	// * PERFORM QUERY *
