@@ -57,7 +57,8 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * constructor
 	 */
-	protected BasePostGreSqlConnectionProvider() {}
+	protected BasePostGreSqlConnectionProvider() {
+	}
 
 	/**
 	 * 
