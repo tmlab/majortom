@@ -1298,7 +1298,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationsByScope(boolean emptyScope) throws SQLException {
+	public PreparedStatement getQueryAssociationsByScope(boolean paged) throws SQLException {
 		/*
 		 * is empty scope
 		 */
@@ -1322,7 +1322,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationsByScopes(long scopeCount) throws SQLException {
+	public PreparedStatement getQueryAssociationsByScopes(boolean paged) throws SQLException {
 		/*
 		 * check if cache is initialized
 		 */
@@ -1351,7 +1351,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationsByTheme() throws SQLException {
+	public PreparedStatement getQueryAssociationsByTheme(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexAssociationsByTheme == null) {
 			this.preparedStatementIndexAssociationsByTheme = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_ASSOCIATIONS_BY_THEME);
@@ -1362,7 +1362,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationsByThemes(long themeCount, boolean all) throws SQLException {
+	public PreparedStatement getQueryAssociationsByThemes(boolean all, boolean paged) throws SQLException {
 		/*
 		 * check if cache is initialized
 		 */
@@ -1392,7 +1392,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationScopes() throws SQLException {
+	public PreparedStatement getQueryAssociationScopes(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexAssociationScopes == null) {
 			this.preparedStatementIndexAssociationScopes = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_ASSOCIATION_SCOPES);
 		}
@@ -1402,7 +1402,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryAssociationThemes() throws SQLException {
+	public PreparedStatement getQueryAssociationThemes(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexAssociationThemes == null) {
 			this.preparedStatementIndexAssociationThemes = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_ASSOCIATION_THEMES);
 		}
@@ -1412,11 +1412,11 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryNamesByScope(boolean emptyScope) throws SQLException {
+	public PreparedStatement getQueryNamesByScope(boolean paged) throws SQLException {
 		/*
 		 * is empty scope
 		 */
-		if (emptyScope) {
+		if (paged) {
 			if (this.preparedStatementIndexNamesByEmptyScope == null) {
 				preparedStatementIndexNamesByEmptyScope = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_NAMES_BY_EMPTYSCOPE);
 			}
@@ -1434,7 +1434,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryNamesByScopes(long scopeCount) throws SQLException {
+	public PreparedStatement getQueryNamesByScopes(boolean paged) throws SQLException {
 		/*
 		 * check if cache is initialized
 		 */
@@ -1463,7 +1463,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryNamesByTheme() throws SQLException {
+	public PreparedStatement getQueryNamesByTheme(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexNamesByTheme == null) {
 			this.preparedStatementIndexNamesByTheme = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_NAMES_BY_THEME);
 		}
@@ -1472,8 +1472,16 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 
 	/**
 	 * {@inheritDoc}
+	 * @deprecated Use {@link #getQueryNamesByThemes(boolean,boolean)} instead
 	 */
 	public PreparedStatement getQueryNamesByThemes(long themeCount, boolean all) throws SQLException {
+		return getQueryNamesByThemes(all, null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryNamesByThemes(boolean all, boolean paged) throws SQLException {
 		/*
 		 * check if cache is initialized
 		 */
@@ -1502,8 +1510,16 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 
 	/**
 	 * {@inheritDoc}
+	 * @deprecated Use {@link #getQueryNameScopes(boolean)} instead
 	 */
 	public PreparedStatement getQueryNameScopes() throws SQLException {
+		return getQueryNameScopes(null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryNameScopes(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexNameScopes == null) {
 			this.preparedStatementIndexNameScopes = connection.prepareStatement(IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_NAME_SCOPES);
 		}
@@ -1741,7 +1757,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectNames() throws SQLException {
+	public PreparedStatement getQuerySelectNames(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexNames == null) {
 			this.preparedStatementIndexNames = connection.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_NAMES);
 		}
@@ -1771,7 +1787,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrences() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrences(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexOccurrences == null) {
 			this.preparedStatementIndexOccurrences = connection.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_OCCURRENCES);
 		}
@@ -1781,7 +1797,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByDatatype() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByDatatype(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByDatatype == null) {
 			this.preparedStatementIndexOccurrencesByDatatype = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_OCCURRENCES_BY_DATATYPE);
@@ -1792,7 +1808,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByDateRange() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByDateRange(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByDateRange == null) {
 			this.preparedStatementIndexOccurrencesByDateRange = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_OCCURRENCES_BY_DATERANGE);
@@ -1803,7 +1819,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByRange() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByRange(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByRange == null) {
 			this.preparedStatementIndexOccurrencesByRange = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_OCCURRENCES_BY_RANGE);
@@ -1825,7 +1841,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByValueAndDatatype(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByValueAndDatatype == null) {
 			this.preparedStatementIndexOccurrencesByValueAndDatatype = connection
 					.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE);
@@ -1858,7 +1874,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectVariants() throws SQLException {
+	public PreparedStatement getQuerySelectVariants(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexVariants == null) {
 			this.preparedStatementIndexVariants = connection.prepareStatement(IPostGreSqlIndexQueries.QueryLiteralIndex.QUERY_SELECT_VARIANTS);
 		}

@@ -65,7 +65,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getNames(getStore().getTopicMap());
+			return getStore().getProcessor().getNames(getStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -98,7 +98,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getOccurrences(getStore().getTopicMap());
+			return getStore().getProcessor().getOccurrences(getStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -116,7 +116,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), literal, XmlSchemeDatatypes.XSD_STRING));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), literal, XmlSchemeDatatypes.XSD_STRING, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -135,7 +135,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.getReference(), XmlSchemeDatatypes.XSD_ANYURI));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.getReference(), XmlSchemeDatatypes.XSD_ANYURI, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -157,7 +157,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, datatype.getReference()));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, datatype.getReference(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -173,7 +173,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -192,8 +192,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value));
-			col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), value));
+			col.addAll(getStore().getProcessor().getCharacteristics(getStore().getTopicMap(), value, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -212,10 +211,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), ".*", datatype.getReference()));
-			if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
-				col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap()));
-			}
+			col.addAll(getStore().getProcessor().getCharacteristicsByDatatype(getStore().getTopicMap(), datatype.getReference(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -237,10 +233,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, datatype.getReference()));
-			if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
-				col.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), value));
-			}
+			col.addAll(getStore().getProcessor().getCharacteristics(getStore().getTopicMap(), value, datatype.getReference(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -259,8 +252,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), regExp));
-			col.addAll(getStore().getProcessor().getNamesByPattern(getStore().getTopicMap(), regExp));
+			col.addAll(getStore().getProcessor().getCharacteristicsByPattern(getStore().getTopicMap(), regExp, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -282,10 +274,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByPattern(getStore().getTopicMap(), regExp, datatype.getReference()));
-			if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
-				col.addAll(getStore().getProcessor().getNamesByPattern(getStore().getTopicMap(), regExp));
-			}
+			col.addAll(getStore().getProcessor().getCharacteristicsByPattern(getStore().getTopicMap(), regExp, datatype.getReference(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -333,7 +322,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_GEOCOORDINATE));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_GEOCOORDINATE, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -342,6 +331,9 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 
 	/**
 	 * {@inheritDoc}
+	 * <p>
+	 * <b>Hint:</b>Currently not supported!
+	 * </p>
 	 */
 	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance) {
 		if (!isOpen()) {
@@ -366,8 +358,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<IDatatypeAware> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByDatatype(getStore().getTopicMap(), dataType.getReference()));
-			col.addAll(getStore().getProcessor().getVariantsByDatatype(getStore().getTopicMap(), dataType.getReference()));
+			col.addAll(getStore().getProcessor().getDatatypeAwaresByDatatype(getStore().getTopicMap(), dataType.getReference(),	-1,-1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -387,7 +378,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
-					XmlSchemeDatatypes.XSD_DATETIME));
+					XmlSchemeDatatypes.XSD_DATETIME, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -415,7 +406,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 				upper.add(field, deviance.get(field));
 			}
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), lower, upper));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), lower, upper, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -431,7 +422,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Double.toString(value), XmlSchemeDatatypes.XSD_DOUBLE));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Double.toString(value), XmlSchemeDatatypes.XSD_DOUBLE, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -447,7 +438,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -463,7 +454,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -479,7 +470,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -495,7 +486,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -511,7 +502,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -527,7 +518,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -543,7 +534,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -562,7 +553,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI));
+			col.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -577,7 +568,7 @@ public class JdbcLiteralIndex extends IndexImpl<JdbcTopicMapStore> implements IL
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getVariants(getStore().getTopicMap());
+			return getStore().getProcessor().getVariants(getStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}

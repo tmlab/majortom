@@ -375,79 +375,95 @@ public interface IQueryProcessor {
 
 	public <T extends Topic> Collection<IScope> getScopesByThemes(ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException;
 
-	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope) throws SQLException;
+	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException;
+	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme) throws SQLException;
+	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException;
 
-	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException;
+	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException;
 
-	public Collection<IScope> getAssociationScopes(ITopicMap topicMap) throws SQLException;
+	public Collection<IScope> getAssociationScopes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope) throws SQLException;
+	public Collection<ICharacteristics> getCharacteristicsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
+	
+	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException;
+	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme) throws SQLException;
+	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException;
+	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException;
 
-	public Collection<IScope> getNameScopes(ITopicMap topicMap) throws SQLException;
+	public Collection<IScope> getNameScopes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getNameThemes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getNameThemes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException;
+	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException;
 
-	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap) throws SQLException;
+	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap, long offset, long limit) throws SQLException;
+	
+	public Collection<IScopable> getScopables(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
 
-	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope) throws SQLException;
+	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException;
 
-	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes) throws SQLException;
+	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException;
 
-	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme) throws SQLException;
+	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException;
 
-	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all) throws SQLException;
+	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException;
 
-	public Collection<IScope> getVariantScopes(ITopicMap topicMap) throws SQLException;
+	public Collection<IScope> getVariantScopes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getVariantThemes(ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getVariantThemes(ITopicMap topicMap, long offset, long limit) throws SQLException;
 
 	// LiteralIndex
+	
+	public Collection<ICharacteristics> getCharacteristics(final ITopicMap topicMap, final String value, long offset, long limit) throws SQLException;
+	
+	public Collection<ICharacteristics> getCharacteristics(final ITopicMap topicMap, final String value, final String reference, long offset, long limit) throws SQLException;
+	
+	public Collection<ICharacteristics> getCharacteristicsByDatatype(final ITopicMap topicMap, final String reference, long offset, long limit) throws SQLException;
+	
+	public Collection<ICharacteristics> getCharacteristicsByPattern(final ITopicMap topicMap, final String value, long offset, long limit) throws SQLException;
+	
+	public Collection<ICharacteristics> getCharacteristicsByPattern(final ITopicMap topicMap, final String value, final String reference, long offset, long limit) throws SQLException;
+	
+	public Collection<IDatatypeAware> getDatatypeAwaresByDatatype(final ITopicMap topicMap, final String reference, long offset, long limit) throws SQLException;
 
-	public Collection<IName> getNames(final ITopicMap topicMap) throws SQLException;
+	public Collection<IName> getNames(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
 	public Collection<IName> getNames(final ITopicMap topicMap, final String value) throws SQLException;
 
 	public Collection<IName> getNamesByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap) throws SQLException;
+	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, Calendar lower, Calendar upper) throws SQLException;
+	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, Calendar lower, Calendar upper, long offset, long limit) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, double value, double deviance, final String reference) throws SQLException;
+	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, double value, double deviance, final String reference, long offset, long limit) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, final String value) throws SQLException;
 
-	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, final String value, final String reference) throws SQLException;
-
-	public Collection<IOccurrence> getOccurrencesByDatatype(final ITopicMap topicMap, final String reference) throws SQLException;
+	public Collection<IOccurrence> getOccurrences(final ITopicMap topicMap, final String value, final String reference, long offset, long limit) throws SQLException;
+	
+	public Collection<IOccurrence> getOccurrencesByDatatype(final ITopicMap topicMap, final String reference, long offset, long limit) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrencesByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
 
 	public Collection<IOccurrence> getOccurrencesByPattern(final ITopicMap topicMap, final String pattern, final String reference) throws SQLException;
 
-	public Collection<IVariant> getVariants(final ITopicMap topicMap) throws SQLException;
+	public Collection<IVariant> getVariants(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
 	public Collection<IVariant> getVariants(final ITopicMap topicMap, final String value) throws SQLException;
 
@@ -458,7 +474,7 @@ public interface IQueryProcessor {
 	public Collection<IVariant> getVariantByPattern(final ITopicMap topicMap, final String pattern) throws SQLException;
 
 	public Collection<IVariant> getVariantsByPattern(final ITopicMap topicMap, final String pattern, final String reference) throws SQLException;
-
+	
 	// IdentityIndex
 
 	public Collection<ILocator> getItemIdentifiers(final ITopicMap topicMap, long offset, long limit) throws SQLException;
@@ -477,21 +493,21 @@ public interface IQueryProcessor {
 
 	// SupertypeSubtypeIndex
 
-	public Collection<ITopic> getDirectSubtypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
+	public Collection<ITopic> getDirectSubtypes(final ITopicMap topicMap, final ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getSubtypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
+	public Collection<ITopic> getSubtypes(final ITopicMap topicMap, final ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getSubtypes(final ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getSubtypes(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getSubtypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll) throws SQLException;
+	public <T extends Topic> Collection<ITopic> getSubtypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getDirectSupertypes(final ITopicMap topicMap, final ITopic type) throws SQLException;
+	public Collection<ITopic> getDirectSupertypes(final ITopicMap topicMap, final ITopic type, long offset, long limit) throws SQLException;
 
 	public Collection<ITopic> getSupertypes(final ITopicMap topicMap, final ITopic type, long offset, long limit) throws SQLException;
 
-	public Collection<ITopic> getSupertypes(final ITopicMap topicMap) throws SQLException;
+	public Collection<ITopic> getSupertypes(final ITopicMap topicMap, long offset, long limit) throws SQLException;
 
-	public <T extends Topic> Collection<ITopic> getSupertypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll) throws SQLException;
+	public <T extends Topic> Collection<ITopic> getSupertypes(final ITopicMap topicMap, final Collection<T> types, final boolean matchAll, long offset, long limit) throws SQLException;
 
 	/*
 	 * revision management

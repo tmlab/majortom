@@ -28,8 +28,8 @@ public class IndexTestSuite {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.index");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(TestIdentityIndex.class);
-		suite.addTestSuite(TestLiteralIndex.class);
+		 suite.addTestSuite(TestIdentityIndex.class);
+		 suite.addTestSuite(TestLiteralIndex.class);
 		suite.addTestSuite(TestSupertypeSubtypeIndex.class);
 		suite.addTestSuite(TestTransitiveTypeInstanceIndex.class);
 		suite.addTestSuite(TestScopeIndex.class);

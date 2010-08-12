@@ -34,7 +34,6 @@ import de.topicmapslab.majortom.comparator.NameByValueComparator;
 import de.topicmapslab.majortom.comparator.OccurrenceByValueComparator;
 import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
 import de.topicmapslab.majortom.comparator.VariantByValueComparator;
-import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
@@ -371,9 +370,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		String base = "http://psi.example.org/topics/";
 		Association[] associations = new Association[101];
 		int j = 0;
@@ -440,13 +439,13 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		ITopic otherTheme = createTopic();
-		Set<ITopic> otherThemes = HashUtil.getHashSet();
+		Set<Topic> otherThemes = HashUtil.getHashSet();
 		otherThemes.add(otherTheme);
-		IScope otherScope = new ScopeImpl(otherThemes);
+		IScope otherScope = topicMap.createScope(otherThemes);
 		String base = "http://psi.example.org/topics/";
 		Association[] associations = new Association[101];
 		int j = 0;
@@ -521,9 +520,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 
 		ICharacteristics[] characteristics = new ICharacteristics[101];
 		int j = 0;
@@ -876,9 +875,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 
 		Name[] names = new Name[101];
 		int j = 0;
@@ -936,13 +935,13 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		ITopic otherTheme = createTopic();
-		Set<ITopic> otherThemes = HashUtil.getHashSet();
+		Set<Topic> otherThemes = HashUtil.getHashSet();
 		otherThemes.add(otherTheme);
-		IScope otherScope = new ScopeImpl(otherThemes);
+		IScope otherScope = topicMap.createScope(otherThemes);
 		Name[] names = new Name[101];
 		int j = 0;
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
@@ -1289,9 +1288,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 
 		Occurrence[] occurrences = new Occurrence[101];
 		int j = 0;
@@ -1349,13 +1348,13 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		ITopic otherTheme = createTopic();
-		Set<ITopic> otherThemes = HashUtil.getHashSet();
+		Set<Topic> otherThemes = HashUtil.getHashSet();
 		otherThemes.add(otherTheme);
-		IScope otherScope = new ScopeImpl(otherThemes);
+		IScope otherScope = topicMap.createScope(otherThemes);
 		Occurrence[] occurrences = new Occurrence[101];
 		int j = 0;
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
@@ -1420,9 +1419,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		String base = "http://psi.example.org/topics/";
 		IScopable[] scopeables = new IScopable[101];
 		int j = 0;
@@ -1776,9 +1775,9 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 
 		Variant[] variants = new Variant[101];
 		int j = 0;
@@ -1836,13 +1835,13 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			index.open();
 		}
 		ITopic theme = createTopic();
-		Set<ITopic> themes = HashUtil.getHashSet();
+		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		IScope scope = new ScopeImpl(themes);
+		IScope scope = topicMap.createScope(themes);
 		ITopic otherTheme = createTopic();
-		Set<ITopic> otherThemes = HashUtil.getHashSet();
+		Set<Topic> otherThemes = HashUtil.getHashSet();
 		otherThemes.add(otherTheme);
-		IScope otherScope = new ScopeImpl(otherThemes);
+		IScope otherScope = topicMap.createScope(otherThemes);
 		Variant[] variants = new Variant[101];
 		int j = 0;
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
