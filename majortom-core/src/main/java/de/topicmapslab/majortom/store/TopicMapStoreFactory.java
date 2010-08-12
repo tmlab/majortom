@@ -113,7 +113,6 @@ public class TopicMapStoreFactory {
 		// try to load the extension points via OSGi
 		try {
 			// check if we are in an OSGi environment if not an exception is thrown
-			Class.forName("org.osgi.framework.Bundle");
 			if (MajorToMActivator.getDefault()!=null) {
 				list = MajorToMActivator.getDefault().getTopicMapStoreFactories();
 				storeFactories = new HashMap<String, ITopicMapStoreFactory>();
@@ -128,7 +127,7 @@ public class TopicMapStoreFactory {
 		}
 		
 		if (list==null) {
-			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class);
+			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class, TopicMapStoreFactory.class.getClassLoader());
 			loader.reload();
 			storeFactories = new HashMap<String, ITopicMapStoreFactory>();
 
