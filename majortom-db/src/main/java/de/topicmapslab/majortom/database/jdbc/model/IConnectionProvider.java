@@ -32,6 +32,8 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  */
 public interface IConnectionProvider {
 
+	public final static String DATABASE_NOT_EXISTS = "3D000";
+	
 	/**
 	 * Open a new connection to the given database. If there is already an
 	 * existing connection to any database an exception will be thrown.
