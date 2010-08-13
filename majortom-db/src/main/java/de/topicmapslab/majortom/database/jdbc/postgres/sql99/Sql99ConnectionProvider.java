@@ -18,11 +18,14 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
+import java.io.InputStream;
 import java.sql.Connection;
+import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
  * Special connection provider for PostGreSQL.
@@ -43,6 +46,23 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	 */
 	protected IQueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
 		return new Sql99QueryProcessor(this, connection);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String getSchemaQuery() {
+		InputStream is = getClass().getResourceAsStream("script.sql");
+		if (is == null) {
+			throw new TopicMapStoreException("Cannot load database schema!");
+		}
+		StringBuffer buffer = new StringBuffer();
+		Scanner scanner = new Scanner(is);
+		while (scanner.hasNextLine()) {
+			buffer.append(scanner.nextLine()+"\r\n");
+		}
+		scanner.close();
+		return buffer.toString();
 	}
 
 }

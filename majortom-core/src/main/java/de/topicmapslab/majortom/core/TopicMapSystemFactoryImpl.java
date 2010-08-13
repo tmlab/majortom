@@ -108,5 +108,12 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	public void setProperty(String arg0, Object arg1) {		
 		properties.put(arg0, arg1);
 	}
+	
+	/**
+	 * @return the properties
+	 */
+	Properties getProperties() {
+		return properties;
+	}
 
 }

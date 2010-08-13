@@ -35,7 +35,7 @@ import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 public class TestTopicMapSystem extends TestCase {
 
 	public void testTopicMapSystemFactory() throws Exception {
-		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
+		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();		
 		assertNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
 		TopicMapSystem system = factory.newTopicMapSystem();
