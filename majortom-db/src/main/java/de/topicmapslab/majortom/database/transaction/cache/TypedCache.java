@@ -90,7 +90,9 @@ public class TypedCache implements IDataStore {
 
 	/**
 	 * constructor
-	 * @param topicMapStore the transaction topic map store
+	 * 
+	 * @param topicMapStore
+	 *            the transaction topic map store
 	 */
 	public TypedCache(TransactionTopicMapStore topicMapStore) {
 		this.topicMapStore = topicMapStore;
@@ -99,7 +101,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(Typed typed) {
@@ -115,11 +118,12 @@ public class TypedCache implements IDataStore {
 			throw new TopicMapStoreException("Unsupported parameter type '" + typed.getClass() + "'.");
 		}
 	}
-	
+
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IAssociation typed) {
@@ -139,7 +143,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IAssociationRole typed) {
@@ -159,7 +164,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IName typed) {
@@ -179,7 +185,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IOccurrence typed) {
@@ -199,7 +206,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Returns the typed items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed attributes
 	 */
 	public Set<ITypeable> getTyped(ITopic t) {
@@ -210,11 +218,12 @@ public class TypedCache implements IDataStore {
 		set.addAll(getTypedOccurrences(t));
 		return set;
 	}
-	
+
 	/**
 	 * Returns the typed items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed attributes
 	 */
 	public Set<IAssociation> getTypedAssociations(ITopic t) {
@@ -263,7 +272,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Returns the typed association role items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed association role items
 	 */
 	public Set<IAssociationRole> getTypedRoles(ITopic t) {
@@ -309,11 +319,12 @@ public class TypedCache implements IDataStore {
 
 		return set;
 	}
-	
+
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<ICharacteristics> getTypedCharacteristics(ITopic t) {
@@ -326,7 +337,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<IName> getTypedNames(ITopic t) {
@@ -376,7 +388,8 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<IOccurrence> getTypedOccurrences(ITopic t) {
@@ -426,8 +439,10 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(Typed typed, ITopic t) {
 		if (typed instanceof IName) {
@@ -442,12 +457,14 @@ public class TypedCache implements IDataStore {
 			throw new TopicMapStoreException("Unsupported parameter type '" + typed.getClass() + "'.");
 		}
 	}
-	
+
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IAssociation typed, ITopic t) {
 		if (isRemovedConstruct(typed) || isRemovedConstruct(t)) {
@@ -473,8 +490,10 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IAssociationRole typed, ITopic t) {
 		if (isRemovedConstruct(typed) || isRemovedConstruct(t)) {
@@ -500,8 +519,10 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IName typed, ITopic t) {
 		if (isRemovedConstruct(typed) || isRemovedConstruct(t)) {
@@ -527,8 +548,10 @@ public class TypedCache implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IOccurrence typed, ITopic t) {
 		if (isRemovedConstruct(typed) || isRemovedConstruct(t)) {
@@ -550,11 +573,12 @@ public class TypedCache implements IDataStore {
 		set.add(typed);
 		typedOccurrences.put(t, set);
 	}
-	
+
 	/**
 	 * Remove the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the removed type
 	 */
 	public ITopic removeType(Typed typed) {
@@ -574,9 +598,9 @@ public class TypedCache implements IDataStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic removeType(IAssociation typed) {
+	public ITopic removeType(IAssociation typed) {		
 		ITopic type = null;
-		if ( associationTypes != null && associationTypes.containsKey(typed)){
+		if (associationTypes != null && associationTypes.containsKey(typed)) {
 			type = associationTypes.remove(typed);
 			Set<IAssociation> set = typedAssociations.get(type);
 			set.remove(typed);
@@ -587,8 +611,9 @@ public class TypedCache implements IDataStore {
 			}
 		}
 		if (type == null) {
+			storeOldRelation(typed);
 			type = getTransactionStore().getIdentityStore().createLazyStub((ITopic) getTopicMapStore().doRead(typed, TopicMapStoreParameterType.TYPE));
-		}		
+		}
 		return type;
 	}
 
@@ -597,7 +622,7 @@ public class TypedCache implements IDataStore {
 	 */
 	public ITopic removeType(IAssociationRole typed) {
 		ITopic type = null;
-		if ( roleTypes != null && roleTypes.containsKey(typed)){
+		if (roleTypes != null && roleTypes.containsKey(typed)) {
 			type = roleTypes.remove(typed);
 			Set<IAssociationRole> set = typedRoles.get(type);
 			set.remove(typed);
@@ -608,8 +633,9 @@ public class TypedCache implements IDataStore {
 			}
 		}
 		if (type == null) {
+			storeOldRelation(typed);
 			type = getTransactionStore().getIdentityStore().createLazyStub((ITopic) getTopicMapStore().doRead(typed, TopicMapStoreParameterType.TYPE));
-		}		
+		}
 		return type;
 	}
 
@@ -618,7 +644,7 @@ public class TypedCache implements IDataStore {
 	 */
 	public ITopic removeType(IName typed) {
 		ITopic type = null;
-		if ( nameTypes != null && nameTypes.containsKey(typed)){
+		if (nameTypes != null && nameTypes.containsKey(typed)) {
 			type = nameTypes.remove(typed);
 			Set<IName> set = typedNames.get(type);
 			set.remove(typed);
@@ -629,8 +655,9 @@ public class TypedCache implements IDataStore {
 			}
 		}
 		if (type == null) {
+			storeOldRelation(typed);
 			type = getTransactionStore().getIdentityStore().createLazyStub((ITopic) getTopicMapStore().doRead(typed, TopicMapStoreParameterType.TYPE));
-		}		
+		}
 		return type;
 	}
 
@@ -639,7 +666,7 @@ public class TypedCache implements IDataStore {
 	 */
 	public ITopic removeType(IOccurrence typed) {
 		ITopic type = null;
-		if ( occurrenceTypes != null && occurrenceTypes.containsKey(typed)){
+		if (occurrenceTypes != null && occurrenceTypes.containsKey(typed)) {
 			type = occurrenceTypes.remove(typed);
 			Set<IOccurrence> set = typedOccurrences.get(type);
 			set.remove(typed);
@@ -650,8 +677,9 @@ public class TypedCache implements IDataStore {
 			}
 		}
 		if (type == null) {
+			storeOldRelation(typed);
 			type = getTransactionStore().getIdentityStore().createLazyStub((ITopic) getTopicMapStore().doRead(typed, TopicMapStoreParameterType.TYPE));
-		}		
+		}
 		return type;
 	}
 
@@ -687,7 +715,7 @@ public class TypedCache implements IDataStore {
 		/*
 		 * add internal stored types
 		 */
-		if ( typedAssociations != null ){
+		if (typedAssociations != null) {
 			set.addAll(typedAssociations.keySet());
 		}
 		return set;
@@ -724,7 +752,7 @@ public class TypedCache implements IDataStore {
 		/*
 		 * add internal stored types
 		 */
-		if ( typedRoles != null ){
+		if (typedRoles != null) {
 			set.addAll(typedRoles.keySet());
 		}
 		return set;
@@ -742,7 +770,7 @@ public class TypedCache implements IDataStore {
 		set.addAll(getOccurrenceTypes());
 		return set;
 	}
-	
+
 	/**
 	 * Return a set containing all topic types used as type of a name item.
 	 * 
@@ -774,7 +802,7 @@ public class TypedCache implements IDataStore {
 		/*
 		 * add internal stored types
 		 */
-		if ( typedNames != null ){
+		if (typedNames != null) {
 			set.addAll(typedNames.keySet());
 		}
 		return set;
@@ -812,7 +840,7 @@ public class TypedCache implements IDataStore {
 		/*
 		 * add internal stored types
 		 */
-		if ( typedOccurrences != null ){
+		if (typedOccurrences != null) {
 			set.addAll(typedOccurrences.keySet());
 		}
 		return set;
@@ -867,29 +895,32 @@ public class TypedCache implements IDataStore {
 		 * first type change in transaction context
 		 */
 		if (modifiedConstructs == null || !modifiedConstructs.contains(typed)) {
-			/*
-			 * store as first type change
-			 */
-			if (modifiedConstructs == null) {
-				modifiedConstructs = HashUtil.getHashSet();
+			ITopic oldType = getType(typed);
+			if (oldType != null) {
+				/*
+				 * store as first type change
+				 */
+				if (modifiedConstructs == null) {
+					modifiedConstructs = HashUtil.getHashSet();
+				}
+				modifiedConstructs.add(typed);
+				/*
+				 * check if type is known by other type changes
+				 */
+				if (changedTypes == null) {
+					changedTypes = HashUtil.getHashMap();
+				}
+
+				/*
+				 * add new type change to type specific list
+				 */
+				Set<ITypeable> set = changedTypes.get(oldType);
+				if (set == null) {
+					set = HashUtil.getHashSet();
+				}
+				set.add(typed);
+				changedTypes.put(oldType, set);
 			}
-			modifiedConstructs.add(typed);
-			/*
-			 * check if type is known by other type changes
-			 */
-			if (changedTypes == null) {
-				changedTypes = HashUtil.getHashMap();
-			}
-			ITopic oldType = (ITopic) typed.getType();
-			/*
-			 * add new type change to type specific list
-			 */
-			Set<ITypeable> set = changedTypes.get(oldType);
-			if (set == null) {
-				set = HashUtil.getHashSet();
-			}
-			set.add(typed);
-			changedTypes.put(oldType, set);
 		}
 	}
 
@@ -958,12 +989,13 @@ public class TypedCache implements IDataStore {
 			setType(r, replacement);
 		}
 	}
-	
+
 	/**
 	 * Removing the given topic as type of each stored typed. The typed objects
 	 * will be removed too.
 	 * 
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 * @return the removed typed items
 	 */
 	public Set<ITypeable> removeType(ITopic type) {

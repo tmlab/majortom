@@ -2020,8 +2020,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
 		Object host = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
 		Object database = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
-		Object user = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
-		Object password = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
+		Object user = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
+		Object password = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
 		Object dialect = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.SQL_DIALECT);
 
 		if (database == null || host == null || user == null || dialect == null) {

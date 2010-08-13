@@ -45,4 +45,11 @@ public class PostGreSqlConnectionProvider extends BasePostGreSqlConnectionProvid
 		return new PostGreSqlQueryProcessor(this, connection);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String getSchemaQuery() {
+		return null;
+	}
+
 }

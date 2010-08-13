@@ -2452,7 +2452,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * remove from typed store
 		 */
-		if (!getTypedStore().removeType(topic).isEmpty()) {
+		Set<ITypeable> removeTypes = getTypedStore().removeType(topic);
+		if (!removeTypes.isEmpty()) {
 			throw new TopicMapStoreException("All typed items should already removed!");
 		}
 

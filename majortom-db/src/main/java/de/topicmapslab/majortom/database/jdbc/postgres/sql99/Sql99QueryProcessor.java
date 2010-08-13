@@ -4963,4 +4963,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		return c;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void openTransaction() throws SQLException {
+		connection.setAutoCommit(false);		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void commit()  throws SQLException{
+		connection.commit();
+		connection.setAutoCommit(true);		
+	}
 }

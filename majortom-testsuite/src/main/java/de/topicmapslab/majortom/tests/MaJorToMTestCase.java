@@ -29,6 +29,7 @@ import org.tmapix.io.XTMTopicMapReader;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
@@ -90,7 +91,8 @@ public class MaJorToMTestCase extends TestCase {
 		if (is==null)
 			throw new FileNotFoundException("The file is not in the main/resource folder");
 		
-		XTMTopicMapReader reader = new XTMTopicMapReader(topicMap, is, "http://majortomtest.de/");	
+		ITransaction t = topicMap.createTransaction();
+		XTMTopicMapReader reader = new XTMTopicMapReader(t, is, "http://majortomtest.de/");	
 		if(topicMap.getStore().supportRevisionManagement()){
 			topicMap.getStore().enableRevisionManagement(false);
 		}
@@ -98,7 +100,7 @@ public class MaJorToMTestCase extends TestCase {
 		if(topicMap.getStore().supportRevisionManagement()){
 			topicMap.getStore().enableRevisionManagement(true);
 		}
-		
+		t.commit();
 	}
 	
 }

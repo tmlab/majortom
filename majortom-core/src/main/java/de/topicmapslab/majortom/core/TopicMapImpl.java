@@ -234,6 +234,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			throw new ModelConstraintException(this, "Themes cannot be null");
 		}
 		if (!type.getParent().equals(getTopicMap())) {
+			System.out.println(type.getParent().getId()+" = " + getTopicMap().getId());
 			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map!");
 		}
 		for (Topic theme : themes) {

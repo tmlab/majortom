@@ -71,5 +71,18 @@ public class InMemoryTransaction extends TransactionImpl {
 	public <T extends IConstruct> T moveToTransactionContext(T construct) {
 		return transactionTopicMapStore.getIdentityStore().createLazyStub(construct);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void commit() throws TransactionException {
+//		try {
+//			((JdbcTopicMapStore)(getStore().getRealStore())).getProcessor().openTransaction();
+			super.commit();
+		// ((JdbcTopicMapStore)(getStore().getRealStore())).getProcessor().commit();
+		// } catch (SQLException e) {
+		// throw new TransactionException("Error occurred during transactio!");
+		// }	
+	}
+	
 }

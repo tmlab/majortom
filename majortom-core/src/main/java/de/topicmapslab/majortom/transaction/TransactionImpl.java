@@ -15,9 +15,11 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.transaction;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import org.tmapi.core.Association;
 import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Topic;
@@ -138,4 +140,46 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 		return Collections.unmodifiableSet((Set<Locator>) getStore().doRead(this, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Association createAssociation(Topic type, Topic... themes) throws ModelConstraintException {
+		if (type == null) {
+			throw new ModelConstraintException(this, "Type cannot be null");
+		}
+		if (themes == null) {
+			throw new ModelConstraintException(this, "Themes cannot be null");
+		}
+		if (!type.getParent().equals(getTopicMap()) && !type.getParent().equals(this)) {
+			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map!");
+		}
+		for (Topic theme : themes) {
+			if (!theme.getTopicMap().equals(getTopicMap())) {
+				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
+			}
+		}
+		return (Association) getStore().doCreate(this, TopicMapStoreParameterType.ASSOCIATION, type, themes);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Association createAssociation(Topic type, Collection<Topic> themes) throws ModelConstraintException {
+		if (type == null) {
+			throw new ModelConstraintException(this, "Type cannot be null");
+		}
+		if (themes == null) {
+			throw new ModelConstraintException(this, "Themes cannot be null");
+		}
+		if (!type.getParent().equals(getTopicMap())&& !type.getParent().equals(this)) {
+			System.out.println(type.getParent().getId()+" = " + getTopicMap().getId());
+			throw new ModelConstraintException(type, "Type has to be a topic of the same topic map!");
+		}
+		for (Topic theme : themes) {
+			if (!theme.getTopicMap().equals(getTopicMap())&& !theme.getParent().equals(this)) {
+				throw new ModelConstraintException(theme, "Theme has to be a topic of the same topic map!");
+			}
+		}
+		return (Association) getStore().doCreate(this, TopicMapStoreParameterType.ASSOCIATION, type, themes);
+	}
 }

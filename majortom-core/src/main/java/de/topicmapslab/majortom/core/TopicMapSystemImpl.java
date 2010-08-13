@@ -61,6 +61,11 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * the property file name
 	 */
 	private static final String propertyFile = "engine.properties";
+	
+	/**
+	 * the topic map system properties
+	 */
+	private Properties properties;
 
 	/**
 	 * the parent factory
@@ -74,7 +79,11 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 */
 	public TopicMapSystemImpl(TopicMapSystemFactory factory) {
 		this.factory = factory;
+		properties = new Properties();
 		loadPropertiesFromFile();
+		properties.putAll(((TopicMapSystemFactoryImpl)factory).getProperties());
+		 
+		
 	}
 
 	/**
@@ -172,7 +181,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * {@inheritDoc}
 	 */
 	public Object getProperty(String arg0) {
-		return factory.getProperty(arg0);
+		return properties.getProperty(arg0);
 	}
 
 	/**
@@ -208,7 +217,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 			try {
 				properties.load(new FileInputStream(file));
 				for (Entry<Object, Object> entry : properties.entrySet()) {
-					factory.setProperty(entry.getKey().toString(), entry.getValue().toString());
+					this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
 				}
 			} catch (FileNotFoundException e) {
 				// NOTHING TO DO
@@ -223,7 +232,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		try {
 			properties.load(TopicMapStoreFactory.class.getResourceAsStream(propertyFile));
 			for (Entry<Object, Object> entry : properties.entrySet()) {
-				factory.setProperty(entry.getKey().toString(), entry.getValue().toString());
+				this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
 			}
 		} catch (IOException e) {
 			// NOTHING TO DO

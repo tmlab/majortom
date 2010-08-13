@@ -32,8 +32,23 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  */
 public interface IConnectionProvider {
 
+	/**
+	 * state code if the database is empty
+	 */
+	public final static int STATE_DATABASE_IS_EMPTY = 0;
+
+	/**
+	 * state code if the database if invalid
+	 */
+	public final static int STATE_DATABASE_IS_INVALID = 1;
+
+	/**
+	 * state code if the database schema is valid
+	 */
+	public final static int STATE_DATABASE_IS_VALID = 2;
+
 	public final static String DATABASE_NOT_EXISTS = "3D000";
-	
+
 	/**
 	 * Open a new connection to the given database. If there is already an
 	 * existing connection to any database an exception will be thrown.
@@ -98,4 +113,22 @@ public interface IConnectionProvider {
 	 */
 	public void setTopicMapStore(JdbcTopicMapStore store);
 
+	/**
+	 * Method called by the connection provider to initialize the database
+	 * schema.
+	 */
+	public void createSchema() throws SQLException;
+
+	/**
+	 * Method checks if the schema of the current database connection is valid..
+	 * 
+	 * @return <p>
+	 *         <code>0</code> if the database is empty.
+	 *         <br />
+	 *         <code>1</code> if the database schema is invalid.
+	 *         <br />
+	 *         <code>2</code> if the database schema is valid.
+	 *         </p>
+	 */
+	public int getDatabaseState() throws SQLException;
 }
