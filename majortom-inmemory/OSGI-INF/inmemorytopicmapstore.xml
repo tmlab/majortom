@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" name="inmemorytopicmapstore">
+   <implementation class="de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStoreFactory"/>
+   <service>
+      <provide interface="de.topicmapslab.majortom.model.store.ITopicMapStoreFactory"/>
+   </service>
+</scr:component>
