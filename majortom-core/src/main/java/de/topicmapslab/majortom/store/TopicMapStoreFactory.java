@@ -121,8 +121,7 @@ public class TopicMapStoreFactory {
 					storeFactories.put(fac.getClassName(), fac);
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
 			// we do nothing, cause we are not in an OSGi environment
 		}
 		
