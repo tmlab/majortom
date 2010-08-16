@@ -45,6 +45,8 @@ public interface ISql99DeleteQueries {
 	public static final String QUERY_DELETE_ASSOCIATION = "DELETE FROM  associations WHERE id = ?; ";
 
 	public static final String QUERY_DELETE_ROLE = "DELETE FROM  roles WHERE id = ?;";
+	
+	public static final String QUERY_CLEAR_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + QUERY_DELETE_HISTORY + "UPDATE topicmaps SET id_reifier = NULL WHERE id = ?; DELETE FROM constructs WHERE id_topicmap = ?;";
 
 	// ***************
 	// * DELETE DATA *

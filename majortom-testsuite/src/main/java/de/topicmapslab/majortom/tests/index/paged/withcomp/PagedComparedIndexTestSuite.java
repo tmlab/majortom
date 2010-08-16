@@ -16,17 +16,29 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
+package de.topicmapslab.majortom.tests.index.paged.withcomp;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @author Sven Krosse
- * 
+ *
  */
-public interface IPostGreSqlQueryRevisions {
+public class PagedComparedIndexTestSuite {
 
-	public static final String QUERY_CREATE_REVISION = "INSER INTO revisions(time, id_topicmap) VALUES(now(),?)";
-	
-	public static final String QUERY_CREATE_CHANGESET = "INSER INTO changesets(id_revision,type,id_notifier, newValue, oldValue,time) VALUES(?,?,?,?,?,now())";
+	public static Test suite() {
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged.withoutcomp");
+		//$JUnit-BEGIN$
+		suite.addTestSuite(TestPagedSupertypeSubtypeIndex.class);
+		suite.addTestSuite(TestPagedConstructIndex.class);
+		suite.addTestSuite(TestPagedTypeInstanceIndex.class);
+		suite.addTestSuite(TestPagedLiteralIndex.class);
+		suite.addTestSuite(TestPagedIdentityIndex.class);
+		suite.addTestSuite(TestPagedTrasitiveTypeInstanceIndex.class);
+		suite.addTestSuite(TestPagedScopedIndex.class);
+		//$JUnit-END$
+		return suite;
+	}
 
-	
 }

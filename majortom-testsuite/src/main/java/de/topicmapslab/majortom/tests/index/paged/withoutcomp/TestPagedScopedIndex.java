@@ -16,10 +16,9 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.tests.index.paged.withoutcomp;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,10 +29,6 @@ import org.tmapi.core.Scoped;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.majortom.comparator.NameByValueComparator;
-import de.topicmapslab.majortom.comparator.OccurrenceByValueComparator;
-import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
-import de.topicmapslab.majortom.comparator.VariantByValueComparator;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
@@ -89,32 +84,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociationScopes(100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<IScope> comp = new Comparator<IScope>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociationScopes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(scopes[i * 10], list.get(0));
-			assertEquals(scopes[i * 10 + 1], list.get(1));
-			assertEquals(scopes[i * 10 + 2], list.get(2));
-			assertEquals(scopes[i * 10 + 3], list.get(3));
-			assertEquals(scopes[i * 10 + 4], list.get(4));
-			assertEquals(scopes[i * 10 + 5], list.get(5));
-			assertEquals(scopes[i * 10 + 6], list.get(6));
-			assertEquals(scopes[i * 10 + 7], list.get(7));
-			assertEquals(scopes[i * 10 + 8], list.get(8));
-			assertEquals(scopes[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociationScopes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(scopes[100], list.get(0));
 	}
 
 	/**
@@ -154,25 +123,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociationThemes(100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociationThemes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(themes[i * 10], list.get(0));
-			assertEquals(themes[i * 10 + 1], list.get(1));
-			assertEquals(themes[i * 10 + 2], list.get(2));
-			assertEquals(themes[i * 10 + 3], list.get(3));
-			assertEquals(themes[i * 10 + 4], list.get(4));
-			assertEquals(themes[i * 10 + 5], list.get(5));
-			assertEquals(themes[i * 10 + 6], list.get(6));
-			assertEquals(themes[i * 10 + 7], list.get(7));
-			assertEquals(themes[i * 10 + 8], list.get(8));
-			assertEquals(themes[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociationThemes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(themes[100], list.get(0));
 	}
 
 	/**
@@ -213,32 +163,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociations(theme, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(theme, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(theme, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -285,33 +209,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociations(new Topic[] { theme, other }, false, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(new Topic[] { theme, other }, false, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(new Topic[] { theme, other }, false, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
-
 		/*
 		 * matching all
 		 */
@@ -336,23 +233,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociations(new Topic[] { theme, other }, true, 100, 10);
 		assertEquals(1, list.size());
 
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(new Topic[] { theme, other }, true, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(new Topic[] { theme, other }, true, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -396,32 +276,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociations(scope, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -477,32 +331,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getAssociations(scopes, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(scopes, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(scopes, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -548,34 +376,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getCharacteristics(scope, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<ICharacteristics> comp = new Comparator<ICharacteristics>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(ICharacteristics o1, ICharacteristics o2) {
-				String val1 = o1 instanceof IOccurrence ? ((IOccurrence) o1).getValue() : ((IName) o1).getValue();
-				String val2 = o2 instanceof IOccurrence ? ((IOccurrence) o2).getValue() : ((IName) o2).getValue();
-				return val1.compareTo(val2);
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(characteristics[i * 10], list.get(0));
-			assertEquals(characteristics[i * 10 + 1], list.get(1));
-			assertEquals(characteristics[i * 10 + 2], list.get(2));
-			assertEquals(characteristics[i * 10 + 3], list.get(3));
-			assertEquals(characteristics[i * 10 + 4], list.get(4));
-			assertEquals(characteristics[i * 10 + 5], list.get(5));
-			assertEquals(characteristics[i * 10 + 6], list.get(6));
-			assertEquals(characteristics[i * 10 + 7], list.get(7));
-			assertEquals(characteristics[i * 10 + 8], list.get(8));
-			assertEquals(characteristics[i * 10 + 9], list.get(9));
-		}
-		list = index.getCharacteristics(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(characteristics[100], list.get(0));
 	}
 
 	/**
@@ -615,32 +415,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getNameScopes(100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<IScope> comp = new Comparator<IScope>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNameScopes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(scopes[i * 10], list.get(0));
-			assertEquals(scopes[i * 10 + 1], list.get(1));
-			assertEquals(scopes[i * 10 + 2], list.get(2));
-			assertEquals(scopes[i * 10 + 3], list.get(3));
-			assertEquals(scopes[i * 10 + 4], list.get(4));
-			assertEquals(scopes[i * 10 + 5], list.get(5));
-			assertEquals(scopes[i * 10 + 6], list.get(6));
-			assertEquals(scopes[i * 10 + 7], list.get(7));
-			assertEquals(scopes[i * 10 + 8], list.get(8));
-			assertEquals(scopes[i * 10 + 9], list.get(9));
-		}
-		list = index.getNameScopes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(scopes[100], list.get(0));
 	}
 
 	/**
@@ -679,26 +453,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getNameThemes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNameThemes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(themes[i * 10], list.get(0));
-			assertEquals(themes[i * 10 + 1], list.get(1));
-			assertEquals(themes[i * 10 + 2], list.get(2));
-			assertEquals(themes[i * 10 + 3], list.get(3));
-			assertEquals(themes[i * 10 + 4], list.get(4));
-			assertEquals(themes[i * 10 + 5], list.get(5));
-			assertEquals(themes[i * 10 + 6], list.get(6));
-			assertEquals(themes[i * 10 + 7], list.get(7));
-			assertEquals(themes[i * 10 + 8], list.get(8));
-			assertEquals(themes[i * 10 + 9], list.get(9));
-		}
-		list = index.getNameThemes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(themes[100], list.get(0));
 	}
 
 	/**
@@ -735,26 +489,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(theme, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Name> comp = new NameByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(theme, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(theme, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -798,26 +532,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getNames(new Topic[] { theme, other }, false, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Name> comp = new NameByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(new Topic[] { theme, other }, false, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(new Topic[] { theme, other }, false, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
-
 		/*
 		 * matching all
 		 */
@@ -840,24 +554,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(new Topic[] { theme, other }, true, 100, 10);
 		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(new Topic[] { theme, other }, true, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(new Topic[] { theme, other }, true, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -898,26 +594,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(scope, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Name> comp = new NameByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -969,26 +645,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(scopes, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Name> comp = new NameByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(scopes, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(scopes, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -1027,33 +683,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrenceScopes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<IScope> comp = new Comparator<IScope>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrenceScopes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(scopes[i * 10], list.get(0));
-			assertEquals(scopes[i * 10 + 1], list.get(1));
-			assertEquals(scopes[i * 10 + 2], list.get(2));
-			assertEquals(scopes[i * 10 + 3], list.get(3));
-			assertEquals(scopes[i * 10 + 4], list.get(4));
-			assertEquals(scopes[i * 10 + 5], list.get(5));
-			assertEquals(scopes[i * 10 + 6], list.get(6));
-			assertEquals(scopes[i * 10 + 7], list.get(7));
-			assertEquals(scopes[i * 10 + 8], list.get(8));
-			assertEquals(scopes[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrenceScopes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(scopes[100], list.get(0));
 	}
 
 	/**
@@ -1092,26 +721,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrenceThemes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrenceThemes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(themes[i * 10], list.get(0));
-			assertEquals(themes[i * 10 + 1], list.get(1));
-			assertEquals(themes[i * 10 + 2], list.get(2));
-			assertEquals(themes[i * 10 + 3], list.get(3));
-			assertEquals(themes[i * 10 + 4], list.get(4));
-			assertEquals(themes[i * 10 + 5], list.get(5));
-			assertEquals(themes[i * 10 + 6], list.get(6));
-			assertEquals(themes[i * 10 + 7], list.get(7));
-			assertEquals(themes[i * 10 + 8], list.get(8));
-			assertEquals(themes[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrenceThemes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(themes[100], list.get(0));
 	}
 
 	/**
@@ -1148,26 +757,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrences(theme, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(theme, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(theme, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -1211,26 +800,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getOccurrences(new Topic[] { theme, other }, false, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(new Topic[] { theme, other }, false, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(new Topic[] { theme, other }, false, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
-
 		/*
 		 * matching all
 		 */
@@ -1254,23 +823,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getOccurrences(new Topic[] { theme, other }, true, 100, 10);
 		assertEquals(1, list.size());
 
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(new Topic[] { theme, other }, true, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(new Topic[] { theme, other }, true, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -1311,26 +863,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrences(scope, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -1382,26 +914,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrences(scopes, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(scopes, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(scopes, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -1452,33 +964,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getScopables(scope, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Scoped> comp = new Comparator<Scoped>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Scoped o1, Scoped o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getScopables(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(scopeables[i * 10], list.get(0));
-			assertEquals(scopeables[i * 10 + 1], list.get(1));
-			assertEquals(scopeables[i * 10 + 2], list.get(2));
-			assertEquals(scopeables[i * 10 + 3], list.get(3));
-			assertEquals(scopeables[i * 10 + 4], list.get(4));
-			assertEquals(scopeables[i * 10 + 5], list.get(5));
-			assertEquals(scopeables[i * 10 + 6], list.get(6));
-			assertEquals(scopeables[i * 10 + 7], list.get(7));
-			assertEquals(scopeables[i * 10 + 8], list.get(8));
-			assertEquals(scopeables[i * 10 + 9], list.get(9));
-		}
-		list = index.getScopables(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(scopeables[100], list.get(0));
 	}
 
 	/**
@@ -1517,33 +1002,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariantScopes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<IScope> comp = new Comparator<IScope>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariantScopes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(scopes[i * 10], list.get(0));
-			assertEquals(scopes[i * 10 + 1], list.get(1));
-			assertEquals(scopes[i * 10 + 2], list.get(2));
-			assertEquals(scopes[i * 10 + 3], list.get(3));
-			assertEquals(scopes[i * 10 + 4], list.get(4));
-			assertEquals(scopes[i * 10 + 5], list.get(5));
-			assertEquals(scopes[i * 10 + 6], list.get(6));
-			assertEquals(scopes[i * 10 + 7], list.get(7));
-			assertEquals(scopes[i * 10 + 8], list.get(8));
-			assertEquals(scopes[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariantScopes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(scopes[100], list.get(0));
 	}
 
 	/**
@@ -1582,26 +1040,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariantThemes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariantThemes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(themes[i * 10], list.get(0));
-			assertEquals(themes[i * 10 + 1], list.get(1));
-			assertEquals(themes[i * 10 + 2], list.get(2));
-			assertEquals(themes[i * 10 + 3], list.get(3));
-			assertEquals(themes[i * 10 + 4], list.get(4));
-			assertEquals(themes[i * 10 + 5], list.get(5));
-			assertEquals(themes[i * 10 + 6], list.get(6));
-			assertEquals(themes[i * 10 + 7], list.get(7));
-			assertEquals(themes[i * 10 + 8], list.get(8));
-			assertEquals(themes[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariantThemes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(themes[100], list.get(0));
 	}
 
 	/**
@@ -1638,26 +1076,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariants(theme, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Variant> comp = new VariantByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(theme, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(variants[i * 10], list.get(0));
-			assertEquals(variants[i * 10 + 1], list.get(1));
-			assertEquals(variants[i * 10 + 2], list.get(2));
-			assertEquals(variants[i * 10 + 3], list.get(3));
-			assertEquals(variants[i * 10 + 4], list.get(4));
-			assertEquals(variants[i * 10 + 5], list.get(5));
-			assertEquals(variants[i * 10 + 6], list.get(6));
-			assertEquals(variants[i * 10 + 7], list.get(7));
-			assertEquals(variants[i * 10 + 8], list.get(8));
-			assertEquals(variants[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariants(theme, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(variants[100], list.get(0));
 	}
 
 	/**
@@ -1700,26 +1118,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		list = index.getVariants(new Topic[] { theme, other }, false, 100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Variant> comp = new VariantByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(new Topic[] { theme, other }, false, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(variants[i * 10], list.get(0));
-			assertEquals(variants[i * 10 + 1], list.get(1));
-			assertEquals(variants[i * 10 + 2], list.get(2));
-			assertEquals(variants[i * 10 + 3], list.get(3));
-			assertEquals(variants[i * 10 + 4], list.get(4));
-			assertEquals(variants[i * 10 + 5], list.get(5));
-			assertEquals(variants[i * 10 + 6], list.get(6));
-			assertEquals(variants[i * 10 + 7], list.get(7));
-			assertEquals(variants[i * 10 + 8], list.get(8));
-			assertEquals(variants[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariants(new Topic[] { theme, other }, false, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(variants[100], list.get(0));
-
 		/*
 		 * matching all
 		 */
@@ -1740,24 +1138,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariants(new Topic[] { theme, other }, true, 100, 10);
 		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(new Topic[] { theme, other }, true, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(variants[i * 10], list.get(0));
-			assertEquals(variants[i * 10 + 1], list.get(1));
-			assertEquals(variants[i * 10 + 2], list.get(2));
-			assertEquals(variants[i * 10 + 3], list.get(3));
-			assertEquals(variants[i * 10 + 4], list.get(4));
-			assertEquals(variants[i * 10 + 5], list.get(5));
-			assertEquals(variants[i * 10 + 6], list.get(6));
-			assertEquals(variants[i * 10 + 7], list.get(7));
-			assertEquals(variants[i * 10 + 8], list.get(8));
-			assertEquals(variants[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariants(new Topic[] { theme, other }, true, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(variants[100], list.get(0));
 	}
 
 	/**
@@ -1798,26 +1178,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariants(scope, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Variant> comp = new VariantByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(scope, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(variants[i * 10], list.get(0));
-			assertEquals(variants[i * 10 + 1], list.get(1));
-			assertEquals(variants[i * 10 + 2], list.get(2));
-			assertEquals(variants[i * 10 + 3], list.get(3));
-			assertEquals(variants[i * 10 + 4], list.get(4));
-			assertEquals(variants[i * 10 + 5], list.get(5));
-			assertEquals(variants[i * 10 + 6], list.get(6));
-			assertEquals(variants[i * 10 + 7], list.get(7));
-			assertEquals(variants[i * 10 + 8], list.get(8));
-			assertEquals(variants[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariants(scope, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(variants[100], list.get(0));
 	}
 
 	/**
@@ -1869,26 +1229,6 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 		list = index.getVariants(scopes, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Variant> comp = new VariantByValueComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(scopes, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(variants[i * 10], list.get(0));
-			assertEquals(variants[i * 10 + 1], list.get(1));
-			assertEquals(variants[i * 10 + 2], list.get(2));
-			assertEquals(variants[i * 10 + 3], list.get(3));
-			assertEquals(variants[i * 10 + 4], list.get(4));
-			assertEquals(variants[i * 10 + 5], list.get(5));
-			assertEquals(variants[i * 10 + 6], list.get(6));
-			assertEquals(variants[i * 10 + 7], list.get(7));
-			assertEquals(variants[i * 10 + 8], list.get(8));
-			assertEquals(variants[i * 10 + 9], list.get(9));
-		}
-		list = index.getVariants(scopes, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(variants[100], list.get(0));
 	}
 
 }

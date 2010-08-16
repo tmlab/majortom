@@ -34,13 +34,6 @@ import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99InsertQ
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99RevisionQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99SelectQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99UpdateQueries;
-import de.topicmapslab.majortom.model.core.IAssociation;
-import de.topicmapslab.majortom.model.core.IAssociationRole;
-import de.topicmapslab.majortom.model.core.IConstruct;
-import de.topicmapslab.majortom.model.core.IName;
-import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -236,12 +229,12 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadAssociationWithType;
 	private PreparedStatement preparedStatementReadAssociationWithTypeAndScope;
 	private PreparedStatement preparedStatementReadAssociationWithScope;
-	private PreparedStatement preparedStatementReadTopicById;
-	private PreparedStatement preparedStatementReadNameById;
-	private PreparedStatement preparedStatementReadOccurrenceById;
-	private PreparedStatement preparedStatementReadVariantById;
-	private PreparedStatement preparedStatementReadAssociationById;
-	private PreparedStatement preparedStatementReadRoleById;
+	private PreparedStatement preparedStatementReadConstructById;
+	// private PreparedStatement preparedStatementReadNameById;
+	// private PreparedStatement preparedStatementReadOccurrenceById;
+	// private PreparedStatement preparedStatementReadVariantById;
+	// private PreparedStatement preparedStatementReadAssociationById;
+	// private PreparedStatement preparedStatementReadRoleById;
 	private PreparedStatement preparedStatementReadConstructByItemIdentifier;
 	private PreparedStatement preparedStatementReadDataType;
 	private PreparedStatement preparedStatementReadItemIdentifiers;
@@ -330,39 +323,11 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadConstructById(Class<? extends IConstruct> clazz) throws SQLException {
-		if (ITopic.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadTopicById == null) {
-				this.preparedStatementReadTopicById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_TOPIC_BY_ID);
-			}
-			return this.preparedStatementReadTopicById;
-		} else if (IName.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadNameById == null) {
-				this.preparedStatementReadNameById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_NAME_BY_ID);
-			}
-			return this.preparedStatementReadNameById;
-		} else if (IOccurrence.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadOccurrenceById == null) {
-				this.preparedStatementReadOccurrenceById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_OCCURRENCE_BY_ID);
-			}
-			return this.preparedStatementReadOccurrenceById;
-		} else if (IVariant.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadVariantById == null) {
-				this.preparedStatementReadVariantById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_VARIANT_BY_ID);
-			}
-			return this.preparedStatementReadVariantById;
-		} else if (IAssociation.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadAssociationById == null) {
-				this.preparedStatementReadAssociationById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_ASSOCIATION_BY_ID);
-			}
-			return this.preparedStatementReadAssociationById;
-		} else if (IAssociationRole.class.isAssignableFrom(clazz)) {
-			if (this.preparedStatementReadRoleById == null) {
-				this.preparedStatementReadRoleById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_ROLE_BY_ID);
-			}
-			return this.preparedStatementReadRoleById;
+	public PreparedStatement getQueryReadConstructById() throws SQLException {
+		if (this.preparedStatementReadConstructById == null) {
+			this.preparedStatementReadConstructById = connection.prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_CONSTRUCT);
 		}
-		throw new IllegalArgumentException("Unsupported clazz type " + clazz.getCanonicalName());
+		return this.preparedStatementReadConstructById;
 	}
 
 	/**
@@ -961,8 +926,9 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	// ****************
 	// * REMOVE QUERY *
 	// ****************
-
-	private PreparedStatement preparedStatementDeleteTopicMap;
+	
+	private PreparedStatement preparedStatementClearTopicMap;
+	private PreparedStatement preparedStatementDeleteTopicMap;	
 	private PreparedStatement preparedStatementDeleteTopic;
 	private PreparedStatement preparedStatementDeleteName;
 	private PreparedStatement preparedStatementDeleteOccurrence;
@@ -1095,6 +1061,16 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		return this.preparedStatementDeleteVariant;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryClearTopicMap() throws SQLException {
+		if (this.preparedStatementClearTopicMap == null) {
+			this.preparedStatementClearTopicMap = connection.prepareStatement(ISql99DeleteQueries.QUERY_CLEAR_TOPICMAP);
+		}
+		return this.preparedStatementClearTopicMap;
+	}
+	
 	// ***************
 	// * INDEX QUERY *
 	// ***************
@@ -1568,42 +1544,42 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectAssociationsByTypeTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectRolesByTypeTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectNamesByTypeTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectTopicsByTypeTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException {
+	public PreparedStatement getQuerySelectTopicsByTypesTransitive(boolean paged) throws SQLException {
 		throw new UnsupportedOperationException("Unsupported by the SQL query builder implementation!");
 	}
 
@@ -2748,7 +2724,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectDirectSubtypes(boolean paged) throws SQLException {
-		if ( paged ){
+		if (paged) {
 			if (this.preparedStatementIndexDirectSubtypesPaged == null) {
 				this.preparedStatementIndexDirectSubtypesPaged = connection
 						.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_DIRECT_SUBTYPES);
@@ -2766,7 +2742,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectDirectSupertypes(boolean paged) throws SQLException {
-		if ( paged){
+		if (paged) {
 			if (this.preparedStatementIndexDirectSupertypesPaged == null) {
 				this.preparedStatementIndexDirectSupertypesPaged = connection
 						.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_DIRECT_SUPERTYPES);
@@ -2784,9 +2760,10 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectSubtypes(boolean paged) throws SQLException {
-		if ( paged ){
+		if (paged) {
 			if (this.preparedStatementIndexSubtypesPaged == null) {
-				this.preparedStatementIndexSubtypesPaged = connection.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUBTYPES);
+				this.preparedStatementIndexSubtypesPaged = connection
+						.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUBTYPES);
 			}
 			return this.preparedStatementIndexSubtypesPaged;
 		}
@@ -2800,9 +2777,10 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectSupertypes(boolean paged) throws SQLException {
-		if ( paged ){
+		if (paged) {
 			if (this.preparedStatementIndexSupertypesPaged == null) {
-				this.preparedStatementIndexSupertypesPaged = connection.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUPERTYPES);
+				this.preparedStatementIndexSupertypesPaged = connection
+						.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUPERTYPES);
 			}
 			return this.preparedStatementIndexSupertypesPaged;
 		}
@@ -2852,7 +2830,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQuerySelectTopicsWithoutSubtypes(boolean paged) throws SQLException {
-		if ( paged ){
+		if (paged) {
 			if (this.preparedStatementIndexTopicsWithoutSubtypesPaged == null) {
 				this.preparedStatementIndexTopicsWithoutSubtypesPaged = connection
 						.prepareStatement(ISql99IndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES);

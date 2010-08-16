@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.tests.index.paged.withcomp;
 
 import java.util.Comparator;
 import java.util.List;
@@ -81,13 +81,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfAssociationsPlayed(topic));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getAssociationsPlayed(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getAssociationsPlayed(topic, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getAssociationsPlayed(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(associations[i * 10], list.get(0));
@@ -109,14 +102,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfAssociationsPlayed());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getAssociationsPlayed(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getAssociationsPlayed(100, 10);
-		assertEquals(1, list.size());
-
+	
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getAssociationsPlayed(i * 10, 10, comp);
 			assertEquals(10, list.size());
@@ -171,14 +157,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using index methods
 		 */
 		assertEquals(101, index.getNumberOfNames(topic));
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getNames(topic, 100, 10);
-		assertEquals(1, list.size());
-
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
@@ -201,13 +179,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfNames());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getNames(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getNames(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getNames(i * 10, 10, comp);
@@ -265,13 +236,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfOccurrences(topic));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getOccurrences(topic, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(occurrences[i * 10], list.get(0));
@@ -293,13 +257,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfOccurrences());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getOccurrences(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getOccurrences(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getOccurrences(i * 10, 10, comp);
@@ -357,13 +314,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfRoles(association));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getRoles(association, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getRoles(association, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getRoles(association, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(roles[i * 10], list.get(0));
@@ -385,13 +335,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedAssociation) association).getNumberOfRoles());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedAssociation) association).getRoles(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedAssociation) association).getRoles(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedAssociation) association).getRoles(i * 10, 10, comp);
@@ -449,13 +392,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfRolesPlayed(topic));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getRolesPlayed(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getRolesPlayed(topic, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getRolesPlayed(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(roles[i * 10], list.get(0));
@@ -477,13 +413,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfRolesPlayed());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getRolesPlayed(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getRolesPlayed(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getRolesPlayed(i * 10, 10, comp);
@@ -541,13 +470,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfSupertypes(topic));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getSupertypes(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getSupertypes(topic, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(topics[i * 10], list.get(0));
@@ -569,13 +491,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfSupertypes());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getSupertypes(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getSupertypes(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getSupertypes(i * 10, 10, comp);
@@ -633,13 +548,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfTypes(topic));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getTypes(topic, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getTypes(topic, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getTypes(topic, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(topics[i * 10], list.get(0));
@@ -661,13 +569,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfTypes());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedTopic) topic).getTypes(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedTopic) topic).getTypes(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getTypes(i * 10, 10, comp);
@@ -725,13 +626,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		assertEquals(101, index.getNumberOfVariants(name));
 
 		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(name, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getVariants(name, 100, 10);
-		assertEquals(1, list.size());
-
-		for (int i = 0; i < 10; i++) {
 			list = index.getVariants(name, i * 10, 10, comp);
 			assertEquals(10, list.size());
 			assertEquals(variants[i * 10], list.get(0));
@@ -753,13 +647,6 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedName) name).getNumberOfVariants());
-
-		for (int i = 0; i < 10; i++) {
-			list = ((IPagedName) name).getVariants(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = ((IPagedName) name).getVariants(100, 10);
-		assertEquals(1, list.size());
 
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedName) name).getVariants(i * 10, 10, comp);

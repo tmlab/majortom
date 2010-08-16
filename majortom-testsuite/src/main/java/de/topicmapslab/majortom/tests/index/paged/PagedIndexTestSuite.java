@@ -30,13 +30,8 @@ public class PagedIndexTestSuite {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(TestPagedTypeInstanceIndex.class);
-		suite.addTestSuite(TestPagedTrasitiveTypeInstanceIndex.class);
-		suite.addTestSuite(TestPagedSupertypeSubtypeIndex.class);
-		suite.addTestSuite(TestPagedIdentityIndex.class);
-		suite.addTestSuite(TestPagedScopedIndex.class);
-		suite.addTestSuite(TestPagedLiteralIndex.class);
-		suite.addTestSuite(TestPagedConstructIndex.class);
+		// suite.addTest(PagedNonComparedIndexTestSuite.suite());
+		// suite.addTest(PagedComparedIndexTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

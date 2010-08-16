@@ -21,8 +21,6 @@ package de.topicmapslab.majortom.database.jdbc.model;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import de.topicmapslab.majortom.model.core.IConstruct;
-
 /**
  * @author Sven Krosse
  * 
@@ -79,7 +77,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException;
 
-	public PreparedStatement getQueryReadConstructById(Class<? extends IConstruct> clazz) throws SQLException;
+	public PreparedStatement getQueryReadConstructById() throws SQLException;
 
 	public PreparedStatement getQueryReadConstructByItemIdentifier() throws SQLException;
 
@@ -214,6 +212,8 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryDeleteSubjectIdentifier() throws SQLException;
 
 	public PreparedStatement getQueryDeleteSubjectLocator() throws SQLException;
+	
+	public PreparedStatement getQueryClearTopicMap() throws SQLException;
 
 	// ***************
 	// * INDEX QUERY *
@@ -275,17 +275,17 @@ public interface IQueryBuilder {
 
 	// TransitiveTypeInstanceIndex
 
-	public PreparedStatement getQuerySelectAssociationsByTypeTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectAssociationsByTypeTransitive(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectNamesByTypeTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectNamesByTypeTransitive(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectOccurrencesByTypeTransitive(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectRolesByTypeTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectRolesByTypeTransitive(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsByTypeTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsByTypeTransitive(boolean paged) throws SQLException;
 
-	public PreparedStatement getQuerySelectTopicsByTypesTransitive() throws SQLException;
+	public PreparedStatement getQuerySelectTopicsByTypesTransitive(boolean paged) throws SQLException;
 
 	// ScopedIndex
 
@@ -302,7 +302,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryAssociationScopes(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryAssociationThemes(boolean paged) throws SQLException;
-	
+
 	public PreparedStatement getQueryCharacteristicsByScope(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryNamesByScope(boolean paged) throws SQLException;
@@ -328,7 +328,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryOccurrenceScopes(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryOccurrenceThemes(boolean paged) throws SQLException;
-	
+
 	public PreparedStatement getQueryScopables(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryVariantsByScope(boolean paged) throws SQLException;
