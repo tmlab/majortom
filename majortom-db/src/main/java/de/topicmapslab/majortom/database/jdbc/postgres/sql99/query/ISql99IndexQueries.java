@@ -393,9 +393,35 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
 
-			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ?;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "WITH locs AS ( SELECT id FROM locators WHERE reference ~* ? ), iis AS (SELECT id_construct AS id FROM rel_item_identifiers WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_locators WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_identifiers WHERE id_locator IN ( SELECT id FROM locs ) )"
+					+ "SELECT DISTINCT r.id, r.id_parent, r.other, r.type FROM ("
+					+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM iis )AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM iis )" + " ) AS r;";
 
-			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "WITH iis AS ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference ~* ? )"
+					+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM iis )AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id_construct FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION " + "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM iis );";
 
 			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ;";
 
@@ -410,9 +436,38 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "SELECT id, type FROM ( SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id    AND l.id = id_locator AND reference ~* ? UNION SELECT id_topic AS id, 't' AS type FROM topics AS t, rel_subject_locators, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?   UNION SELECT id_construct AS id, 'c' AS type FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ) AS u ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "WITH locs AS ( SELECT id FROM locators WHERE reference ~* ? ), iis AS (SELECT id_construct AS id FROM rel_item_identifiers WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_locators WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_identifiers WHERE id_locator IN ( SELECT id FROM locs ) )"
+					+ "SELECT DISTINCT r.id, r.id_parent, r.other, r.type FROM ("
+					+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM iis )AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM iis )" + " ) AS r ORDER BY r.id OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "SELECT id_construct FROM constructs AS c, rel_item_identifiers, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND id_construct = c.id AND l.id = id_locator AND reference ~* ? ORDER BY id_construct OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN = "WITH iis AS ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference ~* ? )"
+					+ "SELECT r.id, r.id_parent, r.other, r.type FROM ("
+					+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM iis )AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id_construct FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
+					+ "UNION "
+					+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+					+ "UNION "
+					+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM iis )"
+					+ " ) AS r ORDER BY r.id OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN = "SELECT id_topic FROM topics AS t, rel_subject_identifiers, locators AS l WHERE t.id_topicmap = ? AND id_topic = t.id AND l.id = id_locator AND reference ~* ?  ORDER BY id_topic OFFSET ? LIMIT ?;";
 
@@ -460,7 +515,7 @@ public interface ISql99IndexQueries {
 			public static final String QUERY_SELECT_DIRECT_SUPERTYPES = "SELECT id_supertype AS id FROM rel_kind_of WHERE id_subtype = ? ORDER BY id_supertype OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_SUPERTYPES = "SELECT id_supertype AS id  FROM rel_kind_of, topics WHERE id = id_subtype AND id_topicmap = ? ORDER BY id_supertype OFFSET ? LIMIT ?;";
-			
+
 			public static final String QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES = "SELECT id FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ? ORDER BY id OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_NUMBER_OF_TOPICS_WITHOUT_SUPERTYPES = "SELECT COUNT(id) AS number FROM topics WHERE id NOT IN ( SELECT id_subtype FROM rel_kind_of ) AND id_parent = ?;";

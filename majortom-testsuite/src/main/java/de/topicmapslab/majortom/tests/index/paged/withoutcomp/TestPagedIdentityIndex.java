@@ -16,9 +16,8 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.tests.index.paged.withoutcomp;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -29,8 +28,6 @@ import org.tmapi.core.Name;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
-import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
 import de.topicmapslab.majortom.model.index.paging.IPagedIdentityIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 
@@ -100,78 +97,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		list = index.getConstructsByIdentifier(Pattern.compile(base + ".*"), 100, 10);
 		assertEquals(1, list.size());
 
-		/*
-		 * with comparator
-		 */
-		Comparator<Construct> comp = new Comparator<Construct>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Construct o1, Construct o2) {
-				if (o1 instanceof Topic && o2 instanceof Topic) {
-					return new TopicByIdentityComparator(true).compare((Topic) o1, (Topic) o2);
-				} else if (o1 instanceof Topic) {
-					if (!((Topic) o1).getSubjectIdentifiers().isEmpty()) {
-						return ((Topic) o1).getSubjectIdentifiers().iterator().next().getReference().compareTo(
-								o2.getItemIdentifiers().iterator().next().getReference());
-					} else if (!((Topic) o1).getSubjectLocators().isEmpty()) {
-						return ((Topic) o1).getSubjectLocators().iterator().next().getReference().compareTo(
-								o2.getItemIdentifiers().iterator().next().getReference());
-					}
-				} else if (o2 instanceof Topic) {
-					if (!((Topic) o2).getSubjectIdentifiers().isEmpty()) {
-						return o1.getItemIdentifiers().iterator().next().getReference().compareTo(
-								((Topic) o2).getSubjectIdentifiers().iterator().next().getReference());
-					} else if (!((Topic) o2).getSubjectLocators().isEmpty()) {
-						return o1.getItemIdentifiers().iterator().next().getReference().compareTo(
-								((Topic) o2).getSubjectLocators().iterator().next().getReference());
-					}
-				}
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getConstructsByIdentifier(base + ".*", i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(constructs[i * 10], list.get(0));
-			assertEquals(constructs[i * 10 + 1], list.get(1));
-			assertEquals(constructs[i * 10 + 2], list.get(2));
-			assertEquals(constructs[i * 10 + 3], list.get(3));
-			assertEquals(constructs[i * 10 + 4], list.get(4));
-			assertEquals(constructs[i * 10 + 5], list.get(5));
-			assertEquals(constructs[i * 10 + 6], list.get(6));
-			assertEquals(constructs[i * 10 + 7], list.get(7));
-			assertEquals(constructs[i * 10 + 8], list.get(8));
-			assertEquals(constructs[i * 10 + 9], list.get(9));
-		}
-		list = index.getConstructsByIdentifier(base + ".*", 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(constructs[100], list.get(0));
-
-		/*
-		 * with pattern
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getConstructsByIdentifier(Pattern.compile(base + ".*"), i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(constructs[i * 10], list.get(0));
-			assertEquals(constructs[i * 10 + 1], list.get(1));
-			assertEquals(constructs[i * 10 + 2], list.get(2));
-			assertEquals(constructs[i * 10 + 3], list.get(3));
-			assertEquals(constructs[i * 10 + 4], list.get(4));
-			assertEquals(constructs[i * 10 + 5], list.get(5));
-			assertEquals(constructs[i * 10 + 6], list.get(6));
-			assertEquals(constructs[i * 10 + 7], list.get(7));
-			assertEquals(constructs[i * 10 + 8], list.get(8));
-			assertEquals(constructs[i * 10 + 9], list.get(9));
-		}
-		list = index.getConstructsByIdentifier(Pattern.compile(base + ".*"), 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(constructs[100], list.get(0));
 	}
 
 	/**
@@ -229,60 +154,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		}
 		list = index.getConstructsByItemIdentifier(Pattern.compile(base + ".*"), 100, 10);
 		assertEquals(1, list.size());
-
-		/*
-		 * with comparator
-		 */
-		Comparator<Construct> comp = new Comparator<Construct>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Construct o1, Construct o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getConstructsByItemIdentifier(base + ".*", i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(constructs[i * 10], list.get(0));
-			assertEquals(constructs[i * 10 + 1], list.get(1));
-			assertEquals(constructs[i * 10 + 2], list.get(2));
-			assertEquals(constructs[i * 10 + 3], list.get(3));
-			assertEquals(constructs[i * 10 + 4], list.get(4));
-			assertEquals(constructs[i * 10 + 5], list.get(5));
-			assertEquals(constructs[i * 10 + 6], list.get(6));
-			assertEquals(constructs[i * 10 + 7], list.get(7));
-			assertEquals(constructs[i * 10 + 8], list.get(8));
-			assertEquals(constructs[i * 10 + 9], list.get(9));
-		}
-		list = index.getConstructsByItemIdentifier(base + ".*", 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(constructs[100], list.get(0));
-
-		/*
-		 * with pattern
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getConstructsByItemIdentifier(Pattern.compile(base + ".*"), i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(constructs[i * 10], list.get(0));
-			assertEquals(constructs[i * 10 + 1], list.get(1));
-			assertEquals(constructs[i * 10 + 2], list.get(2));
-			assertEquals(constructs[i * 10 + 3], list.get(3));
-			assertEquals(constructs[i * 10 + 4], list.get(4));
-			assertEquals(constructs[i * 10 + 5], list.get(5));
-			assertEquals(constructs[i * 10 + 6], list.get(6));
-			assertEquals(constructs[i * 10 + 7], list.get(7));
-			assertEquals(constructs[i * 10 + 8], list.get(8));
-			assertEquals(constructs[i * 10 + 9], list.get(9));
-		}
-		list = index.getConstructsByItemIdentifier(Pattern.compile(base + ".*"), 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(constructs[100], list.get(0));
 	}
 
 	/**
@@ -337,32 +208,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		}
 		list = index.getItemIdentifiers(100, 10);
 		assertEquals(1, list.size());
-
-		/*
-		 * with comparator
-		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getItemIdentifiers(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(locators[i * 10], list.get(0));
-			assertEquals(locators[i * 10 + 1], list.get(1));
-			assertEquals(locators[i * 10 + 2], list.get(2));
-			assertEquals(locators[i * 10 + 3], list.get(3));
-			assertEquals(locators[i * 10 + 4], list.get(4));
-			assertEquals(locators[i * 10 + 5], list.get(5));
-			assertEquals(locators[i * 10 + 6], list.get(6));
-			assertEquals(locators[i * 10 + 7], list.get(7));
-			assertEquals(locators[i * 10 + 8], list.get(8));
-			assertEquals(locators[i * 10 + 9], list.get(9));
-		}
-		list = index.getItemIdentifiers(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(locators[100], list.get(0));
 	}
 
 	/**
@@ -405,31 +250,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		list = index.getSubjectIdentifiers(100, 10);
 		assertEquals(1, list.size());
 
-		/*
-		 * with comparator
-		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getSubjectIdentifiers(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(locators[i * 10], list.get(0));
-			assertEquals(locators[i * 10 + 1], list.get(1));
-			assertEquals(locators[i * 10 + 2], list.get(2));
-			assertEquals(locators[i * 10 + 3], list.get(3));
-			assertEquals(locators[i * 10 + 4], list.get(4));
-			assertEquals(locators[i * 10 + 5], list.get(5));
-			assertEquals(locators[i * 10 + 6], list.get(6));
-			assertEquals(locators[i * 10 + 7], list.get(7));
-			assertEquals(locators[i * 10 + 8], list.get(8));
-			assertEquals(locators[i * 10 + 9], list.get(9));
-		}
-		list = index.getSubjectIdentifiers(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(locators[100], list.get(0));
 	}
 
 	/**
@@ -471,32 +291,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		}
 		list = index.getSubjectLocators(100, 10);
 		assertEquals(1, list.size());
-
-		/*
-		 * with comparator
-		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getSubjectLocators(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(locators[i * 10], list.get(0));
-			assertEquals(locators[i * 10 + 1], list.get(1));
-			assertEquals(locators[i * 10 + 2], list.get(2));
-			assertEquals(locators[i * 10 + 3], list.get(3));
-			assertEquals(locators[i * 10 + 4], list.get(4));
-			assertEquals(locators[i * 10 + 5], list.get(5));
-			assertEquals(locators[i * 10 + 6], list.get(6));
-			assertEquals(locators[i * 10 + 7], list.get(7));
-			assertEquals(locators[i * 10 + 8], list.get(8));
-			assertEquals(locators[i * 10 + 9], list.get(9));
-		}
-		list = index.getSubjectLocators(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(locators[100], list.get(0));
 	}
 
 	/**
@@ -543,53 +337,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopicsBySubjectIdentifier(Pattern.compile(base + ".*"), 100, 10);
 		assertEquals(1, list.size());
-
-		/*
-		 * with comparator
-		 */
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopicsBySubjectIdentifier(base + ".*", i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopicsBySubjectIdentifier(base + ".*", 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
-
-		/*
-		 * with pattern
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopicsBySubjectIdentifier(Pattern.compile(base + ".*"), i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopicsBySubjectIdentifier(Pattern.compile(base + ".*"), 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -636,53 +383,6 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopicsBySubjectLocator(Pattern.compile(base + ".*"), 100, 10);
 		assertEquals(1, list.size());
-
-		/*
-		 * with comparator
-		 */
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		/*
-		 * with string
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopicsBySubjectLocator(base + ".*", i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopicsBySubjectLocator(base + ".*", 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
-
-		/*
-		 * with pattern
-		 */
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopicsBySubjectLocator(Pattern.compile(base + ".*"), i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopicsBySubjectLocator(Pattern.compile(base + ".*"), 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 }

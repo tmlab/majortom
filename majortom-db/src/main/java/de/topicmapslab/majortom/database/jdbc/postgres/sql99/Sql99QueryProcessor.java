@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.tmapi.core.Association;
-import org.tmapi.core.Construct;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
@@ -105,9 +104,17 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 *            the JDBC connection
 	 */
 	public Sql99QueryProcessor(IConnectionProvider provider, Connection connection) {
-		this.queryBuilder = new Sql99QueryBuilder(connection);
 		this.provider = provider;
 		this.connection = connection;
+		this.queryBuilder = createQueryBuilder();
+	}
+
+	protected Sql99QueryBuilder createQueryBuilder() {
+		return new Sql99QueryBuilder(getConnection());
+	}
+	
+	protected Sql99QueryBuilder getQueryBuilder(){
+		return queryBuilder;
 	}
 
 	/**
@@ -348,7 +355,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), "id");
 	}
 
-	private IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
+	protected IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
 		if (themes.isEmpty()) {
 			PreparedStatement stmt = queryBuilder.getQueryReadEmptyScope();
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -1152,110 +1159,40 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConstruct doReadConstruct(ITopicMap t, String id, boolean lookupHistory) throws SQLException {
-		if (t.getId().equalsIgnoreCase(id)) {
-			return t;
+	public IConstruct doReadConstruct(ITopicMap topicMap, String id, boolean lookupHistory) throws SQLException {
+		if (topicMap.getId().equalsIgnoreCase(id)) {
+			return topicMap;
 		}
-		PreparedStatement stmt = null;
-		ResultSet set = null;
-		long topicmapId = Long.parseLong(t.getId());
-		long id_ = Long.parseLong(id);
-		try {
-			/*
-			 * check for topic
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(ITopic.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new TopicImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for name
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IName.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new NameImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for occurrence
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IOccurrence.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new OccurrenceImpl(new JdbcIdentity(set.getString("id")), new TopicImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for association
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IAssociation.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationImpl(new JdbcIdentity(set.getString("id")), t);
-			}
-			/*
-			 * check for role
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IAssociationRole.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new AssociationRoleImpl(new JdbcIdentity(set.getString("id")), new AssociationImpl(new JdbcIdentity(set.getString("id_parent")), t));
-			}
-			/*
-			 * check for variant
-			 */
-			stmt = queryBuilder.getQueryReadConstructById(IVariant.class);
-			stmt.setLong(1, topicmapId);
-			stmt.setLong(2, id_);
-			set = stmt.executeQuery();
-			if (set.next()) {
-				return new VariantImpl(new JdbcIdentity(set.getString(1)), new NameImpl(new JdbcIdentity(set.getString(2)), new TopicImpl(new JdbcIdentity(set
-						.getString(2)), t)));
-			}
+		PreparedStatement stmt = queryBuilder.getQueryReadConstructById();
+		stmt.setLong(1, Long.parseLong(id));
+		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
+		if (c.isEmpty()) {
 			if (lookupHistory) {
 				return readHistoryConstruct(id);
 			}
 			return null;
 		}
-		/*
-		 * finally close the result set
-		 */
-		finally {
-			if (set != null) {
-				set.close();
-			}
-		}
+		return c.iterator().next();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws SQLException {
-		PreparedStatement stmt = null;
-		ResultSet set = null;
-		long id = Long.parseLong(t.getId());
-		stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
-		stmt.setLong(1, id);
-		stmt.setLong(2, id);
-		stmt.setString(3, itemIdentifier.getReference());
-		set = stmt.executeQuery();
-		if (set.next()) {
-			final String id_ = set.getString("id");
-			set.close();
-			return doReadConstruct(t, id_, false);
+	public IConstruct doReadConstruct(ITopicMap topicMap, ILocator itemIdentifier) throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
+		long topicMapId = Long.parseLong(topicMap.getId());
+		stmt.setString(1, itemIdentifier.getReference());
+		stmt.setLong(2, topicMapId);
+		stmt.setLong(3, topicMapId);
+		stmt.setLong(4, topicMapId);
+		stmt.setLong(5, topicMapId);
+		stmt.setLong(6, topicMapId);
+		stmt.setLong(7, topicMapId);
+		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
+		if (c.isEmpty()) {
+			return null;
 		}
-		set.close();
-		return null;
+		return c.iterator().next();
 	}
 
 	/**
@@ -1386,14 +1323,11 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IReifiable doReadReification(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadReified();
 		stmt.setLong(1, Long.parseLong(t.getId()));
-		ResultSet result = stmt.executeQuery();
-		if (result.next()) {
-			String id = result.getString("id");
-			result.close();
-			return (IReifiable) doReadConstruct(t.getTopicMap(), id, false);
+		Collection<IConstruct> c = Jdbc2Construct.toConstructs(t.getTopicMap(), stmt.executeQuery());
+		if ( c.isEmpty()){
+			return null;
 		}
-		result.close();
-		return null;
+		return (IReifiable) c.iterator().next();
 	}
 
 	/**
@@ -2069,11 +2003,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setLong(2, Long.parseLong(topicMap.getId()));
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topicMap.getId()));
-		stmt.setLong(5, Long.parseLong(topicMap.getId()));
+		long topicMapId =Long.parseLong(topicMap.getId()); 
+		stmt.setLong(1, topicMapId);
+		stmt.setLong(2, topicMapId);
+		stmt.setLong(3, topicMapId);
+		stmt.setLong(4, topicMapId);
+		stmt.setLong(5, topicMapId);
 		stmt.execute();
 	}
 
@@ -2081,14 +2016,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
-		/*
-		 * remove all information
-		 */
-		doRemoveTopicMap(topicMap, true);
-		/*
-		 * add new instance
-		 */
-		doCreateTopicMap((ILocator) topicMap.getLocator());
+		PreparedStatement stmt = queryBuilder.getQueryClearTopicMap();
+		long topicMapId =Long.parseLong(topicMap.getId()); 
+		stmt.setLong(1, topicMapId);
+		stmt.setLong(2, topicMapId);
+		stmt.setLong(3, topicMapId);
+		stmt.setLong(4, topicMapId);
+		stmt.setLong(5, topicMapId);
+		stmt.setLong(6, topicMapId);
+		stmt.execute();
 	}
 
 	/**
@@ -2556,7 +2492,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IAssociation> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2575,7 +2511,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
+			throws SQLException {
 		/*
 		 * create association set
 		 */
@@ -2592,7 +2529,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IAssociation> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2607,13 +2544,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		return set;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
-		 * create characteristics set and add characteristics directly typed by the given type
+		 * create characteristics set and add characteristics directly typed by
+		 * the given type
 		 */
 		Collection<ICharacteristics> set = HashUtil.getHashSet(getCharacteristicsByType(type, -1, -1));
 		/*
@@ -2628,7 +2566,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<ICharacteristics> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2643,7 +2581,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		return set;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2664,7 +2602,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<ICharacteristics> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2679,7 +2617,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		return set;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2700,7 +2638,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IName> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2736,7 +2674,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IName> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2773,7 +2711,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IOccurrence> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2792,7 +2730,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
+			throws SQLException {
 		/*
 		 * create occurrences set
 		 */
@@ -2809,7 +2748,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IOccurrence> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2845,7 +2784,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IAssociationRole> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2864,7 +2803,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
+			throws SQLException {
 		/*
 		 * create roles set
 		 */
@@ -2881,7 +2821,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<IAssociationRole> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2917,7 +2857,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<ITopic> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -2936,7 +2876,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit)
+			throws SQLException {
 		/*
 		 * flag indicates first iteration
 		 */
@@ -2963,7 +2904,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if paging is expected
 		 */
-		if ( offset != -1 ){
+		if (offset != -1) {
 			List<ITopic> list = HashUtil.getList(set);
 			Collections.sort(list, new Comparator<IConstruct>() {
 				/**
@@ -3961,36 +3902,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
-		stmt.setLong(1, topicMapId);
-		stmt.setString(2, pattern);
+		stmt.setString(1, pattern);
+		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, topicMapId);
-		stmt.setString(4, pattern);
+		stmt.setLong(4, topicMapId);
 		stmt.setLong(5, topicMapId);
 		stmt.setLong(6, topicMapId);
-		stmt.setString(7, pattern);
+		stmt.setLong(7, topicMapId);
 		if (offset != -1) {
 			stmt.setLong(8, offset);
 			stmt.setLong(9, limit);
 		}
 		ResultSet rs = stmt.executeQuery();
-		List<Object> values = HashUtil.getList();
-		while (rs.next()) {
-			if (rs.getString("type").equalsIgnoreCase("t")) {
-				values.add(new TopicImpl(new JdbcIdentity(rs.getString("id")), topicMap));
-			} else {
-				values.add(rs.getLong("id"));
-			}
-		}
-		rs.close();
-		List<IConstruct> list = HashUtil.getList();
-		for (Object value : values) {
-			if (value instanceof Construct) {
-				list.add((IConstruct) value);
-			} else {
-				list.add(doReadConstruct(topicMap, value.toString(), false));
-			}
-		}
-		return list;
+		return Jdbc2Construct.toConstructs(topicMap, rs);
 	}
 
 	/**
@@ -3998,24 +3922,21 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByItemIdentitifer(offset != -1);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setLong(2, Long.parseLong(topicMap.getId()));
-		stmt.setString(3, "^" + regExp + "$");
+		long topicMapId = Long.parseLong(topicMap.getId());
+		String pattern = "^" + regExp + "$";
+		stmt.setString(1, pattern);
+		stmt.setLong(2, topicMapId);
+		stmt.setLong(3, topicMapId);
+		stmt.setLong(4, topicMapId);
+		stmt.setLong(5, topicMapId);
+		stmt.setLong(6, topicMapId);
+		stmt.setLong(7, topicMapId);
 		if (offset != -1) {
-			stmt.setLong(4, offset);
-			stmt.setLong(5, limit);
+			stmt.setLong(8, offset);
+			stmt.setLong(9, limit);
 		}
-		Collection<Long> ids = HashUtil.getList();
 		ResultSet rs = stmt.executeQuery();
-		while (rs.next()) {
-			ids.add(rs.getLong("id_construct"));
-		}
-		rs.close();
-		Collection<IConstruct> set = HashUtil.getList();
-		for (Long id : ids) {
-			set.add(doReadConstruct(topicMap, Long.toString(id), false));
-		}
-		return set;
+		return Jdbc2Construct.toConstructs(topicMap, rs);
 	}
 
 	/**
@@ -4963,19 +4884,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		return c;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void openTransaction() throws SQLException {
-		connection.setAutoCommit(false);		
+		connection.setAutoCommit(false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void commit()  throws SQLException{
+	public void commit() throws SQLException {
 		connection.commit();
-		connection.setAutoCommit(true);		
+		connection.setAutoCommit(true);
 	}
 }

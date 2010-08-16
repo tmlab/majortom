@@ -16,10 +16,9 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.tests.index.paged.withoutcomp;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.tmapi.core.Association;
@@ -28,7 +27,6 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.comparator.TopicByIdentityComparator;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
@@ -79,25 +77,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		list = index.getAssociationTypes(100, 10);
 		assertEquals(1, list.size());
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociationTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociationTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -138,33 +117,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getAssociations(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -216,33 +168,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getAssociations(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Association> comp = new Comparator<Association>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Association o1, Association o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getAssociations(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(associations[i * 10], list.get(0));
-			assertEquals(associations[i * 10 + 1], list.get(1));
-			assertEquals(associations[i * 10 + 2], list.get(2));
-			assertEquals(associations[i * 10 + 3], list.get(3));
-			assertEquals(associations[i * 10 + 4], list.get(4));
-			assertEquals(associations[i * 10 + 5], list.get(5));
-			assertEquals(associations[i * 10 + 6], list.get(6));
-			assertEquals(associations[i * 10 + 7], list.get(7));
-			assertEquals(associations[i * 10 + 8], list.get(8));
-			assertEquals(associations[i * 10 + 9], list.get(9));
-		}
-		list = index.getAssociations(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(associations[100], list.get(0));
 	}
 
 	/**
@@ -284,26 +209,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getCharacteristicTypes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristicTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getCharacteristicTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -349,33 +254,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getCharacteristics(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<ICharacteristics> comp = new Comparator<ICharacteristics>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(ICharacteristics o1, ICharacteristics o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(characteristics[i * 10], list.get(0));
-			assertEquals(characteristics[i * 10 + 1], list.get(1));
-			assertEquals(characteristics[i * 10 + 2], list.get(2));
-			assertEquals(characteristics[i * 10 + 3], list.get(3));
-			assertEquals(characteristics[i * 10 + 4], list.get(4));
-			assertEquals(characteristics[i * 10 + 5], list.get(5));
-			assertEquals(characteristics[i * 10 + 6], list.get(6));
-			assertEquals(characteristics[i * 10 + 7], list.get(7));
-			assertEquals(characteristics[i * 10 + 8], list.get(8));
-			assertEquals(characteristics[i * 10 + 9], list.get(9));
-		}
-		list = index.getCharacteristics(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(characteristics[100], list.get(0));
 	}
 
 	/**
@@ -427,33 +305,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getCharacteristics(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<ICharacteristics> comp = new Comparator<ICharacteristics>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(ICharacteristics o1, ICharacteristics o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(characteristics[i * 10], list.get(0));
-			assertEquals(characteristics[i * 10 + 1], list.get(1));
-			assertEquals(characteristics[i * 10 + 2], list.get(2));
-			assertEquals(characteristics[i * 10 + 3], list.get(3));
-			assertEquals(characteristics[i * 10 + 4], list.get(4));
-			assertEquals(characteristics[i * 10 + 5], list.get(5));
-			assertEquals(characteristics[i * 10 + 6], list.get(6));
-			assertEquals(characteristics[i * 10 + 7], list.get(7));
-			assertEquals(characteristics[i * 10 + 8], list.get(8));
-			assertEquals(characteristics[i * 10 + 9], list.get(9));
-		}
-		list = index.getCharacteristics(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(characteristics[100], list.get(0));
 	}
 
 	/**
@@ -492,26 +343,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getNameTypes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNameTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getNameTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -552,33 +383,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Name> comp = new Comparator<Name>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Name o1, Name o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -630,33 +434,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getNames(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Name> comp = new Comparator<Name>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Name o1, Name o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(names[i * 10], list.get(0));
-			assertEquals(names[i * 10 + 1], list.get(1));
-			assertEquals(names[i * 10 + 2], list.get(2));
-			assertEquals(names[i * 10 + 3], list.get(3));
-			assertEquals(names[i * 10 + 4], list.get(4));
-			assertEquals(names[i * 10 + 5], list.get(5));
-			assertEquals(names[i * 10 + 6], list.get(6));
-			assertEquals(names[i * 10 + 7], list.get(7));
-			assertEquals(names[i * 10 + 8], list.get(8));
-			assertEquals(names[i * 10 + 9], list.get(9));
-		}
-		list = index.getNames(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(names[100], list.get(0));
 	}
 
 	/**
@@ -694,26 +471,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrenceTypes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrenceTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrenceTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -754,33 +511,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrences(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Occurrence> comp = new Comparator<Occurrence>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Occurrence o1, Occurrence o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -832,33 +562,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getOccurrences(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Occurrence> comp = new Comparator<Occurrence>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Occurrence o1, Occurrence o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(occurrences[i * 10], list.get(0));
-			assertEquals(occurrences[i * 10 + 1], list.get(1));
-			assertEquals(occurrences[i * 10 + 2], list.get(2));
-			assertEquals(occurrences[i * 10 + 3], list.get(3));
-			assertEquals(occurrences[i * 10 + 4], list.get(4));
-			assertEquals(occurrences[i * 10 + 5], list.get(5));
-			assertEquals(occurrences[i * 10 + 6], list.get(6));
-			assertEquals(occurrences[i * 10 + 7], list.get(7));
-			assertEquals(occurrences[i * 10 + 8], list.get(8));
-			assertEquals(occurrences[i * 10 + 9], list.get(9));
-		}
-		list = index.getOccurrences(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(occurrences[100], list.get(0));
 	}
 
 	/**
@@ -896,26 +599,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getRoleTypes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getRoleTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getRoleTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -956,33 +639,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getRoles(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Role> comp = new Comparator<Role>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Role o1, Role o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getRoles(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(roles[i * 10], list.get(0));
-			assertEquals(roles[i * 10 + 1], list.get(1));
-			assertEquals(roles[i * 10 + 2], list.get(2));
-			assertEquals(roles[i * 10 + 3], list.get(3));
-			assertEquals(roles[i * 10 + 4], list.get(4));
-			assertEquals(roles[i * 10 + 5], list.get(5));
-			assertEquals(roles[i * 10 + 6], list.get(6));
-			assertEquals(roles[i * 10 + 7], list.get(7));
-			assertEquals(roles[i * 10 + 8], list.get(8));
-			assertEquals(roles[i * 10 + 9], list.get(9));
-		}
-		list = index.getRoles(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(roles[100], list.get(0));
 	}
 
 	/**
@@ -1034,33 +690,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getRoles(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Role> comp = new Comparator<Role>() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public int compare(Role o1, Role o2) {
-				return o1.getItemIdentifiers().iterator().next().getReference().compareTo(o2.getItemIdentifiers().iterator().next().getReference());
-			}
-		};
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getRoles(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(roles[i * 10], list.get(0));
-			assertEquals(roles[i * 10 + 1], list.get(1));
-			assertEquals(roles[i * 10 + 2], list.get(2));
-			assertEquals(roles[i * 10 + 3], list.get(3));
-			assertEquals(roles[i * 10 + 4], list.get(4));
-			assertEquals(roles[i * 10 + 5], list.get(5));
-			assertEquals(roles[i * 10 + 6], list.get(6));
-			assertEquals(roles[i * 10 + 7], list.get(7));
-			assertEquals(roles[i * 10 + 8], list.get(8));
-			assertEquals(roles[i * 10 + 9], list.get(9));
-		}
-		list = index.getRoles(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(roles[100], list.get(0));
 	}
 
 	/**
@@ -1098,26 +727,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopicTypes(100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopicTypes(i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopicTypes(100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -1158,26 +767,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopics(supertype, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopics(supertype, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopics(supertype, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -1229,26 +818,6 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopics(types, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopics(types, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopics(types, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 
 	/**
@@ -1297,25 +866,5 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		}
 		list = index.getTopics(types, true, 100, 10);
 		assertEquals(1, list.size());
-
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
-
-		for (int i = 0; i < 10; i++) {
-			list = index.getTopics(types, true, i * 10, 10, comp);
-			assertEquals(10, list.size());
-			assertEquals(topics[i * 10], list.get(0));
-			assertEquals(topics[i * 10 + 1], list.get(1));
-			assertEquals(topics[i * 10 + 2], list.get(2));
-			assertEquals(topics[i * 10 + 3], list.get(3));
-			assertEquals(topics[i * 10 + 4], list.get(4));
-			assertEquals(topics[i * 10 + 5], list.get(5));
-			assertEquals(topics[i * 10 + 6], list.get(6));
-			assertEquals(topics[i * 10 + 7], list.get(7));
-			assertEquals(topics[i * 10 + 8], list.get(8));
-			assertEquals(topics[i * 10 + 9], list.get(9));
-		}
-		list = index.getTopics(types, true, 100, 10, comp);
-		assertEquals(1, list.size());
-		assertEquals(topics[100], list.get(0));
 	}
 }

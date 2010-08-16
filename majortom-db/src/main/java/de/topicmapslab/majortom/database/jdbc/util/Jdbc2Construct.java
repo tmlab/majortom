@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import de.topicmapslab.majortom.core.AssociationImpl;
 import de.topicmapslab.majortom.core.AssociationRoleImpl;
@@ -151,6 +152,38 @@ public class Jdbc2Construct {
 		} finally {
 			result.close();
 		}
+	}
+
+	public static List<IConstruct> toConstructs(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<IConstruct> list = HashUtil.getList();
+		while (result.next()) {
+			if ("t".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new TopicImpl(new JdbcIdentity(result.getString("id")), topicMap));
+			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+				list
+						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
+								topicMap)));
+			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+			} else if ("v".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
+						new JdbcIdentity(result.getString(3)), topicMap))));
+			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new AssociationImpl(new JdbcIdentity(result.getString("id")), topicMap));
+			} else if ("r".equalsIgnoreCase(result.getString("type"))) {
+				list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString("id")), new AssociationImpl(new JdbcIdentity(result.getString("id_parent")),
+						topicMap)));
+			} else if ("tm".equalsIgnoreCase(result.getString("type"))) {
+				String id = result.getString("id");
+				if (id.equalsIgnoreCase(topicMap.getId())) {
+					list.add(topicMap);
+				}
+			} else {
+				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+			}
+		}
+		result.close();
+		return list;
 	}
 
 	public static List<IAssociation> toAssociations(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
@@ -316,6 +349,21 @@ public class Jdbc2Construct {
 		List<ILocator> list = HashUtil.getList();
 		while (result.next()) {
 			list.add(new LocatorImpl(result.getString(column)));
+		}
+		result.close();
+		return list;
+	}
+
+	public static List<IScope> toScopes(ITopicMap topicMap, ResultSet result) throws SQLException {
+		List<IScope> list = HashUtil.getList();
+		while (result.next()) {
+			String id = result.getString("id");
+			Long[] themeIds = (Long[]) result.getArray("themes").getArray();
+			Set<ITopic> themes = HashUtil.getHashSet();
+			for (Long themeId : themeIds) {
+				themes.add(new TopicImpl(new JdbcIdentity(Long.toString(themeId)), topicMap));
+			}
+			list.add(new ScopeImpl(id, themes));
 		}
 		result.close();
 		return list;

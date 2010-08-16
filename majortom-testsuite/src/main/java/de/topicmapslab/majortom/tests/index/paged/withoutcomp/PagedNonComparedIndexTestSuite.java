@@ -16,9 +16,8 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database;
+package de.topicmapslab.majortom.tests.index.paged.withoutcomp;
 
-import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -26,14 +25,20 @@ import junit.framework.TestSuite;
  * @author Sven Krosse
  *
  */
-public class JdbcTestSuite extends TestSuite {
+public class PagedNonComparedIndexTestSuite {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite();
-		// $JUnit-BEGIN$
-		suite.addTest(MaJorToMTestSuite.suite());
-		// $JUnit-END$
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged.withoutcomp");
+		//$JUnit-BEGIN$
+		suite.addTestSuite(TestPagedScopedIndex.class);
+		suite.addTestSuite(TestPagedLiteralIndex.class);
+		suite.addTestSuite(TestPagedConstructIndex.class);
+		suite.addTestSuite(TestPagedTrasitiveTypeInstanceIndex.class);
+		suite.addTestSuite(TestPagedIdentityIndex.class);
+		suite.addTestSuite(TestPagedSupertypeSubtypeIndex.class);
+		suite.addTestSuite(TestPagedTypeInstanceIndex.class);
+		//$JUnit-END$
 		return suite;
 	}
-	
+
 }

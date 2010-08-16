@@ -18,8 +18,8 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
 
-import static de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlQueries.SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS;
-import static de.topicmapslab.majortom.database.jdbc.postgres.optimized.query.IPostGreSqlQueries.SNIPPET_CREATE_TOPICMAP_IF_NOT_EXISTS;
+import static de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99Queries.SNIPPET_CREATE_LOCATOR_IF_NOT_EXISTS;
+import static de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99Queries.SNIPPET_CREATE_TOPICMAP_IF_NOT_EXISTS;
 
 /**
  * @author Sven Krosse

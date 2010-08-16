@@ -155,7 +155,6 @@ public interface ISql99SelectQueries {
 		 * <b>parameters(2):</b> topic map id, type id
 		 * </p>
 		 */
-		// TODO
 		public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? ";
 		/**
 		 * Query to read all associations within a specific type
@@ -214,60 +213,41 @@ public interface ISql99SelectQueries {
 		/**
 		 * Query to read a construct by id
 		 * <p>
-		 * <b>parameters(2):</b> topic map id and topic id
+		 * <b>parameters(1):</b> the construct id
 		 * </p>
 		 */
-		public static String QUERY_READ_CONSTRUCT = "SELECT id FROM constructs WHERE id_topicmap = ? AND id = ?";
+		public static String QUERY_READ_CONSTRUCT = "WITH iis AS ( SELECT id FROM constructs WHERE id = ? )"
+				+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id FROM iis ) "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM iis ) "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM iis ) "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM iis ) "
+				+ "UNION "
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM iis ) AND v.id_parent = n.id "
+				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) " + "UNION "
+				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM iis );";
 
-		/**
-		 * Query to read a topic by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, topic id
-		 * </p>
-		 */
-		public static String QUERY_READ_TOPIC_BY_ID = "SELECT id FROM topics WHERE id_topicmap = ? AND id = ?";
-		/**
-		 * Query to read a name by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, name id
-		 * </p>
-		 */
-		public static String QUERY_READ_NAME_BY_ID = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND id = ?";
-		/**
-		 * Query to read an occurrence by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, occurrence id
-		 * </p>
-		 */
-		public static String QUERY_READ_OCCURRENCE_BY_ID = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id = ?";
-		/**
-		 * Query to read a variant by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, variant id
-		 * </p>
-		 */
-		public static String QUERY_READ_VARIANT_BY_ID = "SELECT v.id, n.id, n.id_parent FROM variants AS v, names AS n WHERE v.id_topicmap = ? AND v.id = ? AND v.id_parent = n.id";
-		/**
-		 * Query to read an association by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, association id
-		 * </p>
-		 */
-		public static String QUERY_READ_ASSOCIATION_BY_ID = "SELECT id FROM associations WHERE id_topicmap = ? AND id = ?";
-		/**
-		 * Query to read a role by id
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, role id
-		 * </p>
-		 */
-		public static String QUERY_READ_ROLE_BY_ID = "SELECT id, id_parent FROM roles WHERE id_topicmap = ? AND id = ?";
 		/**
 		 * query to read a construct by item-identifier
 		 * <p>
-		 * <b>parameters(3):</b> topic map id,topic map id, the reference
+		 * <b>parameters(7):</b> the construct id, the topic map id 6x
 		 * </p>
 		 */
-		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = " SELECT c.id FROM constructs AS c, rel_item_identifiers AS r, locators AS l WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.reference = ? AND l.id = r.id_locator AND r.id_construct = c.id;";
+		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = "WITH iis AS ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ? )"
+				+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM iis )AND id_topicmap = ? "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+				+ "UNION "
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id_construct FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
+				+ "UNION " + "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM iis );";
 
 		// ********************
 		// * READ DATATYPE *
@@ -390,10 +370,19 @@ public interface ISql99SelectQueries {
 		/**
 		 * query to read the reified construct of a topic
 		 * <p>
-		 * <b>parameters(1):</b> topic id
+		 * <b>parameters(1):</b> the reifier id
 		 * </p>
 		 */
-		public static final String QUERY_READ_REIFIED = "SELECT id FROM reifiables WHERE id_reifier = ?";
+		public static final String QUERY_READ_REIFIED = "WITH ids AS ( SELECT id FROM reifiables WHERE id_reifier = ? )"
+				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM ids ) "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM ids ) "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM ids ) "
+				+ "UNION "
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM ids ) AND v.id_parent = n.id "
+				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM ids ) " + "UNION "
+				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM ids );";
 
 		// **************
 		// * READ ROLES *

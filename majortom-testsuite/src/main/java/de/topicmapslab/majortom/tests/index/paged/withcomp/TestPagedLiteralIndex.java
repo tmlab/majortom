@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.tests.index.paged.withcomp;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -80,12 +80,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getBooleans(true, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getBooleans(true, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -141,12 +135,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics("Value", i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristics("Value", 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -203,13 +191,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristics(value, 100, 10);
-		assertEquals(1, list.size());
-
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
 		for (int i = 0; i < 10; i++) {
@@ -265,13 +246,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristics("Value", value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristics("Value", value, 100, 10);
-		assertEquals(1, list.size());
-
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
 		for (int i = 0; i < 10; i++) {
@@ -326,12 +300,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristicsMatches(base + ".*", i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristicsMatches(base + ".*", 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -388,12 +356,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristicsMatches(base + ".*", value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristicsMatches(base + ".*", value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -451,12 +413,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristicsMatches(regexp, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristicsMatches(regexp, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -515,12 +471,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCharacteristicsMatches(regexp, value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCharacteristicsMatches(regexp, value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -576,12 +526,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getCoordinates(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getCoordinates(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -639,12 +583,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<IDatatypeAware> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getDatatypeAwares(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getDatatypeAwares(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<IDatatypeAware> comp = new ConstructByItemIdentifierComparator<IDatatypeAware>();
 
@@ -698,12 +636,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getDateTime(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getDateTime(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -763,12 +695,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 
 		Calendar deviance = new GregorianCalendar(0, 2, 1, 0, 0, 0);
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getDateTime(value, deviance, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getDateTime(value, deviance, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -821,12 +747,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getDoubles(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getDoubles(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -879,12 +799,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getDoubles(value, 0.5D, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getDoubles(value, 0.5D, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -937,12 +851,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getFloats(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getFloats(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -995,12 +903,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getFloats(value, 0.5D, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getFloats(value, 0.5D, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -1053,12 +955,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getIntegers(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getIntegers(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -1111,12 +1007,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getIntegers(value, 5, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getIntegers(value, 5, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -1169,12 +1059,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getLongs(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getLongs(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -1227,13 +1111,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getLongs(value, 5, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getLongs(value, 5, 100, 10);
-		assertEquals(1, list.size());
-
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
 		for (int i = 0; i < 10; i++) {
@@ -1284,12 +1161,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<IName> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getNames(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getNames(100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<IName> comp = new ConstructByItemIdentifierComparator<IName>();
 
@@ -1341,12 +1212,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<IOccurrence> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getOccurrences(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getOccurrences(100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<IOccurrence> comp = new ConstructByItemIdentifierComparator<IOccurrence>();
 
@@ -1402,12 +1267,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<ICharacteristics> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getUris(value, i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getUris(value, 100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<ICharacteristics> comp = new ConstructByItemIdentifierComparator<ICharacteristics>();
 
@@ -1459,12 +1318,6 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		}
 
 		List<IVariant> list = null;
-		for (int i = 0; i < 10; i++) {
-			list = index.getVariants(i * 10, 10);
-			assertEquals(10, list.size());
-		}
-		list = index.getVariants(100, 10);
-		assertEquals(1, list.size());
 
 		Comparator<IVariant> comp = new ConstructByItemIdentifierComparator<IVariant>();
 
