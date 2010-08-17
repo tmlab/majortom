@@ -20,9 +20,9 @@ Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.store.revision.readonly,
  de.topicmapslab.majortom.inmemory.transaction,
  de.topicmapslab.majortom.inmemory.transaction.internal
-Service-Component: OSGI-INF/inmemorytopicmapstore.xml
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype;bundle-version="0.0.2",
  de.topicmapslab.majortom.core;bundle-version="1.1.1",
  de.topicmapslab.majortom.model;bundle-version="1.1.1"
+Service-Component: OSGI-INF/jdbctopicmapstore.xml

@@ -50,9 +50,8 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public Sql99QueryProcessor getProcessor() throws TopicMapStoreException {
-		return super.getProcessor();
+		return (Sql99QueryProcessor) super.getProcessor();
 	}
 
 	/**

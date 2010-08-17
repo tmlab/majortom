@@ -708,5 +708,4 @@ public class TransactionLiteralIndex extends IndexImpl<TransactionTopicMapStore>
 		}
 		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getVariants());
 	}
-
 }
