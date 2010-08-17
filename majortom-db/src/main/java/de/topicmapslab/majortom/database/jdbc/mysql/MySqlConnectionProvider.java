@@ -49,9 +49,8 @@ public class MySqlConnectionProvider extends BaseMySqlConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public MySqlQueryProcessor getProcessor() throws TopicMapStoreException {
-		return super.getProcessor();
+		return (MySqlQueryProcessor) super.getProcessor();
 	}
 
 	/**

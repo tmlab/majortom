@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
@@ -91,12 +92,11 @@ public abstract class BaseMySqlConnectionProvider implements IConnectionProvider
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends MySqlQueryProcessor> T getProcessor() throws TopicMapStoreException {
+	public IQueryProcessor getProcessor() throws TopicMapStoreException {
 		if (connection == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
-		return (T) processor;
+		return  processor;
 	}
 
 	/**
