@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -132,12 +133,11 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Sql99QueryProcessor> T getProcessor() throws TopicMapStoreException {
+	public IQueryProcessor getProcessor() throws TopicMapStoreException {
 		if (connection == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
-		return (T)processor;
+		return processor;
 	}
 
 	/**
