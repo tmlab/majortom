@@ -772,7 +772,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyTag(ITopicMap tm, String tag) throws TopicMapStoreException {
 		try {
-			getProcessor().doCreateTag(tag, new GregorianCalendar());
+			provider.getProcessor().doCreateTag(tag, new GregorianCalendar());
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -783,7 +783,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doModifyTag(ITopicMap tm, String tag, Calendar timestamp) throws TopicMapStoreException {
 		try {
-			getProcessor().doCreateTag(tag, timestamp);
+			provider.getProcessor().doCreateTag(tag, timestamp);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
