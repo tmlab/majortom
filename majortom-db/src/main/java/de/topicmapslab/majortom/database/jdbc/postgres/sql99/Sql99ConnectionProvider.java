@@ -23,7 +23,6 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
@@ -44,8 +43,16 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IQueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
+	protected Sql99QueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
 		return new Sql99QueryProcessor(this, connection);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Sql99QueryProcessor getProcessor() throws TopicMapStoreException {
+		return super.getProcessor();
 	}
 
 	/**
@@ -59,10 +66,9 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 		StringBuffer buffer = new StringBuffer();
 		Scanner scanner = new Scanner(is);
 		while (scanner.hasNextLine()) {
-			buffer.append(scanner.nextLine()+"\r\n");
+			buffer.append(scanner.nextLine() + "\r\n");
 		}
 		scanner.close();
 		return buffer.toString();
 	}
-
 }

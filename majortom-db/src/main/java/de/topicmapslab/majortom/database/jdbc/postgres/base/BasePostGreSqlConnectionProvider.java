@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -89,7 +89,7 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * the internal query processor
 	 */
-	private IQueryProcessor processor;
+	private Sql99QueryProcessor processor;
 
 	/**
 	 * internal reference of the topic map store
@@ -132,11 +132,12 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * {@inheritDoc}
 	 */
-	public IQueryProcessor getProcessor() throws TopicMapStoreException {
+	@SuppressWarnings("unchecked")
+	public <T extends Sql99QueryProcessor> T getProcessor() throws TopicMapStoreException {
 		if (connection == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
-		return processor;
+		return (T)processor;
 	}
 
 	/**
@@ -182,7 +183,7 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 *            the connection
 	 * @return the created query processor instance
 	 */
-	protected abstract IQueryProcessor createProcessor(IConnectionProvider provider, Connection connection);
+	protected abstract Sql99QueryProcessor createProcessor(IConnectionProvider provider, Connection connection);
 
 	/**
 	 * {@inheritDoc}
@@ -279,5 +280,5 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 			}
 		}
 		return STATE_DATABASE_IS_VALID;
-	}	
+	}
 }

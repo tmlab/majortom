@@ -109,9 +109,9 @@ public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 	 */
 	public Set<Role> getRolesPlayed() {
 		Set<Role> roles = HashUtil.getHashSet();
-		for ( Association a : getAssociationsPlayed()){
-			for ( Role r : a.getRoles()){
-				if ( r.getPlayer().equals(this)){
+		for (Association a : getAssociationsPlayed()) {
+			for (Role r : a.getRoles()) {
+				if (r.getPlayer().equals(this)) {
 					roles.add(r);
 				}
 			}

@@ -123,10 +123,8 @@ public interface IConnectionProvider {
 	 * Method checks if the schema of the current database connection is valid..
 	 * 
 	 * @return <p>
-	 *         <code>0</code> if the database is empty.
-	 *         <br />
-	 *         <code>1</code> if the database schema is invalid.
-	 *         <br />
+	 *         <code>0</code> if the database is empty. <br />
+	 *         <code>1</code> if the database schema is invalid. <br />
 	 *         <code>2</code> if the database schema is valid.
 	 *         </p>
 	 */
