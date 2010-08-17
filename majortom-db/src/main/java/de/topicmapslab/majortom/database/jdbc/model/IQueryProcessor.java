@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.model;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
@@ -53,6 +54,8 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public interface IQueryProcessor {
 
+	public Connection getConnection();
+	
 	public void close();
 
 	public void openTransaction() throws SQLException;
@@ -64,7 +67,7 @@ public interface IQueryProcessor {
 	 * 
 	 * @return the connection handler
 	 */
-	public IConnectionProvider getConnectionProvider();
+	public <T extends IConnectionProvider> T getConnectionProvider();
 
 	public String doCreateTopicMap(ILocator baseLocator) throws SQLException;
 
