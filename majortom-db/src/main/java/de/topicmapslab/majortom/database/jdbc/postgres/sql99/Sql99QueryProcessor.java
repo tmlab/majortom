@@ -50,8 +50,8 @@ import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.core.VariantImpl;
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -92,7 +92,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 public class Sql99QueryProcessor implements IQueryProcessor {
 
 	private final Sql99QueryBuilder queryBuilder;
-	private final IConnectionProvider provider;
+	private final Sql99ConnectionProvider provider;
 	private final Connection connection;
 
 	/**
@@ -103,17 +103,17 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * @param connection
 	 *            the JDBC connection
 	 */
-	public Sql99QueryProcessor(IConnectionProvider provider, Connection connection) {
+	public Sql99QueryProcessor(Sql99ConnectionProvider provider, Connection connection) {
 		this.provider = provider;
 		this.connection = connection;
 		this.queryBuilder = createQueryBuilder();
 	}
 
 	protected Sql99QueryBuilder createQueryBuilder() {
-		return new Sql99QueryBuilder(getConnection());
+		return new Sql99QueryBuilder(provider);
 	}
-	
-	protected Sql99QueryBuilder getQueryBuilder(){
+
+	protected Sql99QueryBuilder getQueryBuilder() {
 		return queryBuilder;
 	}
 
@@ -122,14 +122,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * 
 	 * @return the connection the connection
 	 */
-	protected Connection getConnection() {
+	public Connection getConnection() {
 		return connection;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConnectionProvider getConnectionProvider() {
+	@SuppressWarnings("unchecked")
+	public BasePostGreSqlConnectionProvider getConnectionProvider() {
 		return provider;
 	}
 
@@ -1324,7 +1325,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryReadReified();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(t.getTopicMap(), stmt.executeQuery());
-		if ( c.isEmpty()){
+		if (c.isEmpty()) {
 			return null;
 		}
 		return (IReifiable) c.iterator().next();
@@ -2003,7 +2004,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
-		long topicMapId =Long.parseLong(topicMap.getId()); 
+		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, topicMapId);
@@ -2017,7 +2018,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryClearTopicMap();
-		long topicMapId =Long.parseLong(topicMap.getId()); 
+		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, topicMapId);

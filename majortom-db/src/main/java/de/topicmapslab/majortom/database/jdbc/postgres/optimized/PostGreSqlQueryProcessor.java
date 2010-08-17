@@ -29,7 +29,6 @@ import java.util.List;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.core.ScopeImpl;
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryBuilder;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
@@ -54,26 +53,39 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * @param connection
 	 *            the JDBC connection
 	 */
-	public PostGreSqlQueryProcessor(IConnectionProvider provider, Connection connection) {
+	public PostGreSqlQueryProcessor(PostGreSqlConnectionProvider provider, Connection connection) {
 		super(provider, connection);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	public PostGreSqlConnectionProvider getConnectionProvider() {
+		return (PostGreSqlConnectionProvider) super.getConnectionProvider();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected Sql99QueryBuilder createQueryBuilder() {
-		return new PostGreSqlQueryBuilder(getConnection());
+		return new PostGreSqlQueryBuilder(getConnectionProvider());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadSuptertypes(ITopic t, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = getQueryBuilder().getQueryReadSupertypes();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (getConnectionProvider().existsProcedureTransitiveSupertypes()) {
+			PreparedStatement stmt = getQueryBuilder().getQueryReadSupertypes();
+			stmt.setLong(1, Long.parseLong(t.getId()));
+			return Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
+		}
+		return super.doReadSuptertypes(t, offset, limit);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,8 +101,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			}
 			return null;
 		}
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureScopeByThemes()) {
+			return super.readScopeByThemes(topicMap, themes);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
-		List<Long> ids = HashUtil.getList();	
+		List<Long> ids = HashUtil.getList();
 		for (ITopic theme : themes) {
 			ids.add(Long.parseLong(theme.getId()));
 		}
@@ -116,6 +134,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypes()) {
+			return super.getAssociationsByTypeTransitive(type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationsByTypeTransitive(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -130,6 +154,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
 			throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypesArray()) {
+			return super.getAssociationsByTypeTransitive(topicMap, types, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationsByTypeTransitive(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -148,6 +178,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypes()) {
+			return super.getRolesByTypeTransitive(type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectRolesByTypeTransitive(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -162,6 +198,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
 			throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypesArray()) {
+			return super.getRolesByTypeTransitive(topicMap, types, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectRolesByTypeTransitive(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -180,6 +222,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNamesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypes()) {
+			return super.getNamesByTypeTransitive(type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByTypeTransitive(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -193,6 +241,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypesArray()) {
+			return super.getNamesByTypeTransitive(topicMap, types, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByTypeTransitive(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -211,6 +265,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypes()) {
+			return super.getOccurrencesByTypeTransitive(type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByTypeTransitive(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -225,6 +285,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit)
 			throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypesArray()) {
+			return super.getOccurrencesByTypeTransitive(topicMap, types, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByTypeTransitive(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -243,6 +309,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getTopicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTypesAndSubtypes()) {
+			return super.getTopicsByTypeTransitive(type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsByTypeTransitive(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -257,6 +329,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit)
 			throws SQLException {
+		/*
+		 * check if optimisation procedure exists
+		 */
+		if (!getConnectionProvider().existsProcedureTopicsByTypeTransitive()) {
+			return super.getTopicsByTypesTransitive(topicMap, types, all, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsByTypesTransitive(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -288,6 +366,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			}
 			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureTransitiveSubtypes()) {
+			return super.getSubtypes(topicMap, type, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubtypesOfTopic(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -312,6 +396,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			}
 			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureTransitiveSubtypesArray()) {
+			return super.getSubtypes(topicMap, types, matchAll, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubtypesOfTopics(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -331,7 +421,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
-		if (type == null ) {
+		if (type == null) {
 			PreparedStatement stmt = null;
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -340,6 +430,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 				stmt.setLong(3, limit);
 			}
 			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		}
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureTransitiveSupertypes()) {
+			return super.getSupertypes(topicMap, type, offset, limit);
 		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSupertypesOfTopic(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
@@ -365,6 +461,12 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			}
 			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		}
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureTransitiveSupertypesArray()) {
+			return super.getSupertypes(topicMap, types, matchAll, offset, limit);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSupertypesOfTopics(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -386,8 +488,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException {
+		/*
+		 * check if optimisation method exists
+		 */
+		if (!getConnectionProvider().existsProcedureScopeByThemes()) {
+			return super.getScopesByThemes(topicMap, themes, all);
+		}
 		PreparedStatement stmt = getQueryBuilder().getQueryScopesByThemesUsed();
-		List<Long> ids = HashUtil.getList();	
+		List<Long> ids = HashUtil.getList();
 		for (T theme : themes) {
 			ids.add(Long.parseLong(theme.getId()));
 		}
