@@ -21,6 +21,7 @@ package de.topicmapslab.majortom.database.jdbc.core;
 import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.mysql.MySqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.PostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99ConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -47,6 +48,7 @@ public class ConnectionProviderFactory {
 	static {
 		protocols.put(SqlDialect.POSTGRESQL.name(), PostGreSqlConnectionProvider.class);
 		protocols.put(SqlDialect.POSTGRESQL99.name(), Sql99ConnectionProvider.class);
+		protocols.put(SqlDialect.MYSQL.name(), MySqlConnectionProvider.class);
 	}
 
 	/**

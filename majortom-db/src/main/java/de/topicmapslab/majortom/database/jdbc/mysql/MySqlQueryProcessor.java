@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
+package de.topicmapslab.majortom.database.jdbc.mysql;
 
 import java.sql.Array;
 import java.sql.Connection;
@@ -51,7 +51,6 @@ import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.core.VariantImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
-import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -89,10 +88,10 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class Sql99QueryProcessor implements IQueryProcessor {
+public class MySqlQueryProcessor implements IQueryProcessor {
 
-	private final Sql99QueryBuilder queryBuilder;
-	private final Sql99ConnectionProvider provider;
+	private final MySqlQueryBuilder queryBuilder;
+	private final MySqlConnectionProvider provider;
 	private final Connection connection;
 
 	/**
@@ -103,17 +102,17 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * @param connection
 	 *            the JDBC connection
 	 */
-	public Sql99QueryProcessor(Sql99ConnectionProvider provider, Connection connection) {
+	public MySqlQueryProcessor(MySqlConnectionProvider provider, Connection connection) {
 		this.provider = provider;
 		this.connection = connection;
 		this.queryBuilder = createQueryBuilder();
 	}
 
-	protected Sql99QueryBuilder createQueryBuilder() {
-		return new Sql99QueryBuilder(provider);
+	protected MySqlQueryBuilder createQueryBuilder() {
+		return new MySqlQueryBuilder(provider);
 	}
 
-	protected Sql99QueryBuilder getQueryBuilder() {
+	protected MySqlQueryBuilder getQueryBuilder() {
 		return queryBuilder;
 	}
 
@@ -130,7 +129,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public BasePostGreSqlConnectionProvider getConnectionProvider() {
+	public BaseMySqlConnectionProvider getConnectionProvider() {
 		return provider;
 	}
 
@@ -151,7 +150,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
@@ -166,17 +165,24 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setLong(4, Long.parseLong(scope.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ILocator doCreateLocator(ITopicMap topicMap, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateLocator();
+		/*
+		 * check if locator exists
+		 */		
+		PreparedStatement stmt = queryBuilder.getQueryReadLocator();
 		stmt.setString(1, reference);
-		stmt.setString(2, reference);
-		stmt.execute();
+		ResultSet rs = stmt.executeQuery();
+		if ( !rs.next()){
+			stmt = queryBuilder.getQueryCreateLocator();
+			stmt.setString(1, reference);
+			stmt.execute();
+		}		
 		return new LocatorImpl(reference);
 	}
 
@@ -215,7 +221,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value);
 		stmt.execute();
-		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
@@ -231,115 +237,109 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setString(4, value);
 		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		ITopicMap topicMap = topic.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value);
-		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
+		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();		
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value);
+		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value);
-		stmt.setLong(7, Long.parseLong(scope.getId()));
-		stmt.setString(8, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value);
+		stmt.setLong(5, Long.parseLong(scope.getId()));
+		stmt.setString(6, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value.getReference());
-		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value.getReference());
+		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value.getReference());
-		stmt.setLong(7, Long.parseLong(scope.getId()));
-		stmt.setString(8, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value.getReference());
+		stmt.setLong(5, Long.parseLong(scope.getId()));
+		stmt.setString(6, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
-		stmt.setString(1, datatype.getReference());
-		stmt.setString(2, datatype.getReference());
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value);
-		stmt.setString(7, datatype.getReference());
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value);
+		stmt.setString(5, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
-		stmt.setString(1, datatype.getReference());
-		stmt.setString(2, datatype.getReference());
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(topic.getId()));
-		stmt.setLong(5, Long.parseLong(type.getId()));
-		stmt.setString(6, value);
-		stmt.setLong(7, Long.parseLong(scope.getId()));
-		stmt.setString(8, datatype.getReference());
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setString(4, value);
+		stmt.setLong(5, Long.parseLong(scope.getId()));
+		stmt.setString(6, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
@@ -353,7 +353,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setLong(4, Long.parseLong(player.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), "id");
+		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	protected IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
@@ -425,20 +425,18 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 */
 		ResultSet set = stmt.getGeneratedKeys();
 		set.next();
-		long id = set.getLong("id");
+		long id = set.getLong("GENERATED_KEY");
 		set.close();
 		/*
 		 * add all themes
-		 */
-		stmt = queryBuilder.getQueryAddThemes(themes.size());
-		int i = 0;
+		 */		
 		for (ITopic theme : themes) {
-			stmt.setLong(i * 2 + 1, id);
-			stmt.setLong(i * 2 + 2, Long.parseLong(theme.getId()));
-			i++;
+			stmt = queryBuilder.getQueryAddThemes(themes.size());
+			stmt.setLong(1, id);
+			stmt.setLong(2, Long.parseLong(theme.getId()));
+			stmt.execute();
+			stmt.close();
 		}
-		stmt.execute();
-		stmt.close();
 		/*
 		 * create scope instance
 		 */
@@ -449,33 +447,34 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public String doCreateTopicMap(ILocator baseLocator) throws SQLException {
+		doCreateLocator(null, baseLocator.getReference());
+		
+		/*
+		 * topic map already exists -> get topic map id by base locator
+		 */
+		PreparedStatement stmt = queryBuilder.getQueryReadTopicMap();
+		stmt.setString(1, baseLocator.getReference());
+		ResultSet set = stmt.executeQuery();
+		if ( set.next()){
+			final String id = set.getString("id");
+			set.close();
+			return id;
+		}
 		/*
 		 * get string to create new topic map
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryCreateTopicMap();
+		stmt = queryBuilder.getQueryCreateTopicMap();
 		stmt.setString(1, baseLocator.getReference());
 		stmt.setString(2, baseLocator.getReference());
-		stmt.setString(3, baseLocator.getReference());
-		stmt.setString(4, baseLocator.getReference());
 		stmt.execute();
 		/*
 		 * get result set containing generated keys
 		 */
-		ResultSet set = stmt.getResultSet();
+		set = stmt.getGeneratedKeys();
 		/*
 		 * check if topic map was created
 		 */
-		if (set != null && set.next()) {
-			return set.getString("id");
-		}
-		/*
-		 * topic map already exists -> get topic map id by base locator
-		 */
-		stmt = queryBuilder.getQueryReadTopicMap();
-		stmt.setString(1, baseLocator.getReference());
-		set = stmt.executeQuery();
-		set.next();
-		final String id = set.getString("id");
+		final String id = set.getString("GENERATED_KEY");
 		set.close();
 		return id;
 	}
@@ -505,7 +504,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * check if topic was created
 		 */
 		if (set != null && set.next()) {
-			ITopic topic = new TopicImpl(new JdbcIdentity(set.getString("id")), topicMap);
+			ITopic topic = new TopicImpl(new JdbcIdentity(set.getString("GENERATED_KEY")), topicMap);
 			set.close();
 			return topic;
 		}
@@ -561,54 +560,51 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(name.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(name.getId()));
-		stmt.setString(5, value);
-		stmt.setLong(6, Long.parseLong(scope.getId()));
-		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(name.getId()));
+		stmt.setString(3, value);
+		stmt.setLong(4, Long.parseLong(scope.getId()));
+		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(name.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(name.getId()));
-		stmt.setString(5, value.getReference());
-		stmt.setLong(6, Long.parseLong(scope.getId()));
-		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(name.getId()));
+		stmt.setString(3, value.getReference());
+		stmt.setLong(4, Long.parseLong(scope.getId()));
+		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(name.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
-		stmt.setString(1, datatype.getReference());
-		stmt.setString(2, datatype.getReference());
-		stmt.setLong(3, Long.parseLong(topicMap.getId()));
-		stmt.setLong(4, Long.parseLong(name.getId()));
-		stmt.setString(5, value);
-		stmt.setLong(6, Long.parseLong(scope.getId()));
-		stmt.setString(7, datatype.getReference());
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(name.getId()));
+		stmt.setString(3, value);
+		stmt.setLong(4, Long.parseLong(scope.getId()));
+		stmt.setString(5, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
 
 	/**
@@ -876,11 +872,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException {
+		doCreateLocator(c.getTopicMap(), itemIdentifier.getReference());
 		PreparedStatement stmt = queryBuilder.getQueryAddItemIdentifier();
-		stmt.setString(1, itemIdentifier.getReference());
+		stmt.setLong(1, Long.parseLong(c.getId()));
 		stmt.setString(2, itemIdentifier.getReference());
-		stmt.setLong(3, Long.parseLong(c.getId()));
-		stmt.setString(4, itemIdentifier.getReference());
 		stmt.executeUpdate();
 	}
 
@@ -915,7 +910,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ITopic> themes = HashUtil.getHashSet(s.getScopeObject().getThemes());
 		themes.add(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
+		PreparedStatement stmt = null;
+		if ( s instanceof IName ){
+			stmt = queryBuilder.getQueryModifyNameScope();
+		}else if ( s instanceof IOccurrence ){
+			stmt = queryBuilder.getQueryModifyOccurrenceScope();
+		}else if ( s instanceof IAssociation ){
+			stmt = queryBuilder.getQueryModifyAssociationScope();
+		}else {
+			stmt = queryBuilder.getQueryModifyVariantScope();
+		}
 		stmt.setLong(1, Long.parseLong(scope.getId()));
 		stmt.setLong(2, Long.parseLong(s.getId()));
 		stmt.execute();
@@ -925,11 +929,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws SQLException {
+		doCreateLocator(t.getTopicMap(), subjectIdentifier.getReference());
 		PreparedStatement stmt = queryBuilder.getQueryAddSubjectIdentifier();
-		stmt.setString(1, subjectIdentifier.getReference());
+		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectIdentifier.getReference());
-		stmt.setLong(3, Long.parseLong(t.getId()));
-		stmt.setString(4, subjectIdentifier.getReference());
 		stmt.executeUpdate();
 	}
 
@@ -937,11 +940,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws SQLException {
+		doCreateLocator(t.getTopicMap(), subjectLocator.getReference());
 		PreparedStatement stmt = queryBuilder.getQueryAddSubjectLocator();
-		stmt.setString(1, subjectLocator.getReference());
+		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectLocator.getReference());
-		stmt.setLong(3, Long.parseLong(t.getId()));
-		stmt.setString(4, subjectLocator.getReference());
 		stmt.executeUpdate();
 	}
 
@@ -1011,13 +1013,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException {
+		doCreateLocator(t.getTopicMap(), datatype.getReference());
 		PreparedStatement stmt = queryBuilder.getQueryModifyValueWithDatatype();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setString(3, datatype.getReference());
-		stmt.setString(4, datatype.getReference());
-		stmt.setString(5, datatype.getReference());
-		stmt.setLong(6, Long.parseLong(t.getId()));
+		stmt.setLong(4, Long.parseLong(t.getId()));
 		stmt.execute();
 	}
 
@@ -1419,7 +1420,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IScope doReadScope(IScopable s) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadScope();
+		PreparedStatement stmt = null;
+		if ( s instanceof IName ){
+			stmt = queryBuilder.getQueryReadNameScope();
+		}else if ( s instanceof IOccurrence ){
+			stmt = queryBuilder.getQueryReadOccurrenceScope();
+		}else if ( s instanceof IAssociation ){
+			stmt = queryBuilder.getQueryReadAssociationScope();
+		}else {
+			stmt = queryBuilder.getQueryReadVariantScope();
+		}
 		stmt.setLong(1, Long.parseLong(s.getId()));
 		ResultSet set = stmt.executeQuery();
 		set.next();
@@ -1542,7 +1552,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IName n) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadValue();
+		PreparedStatement stmt = queryBuilder.getQueryReadNameValue();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		ResultSet result = stmt.executeQuery();
 		if (!result.next()) {
@@ -1557,7 +1567,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IDatatypeAware t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadValue();
+		PreparedStatement stmt = null;
+		if ( t instanceof IOccurrence){
+			stmt = queryBuilder.getQueryReadOccurrenceValue();
+		}else{
+			stmt = queryBuilder.getQueryReadVariantValue();
+		}
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		ResultSet result = stmt.executeQuery();
 		if (!result.next()) {
@@ -1811,7 +1826,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
 		themes.remove(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
+		PreparedStatement stmt = null;
+		if ( s instanceof IName ){
+			stmt = queryBuilder.getQueryModifyNameScope();
+		}else if ( s instanceof IOccurrence ){
+			stmt = queryBuilder.getQueryModifyOccurrenceScope();
+		}else if ( s instanceof IAssociation ){
+			stmt = queryBuilder.getQueryModifyAssociationScope();
+		}else {
+			stmt = queryBuilder.getQueryModifyVariantScope();
+		}
 		stmt.setLong(1, Long.parseLong(scope.getId()));
 		stmt.setLong(2, Long.parseLong(s.getId()));
 		stmt.execute();
@@ -2008,8 +2032,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, topicMapId);
-		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
 		stmt.execute();
 	}
 
@@ -4231,7 +4253,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {
 			rs.next();
-			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("GENERATED_KEY")) {
 			};
 		} finally {
 			rs.close();
@@ -4581,72 +4603,60 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociationRole role) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryRoleDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(role.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryRoleDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(role.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociation association) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(association.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(association.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IVariant variant) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryVariantDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(variant.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryVariantDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(variant.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IName name) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryNameDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(name.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryNameDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(name.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IOccurrence occurrence) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(occurrence.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(occurrence.getId()));
+		stmt.execute();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, ITopic topic) throws SQLException {
-		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryTopicDump();
-			stmt.setLong(1, revision.getId());
-			stmt.setLong(2, Long.parseLong(topic.getId()));
-			stmt.execute();
-		}
+		PreparedStatement stmt = queryBuilder.getQueryTopicDump();
+		stmt.setLong(1, revision.getId());
+		stmt.setLong(2, Long.parseLong(topic.getId()));
+		stmt.execute();
 	}
 
 	/**
