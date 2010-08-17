@@ -18,9 +18,11 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.optimized;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99ConnectionProvider;
@@ -68,7 +70,17 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	protected String getSchemaQuery() {
-		return null;
+		InputStream is = getClass().getResourceAsStream("script.sql");
+		if (is == null) {
+			throw new TopicMapStoreException("Cannot load database schema!");
+		}
+		StringBuffer buffer = new StringBuffer();
+		Scanner scanner = new Scanner(is);
+		while (scanner.hasNextLine()) {
+			buffer.append(scanner.nextLine() + "\r\n");
+		}
+		scanner.close();
+		return buffer.toString();
 	}
 
 	/**

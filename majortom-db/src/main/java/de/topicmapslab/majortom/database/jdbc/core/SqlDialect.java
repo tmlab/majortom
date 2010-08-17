@@ -26,6 +26,8 @@ public enum SqlDialect {
 
 	POSTGRESQL,
 	
-	POSTGRESQL99
+	POSTGRESQL99,
+	
+	MYSQL
 
 }

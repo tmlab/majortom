@@ -600,7 +600,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			ITopic newTopic = provider.getProcessor().doCreateTopicWithoutIdentifier(getTopicMap());
 			provider.getProcessor().doMergeTopics(newTopic, context);
 			provider.getProcessor().doMergeTopics(newTopic, other);
-//			((TopicImpl) other).getIdentity().setId(context.getId());
+			// ((TopicImpl) other).getIdentity().setId(context.getId());
 			/*
 			 * notify listener
 			 */
@@ -2058,13 +2058,6 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isRevisionManagementEnabled() {
-		return false;
-	}
-
-	/**
 	 * Returns the internal sql processor
 	 * 
 	 * @return the provider
@@ -2080,21 +2073,26 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IRevision createRevision() {
-		try {
-			return provider.getProcessor().doCreateRevision(getTopicMap());
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
+		if (isRevisionManagementEnabled()) {
+			try {
+				return provider.getProcessor().doCreateRevision(getTopicMap());
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Internal database error!", e);
+			}
 		}
+		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void storeRevision(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
-		try {
-			provider.getProcessor().doCreateChangeSet(revision, type, context, newValue, oldValue);
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
+		if (isRevisionManagementEnabled()) {
+			try {
+				provider.getProcessor().doCreateChangeSet(revision, type, context, newValue, oldValue);
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Internal database error!", e);
+			}
 		}
 	}
 
