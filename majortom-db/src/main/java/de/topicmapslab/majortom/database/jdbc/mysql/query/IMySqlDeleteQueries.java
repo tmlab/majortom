@@ -32,7 +32,7 @@ public interface IMySqlDeleteQueries {
 	
 	public static final String QUERY_DELETE_HISTORY = "DELETE FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN ( SELECT id FROM constructs WHERE id_topicmap = ? ) OR id_notifier = ? );";
 	
-	public static final String QUERY_DELETE_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + " DELETE FROM topicmaps WHERE id = ?;";
+	public static final String QUERY_DELETE_TOPICMAP = " DELETE FROM topicmaps WHERE id = ?;";
 
 	public static final String QUERY_DELETE_TOPIC = "DELETE FROM topics WHERE id = ?;";
 
