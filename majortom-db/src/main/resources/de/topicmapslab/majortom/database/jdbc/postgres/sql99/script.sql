@@ -90,7 +90,6 @@ INHERITS (constructs);
 --
 
 CREATE TABLE associations (
-    id_type bigint
 )
 INHERITS (scopeables, typeables);
 
@@ -145,7 +144,6 @@ INHERITS (constructs);
 --
 
 CREATE TABLE datatypeawares (
-    value character varying,
     id_datatype bigint NOT NULL
 )
 INHERITS (scopeables, literals);
@@ -228,8 +226,6 @@ CREATE TABLE metadata (
 --
 
 CREATE TABLE names (
-    id_type bigint,
-    value character varying
 )
 INHERITS (scopeables, typeables, literals);
 
@@ -241,7 +237,6 @@ INHERITS (scopeables, typeables, literals);
 --
 
 CREATE TABLE occurrences (
-    id_type bigint
 )
 INHERITS (datatypeawares, typeables);
 
@@ -352,7 +347,6 @@ CREATE TABLE revisions (
 --
 
 CREATE TABLE roles (
-    id_type bigint,
     id_player bigint NOT NULL
 )
 INHERITS (reifiables, typeables);
@@ -383,21 +377,6 @@ CREATE TABLE scopes (
     id_topicmap bigint
 );
 
-
---
--- TOC entry 1584 (class 1259 OID 3046999)
--- Dependencies: 6
--- Name: seq_topicmap_id; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE seq_topicmap_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
 --
 -- TOC entry 1585 (class 1259 OID 3047001)
 -- Dependencies: 6
@@ -417,8 +396,6 @@ CREATE TABLE tags (
 --
 
 CREATE TABLE topicmaps (
-    id bigint DEFAULT nextval('seq_topicmap_id'::regclass),
-    id_reifier bigint,
     id_base_locator bigint NOT NULL
 )
 INHERITS (reifiables);

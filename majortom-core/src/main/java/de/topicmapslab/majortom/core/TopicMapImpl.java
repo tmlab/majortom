@@ -277,6 +277,8 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		} else if (c instanceof Topic) {
 			return (Topic) c;
 		} else {
+			c = getConstructByItemIdentifier(identifier);
+			
 			throw new IdentityConstraintException(c, null, identifier, "Item-Identifier already used by a construct which is not a topic!");
 		}
 	}
