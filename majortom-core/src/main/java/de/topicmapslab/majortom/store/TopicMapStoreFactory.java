@@ -127,7 +127,7 @@ public class TopicMapStoreFactory {
 		
 		if (list==null) {
 			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class, TopicMapStoreFactory.class.getClassLoader());
-			loader.reload();
+//			loader.reload();
 			storeFactories = new HashMap<String, ITopicMapStoreFactory>();
 
 			for (ITopicMapStore store : loader) {

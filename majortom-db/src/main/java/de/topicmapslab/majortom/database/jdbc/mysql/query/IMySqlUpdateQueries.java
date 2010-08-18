@@ -78,7 +78,42 @@ public interface IMySqlUpdateQueries {
 	 * <b>parameters(2):</b> reifier id, topic id
 	 * </p>
 	 */
-	public static final String QUERY_MODIFY_REIFIER = "UPDATE reifiables SET id_reifier = ? WHERE id = ?;";
+	public static final String QUERY_MODIFY_NAME_REIFIER = "UPDATE names SET id_reifier = ? WHERE id = ?;";
+	/**
+	 * query to modify the reifier of a construct
+	 * <p>
+	 * <b>parameters(2):</b> reifier id, topic id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_OCCURRENCE_REIFIER = "UPDATE occurrences SET id_reifier = ? WHERE id = ?;";
+	/**
+	 * query to modify the reifier of a construct
+	 * <p>
+	 * <b>parameters(2):</b> reifier id, topic id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_VARIANT_REIFIER = "UPDATE variants SET id_reifier = ? WHERE id = ?;";
+	/**
+	 * query to modify the reifier of a construct
+	 * <p>
+	 * <b>parameters(2):</b> reifier id, topic id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_ROLE_REIFIER = "UPDATE roles SET id_reifier = ? WHERE id = ?;";
+	/**
+	 * query to modify the reifier of a construct
+	 * <p>
+	 * <b>parameters(2):</b> reifier id, topic id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_ASSOCIATION_REIFIER = "UPDATE associations SET id_reifier = ? WHERE id = ?;";
+	/**
+	 * query to modify the reifier of a construct
+	 * <p>
+	 * <b>parameters(2):</b> reifier id, topic id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_TOPICMAP_REIFIER = "UPDATE topicmaps SET id_reifier = ? WHERE id = ?;";
 
 	/**
 	 * query to modify the scope of a construct

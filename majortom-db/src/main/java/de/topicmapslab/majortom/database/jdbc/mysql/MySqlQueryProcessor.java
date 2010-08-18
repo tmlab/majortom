@@ -1200,8 +1200,13 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ILocator doReadDataType(IDatatypeAware d) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadDataType();
+	public ILocator doReadDataType(IDatatypeAware d) throws SQLException {		
+		PreparedStatement stmt = null;
+		if ( d instanceof IOccurrence ){
+			stmt = queryBuilder.getQueryReadOccurrenceDataType();
+		}else{
+			stmt = queryBuilder.getQueryReadVariantDataType();
+		}
 		stmt.setLong(1, Long.parseLong(d.getId()));
 		return Jdbc2Construct.toLocator(stmt.executeQuery(), "reference");
 	}
@@ -1324,7 +1329,13 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 */
 	public IReifiable doReadReification(ITopic t) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadReified();
-		stmt.setLong(1, Long.parseLong(t.getId()));
+		long topicId = Long.parseLong(t.getId());
+		stmt.setLong(1, topicId);
+		stmt.setLong(2, topicId);
+		stmt.setLong(3, topicId);
+		stmt.setLong(4, topicId);
+		stmt.setLong(5, topicId);
+		stmt.setLong(6, topicId);
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(t.getTopicMap(), stmt.executeQuery());
 		if (c.isEmpty()) {
 			return null;
@@ -1336,7 +1347,20 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadReification(IReifiable r) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadReifier();
+		PreparedStatement stmt = null;
+		if ( r instanceof IName ){
+			stmt = queryBuilder.getQueryReadNameReifier();
+		}else if ( r instanceof IOccurrence){
+			stmt = queryBuilder.getQueryReadOccurrenceReifier();
+		}else if ( r instanceof IVariant ){
+			stmt = queryBuilder.getQueryReadVariantReifier();
+		}else if ( r instanceof IAssociationRole ){
+			stmt = queryBuilder.getQueryReadRoleReifier();
+		}else if ( r instanceof IAssociation ){
+			stmt = queryBuilder.getQueryReadAssociationReifier();
+		}else {
+			stmt = queryBuilder.getQueryReadTopicMapReifier();
+		}
 		stmt.setLong(1, Long.parseLong(r.getId()));
 		ResultSet result = stmt.executeQuery();
 		if (result.next()) {

@@ -259,7 +259,15 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_DATATYPE = "SELECT reference FROM locators AS l, datatypeawares AS d WHERE d.id_datatype = l.id AND d.id = ?";
+		public static final String QUERY_READ_OCCURRENCE_DATATYPE = "SELECT reference FROM locators AS l, occurrences AS d WHERE d.id_datatype = l.id AND d.id = ?";
+		
+		/**
+		 * Query to read the data type of an occurrence or variant
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_VARIANT_DATATYPE = "SELECT reference FROM locators AS l, variants AS d WHERE d.id_datatype = l.id AND d.id = ?";
 
 		// ***********************
 		// * READ ITEMIDENTIFIER *
@@ -358,14 +366,53 @@ public interface IMySqlSelectQueries {
 		// ********************
 		// * READ REIFICATION *
 		// ********************
-
 		/**
 		 * query to read the reifier of a construct
 		 * <p>
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_REIFIER = "SELECT id_reifier FROM reifiables WHERE id = ?";
+		public static final String QUERY_READ_NAME_REIFIER = "SELECT id_reifier FROM names WHERE id = ?";
+		
+		/**
+		 * query to read the reifier of a construct
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_OCCURRENCE_REIFIER = "SELECT id_reifier FROM occurrences WHERE id = ?";
+		
+		/**
+		 * query to read the reifier of a construct
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_VARIANT_REIFIER = "SELECT id_reifier FROM variants WHERE id = ?";
+		
+		/**
+		 * query to read the reifier of a construct
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_ROLE_REIFIER = "SELECT id_reifier FROM roles WHERE id = ?";
+		
+		/**
+		 * query to read the reifier of a construct
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_ASSOCIATION_REIFIER = "SELECT id_reifier FROM associations WHERE id = ?";
+		
+		/**
+		 * query to read the reifier of a construct
+		 * <p>
+		 * <b>parameters(1):</b> construct id
+		 * </p>
+		 */
+		public static final String QUERY_READ_TOPICMAP_REIFIER = "SELECT id_reifier FROM topicmaps WHERE id = ?";
 
 		/**
 		 * query to read the reified construct of a topic
@@ -373,16 +420,15 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> the reifier id
 		 * </p>
 		 */
-		public static final String QUERY_READ_REIFIED = "WITH ids AS ( SELECT id FROM reifiables WHERE id_reifier = ? )"
-				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM ids ) "
+		public static final String QUERY_READ_REIFIED = "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_reifier = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM ids ) "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_reifier = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM ids ) "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id_reifier = ? "
 				+ "UNION "
-				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM ids ) AND v.id_parent = n.id "
-				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM ids ) " + "UNION "
-				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM ids );";
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id_reifier = ? AND v.id_parent = n.id "
+				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id_reifier = ? " + "UNION "
+				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id_reifier = ?;";
 
 		// **************
 		// * READ ROLES *
