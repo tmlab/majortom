@@ -174,15 +174,15 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	public ILocator doCreateLocator(ITopicMap topicMap, String reference) throws SQLException {
 		/*
 		 * check if locator exists
-		 */		
+		 */
 		PreparedStatement stmt = queryBuilder.getQueryReadLocator();
 		stmt.setString(1, reference);
 		ResultSet rs = stmt.executeQuery();
-		if ( !rs.next()){
+		if (!rs.next()) {
 			stmt = queryBuilder.getQueryCreateLocator();
 			stmt.setString(1, reference);
 			stmt.execute();
-		}		
+		}
 		return new LocatorImpl(reference);
 	}
 
@@ -246,7 +246,7 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws SQLException {
 		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		ITopicMap topicMap = topic.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();		
+		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topic.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
@@ -429,7 +429,7 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 		set.close();
 		/*
 		 * add all themes
-		 */		
+		 */
 		for (ITopic theme : themes) {
 			stmt = queryBuilder.getQueryAddThemes(themes.size());
 			stmt.setLong(1, id);
@@ -448,14 +448,14 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 */
 	public String doCreateTopicMap(ILocator baseLocator) throws SQLException {
 		doCreateLocator(null, baseLocator.getReference());
-		
+
 		/*
 		 * topic map already exists -> get topic map id by base locator
 		 */
 		PreparedStatement stmt = queryBuilder.getQueryReadTopicMap();
 		stmt.setString(1, baseLocator.getReference());
 		ResultSet set = stmt.executeQuery();
-		if ( set.next()){
+		if (set.next()) {
 			final String id = set.getString("id");
 			set.close();
 			return id;
@@ -893,7 +893,20 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyReifier(IReifiable r, ITopic reifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyReifier();
+		PreparedStatement stmt = null;
+		if (r instanceof IName) {
+			stmt = queryBuilder.getQueryModifyNameReifier();
+		} else if (r instanceof IOccurrence) {
+			stmt = queryBuilder.getQueryModifyOccurrenceReifier();
+		} else if (r instanceof IVariant) {
+			stmt = queryBuilder.getQueryModifyVariantReifier();
+		} else if (r instanceof IAssociationRole) {
+			stmt = queryBuilder.getQueryModifyRoleReifier();
+		} else if (r instanceof IAssociation) {
+			stmt = queryBuilder.getQueryModifyAssociationReifier();
+		} else {
+			stmt = queryBuilder.getQueryModifyTopicMapReifier();
+		}
 		if (reifier == null) {
 			stmt.setNull(1, Types.BIGINT);
 		} else {
@@ -911,13 +924,13 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 		themes.add(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
 		PreparedStatement stmt = null;
-		if ( s instanceof IName ){
+		if (s instanceof IName) {
 			stmt = queryBuilder.getQueryModifyNameScope();
-		}else if ( s instanceof IOccurrence ){
+		} else if (s instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryModifyOccurrenceScope();
-		}else if ( s instanceof IAssociation ){
+		} else if (s instanceof IAssociation) {
 			stmt = queryBuilder.getQueryModifyAssociationScope();
-		}else {
+		} else {
 			stmt = queryBuilder.getQueryModifyVariantScope();
 		}
 		stmt.setLong(1, Long.parseLong(scope.getId()));
@@ -979,7 +992,16 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyType(ITypeable t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyType();
+		PreparedStatement stmt = null;
+		if ( t instanceof IName ){
+			stmt = queryBuilder.getQueryModifyNameType();
+		}else if ( t instanceof IOccurrence){
+			stmt = queryBuilder.getQueryModifyOccurrenceType();
+		}else if ( t instanceof IAssociation ){
+			stmt = queryBuilder.getQueryModifyAssociationType();
+		}else{
+			stmt = queryBuilder.getQueryModifyRoleType();
+		}
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.executeUpdate();
@@ -1185,11 +1207,17 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setString(1, itemIdentifier.getReference());
 		stmt.setLong(2, topicMapId);
-		stmt.setLong(3, topicMapId);
+		stmt.setString(3, itemIdentifier.getReference());
 		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
+		stmt.setString(5, itemIdentifier.getReference());
 		stmt.setLong(6, topicMapId);
-		stmt.setLong(7, topicMapId);
+		stmt.setString(7, itemIdentifier.getReference());
+		stmt.setLong(8, topicMapId);
+		stmt.setString(9, itemIdentifier.getReference());
+		stmt.setLong(10, topicMapId);
+		stmt.setString(11, itemIdentifier.getReference());
+		stmt.setLong(12, topicMapId);
+		stmt.setString(13, itemIdentifier.getReference());
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
 		if (c.isEmpty()) {
 			return null;
@@ -1200,11 +1228,11 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ILocator doReadDataType(IDatatypeAware d) throws SQLException {		
+	public ILocator doReadDataType(IDatatypeAware d) throws SQLException {
 		PreparedStatement stmt = null;
-		if ( d instanceof IOccurrence ){
+		if (d instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryReadOccurrenceDataType();
-		}else{
+		} else {
 			stmt = queryBuilder.getQueryReadVariantDataType();
 		}
 		stmt.setLong(1, Long.parseLong(d.getId()));
@@ -1348,17 +1376,17 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 */
 	public ITopic doReadReification(IReifiable r) throws SQLException {
 		PreparedStatement stmt = null;
-		if ( r instanceof IName ){
+		if (r instanceof IName) {
 			stmt = queryBuilder.getQueryReadNameReifier();
-		}else if ( r instanceof IOccurrence){
+		} else if (r instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryReadOccurrenceReifier();
-		}else if ( r instanceof IVariant ){
+		} else if (r instanceof IVariant) {
 			stmt = queryBuilder.getQueryReadVariantReifier();
-		}else if ( r instanceof IAssociationRole ){
+		} else if (r instanceof IAssociationRole) {
 			stmt = queryBuilder.getQueryReadRoleReifier();
-		}else if ( r instanceof IAssociation ){
+		} else if (r instanceof IAssociation) {
 			stmt = queryBuilder.getQueryReadAssociationReifier();
-		}else {
+		} else {
 			stmt = queryBuilder.getQueryReadTopicMapReifier();
 		}
 		stmt.setLong(1, Long.parseLong(r.getId()));
@@ -1445,13 +1473,13 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 */
 	public IScope doReadScope(IScopable s) throws SQLException {
 		PreparedStatement stmt = null;
-		if ( s instanceof IName ){
+		if (s instanceof IName) {
 			stmt = queryBuilder.getQueryReadNameScope();
-		}else if ( s instanceof IOccurrence ){
+		} else if (s instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryReadOccurrenceScope();
-		}else if ( s instanceof IAssociation ){
+		} else if (s instanceof IAssociation) {
 			stmt = queryBuilder.getQueryReadAssociationScope();
-		}else {
+		} else {
 			stmt = queryBuilder.getQueryReadVariantScope();
 		}
 		stmt.setLong(1, Long.parseLong(s.getId()));
@@ -1554,7 +1582,16 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadType(ITypeable typed) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadType();
+		PreparedStatement stmt = null;
+		if (typed instanceof IName) {
+			stmt = queryBuilder.getQueryReadNameType();
+		} else if (typed instanceof IOccurrence) {
+			stmt = queryBuilder.getQueryReadOccurrenceType();
+		} else if (typed instanceof IAssociation) {
+			stmt = queryBuilder.getQueryReadAssociationType();
+		} else {
+			stmt = queryBuilder.getQueryReadRoleType();
+		}		
 		stmt.setLong(1, Long.parseLong(typed.getId()));
 		return Jdbc2Construct.toTopic(typed.getTopicMap(), stmt.executeQuery(), "id_type");
 	}
@@ -1592,9 +1629,9 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 */
 	public Object doReadValue(IDatatypeAware t) throws SQLException {
 		PreparedStatement stmt = null;
-		if ( t instanceof IOccurrence){
+		if (t instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryReadOccurrenceValue();
-		}else{
+		} else {
 			stmt = queryBuilder.getQueryReadVariantValue();
 		}
 		stmt.setLong(1, Long.parseLong(t.getId()));
@@ -1851,13 +1888,13 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 		themes.remove(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
 		PreparedStatement stmt = null;
-		if ( s instanceof IName ){
+		if (s instanceof IName) {
 			stmt = queryBuilder.getQueryModifyNameScope();
-		}else if ( s instanceof IOccurrence ){
+		} else if (s instanceof IOccurrence) {
 			stmt = queryBuilder.getQueryModifyOccurrenceScope();
-		}else if ( s instanceof IAssociation ){
+		} else if (s instanceof IAssociation) {
 			stmt = queryBuilder.getQueryModifyAssociationScope();
-		}else {
+		} else {
 			stmt = queryBuilder.getQueryModifyVariantScope();
 		}
 		stmt.setLong(1, Long.parseLong(scope.getId()));
@@ -2051,11 +2088,12 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
+		for (ILocator loc : doReadItemIdentifiers(topicMap)) {
+			doRemoveItemIdentifier(topicMap, loc);
+		}
 		PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
-		stmt.setLong(2, topicMapId);
-		stmt.setLong(3, topicMapId);
 		stmt.execute();
 	}
 
@@ -2987,7 +3025,7 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 			/*
 			 * read scope by themes
 			 */
-			PreparedStatement stmt = queryBuilder.getQueryScopesByThemesUsed();
+			PreparedStatement stmt = queryBuilder.getQueryReadScopeByThemes();
 			boolean first = true;
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();
@@ -3012,6 +3050,26 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 					}
 				}
 			}
+			Collection<IScope> temp = HashUtil.getHashSet(scopes);
+			scopes.clear();
+			for ( IScope scope : temp ){
+				if ( !getAssociationsByScope(topicMap, scope, -1,-1).isEmpty()){
+					scopes.add(scope);
+					continue;
+				}
+				if ( !getNamesByScope(topicMap, scope, -1,-1).isEmpty()){
+					scopes.add(scope);
+					continue;
+				}
+				if ( !getOccurrencesByScope(topicMap, scope, -1,-1).isEmpty()){
+					scopes.add(scope);
+					continue;
+				}
+				if ( !getVariantsByScope(topicMap, scope, -1,-1).isEmpty()){
+					scopes.add(scope);
+					continue;
+				}
+			}			
 		}
 		return scopes;
 	}
@@ -4801,9 +4859,7 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 					}
 						break;
 					case PLAYER: {
-						results
-								.put(type,
-										new JdbcReadOnlyTopic(this, new TopicImpl(new JdbcIdentity(Long.toString(rs.getLong("id_player"))), c.getTopicMap())));
+						results.put(type, new JdbcReadOnlyTopic(this, new TopicImpl(new JdbcIdentity(Long.toString(rs.getLong("id_player"))), c.getTopicMap())));
 					}
 						break;
 					case REIFICATION: {

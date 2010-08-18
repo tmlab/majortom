@@ -1,12 +1,12 @@
 DROP TABLE IF EXISTS locators;
 CREATE TABLE locators (
-    id bigint AUTO_INCREMENT NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT,
     reference character varying(1024) NOT NULL,
   CONSTRAINT pk_locators PRIMARY KEY (id)
-);
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS topicmaps;
-CREATE TABLE topicmaps (
+CREATE TABLE topicmaps(
 	id bigint NOT NULL AUTO_INCREMENT,
     id_parent bigint,
     id_topicmap bigint,
@@ -15,8 +15,8 @@ CREATE TABLE topicmaps (
   CONSTRAINT pk_topicmap PRIMARY KEY (id),
   CONSTRAINT fk_baselocator FOREIGN KEY (id_base_locator)
       REFERENCES locators (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS topics;
 CREATE TABLE topics (
@@ -26,25 +26,25 @@ CREATE TABLE topics (
   CONSTRAINT pk_topics PRIMARY KEY (id),
   CONSTRAINT fk_topic_parent FOREIGN KEY (id_parent)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 ALTER TABLE topicmaps ADD
   CONSTRAINT fk_topicmaps_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
+      ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
 DROP TABLE IF EXISTS scopes;
 CREATE TABLE scopes (
-    id bigint AUTO_INCREMENT NOT NULL,
+    id bigint NOT NULL AUTO_INCREMENT,
 	id_topicmap bigint,
   CONSTRAINT pk_scope PRIMARY KEY (id),
   CONSTRAINT fk_scopes_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS associations;
 CREATE TABLE associations (
@@ -55,28 +55,28 @@ CREATE TABLE associations (
     id_scope bigint NOT NULL,
     id_type bigint NOT NULL,
   CONSTRAINT pk_associations PRIMARY KEY (id)
-);
+) ENGINE = InnoDb;
 
 ALTER TABLE associations ADD 
   CONSTRAINT fk_associations_parent FOREIGN KEY (id_parent)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE;
+      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE associations ADD 
   CONSTRAINT fk_associations_type FOREIGN KEY (id_type)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE;
+      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE associations ADD 
   CONSTRAINT fk_associations_scope FOREIGN KEY (id_scope)
       REFERENCES scopes (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE;
+      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE associations ADD 
   CONSTRAINT fk_associations_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE SET NULL;
+      ON UPDATE CASCADE ON DELETE SET NULL;
 ALTER TABLE associations ADD 
   CONSTRAINT fk_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE;
+      ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -89,8 +89,8 @@ CREATE TABLE revisions
   CONSTRAINT pk_revisions PRIMARY KEY (id),
   CONSTRAINT fk_revisions_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS changesets;
 CREATE TABLE changesets
@@ -105,8 +105,8 @@ CREATE TABLE changesets
   CONSTRAINT pk_changeset PRIMARY KEY (id),
   CONSTRAINT fk_changesets_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS history;
 CREATE TABLE history
@@ -135,11 +135,11 @@ CREATE TABLE history
   CONSTRAINT pk_history PRIMARY KEY (id, id_revision, id_topicmap),
   CONSTRAINT fk_history_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_history_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS metadata;
 CREATE TABLE metadata
@@ -149,8 +149,8 @@ CREATE TABLE metadata
   `value` varchar(1024),
   CONSTRAINT fk_md_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS `names`;
 CREATE TABLE `names` (
@@ -165,17 +165,17 @@ CREATE TABLE `names` (
  CONSTRAINT pk_names PRIMARY KEY (id),
   CONSTRAINT fk_names_type FOREIGN KEY (id_type)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_names_scope FOREIGN KEY (id_scope)
       REFERENCES scopes (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_names_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE SET NULL,
+      ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT fk_names_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS occurrences;
 CREATE TABLE occurrences (
@@ -190,17 +190,17 @@ CREATE TABLE occurrences (
  CONSTRAINT pk_occurrences PRIMARY KEY (id),
   CONSTRAINT fk_occurrences_type FOREIGN KEY (id_type)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_occurrences_scope FOREIGN KEY (id_scope)
       REFERENCES scopes (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_occurrences_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE SET NULL,
+      ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT fk_occurrences_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_instance_of;
 CREATE TABLE rel_instance_of (
@@ -208,11 +208,11 @@ CREATE TABLE rel_instance_of (
     id_type bigint NOT NULL,
   CONSTRAINT fk_instance FOREIGN KEY (id_instance)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_topic_type FOREIGN KEY (id_type)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_item_identifiers;
 CREATE TABLE rel_item_identifiers (
@@ -220,8 +220,8 @@ CREATE TABLE rel_item_identifiers (
     id_locator bigint NOT NULL,
   CONSTRAINT fk_ii_locator FOREIGN KEY (id_locator)
       REFERENCES locators (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_kind_of;
 CREATE TABLE rel_kind_of (
@@ -229,11 +229,11 @@ CREATE TABLE rel_kind_of (
     id_supertype bigint,
   CONSTRAINT fk_subtype FOREIGN KEY (id_subtype)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_supertype FOREIGN KEY (id_supertype)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_subject_identifiers;
 CREATE TABLE rel_subject_identifiers (
@@ -241,11 +241,11 @@ CREATE TABLE rel_subject_identifiers (
     id_locator bigint NOT NULL,
   CONSTRAINT fk_si_locator FOREIGN KEY (id_locator)
       REFERENCES locators (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_si_topic FOREIGN KEY (id_topic)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_subject_locators;
 CREATE TABLE rel_subject_locators (
@@ -253,11 +253,11 @@ CREATE TABLE rel_subject_locators (
     id_locator bigint NOT NULL,
   CONSTRAINT fk_sl_locator FOREIGN KEY (id_locator)
       REFERENCES locators (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_sl_topic FOREIGN KEY (id_topic)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS rel_themes;
 CREATE TABLE rel_themes (
@@ -265,11 +265,11 @@ CREATE TABLE rel_themes (
     id_theme bigint NOT NULL,
   CONSTRAINT fk_themes_scope FOREIGN KEY (id_scope)
       REFERENCES scopes (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_theme FOREIGN KEY (id_theme)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS roles;
 CREATE TABLE roles (
@@ -282,27 +282,27 @@ CREATE TABLE roles (
  CONSTRAINT pk_roles PRIMARY KEY (id),
  CONSTRAINT fk_roles_player FOREIGN KEY (id_player)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_roles_parent FOREIGN KEY (id_parent)
       REFERENCES associations (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_roles_type FOREIGN KEY (id_type)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_roles_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE SET NULL,
+      ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT fk_roles_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS tags;
 CREATE TABLE tags
 (
   tag varchar(1024) NOT NULL,
   `time` timestamp NOT NULL
-);
+) ENGINE = InnoDb;
 
 DROP TABLE IF EXISTS variants;
 CREATE TABLE variants (
@@ -316,16 +316,16 @@ CREATE TABLE variants (
   CONSTRAINT pk_variants PRIMARY KEY (id),
   CONSTRAINT fk_variants_parent FOREIGN KEY (id_parent)
       REFERENCES `names` (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_variants_scope FOREIGN KEY (id_scope)
       REFERENCES scopes (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_variants_reifier FOREIGN KEY (id_reifier)
       REFERENCES topics (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE SET NULL,
+      ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT fk_variants_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
+      ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDb;
 
 

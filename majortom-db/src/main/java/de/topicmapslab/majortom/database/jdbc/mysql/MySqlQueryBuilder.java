@@ -245,10 +245,6 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadAssociationWithScope;
 	private PreparedStatement preparedStatementReadConstructById;
 	private PreparedStatement preparedStatementReadLocator;
-	// private PreparedStatement preparedStatementReadOccurrenceById;
-	// private PreparedStatement preparedStatementReadVariantById;
-	// private PreparedStatement preparedStatementReadAssociationById;
-	// private PreparedStatement preparedStatementReadRoleById;
 	private PreparedStatement preparedStatementReadConstructByItemIdentifier;
 	private PreparedStatement preparedStatementReadOccurrenceDataType;
 	private PreparedStatement preparedStatementReadVariantDataType;
@@ -288,7 +284,10 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadTopicMap;
 	private PreparedStatement preparedStatementReadTopics;
 	private PreparedStatement preparedStatementReadTopicsWithType;
-	private PreparedStatement preparedStatementReadType;
+	private PreparedStatement preparedStatementReadNameType;
+	private PreparedStatement preparedStatementReadOccurrenceType;
+	private PreparedStatement preparedStatementReadRoleType;
+	private PreparedStatement preparedStatementReadAssociationType;
 	private PreparedStatement preparedStatementReadTypes;
 	private PreparedStatement preparedStatementReadTypesPaged;
 	private PreparedStatement preparedStatementReadNameScope;
@@ -861,10 +860,47 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQueryReadType() throws SQLException {
-		if (this.preparedStatementReadType == null) {
-			this.preparedStatementReadType = getConnection().prepareStatement(IMySqlSelectQueries.NonPaged.QUERY_READ_TYPE);
+		throw new UnsupportedOperationException("Use specific method!");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadNameType() throws SQLException {
+		if (this.preparedStatementReadNameType == null) {
+			this.preparedStatementReadNameType = getConnection().prepareStatement(IMySqlSelectQueries.NonPaged.QUERY_READ_NAME_TYPE);
 		}
-		return this.preparedStatementReadType;
+		return this.preparedStatementReadNameType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadOccurrenceType() throws SQLException {
+		if (this.preparedStatementReadOccurrenceType == null) {
+			this.preparedStatementReadOccurrenceType = getConnection().prepareStatement(IMySqlSelectQueries.NonPaged.QUERY_READ_OCCURRENCE_TYPE);
+		}
+		return this.preparedStatementReadOccurrenceType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadRoleType() throws SQLException {
+		if (this.preparedStatementReadRoleType == null) {
+			this.preparedStatementReadRoleType = getConnection().prepareStatement(IMySqlSelectQueries.NonPaged.QUERY_READ_ROLE_TYPE);
+		}
+		return this.preparedStatementReadRoleType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadAssociationType() throws SQLException {
+		if (this.preparedStatementReadAssociationType == null) {
+			this.preparedStatementReadAssociationType = getConnection().prepareStatement(IMySqlSelectQueries.NonPaged.QUERY_READ_ASSOCIATION_TYPE);
+		}
+		return this.preparedStatementReadAssociationType;
 	}
 
 	/**
@@ -953,15 +989,18 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementAddItemIdentifier;
 	private PreparedStatement preparedStatementAddSubjectIdentifier;
 	private PreparedStatement preparedStatementAddSubjectLocator;
-	private PreparedStatement preparedStatementModifyType;
+	private PreparedStatement preparedStatementModifyNameType;
+	private PreparedStatement preparedStatementModifyOccurrenceType;
+	private PreparedStatement preparedStatementModifyRoleType;
+	private PreparedStatement preparedStatementModifyAssociationType;
 	private PreparedStatement preparedStatementModifyTypes;
 	private PreparedStatement preparedStatementModifyPlayer;
-//	private PreparedStatement preparedStatementModifyNameReifier;
-//	private PreparedStatement preparedStatementModifyOccurrenceReifier;
-//	private PreparedStatement preparedStatementModifyVariantReifier;
-//	private PreparedStatement preparedStatementModifyRoleReifier;
-//	private PreparedStatement preparedStatementModifyAssociationReifier;
-//	private PreparedStatement preparedStatementModifyTopicMapReifier;
+	private PreparedStatement preparedStatementModifyNameReifier;
+	private PreparedStatement preparedStatementModifyOccurrenceReifier;
+	private PreparedStatement preparedStatementModifyVariantReifier;
+	private PreparedStatement preparedStatementModifyRoleReifier;
+	private PreparedStatement preparedStatementModifyAssociationReifier;
+	private PreparedStatement preparedStatementModifyTopicMapReifier;
 	private PreparedStatement preparedStatementModifyNameScope;
 	private PreparedStatement preparedStatementModifyOccurrenceScope;
 	private PreparedStatement preparedStatementModifyVariantScope;
@@ -1011,10 +1050,47 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 	 * {@inheritDoc}
 	 */
 	public PreparedStatement getQueryModifyType() throws SQLException {
-		if (this.preparedStatementModifyType == null) {
-			this.preparedStatementModifyType = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_TYPE);
+		throw new UnsupportedOperationException("Use specific methods.");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyNameType() throws SQLException {
+		if (this.preparedStatementModifyNameType == null) {
+			this.preparedStatementModifyNameType = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_NAME_TYPE);
 		}
-		return this.preparedStatementModifyType;
+		return this.preparedStatementModifyNameType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyOccurrenceType() throws SQLException {
+		if (this.preparedStatementModifyOccurrenceType == null) {
+			this.preparedStatementModifyOccurrenceType = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_OCCURRENCE_TYPE);
+		}
+		return this.preparedStatementModifyOccurrenceType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyRoleType() throws SQLException {
+		if (this.preparedStatementModifyRoleType == null) {
+			this.preparedStatementModifyRoleType = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_ROLE_TYPE);
+		}
+		return this.preparedStatementModifyRoleType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyAssociationType() throws SQLException {
+		if (this.preparedStatementModifyAssociationType == null) {
+			this.preparedStatementModifyAssociationType = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_ASSOCIATION_TYPE);
+		}
+		return this.preparedStatementModifyAssociationType;
 	}
 
 	/**
@@ -1044,83 +1120,71 @@ public class MySqlQueryBuilder implements IQueryBuilder {
 		throw new UnsupportedOperationException("USe specific methods.");
 	}
 
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyNameReifier() throws SQLException
-	// {
-	// if (this.preparedStatementModifyNameReifier == null) {
-	// this.preparedStatementModifyNameReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyNameReifier;
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyOccurrenceReifier() throws
-	// SQLException {
-	// if (this.preparedStatementModifyOccurrenceReifier == null) {
-	// this.preparedStatementModifyOccurrenceReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyOccurrenceReifier;
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyVariantReifier() throws
-	// SQLException {
-	// if (this.preparedStatementModifyVariantReifier == null) {
-	// this.preparedStatementModifyVariantReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyVariantReifier;
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyRoleReifier() throws SQLException
-	// {
-	// if (this.preparedStatementModifyRoleReifier == null) {
-	// this.preparedStatementModifyRoleReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyRoleReifier;
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyAssociationReifier() throws
-	// SQLException {
-	// if (this.preparedStatementModifyAssociationReifier == null) {
-	// this.preparedStatementModifyAssociationReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyAssociationReifier;
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// public PreparedStatement getQueryModifyTopicMapReifier() throws
-	// SQLException {
-	// if (this.preparedStatementModifyTopicMapReifier == null) {
-	// this.preparedStatementModifyTopicMapReifier =
-	// getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_REIFIER,
-	// Statement.RETURN_GENERATED_KEYS);
-	// }
-	// return this.preparedStatementModifyTopicMapReifier;
-	// }
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyNameReifier() throws SQLException {
+		if (this.preparedStatementModifyNameReifier == null) {
+			this.preparedStatementModifyNameReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_NAME_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyNameReifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyOccurrenceReifier() throws SQLException {
+		if (this.preparedStatementModifyOccurrenceReifier == null) {
+			this.preparedStatementModifyOccurrenceReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_OCCURRENCE_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyOccurrenceReifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyVariantReifier() throws SQLException {
+		if (this.preparedStatementModifyVariantReifier == null) {
+			this.preparedStatementModifyVariantReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_VARIANT_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyVariantReifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyRoleReifier() throws SQLException {
+		if (this.preparedStatementModifyRoleReifier == null) {
+			this.preparedStatementModifyRoleReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_ROLE_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyRoleReifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyAssociationReifier() throws SQLException {
+		if (this.preparedStatementModifyAssociationReifier == null) {
+			this.preparedStatementModifyAssociationReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_ASSOCIATION_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyAssociationReifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryModifyTopicMapReifier() throws SQLException {
+		if (this.preparedStatementModifyTopicMapReifier == null) {
+			this.preparedStatementModifyTopicMapReifier = getConnection().prepareStatement(IMySqlUpdateQueries.QUERY_MODIFY_TOPICMAP_REIFIER,
+					Statement.RETURN_GENERATED_KEYS);
+		}
+		return this.preparedStatementModifyTopicMapReifier;
+	}
 
 	/**
 	 * {@inheritDoc}

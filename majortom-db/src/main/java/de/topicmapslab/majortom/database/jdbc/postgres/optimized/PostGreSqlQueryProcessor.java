@@ -60,6 +60,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public PostGreSqlConnectionProvider getConnectionProvider() {
 		return (PostGreSqlConnectionProvider) super.getConnectionProvider();
 	}

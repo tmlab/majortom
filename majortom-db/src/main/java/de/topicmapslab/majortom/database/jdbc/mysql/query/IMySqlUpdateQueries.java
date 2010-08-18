@@ -62,7 +62,28 @@ public interface IMySqlUpdateQueries {
 	 * <b>parameters(2):</b> type id, construct id
 	 * </p>
 	 */
-	public static final String QUERY_MODIFY_TYPE = "UPDATE typeables SET id_type = ? WHERE id = ?;";
+	public static final String QUERY_MODIFY_NAME_TYPE = "UPDATE names SET id_type = ? WHERE id = ?;";
+	/**
+	 * query to modify the type of a typed construct
+	 * <p>
+	 * <b>parameters(2):</b> type id, construct id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_OCCURRENCE_TYPE = "UPDATE occurrences SET id_type = ? WHERE id = ?;";
+	/**
+	 * query to modify the type of a typed construct
+	 * <p>
+	 * <b>parameters(2):</b> type id, construct id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_ROLE_TYPE = "UPDATE roles SET id_type = ? WHERE id = ?;";
+	/**
+	 * query to modify the type of a typed construct
+	 * <p>
+	 * <b>parameters(2):</b> type id, construct id
+	 * </p>
+	 */
+	public static final String QUERY_MODIFY_ASSOCIATION_TYPE = "UPDATE associations SET id_type = ? WHERE id = ?;";
 
 	/**
 	 * query to modify the player of a role
