@@ -67,7 +67,7 @@ public abstract class ConstructImpl implements IConstruct {
 	 * @param parent
 	 *            the parent construct
 	 */
-	public ConstructImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
+	protected ConstructImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		this.topicMap = topicMap;
 		this.parent = parent;
 		this.identity = identity;

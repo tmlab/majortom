@@ -34,7 +34,7 @@ public class VariantImpl extends DataTypeAwareImpl implements IVariant {
 	 *            the identity of the topic map store
 	 * @param parent
 	 */
-	public VariantImpl(ITopicMapStoreIdentity identity, IName parent) {
+	protected VariantImpl(ITopicMapStoreIdentity identity, IName parent) {
 		super(identity, parent.getTopicMap(), parent);
 	}
 

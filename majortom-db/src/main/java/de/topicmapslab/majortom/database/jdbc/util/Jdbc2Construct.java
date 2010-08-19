@@ -24,14 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import de.topicmapslab.majortom.core.AssociationImpl;
-import de.topicmapslab.majortom.core.AssociationRoleImpl;
 import de.topicmapslab.majortom.core.LocatorImpl;
-import de.topicmapslab.majortom.core.NameImpl;
-import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
-import de.topicmapslab.majortom.core.TopicImpl;
-import de.topicmapslab.majortom.core.VariantImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -66,10 +60,14 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class Jdbc2Construct {
 
-	public static IAssociation toAssociation(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+	public static IAssociation toAssociation(ITopicMap topicMap,
+			ResultSet result, String column) throws SQLException {
 		try {
 			if (result.next()) {
-				return new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap);
+				return topicMap.getStore().getConstructFactory()
+						.newAssociation(
+								new JdbcIdentity(result.getString(column)),
+								topicMap);
 			}
 			return null;
 		} finally {
@@ -77,10 +75,12 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static ITopic toTopic(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+	public static ITopic toTopic(ITopicMap topicMap, ResultSet result,
+			String column) throws SQLException {
 		try {
 			if (result.next()) {
-				return new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap);
+				return topicMap.getStore().getConstructFactory().newTopic(
+						new JdbcIdentity(result.getString(column)), topicMap);
 			}
 			return null;
 		} finally {
@@ -88,10 +88,13 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static IName toName(ITopic topic, ResultSet result, String column) throws SQLException {
+	public static IName toName(ITopic topic, ResultSet result, String column)
+			throws SQLException {
 		try {
 			if (result.next()) {
-				return new NameImpl(new JdbcIdentity(result.getString(column)), topic);
+				return topic.getTopicMap().getStore().getConstructFactory()
+						.newName(new JdbcIdentity(result.getString(column)),
+								topic);
 			}
 			return null;
 		} finally {
@@ -99,10 +102,14 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static IOccurrence toOccurrence(ITopic topic, ResultSet result, String column) throws SQLException {
+	public static IOccurrence toOccurrence(ITopic topic, ResultSet result,
+			String column) throws SQLException {
 		try {
 			if (result.next()) {
-				return new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic);
+				return topic.getTopicMap().getStore().getConstructFactory()
+						.newOccurrence(
+								new JdbcIdentity(result.getString(column)),
+								topic);
 			}
 			return null;
 		} finally {
@@ -110,10 +117,13 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static IVariant toVariant(IName name, ResultSet result, String column) throws SQLException {
+	public static IVariant toVariant(IName name, ResultSet result, String column)
+			throws SQLException {
 		try {
 			if (result.next()) {
-				return new VariantImpl(new JdbcIdentity(result.getString(column)), name);
+				return name.getTopicMap().getStore().getConstructFactory()
+						.newVariant(new JdbcIdentity(result.getString(column)),
+								name);
 			}
 			return null;
 		} finally {
@@ -121,10 +131,14 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static IAssociationRole toRole(IAssociation association, ResultSet result, String column) throws SQLException {
+	public static IAssociationRole toRole(IAssociation association,
+			ResultSet result, String column) throws SQLException {
 		try {
 			if (result.next()) {
-				return new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association);
+				return association.getTopicMap().getStore()
+						.getConstructFactory().newAssociationRole(
+								new JdbcIdentity(result.getString(column)),
+								association);
 			}
 			return null;
 		} finally {
@@ -132,7 +146,8 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static IScope toScope(ResultSet result, String column) throws SQLException {
+	public static IScope toScope(ResultSet result, String column)
+			throws SQLException {
 		try {
 			if (result.next()) {
 				return new ScopeImpl(result.getString(column));
@@ -143,7 +158,8 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static ILocator toLocator(ResultSet result, String column) throws SQLException {
+	public static ILocator toLocator(ResultSet result, String column)
+			throws SQLException {
 		try {
 			if (result.next()) {
 				return new LocatorImpl(result.getString(column));
@@ -154,198 +170,371 @@ public class Jdbc2Construct {
 		}
 	}
 
-	public static List<IConstruct> toConstructs(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<IConstruct> toConstructs(ITopicMap topicMap,
+			ResultSet result) throws SQLException {
 		List<IConstruct> list = HashUtil.getList();
 		while (result.next()) {
 			if ("t".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new TopicImpl(new JdbcIdentity(result.getString("id")), topicMap));
+				list.add(topicMap.getStore().getConstructFactory().newTopic(
+						new JdbcIdentity(result.getString("id")), topicMap));
 			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
 				list
-						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
-								topicMap)));
+						.add(topicMap
+								.getStore()
+								.getConstructFactory()
+								.newOccurrence(
+										new JdbcIdentity(result.getString("id")),
+										topicMap
+												.getStore()
+												.getConstructFactory()
+												.newTopic(
+														new JdbcIdentity(
+																result
+																		.getString("id_parent")),
+														topicMap)));
 			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+				list.add(topicMap.getStore().getConstructFactory().newName(
+						new JdbcIdentity(result.getString("id")),
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(result
+												.getString("id_parent")),
+										topicMap)));
 			} else if ("v".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
-						new JdbcIdentity(result.getString(3)), topicMap))));
+				list.add(topicMap.getStore().getConstructFactory().newVariant(
+						new JdbcIdentity(result.getString(1)),
+						topicMap.getStore().getConstructFactory().newName(
+								new JdbcIdentity(result.getString(2)),
+								topicMap.getStore().getConstructFactory()
+										.newTopic(
+												new JdbcIdentity(result
+														.getString(3)),
+												topicMap))));
 			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new AssociationImpl(new JdbcIdentity(result.getString("id")), topicMap));
+				list.add(topicMap.getStore().getConstructFactory()
+						.newAssociation(
+								new JdbcIdentity(result.getString("id")),
+								topicMap));
 			} else if ("r".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString("id")), new AssociationImpl(new JdbcIdentity(result.getString("id_parent")),
-						topicMap)));
+				list
+						.add(topicMap
+								.getStore()
+								.getConstructFactory()
+								.newAssociationRole(
+										new JdbcIdentity(result.getString("id")),
+										topicMap
+												.getStore()
+												.getConstructFactory()
+												.newAssociation(
+														new JdbcIdentity(
+																result
+																		.getString("id_parent")),
+														topicMap)));
 			} else if ("tm".equalsIgnoreCase(result.getString("type"))) {
 				String id = result.getString("id");
 				if (id.equalsIgnoreCase(topicMap.getId())) {
 					list.add(topicMap);
 				}
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException(
+						"Unknown characteristics type '"
+								+ result.getString("type") + "'.");
 			}
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IAssociation> toAssociations(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+	public static List<IAssociation> toAssociations(ITopicMap topicMap,
+			ResultSet result, String column) throws SQLException {
 		List<IAssociation> set = HashUtil.getList();
 		while (result.next()) {
-			set.add(new AssociationImpl(new JdbcIdentity(result.getString(column)), topicMap));
+			set.add(topicMap.getStore().getConstructFactory().newAssociation(
+					new JdbcIdentity(result.getString(column)), topicMap));
 		}
 		result.close();
 		return set;
 	}
 
-	public static List<ITopic> toTopics(ITopicMap topicMap, ResultSet result, String column) throws SQLException {
+	public static List<ITopic> toTopics(ITopicMap topicMap, ResultSet result,
+			String column) throws SQLException {
 		List<ITopic> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new TopicImpl(new JdbcIdentity(result.getString(column)), topicMap));
+			list.add(topicMap.getStore().getConstructFactory().newTopic(
+					new JdbcIdentity(result.getString(column)), topicMap));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<ICharacteristics> toCharacteristics(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<ICharacteristics> toCharacteristics(ITopicMap topicMap,
+			ResultSet result) throws SQLException {
 		List<ICharacteristics> list = HashUtil.getList();
 		while (result.next()) {
 			if ("n".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+				list.add(topicMap.getStore().getConstructFactory().newName(
+						new JdbcIdentity(result.getString("id")),
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(result
+												.getString("id_parent")),
+										topicMap)));
 			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
 				list
-						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
-								topicMap)));
+						.add(topicMap
+								.getStore()
+								.getConstructFactory()
+								.newOccurrence(
+										new JdbcIdentity(result.getString("id")),
+										topicMap
+												.getStore()
+												.getConstructFactory()
+												.newTopic(
+														new JdbcIdentity(
+																result
+																		.getString("id_parent")),
+														topicMap)));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException(
+						"Unknown characteristics type '"
+								+ result.getString("type") + "'.");
 			}
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IDatatypeAware> toDatatypeAwares(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<IDatatypeAware> toDatatypeAwares(ITopicMap topicMap,
+			ResultSet result) throws SQLException {
 		List<IDatatypeAware> list = HashUtil.getList();
 		while (result.next()) {
 			if ("v".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
-						new JdbcIdentity(result.getString(3)), topicMap))));
+				list.add(topicMap.getStore().getConstructFactory().newVariant(
+						new JdbcIdentity(result.getString(1)),
+						topicMap.getStore().getConstructFactory().newName(
+								new JdbcIdentity(result.getString(2)),
+								topicMap.getStore().getConstructFactory()
+										.newTopic(
+												new JdbcIdentity(result
+														.getString(3)),
+												topicMap))));
 			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
 				list
-						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
-								topicMap)));
+						.add(topicMap
+								.getStore()
+								.getConstructFactory()
+								.newOccurrence(
+										new JdbcIdentity(result.getString("id")),
+										topicMap
+												.getStore()
+												.getConstructFactory()
+												.newTopic(
+														new JdbcIdentity(
+																result
+																		.getString("id_parent")),
+														topicMap)));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException(
+						"Unknown characteristics type '"
+								+ result.getString("type") + "'.");
 			}
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IName> toNames(ITopic topic, ResultSet result, String column) throws SQLException {
+	public static List<IName> toNames(ITopic topic, ResultSet result,
+			String column) throws SQLException {
 		List<IName> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new NameImpl(new JdbcIdentity(result.getString(column)), topic));
+			list
+					.add(topic.getTopicMap().getStore().getConstructFactory()
+							.newName(
+									new JdbcIdentity(result.getString(column)),
+									topic));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IName> toNames(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+	public static List<IName> toNames(ITopicMap topicMap, ResultSet result,
+			String column, String parentColumn) throws SQLException {
 		List<IName> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new NameImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+			list.add(topicMap.getStore().getConstructFactory().newName(
+					new JdbcIdentity(result.getString(column)),
+					topicMap.getStore().getConstructFactory().newTopic(
+							new JdbcIdentity(result.getString(parentColumn)),
+							topicMap)));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IOccurrence> toOccurrences(ITopic topic, ResultSet result, String column) throws SQLException {
+	public static List<IOccurrence> toOccurrences(ITopic topic,
+			ResultSet result, String column) throws SQLException {
 		List<IOccurrence> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), topic));
+			list.add(topic.getParent().getStore().getConstructFactory()
+					.newOccurrence(new JdbcIdentity(result.getString(column)),
+							topic));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IOccurrence> toOccurrences(ITopicMap topicMap, ResultSet result, String column, String parentColumn) throws SQLException {
+	public static List<IOccurrence> toOccurrences(ITopicMap topicMap,
+			ResultSet result, String column, String parentColumn)
+			throws SQLException {
 		List<IOccurrence> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new OccurrenceImpl(new JdbcIdentity(result.getString(column)), new TopicImpl(new JdbcIdentity(result.getString(parentColumn)), topicMap)));
+			list.add(topicMap.getStore().getConstructFactory().newOccurrence(
+					new JdbcIdentity(result.getString(column)),
+					topicMap.getStore().getConstructFactory().newTopic(
+							new JdbcIdentity(result.getString(parentColumn)),
+							topicMap)));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IVariant> toVariants(IName name, ResultSet result, String column) throws SQLException {
+	public static List<IVariant> toVariants(IName name, ResultSet result,
+			String column) throws SQLException {
 		List<IVariant> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new VariantImpl(new JdbcIdentity(result.getString(column)), name));
+			list.add(name.getTopicMap().getStore().getConstructFactory()
+					.newVariant(new JdbcIdentity(result.getString(column)),
+							name));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IVariant> toVariants(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<IVariant> toVariants(ITopicMap topicMap, ResultSet result)
+			throws SQLException {
 		List<IVariant> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(new JdbcIdentity(
-					result.getString(3)), topicMap))));
+			list.add(topicMap.getStore().getConstructFactory().newVariant(
+					new JdbcIdentity(result.getString(1)),
+					topicMap.getStore().getConstructFactory().newName(
+							new JdbcIdentity(result.getString(2)),
+							topicMap.getStore().getConstructFactory().newTopic(
+									new JdbcIdentity(result.getString(3)),
+									topicMap))));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IVariant> toVariants(ITopicMap topicMap, ResultSet result, String column, String nameIdColumn, String topicIdColumn) throws SQLException {
+	public static List<IVariant> toVariants(ITopicMap topicMap,
+			ResultSet result, String column, String nameIdColumn,
+			String topicIdColumn) throws SQLException {
 		List<IVariant> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new VariantImpl(new JdbcIdentity(result.getString(column)), new NameImpl(new JdbcIdentity(result.getString(nameIdColumn)), new TopicImpl(
-					new JdbcIdentity(result.getString(topicIdColumn)), topicMap))));
+			list.add(topicMap.getStore().getConstructFactory().newVariant(
+					new JdbcIdentity(result.getString(column)),
+					topicMap.getStore().getConstructFactory().newName(
+							new JdbcIdentity(result.getString(nameIdColumn)),
+							topicMap.getStore().getConstructFactory().newTopic(
+									new JdbcIdentity(result
+											.getString(topicIdColumn)),
+									topicMap))));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IAssociationRole> toRoles(IAssociation association, ResultSet result, String column) throws SQLException {
+	public static List<IAssociationRole> toRoles(IAssociation association,
+			ResultSet result, String column) throws SQLException {
 		List<IAssociationRole> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), association));
+			list.add(association.getTopicMap().getStore().getConstructFactory()
+					.newAssociationRole(
+							new JdbcIdentity(result.getString(column)),
+							association));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IAssociationRole> toRoles(ITopicMap topicMap, ResultSet result, String column, String parentIdColumn) throws SQLException {
+	public static List<IAssociationRole> toRoles(ITopicMap topicMap,
+			ResultSet result, String column, String parentIdColumn)
+			throws SQLException {
 		List<IAssociationRole> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new AssociationRoleImpl(new JdbcIdentity(result.getString(column)), new AssociationImpl(
-					new JdbcIdentity(result.getString(parentIdColumn)), topicMap)));
+			list
+					.add(topicMap
+							.getStore()
+							.getConstructFactory()
+							.newAssociationRole(
+									new JdbcIdentity(result.getString(column)),
+									topicMap
+											.getStore()
+											.getConstructFactory()
+											.newAssociation(
+													new JdbcIdentity(
+															result
+																	.getString(parentIdColumn)),
+													topicMap)));
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<IScopable> toScopables(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<IScopable> toScopables(ITopicMap topicMap,
+			ResultSet result) throws SQLException {
 		List<IScopable> list = HashUtil.getList();
 		while (result.next()) {
 			if ("v".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new VariantImpl(new JdbcIdentity(result.getString(1)), new NameImpl(new JdbcIdentity(result.getString(2)), new TopicImpl(
-						new JdbcIdentity(result.getString(3)), topicMap))));
+				list.add(topicMap.getStore().getConstructFactory().newVariant(
+						new JdbcIdentity(result.getString(1)),
+						topicMap.getStore().getConstructFactory().newName(
+								new JdbcIdentity(result.getString(2)),
+								topicMap.getStore().getConstructFactory()
+										.newTopic(
+												new JdbcIdentity(result
+														.getString(3)),
+												topicMap))));
 			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
 				list
-						.add(new OccurrenceImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")),
-								topicMap)));
+						.add(topicMap
+								.getStore()
+								.getConstructFactory()
+								.newOccurrence(
+										new JdbcIdentity(result.getString("id")),
+										topicMap
+												.getStore()
+												.getConstructFactory()
+												.newTopic(
+														new JdbcIdentity(
+																result
+																		.getString("id_parent")),
+														topicMap)));
 			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new NameImpl(new JdbcIdentity(result.getString("id")), new TopicImpl(new JdbcIdentity(result.getString("id_parent")), topicMap)));
+				list.add(topicMap.getStore().getConstructFactory().newName(
+						new JdbcIdentity(result.getString("id")),
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(result
+												.getString("id_parent")),
+										topicMap)));
 			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
-				list.add(new AssociationImpl(new JdbcIdentity(result.getString("id")), topicMap));
+				list.add(topicMap.getStore().getConstructFactory()
+						.newAssociation(
+								new JdbcIdentity(result.getString("id")),
+								topicMap));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException(
+						"Unknown characteristics type '"
+								+ result.getString("type") + "'.");
 			}
 		}
 		result.close();
 		return list;
 	}
 
-	public static List<ILocator> toLocators(ResultSet result, String column) throws SQLException {
+	public static List<ILocator> toLocators(ResultSet result, String column)
+			throws SQLException {
 		List<ILocator> list = HashUtil.getList();
 		while (result.next()) {
 			list.add(new LocatorImpl(result.getString(column)));
@@ -354,14 +543,16 @@ public class Jdbc2Construct {
 		return list;
 	}
 
-	public static List<IScope> toScopes(ITopicMap topicMap, ResultSet result) throws SQLException {
+	public static List<IScope> toScopes(ITopicMap topicMap, ResultSet result)
+			throws SQLException {
 		List<IScope> list = HashUtil.getList();
 		while (result.next()) {
 			String id = result.getString("id");
 			Long[] themeIds = (Long[]) result.getArray("themes").getArray();
 			Set<ITopic> themes = HashUtil.getHashSet();
 			for (Long themeId : themeIds) {
-				themes.add(new TopicImpl(new JdbcIdentity(Long.toString(themeId)), topicMap));
+				themes.add(topicMap.getStore().getConstructFactory().newTopic(
+						new JdbcIdentity(Long.toString(themeId)), topicMap));
 			}
 			list.add(new ScopeImpl(id, themes));
 		}
@@ -369,7 +560,9 @@ public class Jdbc2Construct {
 		return list;
 	}
 
-	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs, IRevision parent) throws SQLException {
+	public static Changeset toChangeSet(IQueryProcessor processor,
+			ITopicMap topicMap, ResultSet rs, IRevision parent)
+			throws SQLException {
 		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
 		while (rs.next()) {
 			RevisionChangeData data = new RevisionChangeData();
@@ -384,11 +577,13 @@ public class Jdbc2Construct {
 		return toChangeSet(processor, topicMap, list);
 	}
 
-	public static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, ResultSet rs) throws SQLException {
+	public static Changeset toChangeSet(IQueryProcessor processor,
+			ITopicMap topicMap, ResultSet rs) throws SQLException {
 		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
 		while (rs.next()) {
 			RevisionChangeData data = new RevisionChangeData();
-			data.revision = new RevisionImpl(processor.getConnectionProvider().getTopicMapStore(), rs.getLong("id_revision")) {
+			data.revision = new RevisionImpl(processor.getConnectionProvider()
+					.getTopicMapStore(), rs.getLong("id_revision")) {
 			};
 			data.idNotifier = rs.getLong("id_notifier");
 			data.type = TopicMapEventType.valueOf(rs.getString("type"));
@@ -400,7 +595,9 @@ public class Jdbc2Construct {
 		return toChangeSet(processor, topicMap, list);
 	}
 
-	private static Changeset toChangeSet(IQueryProcessor processor, ITopicMap topicMap, List<RevisionChangeData> list) throws SQLException {
+	private static Changeset toChangeSet(IQueryProcessor processor,
+			ITopicMap topicMap, List<RevisionChangeData> list)
+			throws SQLException {
 
 		Changeset changeset = new Changeset();
 		for (RevisionChangeData data : list) {
@@ -409,150 +606,246 @@ public class Jdbc2Construct {
 			switch (data.type) {
 			case ASSOCIATION_ADDED: {
 				notifier = topicMap;
-				newValue = new JdbcReadOnlyAssociation(processor, new AssociationImpl(new JdbcIdentity(data.newValue), topicMap));
+				newValue = new JdbcReadOnlyAssociation(processor, topicMap
+						.getStore().getConstructFactory().newAssociation(
+								new JdbcIdentity(data.newValue), topicMap));
 			}
 				break;
 			case ASSOCIATION_REMOVED: {
 				notifier = topicMap;
-				oldValue = new JdbcReadOnlyAssociation(processor, new AssociationImpl(new JdbcIdentity(data.oldValue), topicMap));
+				oldValue = new JdbcReadOnlyAssociation(processor, topicMap
+						.getStore().getConstructFactory().newAssociation(
+								new JdbcIdentity(data.oldValue), topicMap));
 			}
 				break;
 			case DATATYPE_SET: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
 				newValue = data.newValue;
 				oldValue = data.oldValue;
 			}
 				break;
 			case ITEM_IDENTIFIER_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
 				newValue = data.newValue;
 			}
 				break;
 			case ITEM_IDENTIFIER_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
 				oldValue = data.oldValue;
 			}
 				break;
 			case MERGE: {
 				notifier = topicMap;
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
-				oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
+				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.oldValue), topicMap));
 			}
 				break;
 			case NAME_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = new JdbcReadOnlyName(processor, new NameImpl(new JdbcIdentity(data.newValue), (ITopic) notifier));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = new JdbcReadOnlyName(processor, topicMap.getStore()
+						.getConstructFactory().newName(
+								new JdbcIdentity(data.newValue),
+								(ITopic) notifier));
 			}
 				break;
 			case NAME_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				oldValue = new JdbcReadOnlyName(processor, new NameImpl(new JdbcIdentity(data.oldValue), (ITopic) notifier));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				oldValue = new JdbcReadOnlyName(processor, topicMap.getStore()
+						.getConstructFactory().newName(
+								new JdbcIdentity(data.oldValue),
+								(ITopic) notifier));
 			}
 				break;
 			case OCCURRENCE_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = new JdbcReadOnlyOccurrence(processor, new OccurrenceImpl(new JdbcIdentity(data.newValue), (ITopic) notifier));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = new JdbcReadOnlyOccurrence(processor, topicMap
+						.getStore().getConstructFactory().newOccurrence(
+								new JdbcIdentity(data.newValue),
+								(ITopic) notifier));
 			}
 				break;
 			case OCCURRENCE_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				oldValue = new JdbcReadOnlyOccurrence(processor, new OccurrenceImpl(new JdbcIdentity(data.oldValue), (ITopic) notifier));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				oldValue = new JdbcReadOnlyOccurrence(processor, topicMap
+						.getStore().getConstructFactory().newOccurrence(
+								new JdbcIdentity(data.oldValue),
+								(ITopic) notifier));
 			}
 				break;
 			case PLAYER_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
 				if (data.oldValue != null) {
-					oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+					oldValue = new JdbcReadOnlyTopic(processor, topicMap
+							.getStore().getConstructFactory().newTopic(
+									new JdbcIdentity(data.oldValue), topicMap));
 				}
 			}
 				break;
 			case REIFIER_SET: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
 				if (data.oldValue != null) {
-					oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+					oldValue = new JdbcReadOnlyTopic(processor, topicMap
+							.getStore().getConstructFactory().newTopic(
+									new JdbcIdentity(data.oldValue), topicMap));
 				}
 			}
 				break;
 			case ROLE_ADDED: {
-				notifier = new JdbcReadOnlyAssociation(processor, new AssociationImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
-				newValue = new JdbcReadOnlyAssociationRole(processor, new AssociationRoleImpl(new JdbcIdentity(data.newValue), (IAssociation) notifier));
+				notifier = new JdbcReadOnlyAssociation(processor,
+						topicMap.getStore().getConstructFactory()
+								.newAssociation(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
+				newValue = new JdbcReadOnlyAssociationRole(processor, topicMap
+						.getStore().getConstructFactory().newAssociationRole(
+								new JdbcIdentity(data.newValue),
+								(IAssociation) notifier));
 			}
 				break;
 			case ROLE_REMOVED: {
-				notifier = new JdbcReadOnlyAssociation(processor, new AssociationImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
-				oldValue = new JdbcReadOnlyAssociationRole(processor, new AssociationRoleImpl(new JdbcIdentity(data.oldValue), (IAssociation) notifier));
+				notifier = new JdbcReadOnlyAssociation(processor,
+						topicMap.getStore().getConstructFactory()
+								.newAssociation(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
+				oldValue = new JdbcReadOnlyAssociationRole(processor, topicMap
+						.getStore().getConstructFactory().newAssociationRole(
+								new JdbcIdentity(data.oldValue),
+								(IAssociation) notifier));
 			}
 				break;
 			case SCOPE_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = new ScopeImpl(data.newValue, processor.doReadThemes(topicMap, Long.parseLong(data.newValue)));
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = new ScopeImpl(data.newValue, processor.doReadThemes(
+						topicMap, Long.parseLong(data.newValue)));
 				if (data.oldValue != null) {
-					oldValue = new ScopeImpl(data.oldValue, processor.doReadThemes(topicMap, Long.parseLong(data.oldValue)));
+					oldValue = new ScopeImpl(data.oldValue, processor
+							.doReadThemes(topicMap, Long
+									.parseLong(data.oldValue)));
 				}
 			}
 				break;
 			case SUBJECT_LOCATOR_ADDED:
 			case SUBJECT_IDENTIFIER_ADDED: {
-				notifier = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				notifier = new JdbcReadOnlyTopic(processor,
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
 				newValue = data.newValue;
 			}
 				break;
 			case SUBJECT_IDENTIFIER_REMOVED:
 			case SUBJECT_LOCATOR_REMOVED: {
-				notifier = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
+				notifier = new JdbcReadOnlyTopic(processor,
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
 				oldValue = data.oldValue;
 			}
 				break;
 			case TYPE_ADDED:
 			case SUPERTYPE_ADDED: {
-				notifier = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				notifier = new JdbcReadOnlyTopic(processor,
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
 			}
 				break;
 			case TYPE_REMOVED:
 			case SUPERTYPE_REMOVED: {
-				notifier = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(Long.toString(data.idNotifier)), topicMap));
-				oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				notifier = new JdbcReadOnlyTopic(processor,
+						topicMap.getStore().getConstructFactory()
+								.newTopic(
+										new JdbcIdentity(Long
+												.toString(data.idNotifier)),
+										topicMap));
+				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.oldValue), topicMap));
 			}
 				break;
 			case TOPIC_ADDED: {
 				notifier = topicMap;
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
 			}
 				break;
 			case TOPIC_REMOVED: {
 				notifier = topicMap;
-				oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.oldValue), topicMap));
 			}
 				break;
 			case TYPE_SET: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
 				if (data.oldValue != null) {
-					oldValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.oldValue), topicMap));
+					oldValue = new JdbcReadOnlyTopic(processor, topicMap
+							.getStore().getConstructFactory().newTopic(
+									new JdbcIdentity(data.oldValue), topicMap));
 				}
-				newValue = new JdbcReadOnlyTopic(processor, new TopicImpl(new JdbcIdentity(data.newValue), topicMap));
+				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore()
+						.getConstructFactory().newTopic(
+								new JdbcIdentity(data.newValue), topicMap));
 			}
 				break;
 			case VALUE_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
 				oldValue = data.oldValue;
 				newValue = data.newValue;
 			}
 				break;
 			case VARIANT_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				newValue = processor.doReadConstruct(topicMap, data.newValue, true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				newValue = processor.doReadConstruct(topicMap, data.newValue,
+						true);
 			}
 				break;
 			case VARIANT_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, Long.toString(data.idNotifier), true);
-				oldValue = processor.doReadConstruct(topicMap, data.oldValue, true);
+				notifier = processor.doReadConstruct(topicMap, Long
+						.toString(data.idNotifier), true);
+				oldValue = processor.doReadConstruct(topicMap, data.oldValue,
+						true);
 			}
 				break;
 			}
-			changeset.add(new RevisionChangeImpl(data.revision, data.type, notifier, newValue, oldValue));
+			changeset.add(new RevisionChangeImpl(data.revision, data.type,
+					notifier, newValue, oldValue));
 		}
 		return changeset;
 	}

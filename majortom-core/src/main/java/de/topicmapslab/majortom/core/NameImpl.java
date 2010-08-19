@@ -54,7 +54,7 @@ public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 	 * @param parent
 	 *            the parent topic
 	 */
-	public NameImpl(ITopicMapStoreIdentity identity, ITopic parent) {
+	protected NameImpl(ITopicMapStoreIdentity identity, ITopic parent) {
 		super(identity, parent.getParent(), parent);
 	}
 

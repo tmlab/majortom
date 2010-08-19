@@ -61,7 +61,7 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * @param topicMap
 	 *            the topic map
 	 */
-	public TopicImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
+	protected TopicImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
 		super(identity, topicMap, topicMap);
 	}
 

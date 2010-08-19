@@ -45,7 +45,7 @@ public abstract class ScopeableImpl extends ReifiableImpl implements IScopable {
 	 * @param topicMap the topic map
 	 * @param parent the parent construct
 	 */
-	public ScopeableImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
+	protected ScopeableImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		super(identity, topicMap, parent);
 	}
 

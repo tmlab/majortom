@@ -40,7 +40,7 @@ public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 	 * @param parent
 	 *            the parent topic
 	 */
-	public OccurrenceImpl(ITopicMapStoreIdentity identity, ITopic parent) {
+	protected OccurrenceImpl(ITopicMapStoreIdentity identity, ITopic parent) {
 		super(identity, parent.getTopicMap(), parent);
 	}
 
