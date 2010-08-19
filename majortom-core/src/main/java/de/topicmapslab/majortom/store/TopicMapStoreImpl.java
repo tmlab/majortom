@@ -33,11 +33,13 @@ import org.tmapi.core.Topic;
 import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 
+import de.topicmapslab.majortom.core.ConstructFactoryImpl;
 import de.topicmapslab.majortom.executable.EventNotifier;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
@@ -81,6 +83,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	private ITopicMapSystem topicMapSystem;
 	private ITopicMap topicMap;
 	private ThreadPoolExecutor threadPool;
+	private IConstructFactory factory;
 
 	/**
 	 * feature {@link FeatureStrings#SUPPORT_HISTORY}
@@ -2725,6 +2728,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			}
 		}
 		this.threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(max);
+		this.factory = new ConstructFactoryImpl();
 	}
 
 	/**
@@ -2736,6 +2740,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		}
 		topicMapSystem.removeTopicMap(((ITopicMap) topicMap).getLocator());
 		connected = false;
+		this.factory = null;
 	}
 
 	/**
@@ -3277,7 +3282,6 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		doModifyReifier(getTopicMap(), null);
 		for (ITopic t : doReadTopics(getTopicMap())) {
 			if (!t.isRemoved()) {
-
 				try {
 					t.remove(true);
 				} catch (Exception e) {
@@ -3285,5 +3289,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IConstructFactory getConstructFactory() {
+		return factory;
 	}
 }

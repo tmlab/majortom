@@ -5,6 +5,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
@@ -29,7 +30,8 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if initialization failed
 	 */
-	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException;
+	public void initialize(Locator topicMapBaseLocator)
+			throws TopicMapStoreException;
 
 	/**
 	 * Open the connection to the topic map store.
@@ -83,7 +85,8 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	<T extends Construct> void doMerge(final T context, final T... others) throws TopicMapStoreException;
+	<T extends Construct> void doMerge(final T context, final T... others)
+			throws TopicMapStoreException;
 
 	/**
 	 * Operation method to delete a construct from the store.
@@ -97,7 +100,9 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	void doRemove(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
+	void doRemove(final IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException;
 
 	/**
 	 * Operation method to delete a construct from the store.
@@ -110,7 +115,8 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	void doRemove(final IConstruct context, boolean cascade) throws TopicMapStoreException;
+	void doRemove(final IConstruct context, boolean cascade)
+			throws TopicMapStoreException;
 
 	/**
 	 * Operation method to read some informations form the store
@@ -125,7 +131,9 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	Object doRead(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
+	Object doRead(final IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException;
 
 	/**
 	 * Operation method to create a new information item
@@ -140,7 +148,9 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	Object doCreate(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
+	Object doCreate(final IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException;
 
 	/**
 	 * Operation method to add or set some information items to a construct of
@@ -155,7 +165,9 @@ public interface ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
-	void doModify(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
+	void doModify(final IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException;
 
 	/**
 	 * Registers the listener to the topic map.
@@ -252,7 +264,8 @@ public interface ITopicMapStore {
 	 *             thrown if the topic map store does not support history
 	 *             management
 	 */
-	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException;
+	public void enableRevisionManagement(boolean enabled)
+			throws TopicMapStoreException;
 
 	/**
 	 * Returns the current state of revision management.
@@ -262,4 +275,12 @@ public interface ITopicMapStore {
 	 *         enabled, <code>false</code> otherwise.
 	 */
 	public boolean isRevisionManagementEnabled();
+
+	/**
+	 * Return the construct factory to create constructs for the current topic
+	 * map store instance.
+	 * 
+	 * @return the internal construct factory
+	 */
+	public IConstructFactory getConstructFactory();
 }

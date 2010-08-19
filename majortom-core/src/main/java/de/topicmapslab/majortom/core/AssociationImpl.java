@@ -48,7 +48,7 @@ public class AssociationImpl extends ScopeableImpl implements IAssociation, IPag
 	 * @param topicMap
 	 *            the topic map
 	 */
-	public AssociationImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
+	protected AssociationImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap) {
 		super(identity, topicMap, topicMap);
 	}
 

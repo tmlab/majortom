@@ -53,7 +53,7 @@ public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDataty
 	 * @param parent
 	 *            the parent construct
 	 */
-	public DataTypeAwareImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
+	protected DataTypeAwareImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		super(identity, topicMap, parent);
 	}
 

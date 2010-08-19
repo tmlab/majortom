@@ -40,7 +40,7 @@ public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRo
 	 * @param parent
 	 *            the parent construct
 	 */
-	public AssociationRoleImpl(ITopicMapStoreIdentity identity, IAssociation parent) {
+	protected AssociationRoleImpl(ITopicMapStoreIdentity identity, IAssociation parent) {
 		super(identity, parent.getTopicMap(), parent);
 	}
 

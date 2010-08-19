@@ -43,7 +43,7 @@ public abstract class ReifiableImpl extends ConstructImpl implements IReifiable 
 	 * @param parent
 	 *            the parent construct
 	 */
-	public ReifiableImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
+	protected ReifiableImpl(ITopicMapStoreIdentity identity, ITopicMap topicMap, IConstruct parent) {
 		super(identity, topicMap, parent);
 	}
 

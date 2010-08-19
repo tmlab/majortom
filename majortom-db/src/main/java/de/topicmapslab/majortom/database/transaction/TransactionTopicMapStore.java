@@ -19,13 +19,8 @@ import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
-import de.topicmapslab.majortom.core.AssociationImpl;
-import de.topicmapslab.majortom.core.AssociationRoleImpl;
 import de.topicmapslab.majortom.core.ConstructImpl;
-import de.topicmapslab.majortom.core.NameImpl;
-import de.topicmapslab.majortom.core.OccurrenceImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
-import de.topicmapslab.majortom.core.VariantImpl;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.database.transaction.cache.AssociationCache;
 import de.topicmapslab.majortom.database.transaction.cache.CharacteristicsCache;
@@ -76,7 +71,8 @@ import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
-public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITransactionTopicMapStore {
+public class TransactionTopicMapStore extends TopicMapStoreImpl implements
+		ITransactionTopicMapStore {
 
 	private List<TransactionCommand> commands = new LinkedList<TransactionCommand>();
 	private List<TransactionCommand> commited = new LinkedList<TransactionCommand>();
@@ -122,7 +118,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @param transaction
 	 *            the transaction
 	 */
-	public TransactionTopicMapStore(ITopicMapSystem topicMapSystem, TopicMapStoreImpl store, ITransaction transaction) {
+	public TransactionTopicMapStore(ITopicMapSystem topicMapSystem,
+			TopicMapStoreImpl store, ITransaction transaction) {
 		super(topicMapSystem);
 		this.store = store;
 		this.transaction = transaction;
@@ -131,7 +128,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
+	public void initialize(Locator topicMapBaseLocator)
+			throws TopicMapStoreException {
 		// NOTHING TO DO
 	}
 
@@ -151,7 +149,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IAssociation createAssociation(ITopicMap topicMap) throws TopicMapStoreException {
+	IAssociation createAssociation(ITopicMap topicMap)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -159,7 +158,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create topic and add to identity store
 		 */
-		IAssociation a = new AssociationImpl(generateIdentity(), topicMap);
+		IAssociation a = getConstructFactory().newAssociation(
+				generateIdentity(), topicMap);
 		getIdentityStore().setId(a, id);
 		/*
 		 * register association
@@ -171,7 +171,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws TopicMapStoreException {
+	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create topic and add to identity store
 		 */
@@ -206,7 +207,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IAssociation createAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
+	IAssociation createAssociation(ITopicMap topicMap, ITopic type,
+			Collection<ITopic> themes, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * create topic and add to identity store
 		 */
@@ -233,21 +236,24 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type,
+			Collection<ITopic> themes) throws TopicMapStoreException {
 		return createAssociation(topicMap, type, themes, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
+	protected ILocator doCreateLocator(ITopicMap topicMap, String reference)
+			throws TopicMapStoreException {
 		return getIdentityStore().createLocator(reference);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IName doCreateName(ITopic topic, String value) throws TopicMapStoreException {
+	protected IName doCreateName(ITopic topic, String value)
+			throws TopicMapStoreException {
 		/*
 		 * create revision
 		 */
@@ -263,7 +269,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IName name = new NameImpl(generateIdentity(), topic);
+		IName name = getConstructFactory().newName(generateIdentity(), topic);
 		getIdentityStore().setId(name, id);
 		/*
 		 * register characteristics
@@ -291,7 +297,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IName doCreateName(ITopic topic, String value,
+			Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * create revision
 		 */
@@ -307,7 +314,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IName name = new NameImpl(generateIdentity(), topic);
+		IName name = getConstructFactory().newName(generateIdentity(), topic);
 		getIdentityStore().setId(name, id);
 		/*
 		 * register characteristics
@@ -336,7 +343,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IName doCreateName(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
+	protected IName doCreateName(ITopic topic, ITopic type, String value)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -344,7 +352,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IName name = new NameImpl(generateIdentity(), topic);
+		IName name = getConstructFactory().newName(generateIdentity(), topic);
 		getIdentityStore().setId(name, id);
 		/*
 		 * register characteristics
@@ -386,7 +394,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IName createName(ITopic topic, ITopic type, String value, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
+	IName createName(ITopic topic, ITopic type, String value,
+			Collection<ITopic> themes, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -394,7 +404,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IName name = new NameImpl(generateIdentity(), topic);
+		IName name = getConstructFactory().newName(generateIdentity(), topic);
 		getIdentityStore().setId(name, id);
 		/*
 		 * register characteristics
@@ -423,51 +433,68 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IName doCreateName(ITopic topic, ITopic type, String value,
+			Collection<ITopic> themes) throws TopicMapStoreException {
 		return createName(topic, type, value, themes, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING), createRevision());
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			String value) throws TopicMapStoreException {
+		return createOccurrence(topic, type, value, doCreateLocator(
+				getTopicMap(), XmlSchemeDatatypes.XSD_STRING), createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING), themes, createRevision());
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			String value, Collection<ITopic> themes)
+			throws TopicMapStoreException {
+		return createOccurrence(topic, type, value, doCreateLocator(
+				getTopicMap(), XmlSchemeDatatypes.XSD_STRING), themes,
+				createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI), createRevision());
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			ILocator value) throws TopicMapStoreException {
+		return createOccurrence(topic, type, value.getReference(),
+				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI),
+				createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI), themes, createRevision());
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			ILocator value, Collection<ITopic> themes)
+			throws TopicMapStoreException {
+		return createOccurrence(topic, type, value.getReference(),
+				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI),
+				themes, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws TopicMapStoreException {
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			String value, ILocator datatype) throws TopicMapStoreException {
 		return createOccurrence(topic, type, value, datatype, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
+			String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, datatype, themes, createRevision());
+		return createOccurrence(topic, type, value, datatype, themes,
+				createRevision());
 	}
 
 	/**
@@ -487,7 +514,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private IOccurrence createOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, IRevision revision) throws TopicMapStoreException {
+	private IOccurrence createOccurrence(ITopic topic, ITopic type,
+			String value, ILocator datatype, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -495,7 +524,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IOccurrence occurrence = new OccurrenceImpl(generateIdentity(), topic);
+		IOccurrence occurrence = getConstructFactory().newOccurrence(
+				generateIdentity(), topic);
 		getIdentityStore().setId(occurrence, id);
 		/*
 		 * register characteristics
@@ -516,7 +546,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listener
 		 */
-		notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, occurrence, null);
+		notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, occurrence,
+				null);
 		return occurrence;
 	}
 
@@ -540,7 +571,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IOccurrence createOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision)
+	IOccurrence createOccurrence(ITopic topic, ITopic type, String value,
+			ILocator datatype, Collection<ITopic> themes, IRevision revision)
 			throws TopicMapStoreException {
 		/*
 		 * create random id
@@ -549,7 +581,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IOccurrence occurrence = new OccurrenceImpl(generateIdentity(), topic);
+		IOccurrence occurrence = getConstructFactory().newOccurrence(
+				generateIdentity(), topic);
 		getIdentityStore().setId(occurrence, id);
 		/*
 		 * register characteristics
@@ -571,7 +604,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listener
 		 */
-		notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, occurrence, null);
+		notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, topic, occurrence,
+				null);
 		return occurrence;
 	}
 
@@ -590,7 +624,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IAssociationRole createRole(IAssociation association, ITopic type, ITopic player, IRevision revision) throws TopicMapStoreException {
+	IAssociationRole createRole(IAssociation association, ITopic type,
+			ITopic player, IRevision revision) throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -598,7 +633,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IAssociationRole role = new AssociationRoleImpl(generateIdentity(), association);
+		IAssociationRole role = getConstructFactory().newAssociationRole(
+				generateIdentity(), association);
 		getIdentityStore().setId(role, id);
 		/*
 		 * register typed
@@ -618,14 +654,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException {
+	protected IAssociationRole doCreateRole(IAssociation association,
+			ITopic type, ITopic player) throws TopicMapStoreException {
 		return createRole(association, type, player, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes)
+			throws TopicMapStoreException {
 		return getScopeStore().getScope(themes);
 	}
 
@@ -639,7 +677,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @return the create topic
 	 * @throws TopicMapStoreException
 	 */
-	ITopic createTopic(ITopicMap topicMap, IRevision revision) throws TopicMapStoreException {
+	ITopic createTopic(ITopicMap topicMap, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -647,7 +686,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create topic and add to identity store
 		 */
-		ITopic t = new TopicImpl(generateIdentity(), topicMap);
+		ITopic t = getConstructFactory().newTopic(generateIdentity(), topicMap);
 		getIdentityStore().setId(t, id);
 		if (revision != null) {
 			/*
@@ -661,7 +700,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
+	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap)
+			throws TopicMapStoreException {
 		ITopic topic = createTopic(topicMap, null);
 		/*
 		 * notify listeners
@@ -673,7 +713,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException {
+	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap,
+			ILocator itemIdentifier) throws TopicMapStoreException {
 		ITopic topic = createTopic(topicMap, null);
 		/*
 		 * add item identifier
@@ -689,7 +730,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier) throws TopicMapStoreException {
+	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap,
+			ILocator subjectIdentifier) throws TopicMapStoreException {
 		ITopic topic = createTopic(topicMap, null);
 		/*
 		 * add subject identifier
@@ -705,7 +747,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException {
+	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap,
+			ILocator subjectLocator) throws TopicMapStoreException {
 		ITopic topic = createTopic(topicMap, null);
 		/*
 		 * add subject locator
@@ -721,7 +764,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, String value,
+			Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -729,7 +773,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IVariant variant = new VariantImpl(generateIdentity(), name);
+		IVariant variant = getConstructFactory().newVariant(generateIdentity(),
+				name);
 		getIdentityStore().setId(variant, id);
 		/*
 		 * register characteristics
@@ -738,7 +783,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * register value
 		 */
-		modifyValue(variant, value, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING), null);
+		modifyValue(variant, value, getIdentityStore().createLocator(
+				XmlSchemeDatatypes.XSD_STRING), null);
 		/*
 		 * register scope
 		 */
@@ -754,7 +800,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, ILocator value,
+			Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -762,7 +809,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IVariant variant = new VariantImpl(generateIdentity(), name);
+		IVariant variant = getConstructFactory().newVariant(generateIdentity(),
+				name);
 		getIdentityStore().setId(variant, id);
 		/*
 		 * register characteristics
@@ -772,7 +820,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * register value
 		 */
-		modifyValue(variant, value, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_ANYURI), null);
+		modifyValue(variant, value, getIdentityStore().createLocator(
+				XmlSchemeDatatypes.XSD_ANYURI), null);
 		/*
 		 * register scope
 		 */
@@ -802,7 +851,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	IVariant createVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
+	IVariant createVariant(IName name, String value, ILocator datatype,
+			Collection<ITopic> themes, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * create random id
 		 */
@@ -810,7 +861,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * create role and add to identity store
 		 */
-		IVariant variant = new VariantImpl(generateIdentity(), name);
+		IVariant variant = getConstructFactory().newVariant(generateIdentity(),
+				name);
 		getIdentityStore().setId(variant, id);
 		/*
 		 * register characteristics
@@ -835,22 +887,27 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, String value,
+			ILocator datatype, Collection<ITopic> themes)
+			throws TopicMapStoreException {
 		return createVariant(name, value, datatype, themes, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doMergeTopicMaps(TopicMap context, TopicMap other) throws TopicMapStoreException {
+	protected void doMergeTopicMaps(TopicMap context, TopicMap other)
+			throws TopicMapStoreException {
 		if (!context.equals(getTopicMap())) {
-			throw new TopicMapStoreException("Calling topic map does not belong to the called store.");
+			throw new TopicMapStoreException(
+					"Calling topic map does not belong to the called store.");
 		}
 		/*
 		 * notify listeners
 		 */
 		notifyListeners(TopicMapEventType.MERGE, getTopicMap(), context, other);
-		TransactionMergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
+		TransactionMergeUtils
+				.doMergeTopicMaps(this, (ITopicMap) context, other);
 
 	}
 
@@ -866,7 +923,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void mergeTopics(ITopic context, ITopic other, IRevision revision) throws TopicMapStoreException {
+	void mergeTopics(ITopic context, ITopic other, IRevision revision)
+			throws TopicMapStoreException {
 		if (!context.equals(other)) {
 			/*
 			 * merge into
@@ -881,15 +939,18 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, other);
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic, context);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
+					other);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
+					context);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
+	protected void doMergeTopics(ITopic context, ITopic other)
+			throws TopicMapStoreException {
 		mergeTopics(context, other, createRevision());
 	}
 
@@ -905,7 +966,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
+	void modifyItemIdentifier(IConstruct c, ILocator itemIdentifier,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * check if item-identifier causes merging
 		 */
@@ -918,14 +980,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
+			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c,
+					itemIdentifier, null);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier)
+			throws TopicMapStoreException {
 		/*
 		 * do modification
 		 */
@@ -944,18 +1008,21 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyPlayer(IAssociationRole role, ITopic player, IRevision revision) throws TopicMapStoreException {
+	void modifyPlayer(IAssociationRole role, ITopic player, IRevision revision)
+			throws TopicMapStoreException {
 		ITopic oldValue = getAssociationStore().setPlayer(role, player);
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.PLAYER_MODIFIED, role, player, oldValue);
+		notifyListeners(TopicMapEventType.PLAYER_MODIFIED, role, player,
+				oldValue);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyPlayer(IAssociationRole role, ITopic player) throws TopicMapStoreException {
+	protected void doModifyPlayer(IAssociationRole role, ITopic player)
+			throws TopicMapStoreException {
 		modifyPlayer(role, player, createRevision());
 	}
 
@@ -972,7 +1039,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyReifier(IReifiable r, ITopic reifier, IRevision revision) throws TopicMapStoreException {
+	void modifyReifier(IReifiable r, ITopic reifier, IRevision revision)
+			throws TopicMapStoreException {
 		ITopic oldValue = getReificationStore().setReifier(r, reifier);
 		if (oldValue != reifier && revision != null) {
 			/*
@@ -985,14 +1053,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyReifier(IReifiable r, ITopic reifier) throws TopicMapStoreException {
+	protected void doModifyReifier(IReifiable r, ITopic reifier)
+			throws TopicMapStoreException {
 		modifyReifier(r, reifier, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException {
+	protected void doModifyScope(IScopable s, ITopic theme)
+			throws TopicMapStoreException {
 		/*
 		 * remove old scope relation
 		 */
@@ -1025,11 +1095,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifySubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
+	void modifySubjectIdentifier(ITopic t, ILocator subjectIdentifier,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * check if subject-identifier causes merging
 		 */
-		ITopic topic = checkMergeConditionOfSubjectIdentifier(t, subjectIdentifier);
+		ITopic topic = checkMergeConditionOfSubjectIdentifier(t,
+				subjectIdentifier);
 		if (topic != null) {
 			mergeTopics(t, topic, revision);
 		}
@@ -1038,14 +1110,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
+			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t,
+					subjectIdentifier, null);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
+	protected void doModifySubjectIdentifier(ITopic t,
+			ILocator subjectIdentifier) throws TopicMapStoreException {
 		modifySubjectIdentifier(t, subjectIdentifier, createRevision());
 	}
 
@@ -1061,7 +1135,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails
 	 */
-	void modifySubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
+	void modifySubjectLocator(ITopic t, ILocator subjectLocator,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * check if subject-locator causes merging
 		 */
@@ -1074,7 +1149,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 				/*
 				 * notify listeners
 				 */
-				notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_ADDED, t, subjectLocator, null);
+				notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_ADDED, t,
+						subjectLocator, null);
 			}
 		}
 	}
@@ -1082,7 +1158,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
+	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator)
+			throws TopicMapStoreException {
 		modifySubjectLocator(t, subjectLocator, createRevision());
 	}
 
@@ -1096,7 +1173,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifySupertype(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
+	void modifySupertype(ITopic t, ITopic type, IRevision revision)
+			throws TopicMapStoreException {
 		if (!getTopicTypeStore().getSupertypes(t).contains(type)) {
 			getTopicTypeStore().addSupertype(t, type);
 			/*
@@ -1112,21 +1190,24 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifySupertype(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected void doModifySupertype(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		modifySupertype(t, type, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyTag(ITopicMap tm, String tag) throws TopicMapStoreException {
+	protected void doModifyTag(ITopicMap tm, String tag)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyTag(ITopicMap tm, String tag, Calendar timestamp) throws TopicMapStoreException {
+	protected void doModifyTag(ITopicMap tm, String tag, Calendar timestamp)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
@@ -1142,7 +1223,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyType(ITypeable t, ITopic type, IRevision revision) throws TopicMapStoreException {
+	void modifyType(ITypeable t, ITopic type, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * remove oldType
 		 */
@@ -1162,7 +1244,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyType(ITypeable t, ITopic type) throws TopicMapStoreException {
+	protected void doModifyType(ITypeable t, ITopic type)
+			throws TopicMapStoreException {
 		modifyType(t, type, createRevision());
 	}
 
@@ -1178,7 +1261,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
+	void modifyType(ITopic t, ITopic type, IRevision revision)
+			throws TopicMapStoreException {
 		if (!getTopicTypeStore().getTypes(t).contains(type)) {
 			getTopicTypeStore().addType(t, type);
 			if (revision != null) {
@@ -1196,7 +1280,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyType(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected void doModifyType(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		modifyType(t, type, createRevision());
 	}
 
@@ -1215,7 +1300,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void modifyValue(IDatatypeAware c, Object value, ILocator datatype, IRevision revision) throws TopicMapStoreException {
+	void modifyValue(IDatatypeAware c, Object value, ILocator datatype,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * modify the value of the characteristics
 		 */
@@ -1223,36 +1309,44 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * modify the data type of the characteristics
 		 */
-		ILocator oldDataType = getCharacteristicsStore().setDatatype(c, datatype);
+		ILocator oldDataType = getCharacteristicsStore().setDatatype(c,
+				datatype);
 		if (revision != null) {
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.VALUE_MODIFIED, c, value, oldValue);
-			notifyListeners(TopicMapEventType.DATATYPE_SET, c, datatype, oldDataType);
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, c, value,
+					oldValue);
+			notifyListeners(TopicMapEventType.DATATYPE_SET, c, datatype,
+					oldDataType);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyValue(IDatatypeAware c, String value) throws TopicMapStoreException {
-		ILocator datatype = getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING);
+	protected void doModifyValue(IDatatypeAware c, String value)
+			throws TopicMapStoreException {
+		ILocator datatype = getIdentityStore().createLocator(
+				XmlSchemeDatatypes.XSD_STRING);
 		modifyValue(c, value, datatype, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyValue(IDatatypeAware c, String value, ILocator datatype) throws TopicMapStoreException {
+	protected void doModifyValue(IDatatypeAware c, String value,
+			ILocator datatype) throws TopicMapStoreException {
 		modifyValue(c, value, datatype, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyValue(IDatatypeAware c, Object value) throws TopicMapStoreException {
-		ILocator datatype = getIdentityStore().createLocator(XmlSchemeDatatypes.javaToXsd(value.getClass()));
+	protected void doModifyValue(IDatatypeAware c, Object value)
+			throws TopicMapStoreException {
+		ILocator datatype = getIdentityStore().createLocator(
+				XmlSchemeDatatypes.javaToXsd(value.getClass()));
 		modifyValue(c, value, datatype, createRevision());
 	}
 
@@ -1267,7 +1361,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 *            the revision
 	 * @throws TopicMapStoreException
 	 */
-	void modifyValue(IName n, String value, IRevision revision) throws TopicMapStoreException {
+	void modifyValue(IName n, String value, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * modify the value of the characteristics
 		 */
@@ -1276,28 +1371,32 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.VALUE_MODIFIED, n, value, oldValue);
+			notifyListeners(TopicMapEventType.VALUE_MODIFIED, n, value,
+					oldValue);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyValue(IName n, String value) throws TopicMapStoreException {
+	protected void doModifyValue(IName n, String value)
+			throws TopicMapStoreException {
 		modifyValue(n, value, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyMetaData(IRevision revision, String key, String value) throws TopicMapStoreException {
+	protected void doModifyMetaData(IRevision revision, String key, String value)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopic t)
+			throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		for (IAssociationRole r : getAssociationStore().getRoles(t)) {
 			associations.add(r.getParent());
@@ -1308,7 +1407,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1325,7 +1425,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all associations
 			 */
-			Set<IAssociation> associations = HashUtil.getHashSet(doReadAssociation(t));
+			Set<IAssociation> associations = HashUtil
+					.getHashSet(doReadAssociation(t));
 			/*
 			 * filter by type
 			 */
@@ -1338,7 +1439,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type,
+			IScope scope) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1355,7 +1457,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all associations
 			 */
-			Set<IAssociation> associations = HashUtil.getHashSet(doReadAssociation(t));
+			Set<IAssociation> associations = HashUtil
+					.getHashSet(doReadAssociation(t));
 			/*
 			 * filter by type
 			 */
@@ -1372,11 +1475,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopic t, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * get all associations
 		 */
-		Set<IAssociation> associations = HashUtil.getHashSet(doReadAssociation(t));
+		Set<IAssociation> associations = HashUtil
+				.getHashSet(doReadAssociation(t));
 
 		/*
 		 * filter by scope
@@ -1388,14 +1493,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopicMap tm)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getAssociationStore().getAssociations());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1403,7 +1510,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1412,7 +1520,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all associations
 			 */
-			Set<IAssociation> associations = HashUtil.getHashSet(getAssociationStore().getAssociations());
+			Set<IAssociation> associations = HashUtil
+					.getHashSet(getAssociationStore().getAssociations());
 			/*
 			 * filter by type
 			 */
@@ -1425,7 +1534,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type,
+			IScope scope) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1433,7 +1543,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1442,7 +1553,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all associations
 			 */
-			Set<IAssociation> associations = HashUtil.getHashSet(getAssociationStore().getAssociations());
+			Set<IAssociation> associations = HashUtil
+					.getHashSet(getAssociationStore().getAssociations());
 			/*
 			 * filter by type
 			 */
@@ -1459,11 +1571,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws TopicMapStoreException {
+	protected Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * get all associations
 		 */
-		Set<IAssociation> associations = HashUtil.getHashSet(getAssociationStore().getAssociations());
+		Set<IAssociation> associations = HashUtil
+				.getHashSet(getAssociationStore().getAssociations());
 		/*
 		 * filter by scope
 		 */
@@ -1474,21 +1588,25 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
+	protected Changeset doReadChangeSet(IRevision r)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t) throws TopicMapStoreException {
-		return HashUtil.getHashSet(getCharacteristicsStore().getCharacteristics(t));
+	protected Set<ICharacteristics> doReadCharacteristics(ITopic t)
+			throws TopicMapStoreException {
+		return HashUtil.getHashSet(getCharacteristicsStore()
+				.getCharacteristics(t));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * get characteristics of the topic
 		 */
@@ -1496,7 +1614,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1505,7 +1624,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all roles
 			 */
-			Set<ICharacteristics> characteristics = HashUtil.getHashSet(getCharacteristicsStore().getCharacteristics(t));
+			Set<ICharacteristics> characteristics = HashUtil
+					.getHashSet(getCharacteristicsStore().getCharacteristics(t));
 			/*
 			 * filter by type
 			 */
@@ -1518,7 +1638,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+	protected Set<ICharacteristics> doReadCharacteristics(ITopic t,
+			ITopic type, IScope scope) throws TopicMapStoreException {
 		/*
 		 * get characteristics of the topic
 		 */
@@ -1526,7 +1647,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1535,7 +1657,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all roles
 			 */
-			Set<ICharacteristics> characteristics = HashUtil.getHashSet(getCharacteristicsStore().getCharacteristics(t));
+			Set<ICharacteristics> characteristics = HashUtil
+					.getHashSet(getCharacteristicsStore().getCharacteristics(t));
 			/*
 			 * filter by type
 			 */
@@ -1552,11 +1675,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws TopicMapStoreException {
+	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * get characteristics of the topic
 		 */
-		Set<ICharacteristics> set = HashUtil.getHashSet(getCharacteristicsStore().getCharacteristics(t));
+		Set<ICharacteristics> set = HashUtil
+				.getHashSet(getCharacteristicsStore().getCharacteristics(t));
 		/*
 		 * filter by scope
 		 */
@@ -1567,7 +1692,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IConstruct doReadConstruct(ITopicMap t, String id) throws TopicMapStoreException {
+	protected IConstruct doReadConstruct(ITopicMap t, String id)
+			throws TopicMapStoreException {
 		/*
 		 * check if id identifies the topic map itself
 		 */
@@ -1583,14 +1709,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws TopicMapStoreException {
+	protected IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier)
+			throws TopicMapStoreException {
 		return getIdentityStore().byItemIdentifier(itemIdentifier);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ILocator doReadDataType(IDatatypeAware c) throws TopicMapStoreException {
+	protected ILocator doReadDataType(IDatatypeAware c)
+			throws TopicMapStoreException {
 		return getCharacteristicsStore().getDatatype(c);
 	}
 
@@ -1604,13 +1732,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			ITopicMapStoreIdentity identity = ((ConstructImpl) c).getIdentity();
 			return identity.getId();
 		}
-		throw new TopicMapStoreException("IConstruct created by external instance.");
+		throw new TopicMapStoreException(
+				"IConstruct created by external instance.");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadItemIdentifiers(IConstruct c) throws TopicMapStoreException {
+	protected Set<ILocator> doReadItemIdentifiers(IConstruct c)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getIdentityStore().getItemIdentifiers(c));
 	}
 
@@ -1631,7 +1761,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected Set<IName> doReadNames(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1639,7 +1770,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1648,7 +1780,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all roles
 			 */
-			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(t));
+			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+					.getNames(t));
 			/*
 			 * filter by type
 			 */
@@ -1661,7 +1794,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+	protected Set<IName> doReadNames(ITopic t, ITopic type, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1669,7 +1803,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1678,7 +1813,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all names
 			 */
-			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(t));
+			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+					.getNames(t));
 			/*
 			 * filter by type
 			 */
@@ -1695,7 +1831,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, IScope scope) throws TopicMapStoreException {
+	protected Set<IName> doReadNames(ITopic t, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * get all names
 		 */
@@ -1711,14 +1848,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadFutureRevision(IRevision r) throws TopicMapStoreException {
+	protected IRevision doReadFutureRevision(IRevision r)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t) throws TopicMapStoreException {
+	protected Set<IOccurrence> doReadOccurrences(ITopic t)
+			throws TopicMapStoreException {
 		Set<IOccurrence> occurrences = HashUtil.getHashSet();
 		occurrences.addAll(getCharacteristicsStore().getOccurrences(t));
 		return occurrences;
@@ -1727,7 +1866,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1735,7 +1875,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1744,7 +1885,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all occurrence
 			 */
-			Set<IOccurrence> occurrences = HashUtil.getHashSet(getCharacteristicsStore().getOccurrences(t));
+			Set<IOccurrence> occurrences = HashUtil
+					.getHashSet(getCharacteristicsStore().getOccurrences(t));
 			/*
 			 * filter by type
 			 */
@@ -1757,7 +1899,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type,
+			IScope scope) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1765,7 +1908,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1774,7 +1918,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all occurrence
 			 */
-			Set<IOccurrence> occurrences = HashUtil.getHashSet(getCharacteristicsStore().getOccurrences(t));
+			Set<IOccurrence> occurrences = HashUtil
+					.getHashSet(getCharacteristicsStore().getOccurrences(t));
 			/*
 			 * filter by type
 			 */
@@ -1791,11 +1936,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws TopicMapStoreException {
+	protected Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope)
+			throws TopicMapStoreException {
 		/*
 		 * get all occurrence
 		 */
-		Set<IOccurrence> occurrences = HashUtil.getHashSet(getCharacteristicsStore().getOccurrences(t));
+		Set<IOccurrence> occurrences = HashUtil
+				.getHashSet(getCharacteristicsStore().getOccurrences(t));
 		/*
 		 * filter by scope
 		 */
@@ -1806,42 +1953,48 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadPlayer(IAssociationRole role) throws TopicMapStoreException {
+	protected ITopic doReadPlayer(IAssociationRole role)
+			throws TopicMapStoreException {
 		return getAssociationStore().getPlayer(role);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException {
+	protected IRevision doReadPastRevision(IRevision r)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IReifiable doReadReification(ITopic t) throws TopicMapStoreException {
+	protected IReifiable doReadReification(ITopic t)
+			throws TopicMapStoreException {
 		return getReificationStore().getReified(t);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadReification(IReifiable r) throws TopicMapStoreException {
+	protected ITopic doReadReification(IReifiable r)
+			throws TopicMapStoreException {
 		return getReificationStore().getReifier(r);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException {
+	protected Calendar doReadRevisionTimestamp(IRevision r)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadRoleTypes(IAssociation association) throws TopicMapStoreException {
+	protected Set<ITopic> doReadRoleTypes(IAssociation association)
+			throws TopicMapStoreException {
 		Set<ITopic> set = HashUtil.getHashSet();
 		/*
 		 * iterate over all roles
@@ -1858,14 +2011,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(IAssociation association) throws TopicMapStoreException {
+	protected Set<IAssociationRole> doReadRoles(IAssociation association)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getAssociationStore().getRoles(association));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws TopicMapStoreException {
+	protected Set<IAssociationRole> doReadRoles(IAssociation association,
+			ITopic type) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1873,7 +2028,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1882,7 +2038,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all roles
 			 */
-			Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore().getRoles(association));
+			Set<IAssociationRole> roles = HashUtil
+					.getHashSet(getAssociationStore().getRoles(association));
 			/*
 			 * filter by type
 			 */
@@ -1895,14 +2052,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player) throws TopicMapStoreException {
+	protected Set<IAssociationRole> doReadRoles(ITopic player)
+			throws TopicMapStoreException {
 		return getAssociationStore().getRoles(player);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws TopicMapStoreException {
+	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type)
+			throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1910,7 +2069,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(type));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(type));
 		types.add(type);
 		/*
 		 * iterate over types
@@ -1919,7 +2079,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * get all roles
 			 */
-			Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore().getRoles(player));
+			Set<IAssociationRole> roles = HashUtil
+					.getHashSet(getAssociationStore().getRoles(player));
 			/*
 			 * filter by type
 			 */
@@ -1932,7 +2093,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws TopicMapStoreException {
+	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type,
+			ITopic assocType) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -1941,7 +2103,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get all types
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getSubtypes(assocType));
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getSubtypes(assocType));
 		types.add(assocType);
 
 		for (IAssociationRole role : doReadRoles(player, type)) {
@@ -1965,50 +2128,58 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws TopicMapStoreException {
+	protected Set<ILocator> doReadSubjectIdentifiers(ITopic t)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getIdentityStore().getSubjectIdentifiers(t));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadSubjectLocators(ITopic t) throws TopicMapStoreException {
+	protected Set<ILocator> doReadSubjectLocators(ITopic t)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getIdentityStore().getSubjectLocators(t));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException {
+	protected Set<ITopic> doReadSuptertypes(ITopic t)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getTopicTypeStore().getSupertypes(t));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws TopicMapStoreException {
+	protected ITopic doReadTopicBySubjectIdentifier(ITopicMap t,
+			ILocator subjectIdentifier) throws TopicMapStoreException {
 		return getIdentityStore().bySubjectIdentifier(subjectIdentifier);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws TopicMapStoreException {
+	protected ITopic doReadTopicBySubjectLocator(ITopicMap t,
+			ILocator subjectLocator) throws TopicMapStoreException {
 		return getIdentityStore().bySubjectLocator(subjectLocator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException {
+	protected Set<ITopic> doReadTopics(ITopicMap t)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getIdentityStore().getTopics());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws TopicMapStoreException {
-		return HashUtil.getHashSet(getTopicTypeStore().getDirectInstances(type));
+	protected Set<ITopic> doReadTopics(ITopicMap t, ITopic type)
+			throws TopicMapStoreException {
+		return HashUtil
+				.getHashSet(getTopicTypeStore().getDirectInstances(type));
 	}
 
 	/**
@@ -2022,12 +2193,18 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore().getDirectTypes(t));
-		if (recognizingTypeInstanceAssociation() && existsTmdmTypeInstanceAssociationType()) {
-			Collection<IAssociation> associations = doReadAssociation(t, getTmdmTypeInstanceAssociationType());
+		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
+				.getDirectTypes(t));
+		if (recognizingTypeInstanceAssociation()
+				&& existsTmdmTypeInstanceAssociationType()) {
+			Collection<IAssociation> associations = doReadAssociation(t,
+					getTmdmTypeInstanceAssociationType());
 			for (Association association : associations) {
-				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(t)) {
-					types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
+				if (association.getRoles(getTmdmInstanceRoleType()).iterator()
+						.next().getPlayer().equals(t)) {
+					types.add((ITopic) association.getRoles(
+							getTmdmTypeRoleType()).iterator().next()
+							.getPlayer());
 				}
 			}
 		}
@@ -2037,7 +2214,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Object doReadValue(IDatatypeAware c) throws TopicMapStoreException {
+	protected Object doReadValue(IDatatypeAware c)
+			throws TopicMapStoreException {
 		return getCharacteristicsStore().getValueAsString(c);
 	}
 
@@ -2045,12 +2223,14 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T doReadValue(IDatatypeAware c, Class<T> type) throws TopicMapStoreException {
+	protected <T> T doReadValue(IDatatypeAware c, Class<T> type)
+			throws TopicMapStoreException {
 		Object obj = getCharacteristicsStore().getValue(c);
 		try {
 			return (T) DatatypeAwareUtils.toValue(obj, type);
 		} catch (Exception e) {
-			throw new TopicMapStoreException("Cannot convert characteristics value to given type!", e);
+			throw new TopicMapStoreException(
+					"Cannot convert characteristics value to given type!", e);
 		}
 	}
 
@@ -2064,15 +2244,18 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException {
+	protected Set<IVariant> doReadVariants(IName n)
+			throws TopicMapStoreException {
 		return HashUtil.getHashSet(getCharacteristicsStore().getVariants(n));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IVariant> doReadVariants(IName n, IScope scope) throws TopicMapStoreException {
-		Set<IVariant> variants = HashUtil.getHashSet(getCharacteristicsStore().getVariants(n));
+	protected Set<IVariant> doReadVariants(IName n, IScope scope)
+			throws TopicMapStoreException {
+		Set<IVariant> variants = HashUtil.getHashSet(getCharacteristicsStore()
+				.getVariants(n));
 		variants.retainAll(getScopeStore().getScoped(scope));
 		return variants;
 	}
@@ -2080,14 +2263,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException {
+	protected Map<String, String> doReadMetaData(IRevision revision)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String doReadMetaData(IRevision revision, String key) throws TopicMapStoreException {
+	protected String doReadMetaData(IRevision revision, String key)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
@@ -2103,11 +2288,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeAssocaition(IAssociation association, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeAssocaition(IAssociation association, boolean cascade,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * remove roles
 		 */
-		Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore().getRoles(association));
+		Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore()
+				.getRoles(association));
 		for (IAssociationRole r : roles) {
 			removeRole(r, false, revision);
 		}
@@ -2138,13 +2325,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, association.getParent(), null, association);
+		notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, association
+				.getParent(), null, association);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveAssociation(IAssociation association, boolean cascade)
+			throws TopicMapStoreException {
 		removeAssocaition(association, cascade, createRevision());
 	}
 
@@ -2160,7 +2349,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeConstruct(IConstruct construct, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeConstruct(IConstruct construct, boolean cascade,
+			IRevision revision) throws TopicMapStoreException {
 		if (construct instanceof ITopic) {
 			removeTopic((ITopic) construct, cascade, revision);
 		} else if (construct instanceof IName) {
@@ -2174,7 +2364,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		} else if (construct instanceof IVariant) {
 			removeVariant((IVariant) construct, cascade, revision);
 		} else {
-			throw new TopicMapStoreException("Calling method removeConstruct() with an instance of " + construct.getClass().getSimpleName() + " not expected!");
+			throw new TopicMapStoreException(
+					"Calling method removeConstruct() with an instance of "
+							+ construct.getClass().getSimpleName()
+							+ " not expected!");
 		}
 	}
 
@@ -2190,7 +2383,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeName(IName name, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeName(IName name, boolean cascade, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * remove variants
 		 */
@@ -2224,13 +2418,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
+		notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null,
+				name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveName(IName name, boolean cascade)
+			throws TopicMapStoreException {
 		removeName(name, cascade, createRevision());
 	}
 
@@ -2246,7 +2442,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeOccurrence(IOccurrence occurrence, boolean cascade,
+			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * remove characteristics
 		 */
@@ -2274,13 +2471,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(), null, occurrence);
+		notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence
+				.getParent(), null, occurrence);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
+			throws TopicMapStoreException {
 		removeOccurrence(occurrence, cascade, createRevision());
 	}
 
@@ -2296,7 +2495,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeRole(IAssociationRole role, boolean cascade, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * remove role
 		 */
@@ -2323,14 +2523,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
+		notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
+				role);
 		// }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveRole(IAssociationRole role, boolean cascade)
+			throws TopicMapStoreException {
 		removeRole(role, cascade, createRevision());
 	}
 
@@ -2346,7 +2548,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeVariant(IVariant variant, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeVariant(IVariant variant, boolean cascade, IRevision revision)
+			throws TopicMapStoreException {
 		/*
 		 * remove characteristics
 		 */
@@ -2370,13 +2573,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null, variant);
+		notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
+				null, variant);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveVariant(IVariant variant, boolean cascade)
+			throws TopicMapStoreException {
 		removeVariant(variant, cascade, createRevision());
 	}
 
@@ -2392,7 +2597,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeTopic(ITopic topic, boolean cascade, IRevision revision) throws TopicMapStoreException {
+	void removeTopic(ITopic topic, boolean cascade, IRevision revision)
+			throws TopicMapStoreException {
 		Set<String> topicIds = HashUtil.getHashSet();
 		removeTopic(topic, cascade, revision, topicIds);
 	}
@@ -2411,7 +2617,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private void removeTopic(ITopic topic, boolean cascade, IRevision revision, final Set<String> topicIds) throws TopicMapStoreException {
+	private void removeTopic(ITopic topic, boolean cascade, IRevision revision,
+			final Set<String> topicIds) throws TopicMapStoreException {
 		if (!cascade && isTopicInUse(topic)) {
 			throw new TopicInUseException(topic, "The given topic is in use.");
 		}
@@ -2419,7 +2626,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * remove all instances
 		 */
-		Set<ITopic> instances = HashUtil.getHashSet(getTopicTypeStore().getDirectInstances(topic));
+		Set<ITopic> instances = HashUtil.getHashSet(getTopicTypeStore()
+				.getDirectInstances(topic));
 		for (ITopic instance : instances) {
 			if (!topicIds.contains(instance.getId())) {
 				removeTopic(instance, cascade, revision, topicIds);
@@ -2429,7 +2637,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * remove sub types
 		 */
-		Set<ITopic> subtypes = HashUtil.getHashSet(getTopicTypeStore().getDirectSubtypes(topic));
+		Set<ITopic> subtypes = HashUtil.getHashSet(getTopicTypeStore()
+				.getDirectSubtypes(topic));
 		for (ITopic subtype : subtypes) {
 			if (!topicIds.contains(subtype.getId())) {
 				removeTopic(subtype, cascade, revision, topicIds);
@@ -2439,13 +2648,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * remove from type hierarchy
 		 */
 		if (!getTopicTypeStore().removeTopic(topic).isEmpty()) {
-			throw new TopicMapStoreException("All topic instances or subtypes should already removed!");
+			throw new TopicMapStoreException(
+					"All topic instances or subtypes should already removed!");
 		}
 
 		/*
 		 * remove typed items
 		 */
-		Set<ITypeable> typeables = HashUtil.getHashSet(getTypedStore().getTyped(topic));
+		Set<ITypeable> typeables = HashUtil.getHashSet(getTypedStore()
+				.getTyped(topic));
 		for (ITypeable typeable : typeables) {
 			removeConstruct(typeable, cascade, revision);
 		}
@@ -2454,13 +2665,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 */
 		Set<ITypeable> removeTypes = getTypedStore().removeType(topic);
 		if (!removeTypes.isEmpty()) {
-			throw new TopicMapStoreException("All typed items should already removed!");
+			throw new TopicMapStoreException(
+					"All typed items should already removed!");
 		}
 
 		/*
 		 * remove played associations
 		 */
-		Set<IAssociation> associations = HashUtil.getHashSet(doReadAssociation(topic));
+		Set<IAssociation> associations = HashUtil
+				.getHashSet(doReadAssociation(topic));
 		for (IAssociation association : associations) {
 			removeAssocaition(association, cascade, revision);
 		}
@@ -2468,9 +2681,11 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * remove scoped items
 		 */
-		Set<IScope> scopes = HashUtil.getHashSet(getScopeStore().getScopes(topic));
+		Set<IScope> scopes = HashUtil.getHashSet(getScopeStore().getScopes(
+				topic));
 		for (IScope scope : scopes) {
-			Set<IScopable> scopables = HashUtil.getHashSet(getScopeStore().getScoped(scope));
+			Set<IScopable> scopables = HashUtil.getHashSet(getScopeStore()
+					.getScoped(scope));
 			for (IScopable scopable : scopables) {
 				removeConstruct(scopable, cascade, revision);
 			}
@@ -2483,7 +2698,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * remove scopes
 		 */
 		if (!getScopeStore().removeScopes(topic).isEmpty()) {
-			throw new TopicMapStoreException("All scoped items should already removed!");
+			throw new TopicMapStoreException(
+					"All scoped items should already removed!");
 		}
 
 		/*
@@ -2494,7 +2710,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * remove characteristics
 		 */
-		Set<ICharacteristics> characteristics = HashUtil.getHashSet(getCharacteristicsStore().getCharacteristics(topic));
+		Set<ICharacteristics> characteristics = HashUtil
+				.getHashSet(getCharacteristicsStore().getCharacteristics(topic));
 		for (ICharacteristics characteristic : characteristics) {
 			removeConstruct(characteristic, cascade, revision);
 		}
@@ -2510,13 +2727,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * notify listeners
 		 */
-		notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
+		notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
+				null, topic);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveTopic(ITopic topic, boolean cascade)
+			throws TopicMapStoreException {
 		removeTopic(topic, cascade, createRevision());
 	}
 
@@ -2558,7 +2777,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * check if deletion constraints are defined and topic is used as
 		 * reifier
 		 */
-		if (isReificationDeletionRestricted() && getReificationStore().getReified(topic) != null) {
+		if (isReificationDeletionRestricted()
+				&& getReificationStore().getReified(topic) != null) {
 			return true;
 		}
 
@@ -2566,12 +2786,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 * used as role player
 		 */
 		Set<IAssociationRole> roles = getAssociationStore().getRoles(topic);
-		if (existsTmdmSupertypeSubtypeAssociationType() || existsTmdmTypeInstanceAssociationType()) {
+		if (existsTmdmSupertypeSubtypeAssociationType()
+				|| existsTmdmTypeInstanceAssociationType()) {
 			for (IAssociationRole role : roles) {
-				if (existsTmdmInstanceRoleType() && role.getType().equals(getTmdmInstanceRoleType())) {
+				if (existsTmdmInstanceRoleType()
+						&& role.getType().equals(getTmdmInstanceRoleType())) {
 					continue;
 				}
-				if (existsTmdmSubtypeRoleType() && role.getType().equals(getTmdmSubtypeRoleType())) {
+				if (existsTmdmSubtypeRoleType()
+						&& role.getType().equals(getTmdmSubtypeRoleType())) {
 					continue;
 				}
 				return true;
@@ -2586,7 +2809,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws TopicMapStoreException {
+	protected void doRemoveTopicMap(ITopicMap topicMap, boolean cascade)
+			throws TopicMapStoreException {
 		// NOTHING TO DO
 	}
 
@@ -2602,22 +2826,26 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
+	void removeItemIdentifier(IConstruct c, ILocator itemIdentifier,
+			IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeItemIdentifer(c, itemIdentifier);
-		notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null, itemIdentifier);
+		notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null,
+				itemIdentifier);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier)
+			throws TopicMapStoreException {
 		removeItemIdentifier(c, itemIdentifier, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveScope(IScopable s, ITopic theme) throws TopicMapStoreException {
+	protected void doRemoveScope(IScopable s, ITopic theme)
+			throws TopicMapStoreException {
 		/*
 		 * check if the theme is contained
 		 */
@@ -2640,7 +2868,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			/*
 			 * notify listeners
 			 */
-			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, newScope, oldScope);
+			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, newScope,
+					oldScope);
 		}
 	}
 
@@ -2656,15 +2885,18 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeSubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
+	void removeSubjectIdentifier(ITopic t, ILocator subjectIdentifier,
+			IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);
-		notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null, subjectIdentifier);
+		notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null,
+				subjectIdentifier);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
+	protected void doRemoveSubjectIdentifier(ITopic t,
+			ILocator subjectIdentifier) throws TopicMapStoreException {
 		removeSubjectIdentifier(t, subjectIdentifier, createRevision());
 	}
 
@@ -2680,26 +2912,31 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeSubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
+	void removeSubjectLocator(ITopic t, ILocator subjectLocator,
+			IRevision revision) throws TopicMapStoreException {
 		getIdentityStore().removeSubjectLocator(t, subjectLocator);
-		notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null, subjectLocator);
+		notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null,
+				subjectLocator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
+	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator)
+			throws TopicMapStoreException {
 		removeSubjectLocator(t, subjectLocator, createRevision());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveSupertype(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected void doRemoveSupertype(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		if (getTopicTypeStore().getSupertypes(t).contains(type)) {
 			IRevision revision = createRevision();
 			getTopicTypeStore().removeSupertype(t, type);
-			if (recognizingSupertypeSubtypeAssociation() && existsTmdmSupertypeSubtypeAssociationType()) {
+			if (recognizingSupertypeSubtypeAssociation()
+					&& existsTmdmSupertypeSubtypeAssociationType()) {
 				removeSupertypeSubtypeAssociation(t, type, revision);
 			}
 			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
@@ -2709,11 +2946,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doRemoveType(ITopic t, ITopic type) throws TopicMapStoreException {
+	protected void doRemoveType(ITopic t, ITopic type)
+			throws TopicMapStoreException {
 		if (getTopicTypeStore().getTypes(t).contains(type)) {
 			IRevision revision = createRevision();
 			getTopicTypeStore().removeType(t, type);
-			if (recognizingTypeInstanceAssociation() && existsTmdmTypeInstanceAssociationType()) {
+			if (recognizingTypeInstanceAssociation()
+					&& existsTmdmTypeInstanceAssociationType()) {
 				removeTypeInstanceAssociation(t, type, revision);
 			}
 			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
@@ -2748,7 +2987,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	public synchronized void connect() throws TopicMapStoreException {
 		super.connect();
 		this.identityStore = createIdentityStore(this);
-		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.characteristicsStore = createCharacteristicsStore(this,
+				getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
 		this.typedStore = createTypedStore(this);
 		this.scopeStore = createScopeStore(this);
 		this.topicTypeCache = createTopicTypeStore(this);
@@ -2768,7 +3008,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		 */
 		if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.transitiveTypeInstanceIndex == null) {
-				this.transitiveTypeInstanceIndex = new TransactionTransitiveTypeInstanceIndex(this);
+				this.transitiveTypeInstanceIndex = new TransactionTransitiveTypeInstanceIndex(
+						this);
 			}
 			return (I) this.transitiveTypeInstanceIndex;
 		} else if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
@@ -2793,11 +3034,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			return (I) this.identityIndex;
 		} else if (ISupertypeSubtypeIndex.class.isAssignableFrom(clazz)) {
 			if (this.supertypeSubtypeIndex == null) {
-				this.supertypeSubtypeIndex = new TransactionSupertypeSubtypeIndex(this);
+				this.supertypeSubtypeIndex = new TransactionSupertypeSubtypeIndex(
+						this);
 			}
 			return (I) this.supertypeSubtypeIndex;
 		}
-		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName())
+		throw new UnsupportedOperationException("The index class '"
+				+ (clazz == null ? "null" : clazz.getCanonicalName())
 				+ "' is not supported by the current engine.");
 	}
 
@@ -2814,11 +3057,14 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		/*
 		 * get default-name-type
 		 */
-		ILocator locDefaultNameType = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
-		ITopic defaultNameType = getIdentityStore().bySubjectIdentifier(locDefaultNameType);
+		ILocator locDefaultNameType = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ITopic defaultNameType = getIdentityStore().bySubjectIdentifier(
+				locDefaultNameType);
 		if (defaultNameType == null) {
 			defaultNameType = createTopic(topicMap, revision);
-			modifySubjectIdentifier(defaultNameType, locDefaultNameType, revision);
+			modifySubjectIdentifier(defaultNameType, locDefaultNameType,
+					revision);
 		}
 		return defaultNameType;
 	}
@@ -2826,9 +3072,11 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
+	protected void createTypeInstanceAssociation(ITopic instance, ITopic type,
+			IRevision revision) {
 		Set<ITopic> themes = HashUtil.getHashSet();
-		IAssociation association = createAssociation(getTopicMap(), getTmdmTypeInstanceAssociationType(), themes, revision);
+		IAssociation association = createAssociation(getTopicMap(),
+				getTmdmTypeInstanceAssociationType(), themes, revision);
 		createRole(association, getTmdmInstanceRoleType(), instance, revision);
 		createRole(association, getTmdmTypeRoleType(), type, revision);
 	}
@@ -2836,9 +3084,11 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
+	protected void createSupertypeSubtypeAssociation(ITopic type,
+			ITopic supertype, IRevision revision) {
 		Set<ITopic> themes = HashUtil.getHashSet();
-		IAssociation association = createAssociation(getTopicMap(), getTmdmSupertypeSubtypeAssociationType(), themes, revision);
+		IAssociation association = createAssociation(getTopicMap(),
+				getTmdmSupertypeSubtypeAssociationType(), themes, revision);
 		createRole(association, getTmdmSubtypeRoleType(), type, revision);
 		createRole(association, getTmdmSupertypeRoleType(), supertype, revision);
 	}
@@ -2846,17 +3096,24 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
-		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
+	protected void removeSupertypeSubtypeAssociation(ITopic type,
+			ITopic supertype, IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type,
+				getTmdmSupertypeSubtypeAssociationType());
 		for (IAssociation association : associations) {
 			try {
-				if (association.getRoles(getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)
-						&& association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(supertype)) {
+				if (association.getRoles(getTmdmSubtypeRoleType()).iterator()
+						.next().getPlayer().equals(type)
+						&& association.getRoles(getTmdmSupertypeRoleType())
+								.iterator().next().getPlayer()
+								.equals(supertype)) {
 					removeAssocaition(association, false, revision);
 					break;
 				}
 			} catch (NoSuchElementException e) {
-				throw new TopicMapStoreException("Invalid meta model! Missing supertype or subtype role!", e);
+				throw new TopicMapStoreException(
+						"Invalid meta model! Missing supertype or subtype role!",
+						e);
 			}
 		}
 	}
@@ -2864,17 +3121,22 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
-		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type,
+			IRevision revision) throws TopicMapStoreException {
+		Collection<IAssociation> associations = doReadAssociation(type,
+				getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
-				if (association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer().equals(instance)
-						&& association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer().equals(type)) {
+				if (association.getRoles(getTmdmInstanceRoleType()).iterator()
+						.next().getPlayer().equals(instance)
+						&& association.getRoles(getTmdmTypeRoleType())
+								.iterator().next().getPlayer().equals(type)) {
 					removeAssocaition(association, false, revision);
 					break;
 				}
 			} catch (NoSuchElementException e) {
-				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
+				throw new TopicMapStoreException(
+						"Invalid meta model! Missing type or instance role!", e);
 			}
 		}
 	}
@@ -2882,8 +3144,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+	public ITopic getTmdmTypeInstanceAssociationType()
+			throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2895,7 +3159,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2907,7 +3172,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2918,8 +3184,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+	public ITopic getTmdmSupertypeSubtypeAssociationType()
+			throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2931,7 +3199,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2943,7 +3212,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -2954,8 +3224,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+	public boolean existsTmdmTypeInstanceAssociationType()
+			throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -2963,7 +3235,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -2971,15 +3244,18 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+	public boolean existsTmdmSupertypeSubtypeAssociationType()
+			throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -2987,7 +3263,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -2995,7 +3272,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * {@inheritDoc}
 	 */
 	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3009,7 +3287,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * 
 	 * @return the characteristicsStore
 	 */
-	protected CharacteristicsCache createCharacteristicsStore(TransactionTopicMapStore store, ILocator xsdString) {
+	protected CharacteristicsCache createCharacteristicsStore(
+			TransactionTopicMapStore store, ILocator xsdString) {
 		return new CharacteristicsCache(store, xsdString);
 	}
 
@@ -3033,7 +3312,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * 
 	 * @return the associationStore
 	 */
-	protected AssociationCache createAssociationStore(TransactionTopicMapStore store) {
+	protected AssociationCache createAssociationStore(
+			TransactionTopicMapStore store) {
 		return new AssociationCache(store);
 	}
 
@@ -3057,7 +3337,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * 
 	 * @return the reificationStore
 	 */
-	protected ReificationCache createReificationStore(TransactionTopicMapStore store) {
+	protected ReificationCache createReificationStore(
+			TransactionTopicMapStore store) {
 		return new ReificationCache(store);
 	}
 
@@ -3166,8 +3447,11 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	 * 
 	 * {@inheritDoc}
 	 */
-	public final void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
-		throw new UnsupportedOperationException("The feature of revision management is not supported by the transaction store.");
+	public final void storeRevision(final IRevision revision,
+			TopicMapEventType type, IConstruct context, Object newValue,
+			Object oldValue) {
+		throw new UnsupportedOperationException(
+				"The feature of revision management is not supported by the transaction store.");
 	}
 
 	/**
@@ -3209,7 +3493,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 		getAssociationStore().close();
 
 		this.identityStore = createIdentityStore(this);
-		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.characteristicsStore = createCharacteristicsStore(this,
+				getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
 		this.typedStore = createTypedStore(this);
 		this.scopeStore = createScopeStore(this);
 		this.topicTypeCache = createTopicTypeStore(this);
@@ -3232,22 +3517,31 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 			final Map<Object, Object> lazy = HashUtil.getHashMap();
 			lazy.put(transaction, transaction.getTopicMap());
 			ITopicMapListener listener = new ITopicMapListener() {
-				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
+				public void topicMapChanged(String id, TopicMapEventType event,
+						Construct notifier, Object newValue, Object oldValue) {
 					switch (event) {
 					case MERGE: {
 						Object oldValue_ = null;
 						/* find old value */
 						// By subject-identifier
-						for (Locator l : ((ITopic) oldValue).getSubjectIdentifiers()) {
-							oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
+						for (Locator l : ((ITopic) oldValue)
+								.getSubjectIdentifiers()) {
+							oldValue_ = doRead(
+									getTopicMap(),
+									TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER,
+									l);
 							if (oldValue_ != null) {
 								break;
 							}
 						}
 						// By subject-locator
 						if (oldValue_ == null) {
-							for (Locator l : ((ITopic) oldValue).getSubjectLocators()) {
-								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
+							for (Locator l : ((ITopic) oldValue)
+									.getSubjectLocators()) {
+								oldValue_ = doRead(
+										getTopicMap(),
+										TopicMapStoreParameterType.BY_SUBJECT_LOCATOR,
+										l);
 								if (oldValue_ != null) {
 									break;
 								}
@@ -3255,15 +3549,19 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 						}
 						// By item-identifier
 						if (oldValue_ == null) {
-							for (Locator l : ((ITopic) oldValue).getItemIdentifiers()) {
-								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
+							for (Locator l : ((ITopic) oldValue)
+									.getItemIdentifiers()) {
+								oldValue_ = doRead(
+										getTopicMap(),
+										TopicMapStoreParameterType.BY_ITEM_IDENTIFER,
+										l);
 								if (oldValue_ != null) {
 									break;
 								}
 							}
 						}
-						// store mapping						
-						lazy.put(oldValue_, newValue);						
+						// store mapping
+						lazy.put(oldValue_, newValue);
 					}
 						break;
 					}
@@ -3305,37 +3603,49 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements ITran
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params));
+	public void doModify(IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		commands.add(new TransactionCommand(getTransaction(), null,
+				TransactionOperation.MODIFY, context, paramType, params));
 		super.doModify(context, paramType, params);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params));
+	public void doRemove(IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		commands.add(new TransactionCommand(getTransaction(), null,
+				TransactionOperation.REMOVE, context, paramType, params));
 		super.doRemove(context, paramType, params);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade));
+	public void doRemove(IConstruct context, boolean cascade)
+			throws TopicMapStoreException {
+		commands.add(new TransactionCommand(getTransaction(), null,
+				TransactionOperation.REMOVE, context, null, cascade));
 		super.doRemove(context, cascade);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+	public Object doCreate(IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
 		Object obj = super.doCreate(context, paramType, params);
-		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType, params));
+		commands.add(new TransactionCommand(getTransaction(), obj,
+				TransactionOperation.CREATE, context, paramType, params));
 		return obj;
 	}
 
 	public ITopicMapStoreIdentity generateIdentity() {
-		return new JdbcIdentity(Long.toString(Math.round(Math.random() * Long.MAX_VALUE)));
+		return new JdbcIdentity(Long.toString(Math.round(Math.random()
+				* Long.MAX_VALUE)));
 	}
 }
