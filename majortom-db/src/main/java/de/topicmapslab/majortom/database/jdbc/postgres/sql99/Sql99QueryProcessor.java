@@ -33,6 +33,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
@@ -5136,8 +5137,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 * read data from store
 			 */
 			for (TopicMapStoreParameterType type : arguments) {
-				results.put(type, getConnectionProvider().getTopicMapStore()
-						.doRead(c_, type));
+			    // XXX BIG F GREAT HACK
+				Object value = getConnectionProvider().getTopicMapStore().doRead(c_, type);
+				if(type == TopicMapStoreParameterType.TYPE) {
+					if (!(value instanceof Set<?>)) {
+						Set<Object> set = HashUtil.getHashSet();
+						set.add(value);
+						value = set;
+					}
+				}
+				results.put(type, value);
 			}
 		}
 		/*
