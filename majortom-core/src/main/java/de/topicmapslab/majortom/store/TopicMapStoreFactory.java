@@ -76,7 +76,7 @@ public class TopicMapStoreFactory {
 	private static Map<String, ITopicMapStoreFactory> storeFactories;
 	
 	static{
-		defaultTopicMapStores.add("de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore");
+		defaultTopicMapStores.add("de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore");
 	}
 	
 	private static ITopicMapStoreFactory loadWithJavaServices() {
