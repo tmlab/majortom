@@ -12,20 +12,10 @@ Provide-Package: de.topicmapslab.majortom.comparator,
  de.topicmapslab.majortom.store,
  de.topicmapslab.majortom.transaction,
  de.topicmapslab.majortom.util
-Import-Package: de.topicmapslab.geotype.mercator,
- de.topicmapslab.geotype.model,
- de.topicmapslab.geotype.wgs84,
- de.topicmapslab.majortom.model.core,
- de.topicmapslab.majortom.model.core.paged,
- de.topicmapslab.majortom.model.event,
- de.topicmapslab.majortom.model.exception,
- de.topicmapslab.majortom.model.index,
- de.topicmapslab.majortom.model.index.paging,
- de.topicmapslab.majortom.model.revision,
- de.topicmapslab.majortom.model.store,
- de.topicmapslab.majortom.model.transaction,
- org.osgi.framework;specification-version="1.5.0",
+Import-Package: org.osgi.framework;specification-version="1.5.0",
  org.tmapi.core;specification-version="2.0.2",
  org.tmapi.index;specification-version="2.0.2"
 Bundle-Activator: de.topicmapslab.majortom.osgi.MajorToMActivator
 Eclipse-AutoStart: true
+Require-Bundle: de.topicmapslab.majortom.model;bundle-version="1.1.1",
+ de.topicmapslab.geotype;bundle-version="0.0.2"
