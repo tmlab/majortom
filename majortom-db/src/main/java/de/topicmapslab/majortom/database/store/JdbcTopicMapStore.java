@@ -1487,7 +1487,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			Set<ITopic> types = HashUtil.getHashSet(provider.getProcessor().doReadTypes(t, -1, -1));
 			if (existsTmdmTypeInstanceAssociationType()) {
 				for (IAssociation association : provider.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())) {
-					types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
+					if (t.equals((ITopic) association.getRoles(getTmdmInstanceRoleType()).iterator().next().getPlayer())) {
+					    types.add((ITopic) association.getRoles(getTmdmTypeRoleType()).iterator().next().getPlayer());
+					}
 				}
 			}
 			return types;
