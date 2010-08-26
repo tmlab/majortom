@@ -97,6 +97,12 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 */
 	private JdbcTopicMapStore store;
 
+	// storing some connection data in case it's needed after the db closed the connection 
+	private String user;
+	private String password;
+	private String database;
+	private String host;
+
 	/**
 	 * constructor
 	 */
@@ -134,8 +140,15 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 * {@inheritDoc}
 	 */
 	public IQueryProcessor getProcessor() throws TopicMapStoreException {
-		if (connection == null) {
-			throw new TopicMapStoreException("Connection is not established!");
+		
+		try {
+			if (connection == null) {
+				throw new TopicMapStoreException("Connection is not established!");
+			} else if (connection.isClosed()) {
+				openConnection(host, database, user, password);
+			}
+		} catch (SQLException e) {
+			throw new TopicMapStoreException(e);
 		}
 		return processor;
 	}
@@ -155,6 +168,11 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 		} catch (ClassNotFoundException e) {
 			throw new TopicMapStoreException("Cannot find driver class for PostGreSQL!", e);
 		}
+		this.host = host;
+		this.database = database;
+		this.user = user;
+		this.password = password;
+		
 		connection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
 		metaData = connection.getMetaData();
 		processor = createProcessor(this, connection);
