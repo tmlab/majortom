@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.tests;
 
+import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -25,6 +26,8 @@ import junit.framework.TestSuite;
 public class MaJorToMTestSuite {
 
 	public static Test suite() {
+		System.setProperty("org.tmapi.core.TopicMapSystemFactory",                                                                                               
+                TopicMapSystemFactoryImpl.class.getName());
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
 		// $JUnit-BEGIN$
 		// suite.addTest(CoreTestSuite.suite());
