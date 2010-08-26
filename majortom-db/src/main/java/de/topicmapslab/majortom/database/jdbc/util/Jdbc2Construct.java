@@ -79,8 +79,13 @@ public class Jdbc2Construct {
 			String column) throws SQLException {
 		try {
 			if (result.next()) {
+				// if id is null the topic does not exists e.g. in case no reifier 
+				String id = result.getString(column);
+				if (id==null)
+					return null;
+				
 				return topicMap.getStore().getConstructFactory().newTopic(
-						new JdbcIdentity(result.getString(column)), topicMap);
+						new JdbcIdentity(id), topicMap);
 			}
 			return null;
 		} finally {
