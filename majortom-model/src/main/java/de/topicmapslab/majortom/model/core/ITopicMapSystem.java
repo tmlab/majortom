@@ -56,13 +56,5 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 * @throws TopicMapExistsException
 	 *             thrown if the topic map cannot created
 	 */
-	public TopicMap createTopicMap(String ref, ITopicMapStore store) throws TopicMapExistsException;
-	
-	/**
-	 * Remove the topic map from the internal store
-	 * 
-	 * @param locator
-	 * @return the topic map which was removed.
-	 */
-	public ITopicMap removeTopicMap(Locator locator);
+	public TopicMap createTopicMap(String ref, ITopicMapStore store) throws TopicMapExistsException;	
 }

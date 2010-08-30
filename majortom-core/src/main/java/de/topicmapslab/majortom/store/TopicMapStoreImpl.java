@@ -34,6 +34,7 @@ import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 
 import de.topicmapslab.majortom.core.ConstructFactoryImpl;
+import de.topicmapslab.majortom.core.TopicMapSystemImpl;
 import de.topicmapslab.majortom.executable.EventNotifier;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
@@ -2738,7 +2739,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
-		topicMapSystem.removeTopicMap(((ITopicMap) topicMap).getLocator());
+		((TopicMapSystemImpl)topicMapSystem).removeTopicMap(((ITopicMap) topicMap).getLocator());
 		connected = false;
 		this.factory = null;
 	}
