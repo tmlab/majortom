@@ -540,11 +540,11 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	public void testClear() {
 		try {
 			topicMap.getStore().enableRevisionManagement(false);
-			if(topicMap.getStore().supportRevisionManagement()){
+			if(topicMap.getStore().isRevisionManagementSupported()){
 				topicMap.getStore().enableRevisionManagement(false);
 			}
 			readTopicMap("toytm.xtm");	
-			if(topicMap.getStore().supportRevisionManagement()){
+			if(topicMap.getStore().isRevisionManagementSupported()){
 				IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 				index.open();
 				assertNull(index.getFirstRevision());

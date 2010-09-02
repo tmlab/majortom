@@ -19,17 +19,45 @@ import de.topicmapslab.majortom.model.exception.TransactionException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
+ * A topic map store a virtual layer between the application and the real topic
+ * map store.
+ * 
  * @author Sven Krosse
- *
+ * 
  */
-public interface ITransactionTopicMapStore extends ITopicMapStore{
+public interface ITransactionTopicMapStore extends ITopicMapStore {
 
+	/**
+	 * Commit all changes to the topic map store.
+	 * @throws TransactionException
+	 *             thrown if commit fails
+	 * 
+	 * @see ITransaction#commit()
+	 */
 	public void commit() throws TransactionException;
 
+	/**
+	 * Rolling back all changes of the current transaction. After roll back the
+	 * topic map state is the same like the time the transaction was created.
+	 * 
+	 * @see ITransaction#rollback()
+	 */
 	public void rollback();
-	
+
+	/**
+	 * Returns the underlying topic map store handle the real topic map
+	 * instance.
+	 * 
+	 * @return the real topic map store
+	 */
 	public ITopicMapStore getRealStore();
-	
+
+	/**
+	 * Returns the transaction reference which handled by this transaction topic
+	 * map store.
+	 * 
+	 * @return the transaction
+	 */
 	public ITransaction getTransaction();
-	
+
 }

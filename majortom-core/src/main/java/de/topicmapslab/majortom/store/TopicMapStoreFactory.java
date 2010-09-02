@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.tmapi.core.Locator;
+import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
@@ -45,7 +46,7 @@ public class TopicMapStoreFactory {
 	 * 
 	 * @param factory the factory containing the set properties
 	 * @param topicMapSystem the topic map system
-	 * @param topicMapBaseLocator TODO
+	 * @param topicMapBaseLocator the base locator of the topic map {@link TopicMap#getLocator()}
 	 * @return the generated topic map store
 	 * @throws TopicMapStoreException thrown if the topic map store cannot
 	 *             create
@@ -56,7 +57,7 @@ public class TopicMapStoreFactory {
 			ITopicMapStoreFactory storeFac = loadWithJavaServices();
 			factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, storeFac.getClassName());
 			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
-			store.setTopicMapSystem(topicMapSystem);
+			((TopicMapStoreImpl) store).setTopicMapSystem(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
 			return store;
 		}
@@ -99,14 +100,19 @@ public class TopicMapStoreFactory {
 		}
 	}
 
+	/**
+	 * Returns a map of store factories initialized by OSGi or Java services.
+	 * @return a map of store factories initialized by OSGi or Java services
+	 */
 	public static Map<String, ITopicMapStoreFactory> getStoreFactories() {
-		if (storeFactories==null)
+		if (storeFactories==null){
 			initStoreFactories();
+		}
 		return storeFactories;
 	}
 	
 	/**
-	 * loads the store list either from the bundle activator or from the servies
+	 * loads the store list either from the bundle activator or from the services
 	 */
 	private static void initStoreFactories() {
 		Iterable<ITopicMapStoreFactory> list = null;
@@ -127,7 +133,6 @@ public class TopicMapStoreFactory {
 		
 		if (list==null) {
 			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class, TopicMapStoreFactory.class.getClassLoader());
-//			loader.reload();
 			storeFactories = new HashMap<String, ITopicMapStoreFactory>();
 
 			for (ITopicMapStore store : loader) {
@@ -150,7 +155,7 @@ public class TopicMapStoreFactory {
 			ITopicMapStore newStore;
 			try {
 				newStore = store.getClass().getConstructor().newInstance();
-				newStore.setTopicMapSystem(tmSystem);
+				((TopicMapStoreImpl) newStore).setTopicMapSystem(tmSystem);
 				return newStore;
 			} catch (Exception e) {
 				throw new RuntimeException(e);

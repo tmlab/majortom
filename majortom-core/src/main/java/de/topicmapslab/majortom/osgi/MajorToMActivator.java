@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -25,29 +24,26 @@ public class MajorToMActivator implements BundleActivator {
 
 	private static MajorToMActivator plugin;
 	private BundleContext context;
-	
-	@Override
+		
+	/**
+	 * {@inheritDoc}
+	 */
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		MajorToMActivator.plugin = this;
-		for (Bundle b : context.getBundles()) {
-			// this is a dirty hack for our current topicmapstores to register their services
-			// this will not work with sotres using another symbolic name then de.topicmapslab.majortom*
-			String name = (String) b.getHeaders().get("Bundle-SymbolicName");
-			if (name.startsWith("de.topicmapslab.majortom")) {
-				if ((b.getState()!=Bundle.STARTING)&&(b.getState()!=Bundle.ACTIVE)) {
-					b.start();
-				}
-			}
-				
-		}
 	}
-
-
-	@Override
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void stop(BundleContext context) throws Exception {
 	}
 
+	/**
+	 * Hannes kommentiert das nachher @TODO, XXX
+	 * @return
+	 * @throws InvalidSyntaxException
+	 */
 	public List<ITopicMapStoreFactory> getTopicMapStoreFactories() throws InvalidSyntaxException {
 		List<ITopicMapStoreFactory> result = new ArrayList<ITopicMapStoreFactory>();
 		ServiceReference[] refs = context.getServiceReferences(ITopicMapStoreFactory.class.getName(), null);
@@ -59,7 +55,10 @@ public class MajorToMActivator implements BundleActivator {
 		
 		return result;
 	}
-
+	
+	/**
+	 * Hannes kommentiert das nachher @TODO, XXX
+	 */
 	public static MajorToMActivator getDefault() {
 		return plugin;
 	}

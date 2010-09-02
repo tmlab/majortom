@@ -17,9 +17,11 @@ package de.topicmapslab.majortom.store;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -34,8 +36,8 @@ import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 
 import de.topicmapslab.majortom.core.ConstructFactoryImpl;
+import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemImpl;
-import de.topicmapslab.majortom.executable.EventNotifier;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -864,10 +866,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            the identifier
 	 * @return the topic to merge in the current one, <code>null</code> if no
 	 *         topic has to be merged
-	 * @throws TopicMapStoreException
-	 *             thrown if merging fails
+	 * @throws IdentityConstraintException
+	 *             thrown if merge candidate detected and automatic merging is disabled or the constructs are not topics
 	 */
-	protected ITopic checkMergeConditionOfItemIdentifier(IConstruct c, ILocator identifier) throws TopicMapStoreException {
+	protected ITopic checkMergeConditionOfItemIdentifier(IConstruct c, ILocator identifier)  {
 		/*
 		 * check if there is construct with the identifier as item-identifier
 		 */
@@ -2465,7 +2467,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else {
 			throw new TopicMapStoreException("Unknown construct type to remove '" + context.getClass() + "'.");
 		}
-		context.setRemoved(true);
+		((ConstructImpl)context).setRemoved(true);
 	}
 
 	/**
@@ -2715,12 +2717,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			throw new TopicMapStoreException("Store is not bind to any topic map instance!");
 		}
 		if (isConnected()) {
-			throw new TopicMapStoreException("Connection is already established");
+			return;
 		}
 		connected = true;
 
 		Object maximum = topicMapSystem.getProperty(TopicMapStoreProperty.THREADPOOL_MAXIMUM);
-		int max = 10;
+		int max = Runtime.getRuntime().availableProcessors()+1;
 		if (maximum != null) {
 			try {
 				max = Integer.parseInt(maximum.toString());
@@ -2737,7 +2739,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public void close() throws TopicMapStoreException {
 		if (!isConnected()) {
-			throw new TopicMapStoreException("Connection is not established");
+			return;
 		}
 		((TopicMapSystemImpl)topicMapSystem).removeTopicMap(((ITopicMap) topicMap).getLocator());
 		connected = false;
@@ -2788,7 +2790,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            the array
 	 * @return the transformed set
 	 */
-	private static Collection<ITopic> convert(Topic[] array) {
+	private static Set<ITopic> convert(Topic[] array) {
 		Set<ITopic> target = HashUtil.getHashSet();
 		for (Topic o : array) {
 			target.add((ITopic) o);
@@ -2806,7 +2808,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supportRevisionManagement() {
+	public boolean isRevisionManagementSupported() {
 		return this.featureRevisionManagement;
 	}
 
@@ -2814,14 +2816,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	public boolean isRevisionManagementEnabled() {
-		return supportRevisionManagement() && this.revisionManagementEnabled;
+		return isRevisionManagementSupported() && this.revisionManagementEnabled;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
-		if ( !supportRevisionManagement() && enabled){
+		if ( !isRevisionManagementSupported() && enabled){
 			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
 		}
 		this.revisionManagementEnabled = enabled;
@@ -2907,7 +2909,20 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            the old value
 	 */
 	public void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
-		new EventNotifier(listeners, event, notifier, newValue, oldValue).run();
+		String id = UUID.randomUUID().toString();
+		for (ITopicMapListener listener : getListeners()) {
+			listener.topicMapChanged(id, event, notifier, newValue, oldValue);
+		}
+	}
+	
+	/**
+	 * @return the listeners
+	 */
+	public Set<ITopicMapListener> getListeners() {
+		if ( listeners == null ){
+			return Collections.emptySet();
+		}
+		return listeners;
 	}
 
 	/**
@@ -3281,6 +3296,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public void clear() {
 		doModifyReifier(getTopicMap(), null);
+		for ( ILocator ii : doReadItemIdentifiers(getTopicMap())){
+			doRemoveItemIdentifier(getTopicMap(), ii);
+		}
 		for (ITopic t : doReadTopics(getTopicMap())) {
 			if (!t.isRemoved()) {
 				try {
@@ -3289,7 +3307,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 					// NOTHING TO DO HERE
 				}
 			}
-		}
+		}		
 	}
 	
 	/**

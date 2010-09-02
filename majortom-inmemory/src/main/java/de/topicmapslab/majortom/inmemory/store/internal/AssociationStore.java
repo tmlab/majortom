@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public class AssociationStore implements IDataStore {
 	 */
 	public Set<IAssociationRole> getRoles(Association association) {
 		if (associations == null || !associations.containsKey(association)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return associations.get(association);
 	}
@@ -86,7 +87,7 @@ public class AssociationStore implements IDataStore {
 	 */
 	public Set<IAssociationRole> getRoles(ITopic player) {
 		if (playedRoles == null || !playedRoles.containsKey(player)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return playedRoles.get(player);
 	}
@@ -102,6 +103,9 @@ public class AssociationStore implements IDataStore {
 		for ( IAssociationRole role : getRoles(player)){
 			associations.add(role.getParent());
 		}
+		if ( associations.isEmpty()){
+			return Collections.emptySet();
+		}
 		return associations;
 	}
 
@@ -112,9 +116,9 @@ public class AssociationStore implements IDataStore {
 	 */
 	public Set<IAssociation> getAssociations() {
 		if (associations == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
-		return associations.keySet();
+		return Collections.unmodifiableSet(associations.keySet());
 	}
 
 	/**
@@ -139,9 +143,7 @@ public class AssociationStore implements IDataStore {
 		/*
 		 * check if role is known by the store
 		 */
-		if (associations == null) {
-			throw new TopicMapStoreException("Unknown association item.");
-		} else if (!associations.containsKey(association)) {
+		if (associations == null || !associations.containsKey(association)) {			
 			return;
 		}
 
@@ -169,9 +171,7 @@ public class AssociationStore implements IDataStore {
 		/*
 		 * check if role is known by the store
 		 */
-		if (rolePlayers == null) {
-			throw new TopicMapStoreException("Unknown association role item.");
-		} else if (!rolePlayers.containsKey(role)) {
+		if (rolePlayers == null || !rolePlayers.containsKey(role)) {
 			return;
 		}
 
@@ -184,7 +184,7 @@ public class AssociationStore implements IDataStore {
 		 */
 		Set<IAssociationRole> set = playedRoles.get(player);
 		if (set == null) {
-			throw new TopicMapStoreException("Unknown association role item.");
+			throw new TopicMapStoreException("Roles cache does not contains the given player.");
 		}
 		set.remove(role);
 		playedRoles.put(player, set);
@@ -198,7 +198,6 @@ public class AssociationStore implements IDataStore {
 		 */
 		set = associations.get(role.getParent());
 		set.remove(role);
-		associations.put(role.getParent(), set);
 	}
 
 	/**
@@ -226,17 +225,16 @@ public class AssociationStore implements IDataStore {
 		 * check if association is known by the data store
 		 */
 		if (associations == null || !associations.containsKey(association)) {
-			throw new TopicMapStoreException("Unknown association item.");
+			throw new TopicMapStoreException("Associations cache does not contains the association item");
 		}
 		/*
 		 * add role to association store
 		 */
 		Set<IAssociationRole> set = associations.get(association);
 		if (set == null) {
-			set = HashUtil.getHashSet();
+			throw new TopicMapStoreException("Associations cache does not contains the association item");
 		}
 		set.add(role);
-		associations.put(association, set);
 
 		/*
 		 * store player of new role
@@ -288,9 +286,7 @@ public class AssociationStore implements IDataStore {
 			set.remove(r);
 			if (set.isEmpty()) {
 				playedRoles.remove(p);
-			} else {
-				playedRoles.put(p, set);
-			}
+			} 
 		}
 		Set<IAssociationRole> set = playedRoles.get(player);
 		if (set == null) {

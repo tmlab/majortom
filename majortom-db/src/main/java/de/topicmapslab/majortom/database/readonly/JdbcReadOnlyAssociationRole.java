@@ -28,7 +28,6 @@ import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ILocator;
-import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
@@ -47,7 +46,8 @@ public class JdbcReadOnlyAssociationRole extends ReadOnlyAssociationRole {
 	/**
 	 * @param clone
 	 */
-	public JdbcReadOnlyAssociationRole(IQueryProcessor processor, IAssociationRole clone) {
+	public JdbcReadOnlyAssociationRole(IQueryProcessor processor,
+			IAssociationRole clone) {
 		super(clone);
 		this.parent = new JdbcReadOnlyAssociation(processor, clone.getParent());
 		this.processor = processor;
@@ -88,10 +88,8 @@ public class JdbcReadOnlyAssociationRole extends ReadOnlyAssociationRole {
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
-		return set.iterator().next();
+		return (Topic) doReadHistoryValue(TopicMapStoreParameterType.TYPE);
 	}
-	
 
 	/**
 	 * Internal method to read the history values
@@ -103,7 +101,8 @@ public class JdbcReadOnlyAssociationRole extends ReadOnlyAssociationRole {
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+	private <T extends Object> T doReadHistoryValue(
+			TopicMapStoreParameterType type) {
 		try {
 			return (T) processor.doReadHistory(this, type).get(type);
 		} catch (SQLException e) {

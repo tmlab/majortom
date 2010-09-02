@@ -39,19 +39,19 @@ import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
- *
+ * 
  */
 public class JdbcReadOnlyName extends ReadOnlyName {
 
 	private final ReadOnlyTopic parent;
 	private final IQueryProcessor processor;
-	
+
 	/**
 	 * @param clone
 	 */
 	public JdbcReadOnlyName(IQueryProcessor processor, IName clone) {
 		super(clone);
-		this.parent = new JdbcReadOnlyTopic(processor,clone.getParent());
+		this.parent = new JdbcReadOnlyTopic(processor, clone.getParent());
 		this.processor = processor;
 	}
 
@@ -83,8 +83,7 @@ public class JdbcReadOnlyName extends ReadOnlyName {
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
-		return set.iterator().next();
+		return (Topic) doReadHistoryValue(TopicMapStoreParameterType.TYPE);
 	}
 
 	/**
@@ -121,7 +120,8 @@ public class JdbcReadOnlyName extends ReadOnlyName {
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+	private <T extends Object> T doReadHistoryValue(
+			TopicMapStoreParameterType type) {
 		try {
 			return (T) processor.doReadHistory(this, type).get(type);
 		} catch (SQLException e) {

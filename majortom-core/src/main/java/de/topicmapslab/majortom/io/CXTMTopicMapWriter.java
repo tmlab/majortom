@@ -1373,9 +1373,9 @@ public final class CXTMTopicMapWriter {
 		public void removeItemIdentifier(Locator itemIdentifier) {
 		}
 
-		public Association getAssociation() {
-			return _parent;
-		}
+//		public Association getAssociation() {
+//			return _parent;
+//		}
 
 		public Topic getReifier() {
 			return null;

@@ -29,7 +29,8 @@ import org.tmapi.core.Topic;
  */
 public class TopicByNameComparator  implements Comparator<Topic> {
 
-	private final Topic nameType;
+	private final Topic nameType;	
+
 	private final boolean ascending;
 
 	/**

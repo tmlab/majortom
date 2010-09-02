@@ -10,9 +10,4 @@ import org.tmapi.core.Typed;
  */
 public interface ITypeable extends Typed, IConstruct {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITopicMap getTopicMap();
-
 }
