@@ -23,7 +23,7 @@ import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
  * @author Sven Krosse
  * 
  */
-public class InMemoryMaJorToMTestSuite {
+public class InMemoryMaJorToMTest {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.inmemory");		
