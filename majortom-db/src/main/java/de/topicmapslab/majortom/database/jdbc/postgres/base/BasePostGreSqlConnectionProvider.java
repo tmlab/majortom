@@ -139,8 +139,7 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * {@inheritDoc}
 	 */
-	public IQueryProcessor getProcessor() throws TopicMapStoreException {
-		
+	public IQueryProcessor getProcessor() throws TopicMapStoreException {		
 		try {
 			if (connection == null) {
 				throw new TopicMapStoreException("Connection is not established!");
@@ -160,8 +159,9 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 		if (store == null) {
 			throw new TopicMapStoreException("Topic map store not set!");
 		}
-		if (connection != null) {
-			throw new TopicMapStoreException("Connection already established!");
+		if (connection != null && !connection.isClosed()) {
+			return;
+//			throw new TopicMapStoreException("Connection already established!");
 		}
 		try {
 			Class.forName("org.postgresql.Driver");

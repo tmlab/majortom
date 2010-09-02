@@ -26,6 +26,7 @@ import de.topicmapslab.majortom.model.event.TopicMapEventType;
  * @author Sven Krosse
  * 
  */
+@Deprecated
 public class EventNotifier implements Runnable {
 
 	private final Set<ITopicMapListener> listeners;

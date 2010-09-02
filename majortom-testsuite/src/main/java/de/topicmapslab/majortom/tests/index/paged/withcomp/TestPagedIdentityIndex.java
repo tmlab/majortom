@@ -93,7 +93,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 			 */
 			public int compare(Construct o1, Construct o2) {
 				if (o1 instanceof Topic && o2 instanceof Topic) {
-					return new TopicByIdentityComparator(true).compare((Topic) o1, (Topic) o2);
+					return  TopicByIdentityComparator.getInstance(true).compare((Topic) o1, (Topic) o2);
 				} else if (o1 instanceof Topic) {
 					if (!((Topic) o1).getSubjectIdentifiers().isEmpty()) {
 						return ((Topic) o1).getSubjectIdentifiers().iterator().next().getReference().compareTo(
@@ -302,7 +302,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		/*
 		 * with string
 		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
+		Comparator<Locator> comp = LocatorByReferenceComparator.getInstance(true);
 
 		/*
 		 * with string
@@ -359,7 +359,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		/*
 		 * with string
 		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
+		Comparator<Locator> comp = LocatorByReferenceComparator.getInstance(true);
 
 		/*
 		 * with string
@@ -416,7 +416,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		/*
 		 * with string
 		 */
-		Comparator<Locator> comp = new LocatorByReferenceComparator(true);
+		Comparator<Locator> comp = LocatorByReferenceComparator.getInstance(true);
 
 		/*
 		 * with string
@@ -472,7 +472,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		/*
 		 * with string
 		 */
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		/*
 		 * with string
@@ -549,7 +549,7 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 		/*
 		 * with string
 		 */
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		/*
 		 * with string

@@ -15,39 +15,49 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.model.transaction;
 
-import de.topicmapslab.majortom.model.core.IConstruct;
-import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TransactionException;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
- * Interface definition of a transaction.
+ * A topic map store a virtual layer between the application and the real topic
+ * map store.
  * 
  * @author Sven Krosse
  * 
  */
-public interface ITransaction extends ITopicMap {
+public interface ITransactionTopicMapStore extends ITopicMapStore {
 
+	/**
+	 * Commit all changes to the topic map store.
+	 * @throws TransactionException
+	 *             thrown if commit fails
+	 * 
+	 * @see ITransaction#commit()
+	 */
 	public void commit() throws TransactionException;
 
+	/**
+	 * Rolling back all changes of the current transaction. After roll back the
+	 * topic map state is the same like the time the transaction was created.
+	 * 
+	 * @see ITransaction#rollback()
+	 */
 	public void rollback();
 
 	/**
-	 * Check if the transaction was already closed by calling {@link #commit()}
-	 * or {@link #rollback()}.
+	 * Returns the underlying topic map store handle the real topic map
+	 * instance.
 	 * 
-	 * @return the state
+	 * @return the real topic map store
 	 */
-	public boolean isClose();
+	public ITopicMapStore getRealStore();
 
 	/**
-	 * Method move the current item to the transaction context.
+	 * Returns the transaction reference which handled by this transaction topic
+	 * map store.
 	 * 
-	 * @param <T>
-	 *            the type of the construct
-	 * @param construct
-	 *            the construct to move
-	 * @return the transaction item
+	 * @return the transaction
 	 */
-	public <T extends IConstruct> T moveToTransactionContext(T construct);
+	public ITransaction getTransaction();
 
 }

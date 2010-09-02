@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -154,9 +155,7 @@ public class TypedStore implements IDataStore {
 			set.remove(typed);
 			if (set.isEmpty()) {
 				typedNames.remove(t);
-			} else {
-				typedNames.put(t, set);
-			}
+			} 
 			return t;
 		}
 		return null;
@@ -175,9 +174,7 @@ public class TypedStore implements IDataStore {
 			set.remove(typed);
 			if (set.isEmpty()) {
 				typedOccurrences.remove(t);
-			} else {
-				typedOccurrences.put(t, set);
-			}
+			} 
 			return t;
 		}
 		return null;
@@ -196,8 +193,6 @@ public class TypedStore implements IDataStore {
 			set.remove(typed);
 			if (set.isEmpty()) {
 				typedAssociations.remove(t);
-			} else {
-				typedAssociations.put(t, set);
 			}
 			return t;
 		}
@@ -217,9 +212,7 @@ public class TypedStore implements IDataStore {
 			set.remove(typed);
 			if (set.isEmpty()) {
 				typedRoles.remove(t);
-			} else {
-				typedRoles.put(t, set);
-			}
+			} 
 			return t;
 		}
 		return null;
@@ -263,9 +256,9 @@ public class TypedStore implements IDataStore {
 		Set<IName> set = typedNames.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			typedNames.put(t, set);
 		}
 		set.add(typed);
-		typedNames.put(t, set);
 	}
 
 	/**
@@ -286,9 +279,9 @@ public class TypedStore implements IDataStore {
 		Set<IOccurrence> set = typedOccurrences.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			typedOccurrences.put(t, set);
 		}
 		set.add(typed);
-		typedOccurrences.put(t, set);
 	}
 
 	/**
@@ -309,9 +302,9 @@ public class TypedStore implements IDataStore {
 		Set<IAssociation> set = typedAssociations.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			typedAssociations.put(t, set);
 		}
 		set.add(typed);
-		typedAssociations.put(t, set);
 	}
 
 	/**
@@ -332,9 +325,9 @@ public class TypedStore implements IDataStore {
 		Set<IAssociationRole> set = typedRoles.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			typedRoles.put(t, set);
 		}
 		set.add(typed);
-		typedRoles.put(t, set);
 	}
 
 	/**
@@ -365,7 +358,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public ITopic getType(IName typed) {
 		if (nameTypes == null || !nameTypes.containsKey(typed)) {
-			throw new TopicMapStoreException("Typed item is unknown.");
+			throw new TopicMapStoreException("The type of the given typed item does not exit.");
 		}
 		return nameTypes.get(typed);
 	}
@@ -378,7 +371,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public ITopic getType(IOccurrence typed) {
 		if (occurrenceTypes == null || !occurrenceTypes.containsKey(typed)) {
-			throw new TopicMapStoreException("Typed item is unknown.");
+			throw new TopicMapStoreException("The type of the given typed item does not exit.");
 		}
 		return occurrenceTypes.get(typed);
 	}
@@ -391,7 +384,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public ITopic getType(IAssociation typed) {
 		if (associationTypes == null || !associationTypes.containsKey(typed)) {
-			throw new TopicMapStoreException("Typed item is unknown.");
+			throw new TopicMapStoreException("The type of the given typed item does not exit.");
 		}
 		return associationTypes.get(typed);
 	}
@@ -404,7 +397,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public ITopic getType(IAssociationRole typed) {
 		if (roleTypes == null || !roleTypes.containsKey(typed)) {
-			throw new TopicMapStoreException("Typed item is unknown.");
+			throw new TopicMapStoreException("The type of the given typed item does not exit.");
 		}
 		return roleTypes.get(typed);
 	}
@@ -421,6 +414,9 @@ public class TypedStore implements IDataStore {
 		set.addAll(getTypedRoles(t));
 		set.addAll(getTypedNames(t));
 		set.addAll(getTypedOccurrences(t));
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -434,7 +430,7 @@ public class TypedStore implements IDataStore {
 		if (typedAssociations != null && typedAssociations.containsKey(t)) {
 			return typedAssociations.get(t);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -447,7 +443,7 @@ public class TypedStore implements IDataStore {
 		if (typedRoles != null && typedRoles.containsKey(t)) {
 			return typedRoles.get(t);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -460,6 +456,9 @@ public class TypedStore implements IDataStore {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getTypedNames(t));
 		set.addAll(getTypedOccurrences(t));
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -473,7 +472,7 @@ public class TypedStore implements IDataStore {
 		if (typedNames != null && typedNames.containsKey(t)) {
 			return typedNames.get(t);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -486,7 +485,7 @@ public class TypedStore implements IDataStore {
 		if (typedOccurrences != null && typedOccurrences.containsKey(t)) {
 			return typedOccurrences.get(t);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -538,6 +537,9 @@ public class TypedStore implements IDataStore {
 		}
 		if (typedOccurrences != null) {
 			typedOccurrences.remove(type);
+		}
+		if ( removed.isEmpty()){
+			return Collections.emptySet();
 		}
 		return removed;
 	}
@@ -633,6 +635,9 @@ public class TypedStore implements IDataStore {
 		Set<ITopic> set = HashUtil.getHashSet();
 		set.addAll(getNameTypes());
 		set.addAll(getOccurrenceTypes());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -643,7 +648,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public Set<ITopic> getRoleTypes() {
 		if (typedRoles == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(typedRoles.keySet());
 	}
@@ -656,7 +661,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public Set<ITopic> getAssociationTypes() {
 		if (typedAssociations == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(typedAssociations.keySet());
 	}
@@ -668,7 +673,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public Set<ITopic> getNameTypes() {
 		if (typedNames == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(typedNames.keySet());
 	}
@@ -681,7 +686,7 @@ public class TypedStore implements IDataStore {
 	 */
 	public Set<ITopic> getOccurrenceTypes() {
 		if (typedOccurrences == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(typedOccurrences.keySet());
 	}

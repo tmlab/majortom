@@ -30,6 +30,29 @@ import org.tmapi.core.Locator;
  */
 public class LocatorByReferenceComparator implements Comparator<Locator> {
 
+	private static LocatorByReferenceComparator instanceAsc = null;
+	private static LocatorByReferenceComparator instanceDesc = null;
+	
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static LocatorByReferenceComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new LocatorByReferenceComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new LocatorByReferenceComparator(false);
+		}
+		return instanceDesc;
+	}
+	
 	private final boolean ascending;
 
 	/**
@@ -38,7 +61,7 @@ public class LocatorByReferenceComparator implements Comparator<Locator> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public LocatorByReferenceComparator(boolean ascending) {
+	private LocatorByReferenceComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 

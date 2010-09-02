@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.inmemory.store.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -141,7 +142,7 @@ public class ScopeStore implements IDataStore {
 	 * @return the scope instance
 	 */
 	public IScope getScope(Collection<ITopic> themes) {
-		if (themes.isEmpty()) {
+		if (themes == null || themes.isEmpty()) {
 			return emptyScope;
 		}
 		if (scopes == null) {
@@ -172,6 +173,9 @@ public class ScopeStore implements IDataStore {
 		scoped.addAll(getScopedOccurrences(scope));
 		scoped.addAll(getScopedNames(scope));
 		scoped.addAll(getScopedVariants(scope));
+		if ( scoped.isEmpty()){
+			return Collections.emptySet();
+		}
 		return scoped;
 	}
 
@@ -186,7 +190,7 @@ public class ScopeStore implements IDataStore {
 		if (scopedOccurrences != null && scopedOccurrences.containsKey(scope)) {
 			return scopedOccurrences.get(scope);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -200,7 +204,7 @@ public class ScopeStore implements IDataStore {
 		if (scopedNames != null && scopedNames.containsKey(scope)) {
 			return scopedNames.get(scope);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -222,6 +226,9 @@ public class ScopeStore implements IDataStore {
 				}
 			}
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -236,7 +243,7 @@ public class ScopeStore implements IDataStore {
 		if (scopedAssociations != null && scopedAssociations.containsKey(scope)) {
 			return scopedAssociations.get(scope);
 		}
-		return HashUtil.getHashSet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -353,9 +360,7 @@ public class ScopeStore implements IDataStore {
 			set.remove(scoped);
 			if (set.isEmpty()) {
 				scopedAssociations.remove(s);
-			} else {
-				scopedAssociations.put(s, set);
-			}
+			} 
 			return s;
 		}
 		return emptyScope;
@@ -375,9 +380,7 @@ public class ScopeStore implements IDataStore {
 			set.remove(scoped);
 			if (set.isEmpty()) {
 				scopedOccurrences.remove(s);
-			} else {
-				scopedOccurrences.put(s, set);
-			}
+			} 
 			return s;
 		}
 		return emptyScope;
@@ -397,9 +400,7 @@ public class ScopeStore implements IDataStore {
 			set.remove(scoped);
 			if (set.isEmpty()) {
 				scopedNames.remove(s);
-			} else {
-				scopedNames.put(s, set);
-			}
+			} 
 			return s;
 		}
 		return emptyScope;
@@ -419,9 +420,7 @@ public class ScopeStore implements IDataStore {
 			set.remove(scoped);
 			if (set.isEmpty()) {
 				scopedVariants.remove(s);
-			} else {
-				scopedVariants.put(s, set);
-			}
+			} 
 			return s;
 		}
 		return emptyScope;
@@ -468,9 +467,9 @@ public class ScopeStore implements IDataStore {
 		Set<IAssociation> set = scopedAssociations.get(s);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			scopedAssociations.put(s, set);
 		}
 		set.add(scoped);
-		scopedAssociations.put(s, set);
 	}
 
 	/**
@@ -492,9 +491,9 @@ public class ScopeStore implements IDataStore {
 		Set<IOccurrence> set = scopedOccurrences.get(s);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			scopedOccurrences.put(s, set);
 		}
 		set.add(scoped);
-		scopedOccurrences.put(s, set);
 	}
 
 	/**
@@ -516,9 +515,9 @@ public class ScopeStore implements IDataStore {
 		Set<IName> set = scopedNames.get(s);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			scopedNames.put(s, set);
 		}
 		set.add(scoped);
-		scopedNames.put(s, set);
 	}
 
 	/**
@@ -530,23 +529,6 @@ public class ScopeStore implements IDataStore {
 	 *            the scope
 	 */
 	public void setScope(IVariant scoped, IScope s) {
-		// IScope parent = getScope(scoped.getParent());
-		// /*
-		// * check if theme is not part of the name scope
-		// */
-		// if (!s.getThemes().containsAll(parent.getThemes())) {
-		// throw new ModelConstraintException(scoped,
-		// "The variant scope has to contain all themes of the parent name scope.");
-		// }
-		//
-		// /*
-		// * check if theme is not part of the name scope
-		// */
-		// if (parent.getThemes().size() >= s.getThemes().size()) {
-		// throw new ModelConstraintException(scoped,
-		// "The variant scope has to contain at least one more theme than the parent name.");
-		// }
-
 		if (variantScopes == null) {
 			variantScopes = HashUtil.getHashMap();
 		}
@@ -558,9 +540,9 @@ public class ScopeStore implements IDataStore {
 		Set<IVariant> set = scopedVariants.get(s);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			scopedVariants.put(s, set);
 		}
 		set.add(scoped);
-		scopedVariants.put(s, set);
 
 	}
 
@@ -656,6 +638,9 @@ public class ScopeStore implements IDataStore {
 				scopes.remove(scope);
 			}
 		}
+		if ( removed.isEmpty()){
+			return Collections.emptySet();
+		}
 		return removed;
 	}
 
@@ -723,6 +708,9 @@ public class ScopeStore implements IDataStore {
 				}
 			}
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -733,7 +721,7 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IScope> getNameScopes() {
 		if (scopedNames == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(scopedNames.keySet());
 	}
@@ -745,7 +733,7 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IScope> getOccurrenceScopes() {
 		if (scopedOccurrences == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(scopedOccurrences.keySet());
 	}
@@ -757,7 +745,7 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IScope> getAssociationScopes() {
 		if (scopedAssociations == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return HashUtil.getHashSet(scopedAssociations.keySet());
 	}
@@ -769,7 +757,7 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IScope> getVariantScopes() {
 		if (scopedVariants == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		Set<IScope> set = HashUtil.getHashSet();
 		for (Entry<IVariant, IScope> s : variantScopes.entrySet()) {

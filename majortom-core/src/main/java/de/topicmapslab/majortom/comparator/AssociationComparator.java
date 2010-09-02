@@ -30,6 +30,9 @@ import org.tmapi.core.Association;
  */
 public class AssociationComparator implements Comparator<Association> {
 
+	private static AssociationComparator instanceAsc = null;
+	private static AssociationComparator instanceDesc = null;
+
 	private final boolean ascending;
 
 	/**
@@ -38,8 +41,28 @@ public class AssociationComparator implements Comparator<Association> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public AssociationComparator(boolean ascending) {
+	private AssociationComparator(boolean ascending) {
 		this.ascending = ascending;
+	}
+
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static AssociationComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new AssociationComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new AssociationComparator(false);
+		}
+		return instanceDesc;
 	}
 
 	/**
@@ -59,7 +82,7 @@ public class AssociationComparator implements Comparator<Association> {
 	 * </p>
 	 */
 	public int compare(Association o1, Association o2) {
-		int compare = new TopicByIdentityComparator(ascending).compare(o1.getType(), o2.getType());
+		int compare = TopicByIdentityComparator.getInstance(ascending).compare(o1.getType(), o2.getType());
 		if (compare == 0) {
 			compare = o2.getRoles().size() - o1.getRoles().size();
 			compare = ascending ? compare : compare * -1;

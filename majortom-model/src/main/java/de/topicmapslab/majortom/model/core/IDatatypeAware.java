@@ -22,7 +22,6 @@ import java.util.Calendar;
 
 import org.tmapi.core.DatatypeAware;
 
-import de.topicmapslab.geotype.model.IGeoSurface;
 import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 
@@ -75,7 +74,7 @@ public interface IDatatypeAware extends DatatypeAware, IConstruct {
 	 * 
 	 * @return the geographic surface of this characteristics
 	 */
-	public IGeoSurface<?> surfaceValue() throws ParseException;
+	public Wgs84Circuit surfaceValue() throws ParseException;
 
 	/**
 	 * Changes the value of this characteristics to the given value. The

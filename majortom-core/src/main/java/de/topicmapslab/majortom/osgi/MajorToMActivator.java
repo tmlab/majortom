@@ -24,28 +24,24 @@ public class MajorToMActivator implements BundleActivator {
 
 	private static MajorToMActivator plugin;
 	private BundleContext context;
-	
+		
 	/**
-	 * This method is called by the OSGi framework on activating the bundle.
+	 * {@inheritDoc}
 	 */
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		MajorToMActivator.plugin = this;
 	}
-
-
+	
 	/**
-	 * This method is called when the bundle is stopped.
+	 * {@inheritDoc}
 	 */
 	public void stop(BundleContext context) throws Exception {
-		MajorToMActivator.plugin = null;
 	}
 
 	/**
-	 * This method retrieves all services which implement the {@link ITopicMapStoreFactory} interface and
-	 * returns the list of the found implementations.
-	 * 
-	 * @return a list of {@link ITopicMapStoreFactory} implementations
+	 * Hannes kommentiert das nachher @TODO, XXX
+	 * @return
 	 * @throws InvalidSyntaxException
 	 */
 	public List<ITopicMapStoreFactory> getTopicMapStoreFactories() throws InvalidSyntaxException {
@@ -59,10 +55,9 @@ public class MajorToMActivator implements BundleActivator {
 		
 		return result;
 	}
-
+	
 	/**
-	 * Returns the instance of this activator
-	 * @return the activator of the bundle ot <code>null</code> if the bundle is not active
+	 * Hannes kommentiert das nachher @TODO, XXX
 	 */
 	public static MajorToMActivator getDefault() {
 		return plugin;

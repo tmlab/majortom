@@ -38,7 +38,7 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 public class TestCanonicals extends MaJorToMTestCase {
 
 	public void testNameDuplicates() {
-		if ( topicMap.getStore().supportRevisionManagement()){
+		if ( topicMap.getStore().isRevisionManagementSupported()){
 			topicMap.getStore().enableRevisionManagement(false);
 		}
 		ITopic type = createTopic();
@@ -72,7 +72,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 	}
 
 	public void testVariantDuplicates() {
-		if ( topicMap.getStore().supportRevisionManagement()){
+		if ( topicMap.getStore().isRevisionManagementSupported()){
 			topicMap.getStore().enableRevisionManagement(false);
 		}
 		ITopic type = createTopic();
@@ -169,7 +169,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 	 */
 	protected void setUp() throws Exception {		
 		super.setUp();
-		if ( topicMap.getStore().supportRevisionManagement()){
+		if ( topicMap.getStore().isRevisionManagementSupported()){
 			topicMap.getStore().enableRevisionManagement(false);
 		}
 	}

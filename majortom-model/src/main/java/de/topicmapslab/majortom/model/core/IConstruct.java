@@ -33,16 +33,4 @@ public interface IConstruct extends Construct, Comparable<IConstruct> {
 	 * @return the removed <code>true</code> if the construct was removed
 	 */
 	public boolean isRemoved();
-
-	/**
-	 * Modify the internal state of deletion.
-	 * <p>
-	 * <b>Hint:</b> A construct marked as removed, causes an exception calling
-	 * any read, write or update method.
-	 * </p>
-	 * 
-	 * @param removed
-	 *            the state flag
-	 */
-	public void setRemoved(boolean removed);
 }

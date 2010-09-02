@@ -15,7 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.store;
 
-public final class TopicMapStoreProperty {
+public interface TopicMapStoreProperty {
 
 	public static final String PREFIX = "de.topicmapslab.majortom";
 
@@ -23,5 +23,4 @@ public final class TopicMapStoreProperty {
 	
 	public static final String THREADPOOL_MAXIMUM = PREFIX + ".threadpool.maximum";
 	
-	private TopicMapStoreProperty(){}
 }

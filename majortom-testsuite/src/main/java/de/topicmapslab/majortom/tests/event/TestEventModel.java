@@ -111,20 +111,16 @@ public class TestEventModel extends MaJorToMTestCase {
 
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
-
-		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(TYPE_ADDED, event);
+				if (TYPE_ADDED.equals(event)) {
 					assertEquals(topic, notifier);
 					assertTrue(newValue instanceof ITopic);
 					assertEquals(type, newValue);
 					assertNull(oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -137,8 +133,6 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
 
-		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
-		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
 
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
