@@ -10,21 +10,26 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 
+/**
+ * Base implementation of a construct factory only calls the internal package
+ * private constructors.
+ * 
+ * @author Sven Krosse
+ * 
+ */
 public class ConstructFactoryImpl implements IConstructFactory {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAssociation newAssociation(ITopicMapStoreIdentity identity,
-			ITopicMap parent) {
+	public IAssociation newAssociation(ITopicMapStoreIdentity identity, ITopicMap parent) {
 		return new AssociationImpl(identity, parent);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAssociationRole newAssociationRole(ITopicMapStoreIdentity identity,
-			IAssociation parent) {
+	public IAssociationRole newAssociationRole(ITopicMapStoreIdentity identity, IAssociation parent) {
 		return new AssociationRoleImpl(identity, parent);
 	}
 
@@ -38,8 +43,7 @@ public class ConstructFactoryImpl implements IConstructFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IOccurrence newOccurrence(ITopicMapStoreIdentity identity,
-			ITopic parent) {
+	public IOccurrence newOccurrence(ITopicMapStoreIdentity identity, ITopic parent) {
 		return new OccurrenceImpl(identity, parent);
 	}
 

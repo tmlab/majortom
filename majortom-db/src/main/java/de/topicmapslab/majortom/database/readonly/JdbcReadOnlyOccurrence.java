@@ -49,7 +49,7 @@ public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 	 */
 	public JdbcReadOnlyOccurrence(IQueryProcessor processor, IOccurrence clone) {
 		super(clone);
-		this.parent = new JdbcReadOnlyTopic(processor,clone.getParent());
+		this.parent = new JdbcReadOnlyTopic(processor, clone.getParent());
 		this.processor = processor;
 	}
 
@@ -64,8 +64,7 @@ public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
-		return set.iterator().next();
+		return (Topic) doReadHistoryValue(TopicMapStoreParameterType.TYPE);
 	}
 
 	/**
@@ -116,7 +115,8 @@ public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+	private <T extends Object> T doReadHistoryValue(
+			TopicMapStoreParameterType type) {
 		try {
 			return (T) processor.doReadHistory(this, type).get(type);
 		} catch (SQLException e) {

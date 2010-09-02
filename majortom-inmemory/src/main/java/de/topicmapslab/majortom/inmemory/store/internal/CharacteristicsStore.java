@@ -16,9 +16,10 @@
 package de.topicmapslab.majortom.inmemory.store.internal;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -120,6 +121,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getNames(t));
 		set.addAll(getOccurrences(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -132,6 +136,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getNames());
 		set.addAll(getOccurrences());
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -144,7 +151,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Set<IName> getNames(ITopic t) {
 		if (names == null || !names.containsKey(t)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return names.get(t);
 	}
@@ -161,6 +168,9 @@ public class CharacteristicsStore implements IDataStore {
 				set.addAll(entry.getValue());
 			}
 		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -173,7 +183,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Set<IOccurrence> getOccurrences(ITopic t) {
 		if (occurrences == null || !occurrences.containsKey(t)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return occurrences.get(t);
 	}
@@ -190,6 +200,9 @@ public class CharacteristicsStore implements IDataStore {
 				set.addAll(entry.getValue());
 			}
 		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -202,7 +215,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Set<IVariant> getVariants(IName n) {
 		if (variants == null || !variants.containsKey(n)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return variants.get(n);
 	}
@@ -219,6 +232,9 @@ public class CharacteristicsStore implements IDataStore {
 				set.addAll(entry.getValue());
 			}
 		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -229,16 +245,15 @@ public class CharacteristicsStore implements IDataStore {
 	 *            the name
 	 */
 	public void removeName(IName n) {
-		if (names == null) {
-			throw new TopicMapStoreException("Unknown name " + n.toString());
+		if (names == null || !names.containsKey(n.getParent())) {
+			return;
 		}
 
 		Set<IName> set = names.get(n.getParent());
-		if (set == null) {
-			throw new TopicMapStoreException("Unknown topic " + n.toString());
-		}
 		set.remove(n);
-		names.put(n.getParent(), set);
+		if (set.isEmpty()) {
+			names.remove(n.getParent());
+		}
 
 		/*
 		 * remove all variants
@@ -262,16 +277,15 @@ public class CharacteristicsStore implements IDataStore {
 	 *            the occurrence
 	 */
 	public void removeOccurrence(IOccurrence o) {
-		if (occurrences == null) {
-			throw new TopicMapStoreException("Unknown occurrence " + o.toString());
+		if (occurrences == null || !occurrences.containsKey(o.getParent())) {
+			return;
 		}
 
 		Set<IOccurrence> set = occurrences.get(o.getParent());
-		if (set == null) {
-			throw new TopicMapStoreException("Unknown occurrence " + o.toString());
-		}
 		set.remove(o);
-		occurrences.put(o.getParent(), set);
+		if (set.isEmpty()) {
+			occurrences.remove(o.getParent());
+		}
 
 		/*
 		 * remove data type
@@ -282,8 +296,6 @@ public class CharacteristicsStore implements IDataStore {
 			datatypeAwares.remove(o);
 			if (datatypeAwares.isEmpty()) {
 				dataTyped.remove(l);
-			} else {
-				dataTyped.put(l, datatypeAwares);
 			}
 		}
 
@@ -302,16 +314,15 @@ public class CharacteristicsStore implements IDataStore {
 	 *            the variant
 	 */
 	public void removeVariant(IVariant v) {
-		if (variants == null) {
-			throw new TopicMapStoreException("Unknown variant " + v.toString());
+		if (variants == null || !variants.containsKey(v.getParent())) {
+			return;
 		}
 
 		Set<IVariant> set = variants.get(v.getParent());
-		if (set == null) {
-			throw new TopicMapStoreException("Unknown variant " + v.toString());
-		}
 		set.remove(v);
-		variants.put(v.getParent(), set);
+		if (set.isEmpty()) {
+			variants.remove(v.getParent());
+		}
 
 		/*
 		 * remove data type
@@ -322,8 +333,6 @@ public class CharacteristicsStore implements IDataStore {
 			datatypeAwares.remove(v);
 			if (datatypeAwares.isEmpty()) {
 				dataTyped.remove(l);
-			} else {
-				dataTyped.put(l, datatypeAwares);
 			}
 		}
 
@@ -351,9 +360,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<IName> set = names.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			names.put(t, set);
 		}
 		set.add(n);
-		names.put(t, set);
 	}
 
 	/**
@@ -372,10 +381,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<IOccurrence> set = occurrences.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			occurrences.put(t, set);
 		}
 		set.add(o);
-		occurrences.put(t, set);
-
 		setDatatype(o, xsdString);
 	}
 
@@ -395,9 +403,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<IVariant> set = variants.get(n);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			variants.put(n, set);
 		}
 		set.add(v);
-		variants.put(n, set);
 		setDatatype(v, xsdString);
 	}
 
@@ -443,8 +451,6 @@ public class CharacteristicsStore implements IDataStore {
 				datatypeAwares.remove(dataTypeAware);
 				if (datatypeAwares.isEmpty()) {
 					dataTyped.remove(oldDataType);
-				} else {
-					dataTyped.put(oldDataType, datatypeAwares);
 				}
 			}
 		}
@@ -455,9 +461,9 @@ public class CharacteristicsStore implements IDataStore {
 		Set<IDatatypeAware> datatypeAwares = dataTyped.get(dataType);
 		if (datatypeAwares == null) {
 			datatypeAwares = HashUtil.getHashSet();
+			dataTyped.put(dataType, datatypeAwares);
 		}
 		datatypeAwares.add(dataTypeAware);
-		dataTyped.put(dataType, datatypeAwares);
 
 		return oldDataType;
 	}
@@ -471,11 +477,12 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Object getValue(IConstruct obj) {
 		if (values == null || !values.containsKey(obj)) {
-			throw new TopicMapStoreException("Unknown object!");
+			throw new TopicMapStoreException(
+					"Value for construct does not exist!");
 		}
 		Object value = values.get(obj);
-		if ( value instanceof Calendar ){
-			return cloneCalendar((Calendar)value);
+		if (value instanceof Calendar) {
+			return cloneCalendar((Calendar) value);
 		}
 		return value;
 	}
@@ -492,7 +499,8 @@ public class CharacteristicsStore implements IDataStore {
 		if (obj instanceof IName) {
 			return value.toString();
 		}
-		return DatatypeAwareUtils.toString(value, getDatatype((IDatatypeAware) obj));
+		return DatatypeAwareUtils.toString(value,
+				getDatatype((IDatatypeAware) obj));
 	}
 
 	/**
@@ -511,11 +519,12 @@ public class CharacteristicsStore implements IDataStore {
 		} else {
 			oldValue = values.get(obj);
 		}
+		Object value_ = value;
 		if (value instanceof Calendar) {
-			values.put(obj, cloneCalendar((Calendar)value));
-		}else{
-			values.put(obj, value);
+			value_ = cloneCalendar((Calendar) value);
 		}
+		values.put(obj, value_);
+
 		return oldValue;
 	}
 
@@ -526,10 +535,16 @@ public class CharacteristicsStore implements IDataStore {
 	 *            the topic to remove
 	 */
 	public void removeTopic(final ITopic topic) {
-		if (names != null) {
+		if (names != null && names.containsKey(topic)) {
+			for (IName n : names.get(topic)) {
+				removeName(n);
+			}
 			this.names.remove(topic);
 		}
-		if (occurrences != null) {
+		if (occurrences != null && occurrences.containsKey(topic)) {
+			for (IOccurrence o : occurrences.get(topic)) {
+				removeOccurrence(o);
+			}
 			this.occurrences.remove(topic);
 		}
 	}
@@ -550,7 +565,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Set<IDatatypeAware> getDatatypeAwares(ILocator locator) {
 		if (dataTyped == null || !dataTyped.containsKey(locator)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return dataTyped.get(locator);
 	}
@@ -578,8 +593,9 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	private Calendar cloneCalendar(Calendar calendar) {
 		Calendar c = Calendar.getInstance();
-		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND,
-				Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH,
+				Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE,
+				Calendar.SECOND, Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
 			c.set(field, calendar.get(field));
 		}
 		return c;

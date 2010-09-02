@@ -15,11 +15,14 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.comparator;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
+
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * Special comparator ordering constructs by their item-identifier
@@ -28,6 +31,7 @@ import org.tmapi.core.Locator;
  * 
  */
 public class ConstructByItemIdentifierComparator<T extends Construct> implements Comparator<T> {
+
 
 	private final boolean ascending;
 
@@ -67,8 +71,10 @@ public class ConstructByItemIdentifierComparator<T extends Construct> implements
 	 * </p>
 	 */
 	public int compare(T o1, T o2) {
-		Collection<Locator> ii1 = o1.getItemIdentifiers();
-		Collection<Locator> ii2 = o2.getItemIdentifiers();
+		List<Locator> ii1 = HashUtil.getList(o1.getItemIdentifiers());
+		Collections.sort(ii1, LocatorByReferenceComparator.getInstance(ascending));
+		List<Locator> ii2 = HashUtil.getList(o2.getItemIdentifiers());
+		Collections.sort(ii2, LocatorByReferenceComparator.getInstance(ascending));
 		if (ii1.isEmpty() && ii2.isEmpty()) {
 			return 0;
 		} else if (ii1.isEmpty()) {
@@ -76,7 +82,6 @@ public class ConstructByItemIdentifierComparator<T extends Construct> implements
 		} else if (ii2.isEmpty()) {
 			return ascending ? 1 : -1;
 		}
-		int compare = ii1.iterator().next().getReference().compareTo(ii2.iterator().next().getReference());
-		return ascending ? compare : compare * -1;
+		return LocatorByReferenceComparator.getInstance(ascending).compare(ii1.get(0), ii2.get(0));
 	}
 }

@@ -30,7 +30,6 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IScope;
-import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
@@ -83,8 +82,7 @@ public class JdbcReadOnlyAssociation extends ReadOnlyAssociation {
 	 * {@inheritDoc}
 	 */
 	public Topic getType() {
-		Set<ITopic> set = doReadHistoryValue(TopicMapStoreParameterType.TYPE);
-		return set.iterator().next();
+		return (Topic) doReadHistoryValue(TopicMapStoreParameterType.TYPE);
 	}
 
 	/**

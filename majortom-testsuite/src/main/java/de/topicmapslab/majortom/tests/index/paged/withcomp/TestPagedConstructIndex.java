@@ -73,7 +73,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 			}
 		}
 		List<Association> list = null;
-		Comparator<Association> comp = new ConstructByItemIdentifierComparator<Association>();
+		Comparator<Association> comp = new ConstructByItemIdentifierComparator<Association>(true);
 
 		/*
 		 * using index methods
@@ -462,7 +462,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 			}
 		}
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		/*
 		 * using index methods
@@ -540,7 +540,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 			}
 		}
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		/*
 		 * using index methods

@@ -67,7 +67,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		}
 
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getDirectSubtypes(type, i * 10, 10, comp);
@@ -120,7 +120,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getDirectSupertypes(type, i * 10, 10, comp);
@@ -171,7 +171,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSubtypes(i * 10, 10, comp);
@@ -227,7 +227,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSubtypes(type, i * 10, 10, comp);
@@ -291,7 +291,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		types.add(otherType);
 
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSubtypes(types, i * 10, 10, comp);
@@ -349,7 +349,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSubtypes(types, true, i * 10, 10, comp);
@@ -400,7 +400,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(i * 10, 10, comp);
@@ -456,7 +456,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(type, i * 10, 10, comp);
@@ -521,7 +521,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(types, i * 10, 10, comp);
@@ -579,7 +579,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(types, true, i * 10, 10, comp);

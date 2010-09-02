@@ -7,9 +7,7 @@ import org.tmapi.index.Index;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.ITopicMap;
-import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
-import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 
@@ -73,7 +71,7 @@ public interface ITopicMapStore {
 	 * @return <code>true</code> if the store save all changes of the topic map,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean supportRevisionManagement();
+	public boolean isRevisionManagementSupported();
 
 	/**
 	 * Operation method to merge a set of constructs to one new construct
@@ -197,16 +195,6 @@ public interface ITopicMapStore {
 	public <I extends Index> I getIndex(Class<I> clazz);
 
 	/**
-	 * Set the topic map of the store.
-	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @throws TopicMapStoreException
-	 *             thrown if internal topic map already set
-	 */
-	public void setTopicMap(ITopicMap topicMap) throws TopicMapStoreException;
-
-	/**
 	 * Creating a new transaction.
 	 * 
 	 * @return the created transaction
@@ -221,14 +209,6 @@ public interface ITopicMapStore {
 	public boolean isTransactable();
 
 	/**
-	 * Setting the internal reference of the topic map system.
-	 * 
-	 * @param topicMapSystem
-	 *            the topic map system
-	 */
-	public void setTopicMapSystem(ITopicMapSystem topicMapSystem);
-
-	/**
 	 * Return the internal topic map instance of this store.
 	 * 
 	 * @return the topic map
@@ -237,12 +217,9 @@ public interface ITopicMapStore {
 
 	/**
 	 * Method commit all changes of every queue of the topic map store. The
-	 * calling thread will be blocked until the changes are commited.
-	 * 
-	 * @throws ConcurrentThreadsException
-	 *             thrown if the method was called by another thread before
+	 * calling thread will be blocked until the changes are committed.
 	 */
-	public void commit() throws ConcurrentThreadsException;
+	public void commit();
 
 	/**
 	 * Method removes all duplicated from the topic map
@@ -250,7 +227,7 @@ public interface ITopicMapStore {
 	public void removeDuplicates();
 
 	/**
-	 * Removes everything from the topic map
+	 * Removes everything from the topic map store
 	 */
 	public void clear();
 
@@ -283,4 +260,5 @@ public interface ITopicMapStore {
 	 * @return the internal construct factory
 	 */
 	public IConstructFactory getConstructFactory();
+	
 }

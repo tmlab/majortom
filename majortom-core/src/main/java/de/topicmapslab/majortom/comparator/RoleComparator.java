@@ -30,7 +30,30 @@ import org.tmapi.core.Role;
  */
 public class RoleComparator implements Comparator<Role> {
 
+	private static RoleComparator instanceAsc = null;
+	private static RoleComparator instanceDesc = null;
+
 	private final boolean ascending;
+
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static RoleComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new RoleComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new RoleComparator(false);
+		}
+		return instanceDesc;
+	}
 
 	/**
 	 * constructor
@@ -38,7 +61,7 @@ public class RoleComparator implements Comparator<Role> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public RoleComparator(boolean ascending) {
+	private RoleComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 
@@ -59,10 +82,13 @@ public class RoleComparator implements Comparator<Role> {
 	 * </p>
 	 */
 	public int compare(Role o1, Role o2) {
-		int compare = new TopicByIdentityComparator(ascending).compare(o1.getType(), o2.getType());
+		int compare = TopicByIdentityComparator.getInstance(ascending).compare(o1.getType(), o2.getType());
 		if (compare == 0) {
-			compare = new TopicByIdentityComparator(ascending).compare(o1.getPlayer(), o2.getPlayer());
+			compare = TopicByIdentityComparator.getInstance(ascending).compare(o1.getPlayer(), o2.getPlayer());			
 		}
+		if ( compare == 0 ){
+			compare = AssociationComparator.getInstance(ascending).compare(o1.getParent(), o2.getParent());
+		}			
 		return compare;
 	}
 

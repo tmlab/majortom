@@ -158,7 +158,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * get all names
 		 */
-		names.addAll(store.getCharacteristicsStore().getNames());
+		names.addAll(store.getCharacteristicsStore().getNames(topic));
 		/*
 		 * filter by same type
 		 */
@@ -173,7 +173,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IName n : names) {
-			if (n.getValue().equals(value) && n.getParent().equals(topic)) {
+			if (n.getValue().equals(value)) {
 				return n;
 			}
 		}
@@ -204,7 +204,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * get all names
 		 */
-		set.addAll(store.getCharacteristicsStore().getVariants());
+		set.addAll(store.getCharacteristicsStore().getVariants(name));
 		/*
 		 * filter by same scope
 		 */
@@ -215,7 +215,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IVariant v : set) {
-			if (v.getValue().equals(value) && v.getParent().equals(name) && v.getDatatype().equals(locator)) {
+			if (v.getValue().equals(value) && v.getDatatype().equals(locator)) {
 				return v;
 			}
 		}
@@ -248,7 +248,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * get all names
 		 */
-		set.addAll(store.getCharacteristicsStore().getOccurrences());
+		set.addAll(store.getCharacteristicsStore().getOccurrences(topic));
 		/*
 		 * filter by same type
 		 */
@@ -263,7 +263,7 @@ public class InMemoryMergeUtils {
 		 * filter by value
 		 */
 		for (IOccurrence o : set) {
-			if (o.getValue().equals(value) && o.getParent().equals(topic) && o.getDatatype().equals(locator)) {
+			if (o.getValue().equals(value) && o.getDatatype().equals(locator)) {
 				return o;
 			}
 		}
@@ -759,7 +759,7 @@ public class InMemoryMergeUtils {
 			 */
 			for (Topic type : topic.getTypes()) {
 				ITopic t = getDuplette(store, type);
-				store.modifyType(duplette, t, revision);
+				store.modifyTopicType(duplette, t, revision);
 			}
 
 			/*
