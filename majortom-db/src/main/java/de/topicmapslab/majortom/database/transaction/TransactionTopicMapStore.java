@@ -933,9 +933,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			TransactionMergeUtils.doMerge(this, newTopic, context, revision);
 			TransactionMergeUtils.doMerge(this, newTopic, other, revision);
 			((TopicImpl) context).getIdentity().setId(newTopic.getId());
-			context.setRemoved(false);
+			((ConstructImpl)context).setRemoved(false);
 			((TopicImpl) other).getIdentity().setId(newTopic.getId());
-			other.setRemoved(false);
+			((ConstructImpl)other).setRemoved(false);
 			/*
 			 * notify listeners
 			 */

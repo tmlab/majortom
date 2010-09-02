@@ -88,7 +88,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			 * {@inheritDoc}
 			 */
 			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
+				return TopicByIdentityComparator.getInstance(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
 			}
 		};
 
@@ -142,7 +142,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getAssociationThemes(i * 10, 10, comp);
@@ -566,7 +566,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			 * {@inheritDoc}
 			 */
 			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
+				return TopicByIdentityComparator.getInstance(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
 			}
 		};
 
@@ -619,7 +619,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNameThemes(i * 10, 10, comp);
@@ -668,7 +668,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		}
 
 		List<Name> list = null;
-		Comparator<Name> comp = new NameByValueComparator(true);
+		Comparator<Name> comp = NameByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(theme, i * 10, 10, comp);
@@ -724,7 +724,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Name> list = null;
 
-		Comparator<Name> comp = new NameByValueComparator(true);
+		Comparator<Name> comp = NameByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(new Topic[] { theme, other }, false, i * 10, 10, comp);
@@ -813,7 +813,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Name> list = null;
 
-		Comparator<Name> comp = new NameByValueComparator(true);
+		Comparator<Name> comp = NameByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(scope, i * 10, 10, comp);
@@ -878,7 +878,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Name> list = null;
 
-		Comparator<Name> comp = new NameByValueComparator(true);
+		Comparator<Name> comp = NameByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(scopes, i * 10, 10, comp);
@@ -935,7 +935,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			 * {@inheritDoc}
 			 */
 			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
+				return TopicByIdentityComparator.getInstance(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
 			}
 		};
 
@@ -989,7 +989,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrenceThemes(i * 10, 10, comp);
@@ -1039,7 +1039,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Occurrence> list = null;
 
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
+		Comparator<Occurrence> comp = OccurrenceByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(theme, i * 10, 10, comp);
@@ -1095,7 +1095,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Occurrence> list = null;
 
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
+		Comparator<Occurrence> comp = OccurrenceByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(new Topic[] { theme, other }, false, i * 10, 10, comp);
@@ -1184,7 +1184,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Occurrence> list = null;
 
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
+		Comparator<Occurrence> comp = OccurrenceByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(scope, i * 10, 10, comp);
@@ -1249,7 +1249,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Occurrence> list = null;
 
-		Comparator<Occurrence> comp = new OccurrenceByValueComparator(true);
+		Comparator<Occurrence> comp = OccurrenceByValueComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(scopes, i * 10, 10, comp);
@@ -1377,7 +1377,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			 * {@inheritDoc}
 			 */
 			public int compare(IScope arg0, IScope arg1) {
-				return new TopicByIdentityComparator(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
+				return TopicByIdentityComparator.getInstance(true).compare(arg0.getThemes().iterator().next(), arg1.getThemes().iterator().next());
 			}
 		};
 
@@ -1431,7 +1431,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getVariantThemes(i * 10, 10, comp);

@@ -27,8 +27,18 @@ import de.topicmapslab.majortom.model.exception.TransactionException;
  */
 public interface ITransaction extends ITopicMap {
 
+	/**
+	 * Commit all changes to the topic map store.
+	 * 
+	 * @throws TransactionException
+	 *             thrown if commit fails
+	 */
 	public void commit() throws TransactionException;
 
+	/**
+	 * Rolling back all changes of the current transaction. After roll back the
+	 * topic map state is the same like the time the transaction was created.
+	 */
 	public void rollback();
 
 	/**

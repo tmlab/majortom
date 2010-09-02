@@ -44,7 +44,8 @@ public interface IRevisionChange {
 	Object getNewValue();
 
 	/**
-	 * Returns the context of the modified value.
+	 * Returns the context of the modified value. If a construct was created
+	 * or removed the context is the parent of this construct.
 	 * 
 	 * @return the context
 	 */
@@ -60,7 +61,8 @@ public interface IRevisionChange {
 	/**
 	 * Exports the information of this history item as XML node.
 	 * 
-	 * @param doc the parent document
+	 * @param doc
+	 *            the parent document
 	 * @return the node
 	 */
 	public Node toXml(Document doc);

@@ -30,7 +30,30 @@ import org.tmapi.core.Occurrence;
  */
 public class OccurrenceByValueComparator implements Comparator<Occurrence> {
 
+	private static OccurrenceByValueComparator instanceAsc = null;
+	private static OccurrenceByValueComparator instanceDesc = null;
+
 	private final boolean ascending;
+
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static OccurrenceByValueComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new OccurrenceByValueComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new OccurrenceByValueComparator(false);
+		}
+		return instanceDesc;
+	}
 
 	/**
 	 * constructor
@@ -38,7 +61,7 @@ public class OccurrenceByValueComparator implements Comparator<Occurrence> {
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public OccurrenceByValueComparator(boolean ascending) {
+	private OccurrenceByValueComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 

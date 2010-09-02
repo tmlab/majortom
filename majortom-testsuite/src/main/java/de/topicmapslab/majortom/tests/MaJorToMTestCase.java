@@ -91,11 +91,11 @@ public class MaJorToMTestCase extends TestCase {
 			throw new FileNotFoundException("The file is not in the main/resource folder");
 				
 		XTMTopicMapReader reader = new XTMTopicMapReader(topicMap, is, "http://majortomtest.de/");	
-		if(topicMap.getStore().supportRevisionManagement()){
+		if(topicMap.getStore().isRevisionManagementSupported()){
 			topicMap.getStore().enableRevisionManagement(false);
 		}
 		reader.read();
-		if(topicMap.getStore().supportRevisionManagement()){
+		if(topicMap.getStore().isRevisionManagementSupported()){
 			topicMap.getStore().enableRevisionManagement(true);
 		}
 	}

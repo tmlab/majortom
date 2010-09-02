@@ -30,15 +30,38 @@ import org.tmapi.core.Name;
  */
 public class NameByValueComparator implements Comparator<Name> {
 
+	private static NameByValueComparator instanceAsc = null;
+	private static NameByValueComparator instanceDesc = null;
+
 	private final boolean ascending;
 
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static NameByValueComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new NameByValueComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new NameByValueComparator(false);
+		}
+		return instanceDesc;
+	}
+	
 	/**
 	 * constructor
 	 * 
 	 * @param ascending
 	 *            sorting order ascending?
 	 */
-	public NameByValueComparator(boolean ascending) {
+	private NameByValueComparator(boolean ascending) {
 		this.ascending = ascending;
 	}
 

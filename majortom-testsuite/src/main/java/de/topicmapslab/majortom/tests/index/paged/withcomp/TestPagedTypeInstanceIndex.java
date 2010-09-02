@@ -72,7 +72,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getAssociationTypes(i * 10, 10, comp);
@@ -254,7 +254,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getCharacteristicTypes(i * 10, 10, comp);
@@ -438,7 +438,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNameTypes(i * 10, 10, comp);
@@ -615,7 +615,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrenceTypes(i * 10, 10, comp);
@@ -792,7 +792,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		}
 
 		List<Topic> list = null;
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getRoleTypes(i * 10, 10, comp);
@@ -970,7 +970,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopicTypes(i * 10, 10, comp);
@@ -1022,7 +1022,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(type, i * 10, 10, comp);
@@ -1083,7 +1083,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(types, i * 10, 10, comp);
@@ -1141,7 +1141,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 
 		List<Topic> list = null;
 
-		Comparator<Topic> comp = new TopicByIdentityComparator(true);
+		Comparator<Topic> comp = TopicByIdentityComparator.getInstance(true);
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(types, true, i * 10, 10, comp);

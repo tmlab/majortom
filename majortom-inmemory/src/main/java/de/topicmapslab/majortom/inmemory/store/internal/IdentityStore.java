@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class IdentityStore implements IDataStore {
 	/**
 	 * item-identifier mapping of the topic map engine
 	 */
-	private Map<ILocator, IConstruct> itemIdentitiers;
+	private Map<ILocator, IConstruct> itemIdentifiers;
 
 	/**
 	 * construct to item-identifiers mapping
@@ -112,8 +113,8 @@ public class IdentityStore implements IDataStore {
 		if (locators != null) {
 			locators.clear();
 		}
-		if (itemIdentitiers != null) {
-			itemIdentitiers.clear();
+		if (itemIdentifiers != null) {
+			itemIdentifiers.clear();
 		}
 		if (subjectIdentifiers != null) {
 			subjectIdentifiers.clear();
@@ -157,10 +158,10 @@ public class IdentityStore implements IDataStore {
 	 * @return the construct or <code>null</code>
 	 */
 	public IConstruct byItemIdentifier(final ILocator l) {
-		if (itemIdentitiers == null) {
+		if (itemIdentifiers == null) {
 			return null;
 		}
-		return itemIdentitiers.get(l);
+		return itemIdentifiers.get(l);
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ILocator> getItemIdentifiers(IConstruct c) {
 		if (constructItemIdentitiers == null || !constructItemIdentitiers.containsKey(c)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return constructItemIdentitiers.get(c);
 	}
@@ -214,7 +215,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ILocator> getSubjectIdentifiers(ITopic t) {
 		if (topicSubjectIdentifiers == null || !topicSubjectIdentifiers.containsKey(t)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return topicSubjectIdentifiers.get(t);
 	}
@@ -228,7 +229,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ILocator> getSubjectLocators(ITopic t) {
 		if (topicSubjectLocators == null || !topicSubjectLocators.containsKey(t)) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return topicSubjectLocators.get(t);
 	}
@@ -263,10 +264,10 @@ public class IdentityStore implements IDataStore {
 	 *            the item-identifier
 	 */
 	public void addItemIdentifer(final IConstruct c, final ILocator identifier) {
-		if (itemIdentitiers == null) {
-			itemIdentitiers = HashUtil.getHashMap();
+		if (itemIdentifiers == null) {
+			itemIdentifiers = HashUtil.getHashMap();
 		}
-		this.itemIdentitiers.put(identifier, c);
+		this.itemIdentifiers.put(identifier, c);
 
 		/*
 		 * store backward relation
@@ -362,17 +363,16 @@ public class IdentityStore implements IDataStore {
 	 *            the item-identifier
 	 */
 	public void removeItemIdentifer(final IConstruct c, final ILocator identifier) {
-		if (itemIdentitiers == null) {
-			throw new TopicMapStoreException("Identifier is unknown and cannot remove.");
+		if (itemIdentifiers == null) {
+			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
 		}
-		this.itemIdentitiers.remove(identifier);
+		this.itemIdentifiers.remove(identifier);
 
 		/*
 		 * remove backward relation
 		 */
 		Set<ILocator> set = constructItemIdentitiers.get(c);
 		set.remove(identifier);
-		constructItemIdentitiers.put(c, set);
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void removeSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
-			throw new TopicMapStoreException("Identifier is unknown and cannot remove.");
+			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
 		}
 		this.subjectIdentifiers.remove(identifier);
 
@@ -394,7 +394,6 @@ public class IdentityStore implements IDataStore {
 		 */
 		Set<ILocator> set = topicSubjectIdentifiers.get(t);
 		set.remove(identifier);
-		topicSubjectIdentifiers.put(t, set);
 	}
 
 	/**
@@ -407,7 +406,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void removeSubjectLocator(final ITopic t, final ILocator identifier) {
 		if (subjectLocators == null) {
-			throw new TopicMapStoreException("Identifier is unknown and cannot remove.");
+			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
 		}
 		this.subjectLocators.remove(identifier);
 
@@ -416,7 +415,6 @@ public class IdentityStore implements IDataStore {
 		 */
 		Set<ILocator> set = topicSubjectLocators.get(t);
 		set.remove(identifier);
-		topicSubjectLocators.put(t, set);
 	}
 
 	/**
@@ -434,7 +432,7 @@ public class IdentityStore implements IDataStore {
 			 */
 			if (constructItemIdentitiers != null && constructItemIdentitiers.containsKey(c)) {
 				for (ILocator l : constructItemIdentitiers.get(c)) {
-					itemIdentitiers.remove(l);
+					itemIdentifiers.remove(l);
 				}
 				constructItemIdentitiers.remove(c);
 			}
@@ -457,7 +455,7 @@ public class IdentityStore implements IDataStore {
 		 */
 		if (constructItemIdentitiers != null && constructItemIdentitiers.containsKey(t)) {
 			for (ILocator l : constructItemIdentitiers.get(t)) {
-				itemIdentitiers.remove(l);
+				itemIdentifiers.remove(l);
 			}
 			constructItemIdentitiers.remove(t);
 		}
@@ -519,7 +517,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ITopic> getTopics() {
 		if (topics == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return topics;
 	}
@@ -545,7 +543,7 @@ public class IdentityStore implements IDataStore {
 			 * move all item-identifier
 			 */
 			for (ILocator itemIdentifier : itemIdentifiers) {
-				this.itemIdentitiers.put(itemIdentifier, replacement);
+				this.itemIdentifiers.put(itemIdentifier, replacement);
 			}
 			if (this.constructItemIdentitiers.containsKey(replacement)) {
 				itemIdentifiers.addAll(this.constructItemIdentitiers.get(replacement));
@@ -612,6 +610,9 @@ public class IdentityStore implements IDataStore {
 		set.addAll(getItemIdentifiers());
 		set.addAll(getSubjectIdentifiers());
 		set.addAll(getSubjectLocators());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -621,10 +622,10 @@ public class IdentityStore implements IDataStore {
 	 * @return all item-identifiers
 	 */
 	public Set<ILocator> getItemIdentifiers() {
-		if (itemIdentitiers == null) {
-			return HashUtil.getHashSet();
+		if (itemIdentifiers == null) {
+			return Collections.emptySet();
 		}
-		return itemIdentitiers.keySet();
+		return itemIdentifiers.keySet();
 	}
 
 	/**
@@ -634,7 +635,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ILocator> getSubjectIdentifiers() {
 		if (subjectIdentifiers == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return subjectIdentifiers.keySet();
 	}
@@ -646,7 +647,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public Set<ILocator> getSubjectLocators() {
 		if (subjectLocators == null) {
-			return HashUtil.getHashSet();
+			return Collections.emptySet();
 		}
 		return subjectLocators.keySet();
 	}
@@ -672,10 +673,10 @@ public class IdentityStore implements IDataStore {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean containsItemIdentifier(ILocator locator) {
-		if (itemIdentitiers == null) {
+		if (itemIdentifiers == null) {
 			return false;
 		}
-		return itemIdentitiers.containsKey(locator);
+		return itemIdentifiers.containsKey(locator);
 	}
 
 	/**
@@ -717,8 +718,8 @@ public class IdentityStore implements IDataStore {
 	 *         unknown an exception will be thrown.
 	 */
 	public String getId(IConstruct construct) {
-		if (ids == null || !ids.containsValue(construct)) {
-			throw new TopicMapStoreException("Unkown construct instance.");
+		if (!containsConstruct(construct)) {
+			throw new TopicMapStoreException("Id of the given construct does not exist.");
 		}
 		return (String) ids.getKey(construct);
 	}

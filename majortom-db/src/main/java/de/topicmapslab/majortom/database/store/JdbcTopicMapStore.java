@@ -72,7 +72,6 @@ import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
-import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
@@ -2207,7 +2206,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void commit() throws ConcurrentThreadsException {
+	public void commit() {
 	}
 
 	/**

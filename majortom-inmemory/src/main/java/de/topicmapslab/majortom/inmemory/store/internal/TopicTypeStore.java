@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -107,6 +108,9 @@ public class TopicTypeStore implements IDataStore {
 		if (store.recognizingTypeInstanceAssociation()) {
 			set.addAll(getDirectInstancesByAssociation(type));
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -134,6 +138,9 @@ public class TopicTypeStore implements IDataStore {
 				}
 			}
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -151,6 +158,9 @@ public class TopicTypeStore implements IDataStore {
 		}
 		if (store.recognizingTypeInstanceAssociation()) {
 			set.addAll(getDirectTypesByAssociation(instance));
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -179,6 +189,9 @@ public class TopicTypeStore implements IDataStore {
 				}
 			}
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -202,6 +215,9 @@ public class TopicTypeStore implements IDataStore {
 			 */
 			set.addAll(getDirectInstances(t));
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -219,6 +235,9 @@ public class TopicTypeStore implements IDataStore {
 		}
 		if (store.recognizingTypeInstanceAssociation()) {
 			set.addAll(getInstancesByAssociation());
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -239,6 +258,9 @@ public class TopicTypeStore implements IDataStore {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
 			}
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -263,6 +285,9 @@ public class TopicTypeStore implements IDataStore {
 			set.addAll(getSupertypes(t));
 			set.add(t);
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -281,6 +306,9 @@ public class TopicTypeStore implements IDataStore {
 		}
 		if (store.recognizingTypeInstanceAssociation()) {
 			set.addAll(getTypesByAssociation());
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -301,6 +329,9 @@ public class TopicTypeStore implements IDataStore {
 					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
 				}
 			}
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -324,6 +355,9 @@ public class TopicTypeStore implements IDataStore {
 			set.addAll(getDirectSupertypesByAssociation(type));
 		}
 
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -351,6 +385,9 @@ public class TopicTypeStore implements IDataStore {
 				}
 			}
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -375,7 +412,7 @@ public class TopicTypeStore implements IDataStore {
 	 *            a set containing all known type to enable cycle detection
 	 * @return the super types
 	 */
-	protected Set<ITopic> getSupertypes(ITopic type, Set<ITopic> known) {
+	protected final Set<ITopic> getSupertypes(ITopic type, Set<ITopic> known) {
 		/*
 		 * create result set
 		 */
@@ -416,6 +453,9 @@ public class TopicTypeStore implements IDataStore {
 			newAdded.clear();
 			newAdded.addAll(temp);
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -433,6 +473,9 @@ public class TopicTypeStore implements IDataStore {
 		}
 		if (store.recognizingSupertypeSubtypeAssociation()) {
 			set.addAll(getSupertypesByAssociation());
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -476,6 +519,9 @@ public class TopicTypeStore implements IDataStore {
 			set.addAll(getDirectSubtypesByAssociation(type));
 		}
 
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -499,9 +545,12 @@ public class TopicTypeStore implements IDataStore {
 						set.add((ITopic) association.getRoles(store.getTmdmSubtypeRoleType()).iterator().next().getPlayer());
 					}
 				} catch (NoSuchElementException e) {
-					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
+					throw new TopicMapStoreException("Invalid meta model association!", e);
 				}
 			}
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -568,6 +617,9 @@ public class TopicTypeStore implements IDataStore {
 			newAdded.clear();
 			newAdded.addAll(temp);
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -586,6 +638,9 @@ public class TopicTypeStore implements IDataStore {
 		if (store.recognizingSupertypeSubtypeAssociation()) {
 			set.addAll(getSubtypesByAssociation());
 		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -602,9 +657,12 @@ public class TopicTypeStore implements IDataStore {
 				try {
 					set.add((ITopic) association.getRoles(store.getTmdmSubtypeRoleType()).iterator().next().getPlayer());
 				} catch (NoSuchElementException e) {
-					throw new TopicMapStoreException("Invalid meta model assocaition!", e);
+					throw new TopicMapStoreException("Invalid meta model association!", e);
 				}
 			}
+		}
+		if ( set.isEmpty()){
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -622,32 +680,37 @@ public class TopicTypeStore implements IDataStore {
 		 * check if instance is known by the storage
 		 */
 		if (types == null || !types.containsKey(t)) {
-			throw new TopicMapStoreException("ITopic type is not related to the given topic item");
+			return;
 		}
 		/*
 		 * get types of the topic item
 		 */
 		Set<ITopic> set = types.get(t);
 		if (!set.contains(type)) {
-			throw new TopicMapStoreException("ITopic type is not related to the given topic item");
+			return;
 		}
 		/*
 		 * remove type
 		 */
 		set.remove(type);
-		types.put(t, set);
+		if ( set.isEmpty()){
+			types.remove(t);
+		}
 		/*
 		 * get instances of the topic item
 		 */
 		set = instances.get(type);
 		if (!set.contains(t)) {
-			throw new TopicMapStoreException("ITopic type is not related to the given topic item");
+			return;
 		}
 		/*
 		 * remove type
 		 */
+		
 		set.remove(t);
-		instances.put(type, set);
+		if ( set.isEmpty()){
+			instances.remove(type);	
+		}
 	}
 
 	/**
@@ -663,20 +726,22 @@ public class TopicTypeStore implements IDataStore {
 		 * check if type is known by the storage
 		 */
 		if (supertypes == null || !supertypes.containsKey(type)) {
-			throw new TopicMapStoreException("Super type is not related to the given topic type");
+			return;
 		}
 		/*
 		 * get super types of the type
 		 */
 		Set<ITopic> set = supertypes.get(type);
 		if (!set.contains(supertype)) {
-			throw new TopicMapStoreException("Super type is not related to the given topic type");
+			return;
 		}
 		/*
 		 * remove super type
 		 */
 		set.remove(supertype);
-		supertypes.put(type, set);
+		if ( set.isEmpty()){
+			supertypes.remove(type);
+		}
 
 		/*
 		 * get sub types of the super type
@@ -686,7 +751,9 @@ public class TopicTypeStore implements IDataStore {
 		 * remove sub type
 		 */
 		set.remove(type);
-		subtypes.put(supertype, set);
+		if ( set.isEmpty()){
+			subtypes.remove(supertype);
+		}
 	}
 
 	/**
@@ -710,14 +777,12 @@ public class TopicTypeStore implements IDataStore {
 		Set<ITopic> set = types.get(t);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			types.put(t, set);
 		}
 		/*
 		 * add type if not contained
 		 */
-		if (!set.contains(type)) {
-			set.add(type);
-			types.put(t, set);
-		}
+		set.add(type);
 
 		/*
 		 * check if instances map is instantiated
@@ -731,14 +796,12 @@ public class TopicTypeStore implements IDataStore {
 		set = instances.get(type);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			instances.put(type, set);
 		}
 		/*
 		 * add instance if not contained
 		 */
-		if (!set.contains(t)) {
-			set.add(t);
-			instances.put(type, set);
-		}
+		set.add(t);
 	}
 
 	/**
@@ -762,14 +825,12 @@ public class TopicTypeStore implements IDataStore {
 		Set<ITopic> set = supertypes.get(type);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			supertypes.put(type, set);
 		}
 		/*
 		 * add super type if not contained
 		 */
-		if (!set.contains(supertype)) {
-			set.add(supertype);
-			supertypes.put(type, set);
-		}
+		set.add(supertype);
 
 		/*
 		 * check if sub type map is instantiated
@@ -783,14 +844,12 @@ public class TopicTypeStore implements IDataStore {
 		set = subtypes.get(supertype);
 		if (set == null) {
 			set = HashUtil.getHashSet();
+			subtypes.put(supertype, set);
 		}
 		/*
 		 * add sub type if not contained
 		 */
-		if (!set.contains(type)) {
-			set.add(type);
-			subtypes.put(supertype, set);
-		}
+		set.add(type);
 	}
 
 	/**
@@ -858,6 +917,9 @@ public class TopicTypeStore implements IDataStore {
 		/*
 		 * return dependent removed topics
 		 */
+		if ( removed.isEmpty()){
+			return Collections.emptySet();
+		}
 		return removed;
 	}
 

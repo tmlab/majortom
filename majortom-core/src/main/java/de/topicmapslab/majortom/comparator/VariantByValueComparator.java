@@ -30,7 +30,30 @@ import org.tmapi.core.Variant;
  */
 public class VariantByValueComparator implements Comparator<Variant> {
 
+	private static VariantByValueComparator instanceAsc = null;
+	private static VariantByValueComparator instanceDesc = null;
+
 	private final boolean ascending;
+
+	/**
+	 * Returns the singleton instance of the comparator
+	 * 
+	 * @param ascending
+	 *            sorting order ascending?
+	 * @return the instance the comparator instance
+	 */
+	public static VariantByValueComparator getInstance(boolean ascending) {
+		if (ascending) {
+			if (instanceAsc == null) {
+				instanceAsc = new VariantByValueComparator(true);
+			}
+			return instanceAsc;
+		}
+		if (instanceDesc == null) {
+			instanceDesc = new VariantByValueComparator(false);
+		}
+		return instanceDesc;
+	}
 
 	/**
 	 * constructor
