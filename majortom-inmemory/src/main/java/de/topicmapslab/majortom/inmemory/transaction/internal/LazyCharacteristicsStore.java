@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.transaction.internal;
 
+import java.util.Collections;
 import java.util.Set;
 
 import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
@@ -131,14 +132,16 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 		if (containsDatatype(dataTypeAware)) {
 			return super.getDatatype(dataTypeAware);
 		}
-		return (ILocator) getStore().getRealStore().doRead(dataTypeAware, TopicMapStoreParameterType.DATATYPE);
+		return (ILocator) getStore().getRealStore().doRead(dataTypeAware,
+				TopicMapStoreParameterType.DATATYPE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Set<IDatatypeAware> getDatatypeAwares(ILocator locator) {
-		ILiteralIndex index = getStore().getRealStore().getIndex(ILiteralIndex.class);
+		ILiteralIndex index = getStore().getRealStore().getIndex(
+				ILiteralIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -147,11 +150,15 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			if (getLazyIdentityStore().isRemovedConstruct(datatypeAware)) {
 				continue;
 			}
-			if (changedDatatypes == null || !changedDatatypes.contains(datatypeAware.getId())) {
+			if (changedDatatypes == null
+					|| !changedDatatypes.contains(datatypeAware.getId())) {
 				set.add(getLazyIdentityStore().createLazyStub(datatypeAware));
 			}
 		}
 		set.addAll(super.getDatatypeAwares(locator));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -159,7 +166,8 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	 * {@inheritDoc}
 	 */
 	public Set<IName> getNames() {
-		ILiteralIndex index = getStore().getRealStore().getIndex(ILiteralIndex.class);
+		ILiteralIndex index = getStore().getRealStore().getIndex(
+				ILiteralIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -170,6 +178,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			}
 		}
 		set.addAll(super.getNames());
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -179,12 +190,16 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	@SuppressWarnings("unchecked")
 	public Set<IName> getNames(ITopic t) {
 		Set<IName> set = HashUtil.getHashSet();
-		for (IName name : (Set<IName>) getStore().getRealStore().doRead(t, TopicMapStoreParameterType.NAME)) {
+		for (IName name : (Set<IName>) getStore().getRealStore().doRead(t,
+				TopicMapStoreParameterType.NAME)) {
 			if (!getLazyIdentityStore().isRemovedConstruct(name)) {
 				set.add(getLazyIdentityStore().createLazyStub(name));
 			}
 		}
 		set.addAll(super.getNames(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -192,7 +207,8 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	 * {@inheritDoc}
 	 */
 	public Set<IOccurrence> getOccurrences() {
-		ILiteralIndex index = getStore().getRealStore().getIndex(ILiteralIndex.class);
+		ILiteralIndex index = getStore().getRealStore().getIndex(
+				ILiteralIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -203,6 +219,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			}
 		}
 		set.addAll(super.getOccurrences());
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -212,12 +231,17 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	@SuppressWarnings("unchecked")
 	public Set<IOccurrence> getOccurrences(ITopic t) {
 		Set<IOccurrence> set = HashUtil.getHashSet();
-		for (IOccurrence occurrence : (Set<IOccurrence>) getStore().getRealStore().doRead(t, TopicMapStoreParameterType.OCCURRENCE)) {
+		for (IOccurrence occurrence : (Set<IOccurrence>) getStore()
+				.getRealStore()
+				.doRead(t, TopicMapStoreParameterType.OCCURRENCE)) {
 			if (!getLazyIdentityStore().isRemovedConstruct(occurrence)) {
 				set.add(getLazyIdentityStore().createLazyStub(occurrence));
 			}
 		}
 		set.addAll(super.getOccurrences(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -225,7 +249,8 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	 * {@inheritDoc}
 	 */
 	public Set<IVariant> getVariants() {
-		ILiteralIndex index = getStore().getRealStore().getIndex(ILiteralIndex.class);
+		ILiteralIndex index = getStore().getRealStore().getIndex(
+				ILiteralIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -236,6 +261,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			}
 		}
 		set.addAll(super.getVariants());
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -245,12 +273,16 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	@SuppressWarnings("unchecked")
 	public Set<IVariant> getVariants(IName n) {
 		Set<IVariant> set = HashUtil.getHashSet();
-		for (IVariant variant : (Set<IVariant>) getStore().getRealStore().doRead(n, TopicMapStoreParameterType.VARIANT)) {
+		for (IVariant variant : (Set<IVariant>) getStore().getRealStore()
+				.doRead(n, TopicMapStoreParameterType.VARIANT)) {
 			if (!getLazyIdentityStore().isRemovedConstruct(variant)) {
 				set.add(getLazyIdentityStore().createLazyStub(variant));
 			}
 		}
 		set.addAll(super.getVariants(n));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -258,15 +290,20 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 	 * {@inheritDoc}
 	 */
 	public Object getValue(IConstruct obj) {
+		if (getLazyIdentityStore().isRemovedConstruct(obj)) {
+			throw new ConstructRemovedException(obj);
+		}
 		try {
 			return super.getValue(obj);
 		} catch (TopicMapStoreException e) {
 			try {
-				return getStore().getRealStore().doRead(obj, TopicMapStoreParameterType.VALUE);
-			} catch (TopicMapStoreException e2) {
-				return null;
+				return getStore().getRealStore().doRead(obj,
+						TopicMapStoreParameterType.VALUE);
+			} catch (TopicMapStoreException ex) {
+				// THROWN IF CONSTRUCT IS NOT CREATED YET
 			}
 		}
+		return null;
 	}
 
 	/**

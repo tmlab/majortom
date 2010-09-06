@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.transaction;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore implements ITransactionTopicMapStore {
 
 	private List<TransactionCommand> commands = new LinkedList<TransactionCommand>();
-	private List<TransactionCommand> commited = new LinkedList<TransactionCommand>();
+	private LinkedList<TransactionCommand> commited = new LinkedList<TransactionCommand>();
 	private final ITopicMapStore store;
 	private final ITransaction transaction;
 
@@ -151,9 +152,9 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public synchronized void rollback() {
-		for (TransactionCommand command : commited) {
-			// TODO undo command
-			command.notify();
+		Iterator<TransactionCommand> descendingIterator = commited.descendingIterator();
+		while (descendingIterator.hasNext()) {			
+			descendingIterator.next().rollback();
 		}
 		commited.clear();
 	}

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.transaction.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,7 +83,10 @@ public class LazyAssociationStore extends AssociationStore {
 			// NOTHING TO DO
 		}
 		if (player == null) {
-			player = getLazyIdentityStore().createLazyStub((ITopic) getStore().getRealStore().doRead((IAssociationRole) r, TopicMapStoreParameterType.PLAYER));
+			player = getLazyIdentityStore().createLazyStub(
+					(ITopic) getStore().getRealStore().doRead(
+							(IAssociationRole) r,
+							TopicMapStoreParameterType.PLAYER));
 		}
 		return player;
 	}
@@ -90,7 +94,8 @@ public class LazyAssociationStore extends AssociationStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addRole(IAssociation association, IAssociationRole role, ITopic player) {
+	public void addRole(IAssociation association, IAssociationRole role,
+			ITopic player) {
 		if (getLazyIdentityStore().isRemovedConstruct(association)) {
 			throw new ConstructRemovedException(association);
 		} else if (getLazyIdentityStore().isRemovedConstruct(player)) {
@@ -106,11 +111,18 @@ public class LazyAssociationStore extends AssociationStore {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> getAssociations() {
-		Set<IAssociation> associations = HashUtil.getHashSet(super.getAssociations());
-		for (Association association : getStore().getRealStore().getTopicMap().getAssociations()) {
-			if (!getLazyIdentityStore().isRemovedConstruct((IAssociation) association)) {
-				associations.add(getLazyIdentityStore().createLazyStub((IAssociation) association));
+		Set<IAssociation> associations = HashUtil.getHashSet(super
+				.getAssociations());
+		for (Association association : getStore().getRealStore().getTopicMap()
+				.getAssociations()) {
+			if (!getLazyIdentityStore().isRemovedConstruct(
+					(IAssociation) association)) {
+				associations.add(getLazyIdentityStore().createLazyStub(
+						(IAssociation) association));
 			}
+		}
+		if (associations.isEmpty()) {
+			return Collections.emptySet();
 		}
 		return associations;
 	}
@@ -120,12 +132,15 @@ public class LazyAssociationStore extends AssociationStore {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<IAssociationRole> getRoles(Association association) {
-		if (getLazyIdentityStore().isRemovedConstruct((IAssociation) association)) {
+		if (getLazyIdentityStore().isRemovedConstruct(
+				(IAssociation) association)) {
 			throw new ConstructRemovedException(association);
 		}
 		Set<IAssociationRole> roles = HashUtil.getHashSet();
 		try {
-			for (IAssociationRole role : (Set<IAssociationRole>) getStore().getRealStore().doRead((IAssociation) association, TopicMapStoreParameterType.ROLE)) {
+			for (IAssociationRole role : (Set<IAssociationRole>) getStore()
+					.getRealStore().doRead((IAssociation) association,
+							TopicMapStoreParameterType.ROLE)) {
 				if (!getLazyIdentityStore().isRemovedConstruct(role)) {
 					roles.add(getLazyIdentityStore().createLazyStub(role));
 				}
@@ -134,6 +149,9 @@ public class LazyAssociationStore extends AssociationStore {
 			// NOTHING TO DO
 		}
 		roles.addAll(super.getRoles(association));
+		if (roles.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return roles;
 	}
 
@@ -147,11 +165,14 @@ public class LazyAssociationStore extends AssociationStore {
 		}
 		Set<IAssociationRole> roles = HashUtil.getHashSet();
 		try {
-			for (IAssociationRole role : (Set<IAssociationRole>) getStore().getRealStore().doRead(player, TopicMapStoreParameterType.ROLE)) {
+			for (IAssociationRole role : (Set<IAssociationRole>) getStore()
+					.getRealStore().doRead(player,
+							TopicMapStoreParameterType.ROLE)) {
 				/*
 				 * old player relation
 				 */
-				if (changedPlayers != null && player.equals(changedPlayers.get(role))) {
+				if (changedPlayers != null
+						&& player.equals(changedPlayers.get(role))) {
 					continue;
 				}
 				if (!getLazyIdentityStore().isRemovedConstruct(role)) {
@@ -162,6 +183,9 @@ public class LazyAssociationStore extends AssociationStore {
 			// NOTHING TO DO
 		}
 		roles.addAll(super.getRoles(player));
+		if (roles.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return roles;
 	}
 
@@ -193,11 +217,7 @@ public class LazyAssociationStore extends AssociationStore {
 		if (getLazyIdentityStore().isRemovedConstruct(role)) {
 			throw new ConstructRemovedException(role);
 		}
-		try {
-			super.removeRole(role);
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO HERE
-		}
+		super.removeRole(role);
 	}
 
 	/**
@@ -207,11 +227,7 @@ public class LazyAssociationStore extends AssociationStore {
 		if (getLazyIdentityStore().isRemovedConstruct(association)) {
 			throw new ConstructRemovedException(association);
 		}
-		try {
-			super.removeAssociation(association);
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO HERE
-		}
+		super.removeAssociation(association);
 	}
 
 	/**
@@ -226,14 +242,10 @@ public class LazyAssociationStore extends AssociationStore {
 		}
 		ITopic replace = getLazyIdentityStore().createLazyStub(replacement);
 
-		try {
-			for (IAssociationRole role : getRoles(topic)) {
-				if (getLazyIdentityStore().isRemovedConstruct(role)) {
-					setPlayer(role, replace);
-				}
+		for (IAssociationRole role : getRoles(topic)) {
+			if (getLazyIdentityStore().isRemovedConstruct(role)) {
+				setPlayer(role, replace);
 			}
-		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
 		}
 	}
 
@@ -241,10 +253,10 @@ public class LazyAssociationStore extends AssociationStore {
 	 * {@inheritDoc}
 	 */
 	public void close() {
-		if (changedPlayers != null ) {
+		if (changedPlayers != null) {
 			changedPlayers.clear();
 		}
 		super.close();
 	}
-	
+
 }

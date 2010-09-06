@@ -332,15 +332,15 @@ public class ScopeStore implements IDataStore {
 	 *            the scoped construct
 	 * @return the old scope
 	 */
-	public IScope removeScope(IScopable scoped) {
+	public IScope removeScoped(IScopable scoped) {
 		if (scoped instanceof IAssociation) {
-			return removeScope((IAssociation) scoped);
+			return removeScoped((IAssociation) scoped);
 		} else if (scoped instanceof IOccurrence) {
-			return removeScope((IOccurrence) scoped);
+			return removeScoped((IOccurrence) scoped);
 		} else if (scoped instanceof IName) {
-			return removeScope((IName) scoped);
+			return removeScoped((IName) scoped);
 		} else if (scoped instanceof IVariant) {
-			return removeScope((IVariant) scoped);
+			return removeScoped((IVariant) scoped);
 		} else {
 			throw new TopicMapStoreException("Type of scoped item is unknown '" + scoped.getClass() + "'.");
 		}
@@ -353,7 +353,7 @@ public class ScopeStore implements IDataStore {
 	 *            the scoped construct
 	 * @return the old scope
 	 */
-	public IScope removeScope(IAssociation scoped) {
+	public IScope removeScoped(IAssociation scoped) {
 		if (associationScopes != null && associationScopes.containsKey(scoped)) {
 			IScope s = associationScopes.remove(scoped);
 			Set<IAssociation> set = scopedAssociations.get(s);
@@ -373,7 +373,7 @@ public class ScopeStore implements IDataStore {
 	 *            the scoped construct
 	 * @return the old scope
 	 */
-	public IScope removeScope(IOccurrence scoped) {
+	public IScope removeScoped(IOccurrence scoped) {
 		if (occurrenceScopes != null && occurrenceScopes.containsKey(scoped)) {
 			IScope s = occurrenceScopes.remove(scoped);
 			Set<IOccurrence> set = scopedOccurrences.get(s);
@@ -393,7 +393,7 @@ public class ScopeStore implements IDataStore {
 	 *            the scoped construct
 	 * @return the old scope
 	 */
-	public IScope removeScope(IName scoped) {
+	public IScope removeScoped(IName scoped) {
 		if (nameScopes != null && nameScopes.containsKey(scoped)) {
 			IScope s = nameScopes.remove(scoped);
 			Set<IName> set = scopedNames.get(s);
@@ -413,7 +413,7 @@ public class ScopeStore implements IDataStore {
 	 *            the scoped construct
 	 * @return the old scope
 	 */
-	public IScope removeScope(IVariant scoped) {
+	public IScope removeScoped(IVariant scoped) {
 		if (variantScopes != null && variantScopes.containsKey(scoped)) {
 			IScope s = variantScopes.remove(scoped);
 			Set<IVariant> set = scopedVariants.get(s);
@@ -661,7 +661,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IAssociation> associations = HashUtil.getHashSet(getScopedAssociations(s));
 				for (IAssociation a : associations) {
-					removeScope(a);
+					removeScoped(a);
 					setScope(a, newScope);
 				}
 				/*
@@ -669,7 +669,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IName> names = HashUtil.getHashSet(getScopedNames(s));
 				for (IName n : names) {
-					removeScope(n);
+					removeScoped(n);
 					setScope(n, newScope);
 				}
 				/*
@@ -677,7 +677,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IOccurrence> occurrences = HashUtil.getHashSet(getScopedOccurrences(s));
 				for (IOccurrence o : occurrences) {
-					removeScope(o);
+					removeScoped(o);
 					setScope(o, newScope);
 				}
 				/*
@@ -685,7 +685,7 @@ public class ScopeStore implements IDataStore {
 				 */
 				Set<IVariant> variants = HashUtil.getHashSet(getScopedVariants(s));
 				for (IVariant v : variants) {
-					removeScope(v);
+					removeScoped(v);
 					setScope(v, newScope);
 				}
 			}

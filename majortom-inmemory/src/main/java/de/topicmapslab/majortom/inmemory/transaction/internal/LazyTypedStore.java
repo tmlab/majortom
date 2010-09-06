@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.transaction.internal;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * 
  */
 public class LazyTypedStore extends TypedStore {
-
+	
 	private Set<ITypeable> modifiedConstructs;
 	private Map<ITopic, Set<ITypeable>> changedTypes;
 
@@ -54,7 +55,7 @@ public class LazyTypedStore extends TypedStore {
 	public LazyTypedStore(InMemoryTopicMapStore store) {
 		super(store);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,16 +65,15 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);			
+			type = super.getType(typed);
 		} catch (TopicMapStoreException e) {
-			try{
-				if (type == null) {
-					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-				}
-			}catch(TopicMapStoreException e2){
-				//NOTHING TO DO
+			try {
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
+			} catch (TopicMapStoreException ex) {
+				// THROWN IF CONSTRUCT IS NOT CREATED YET
 			}
-		}			
+		}
 		return getLazyIdentityStore().createLazyStub(type);
 	}
 
@@ -86,14 +86,13 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);			
+			type = super.getType(typed);
 		} catch (TopicMapStoreException e) {
-			try{
-				if (type == null) {
-					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-				}
-			}catch(TopicMapStoreException e2){
-				//NOTHING TO DO
+			try {
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
+			} catch (TopicMapStoreException ex) {
+				// THROWN IF CONSTRUCT IS NOT CREATED YET
 			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
@@ -108,14 +107,13 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);			
+			type = super.getType(typed);
 		} catch (TopicMapStoreException e) {
-			try{
-				if (type == null) {
-					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-				}
-			}catch(TopicMapStoreException e2){
-				//NOTHING TO DO
+			try {
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
+			} catch (TopicMapStoreException ex) {
+				// THROWN IF CONSTRUCT IS NOT CREATED YET
 			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
@@ -130,14 +128,13 @@ public class LazyTypedStore extends TypedStore {
 		}
 		ITopic type = null;
 		try {
-			type = super.getType(typed);			
+			type = super.getType(typed);
 		} catch (TopicMapStoreException e) {
-			try{
-				if (type == null) {
-					type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
-				}
-			}catch(TopicMapStoreException e2){
-				//NOTHING TO DO
+			try {
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
+			} catch (TopicMapStoreException ex) {
+				// THROWN IF CONSTRUCT IS NOT CREATED YET
 			}
 		}
 		return getLazyIdentityStore().createLazyStub(type);
@@ -158,7 +155,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -184,7 +182,9 @@ public class LazyTypedStore extends TypedStore {
 		 * add internal information of transaction context
 		 */
 		set.addAll(super.getTypedAssociations(t));
-
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -203,7 +203,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -248,7 +249,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -293,7 +295,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -327,8 +330,11 @@ public class LazyTypedStore extends TypedStore {
 	 * {@inheritDoc}
 	 */
 	public void setType(IAssociation typed, ITopic t) {
-		if (getLazyIdentityStore().isRemovedConstruct(typed) || getLazyIdentityStore().isRemovedConstruct(t)) {
+		if (getLazyIdentityStore().isRemovedConstruct(typed)) {
 			throw new ConstructRemovedException(typed);
+		}
+		if (getLazyIdentityStore().isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
 		}
 		storeOldRelation(typed);
 		super.setType(typed, t);
@@ -338,8 +344,11 @@ public class LazyTypedStore extends TypedStore {
 	 * {@inheritDoc}
 	 */
 	public void setType(IAssociationRole typed, ITopic t) {
-		if (getLazyIdentityStore().isRemovedConstruct(typed) || getLazyIdentityStore().isRemovedConstruct(t)) {
+		if (getLazyIdentityStore().isRemovedConstruct(typed)) {
 			throw new ConstructRemovedException(typed);
+		}
+		if (getLazyIdentityStore().isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
 		}
 		storeOldRelation(typed);
 		super.setType(typed, t);
@@ -349,8 +358,11 @@ public class LazyTypedStore extends TypedStore {
 	 * {@inheritDoc}
 	 */
 	public void setType(IName typed, ITopic t) {
-		if (getLazyIdentityStore().isRemovedConstruct(typed) || getLazyIdentityStore().isRemovedConstruct(t)) {
+		if (getLazyIdentityStore().isRemovedConstruct(typed)) {
 			throw new ConstructRemovedException(typed);
+		}
+		if (getLazyIdentityStore().isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
 		}
 		storeOldRelation(typed);
 		super.setType(typed, t);
@@ -360,8 +372,11 @@ public class LazyTypedStore extends TypedStore {
 	 * {@inheritDoc}
 	 */
 	public void setType(IOccurrence typed, ITopic t) {
-		if (getLazyIdentityStore().isRemovedConstruct(typed) || getLazyIdentityStore().isRemovedConstruct(t)) {
+		if (getLazyIdentityStore().isRemovedConstruct(typed)) {
 			throw new ConstructRemovedException(typed);
+		}
+		if (getLazyIdentityStore().isRemovedConstruct(t)) {
+			throw new ConstructRemovedException(t);
 		}
 		storeOldRelation(typed);
 		super.setType(typed, t);
@@ -374,17 +389,18 @@ public class LazyTypedStore extends TypedStore {
 		ITopic type = null;
 		try {
 			type = super.getType(typed);
-			if ( type != null ){
+			if (type != null) {
 				return super.removeType(typed);
 			}
 			type = super.getType(typed);
 			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
 			}
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}		
-		return getLazyIdentityStore().createLazyStub(type);		
+			// thrown because the typed construct is not known by the lazy store
+		}
+		return getLazyIdentityStore().createLazyStub(type);
 	}
 
 	/**
@@ -394,17 +410,18 @@ public class LazyTypedStore extends TypedStore {
 		ITopic type = null;
 		try {
 			type = super.getType(typed);
-			if ( type != null ){
+			if (type != null) {
 				return super.removeType(typed);
 			}
 			type = super.getType(typed);
 			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
 			}
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}		
-		return getLazyIdentityStore().createLazyStub(type);		
+			// thrown because the typed construct is not known by the lazy store
+		}
+		return getLazyIdentityStore().createLazyStub(type);
 	}
 
 	/**
@@ -414,17 +431,18 @@ public class LazyTypedStore extends TypedStore {
 		ITopic type = null;
 		try {
 			type = super.getType(typed);
-			if ( type != null ){
+			if (type != null) {
 				return super.removeType(typed);
 			}
 			type = super.getType(typed);
 			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
 			}
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}		
-		return getLazyIdentityStore().createLazyStub(type);		
+			// thrown because the typed construct is not known by the lazy store
+		}
+		return getLazyIdentityStore().createLazyStub(type);
 	}
 
 	/**
@@ -434,17 +452,18 @@ public class LazyTypedStore extends TypedStore {
 		ITopic type = null;
 		try {
 			type = super.getType(typed);
-			if ( type != null ){
+			if (type != null) {
 				return super.removeType(typed);
 			}
 			type = super.getType(typed);
 			if (type == null) {
-				type = (ITopic) getStore().getRealStore().doRead(typed, TopicMapStoreParameterType.TYPE);
+				type = (ITopic) getStore().getRealStore().doRead(typed,
+						TopicMapStoreParameterType.TYPE);
 			}
 		} catch (TopicMapStoreException e) {
-			// NOTHING TO DO
-		}		
-		return getLazyIdentityStore().createLazyStub(type);		
+			// thrown because the typed construct is not known by the lazy store
+		}
+		return getLazyIdentityStore().createLazyStub(type);
 	}
 
 	/**
@@ -455,7 +474,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -468,7 +488,8 @@ public class LazyTypedStore extends TypedStore {
 			 * check if typed object was deleted by the current transaction
 			 * context and is really a type
 			 */
-			if (!getLazyIdentityStore().isRemovedConstruct(t) && !getTypedAssociations(t).isEmpty()) {
+			if (!getLazyIdentityStore().isRemovedConstruct(t)
+					&& !getTypedAssociations(t).isEmpty()) {
 				set.add(getLazyIdentityStore().createLazyStub(t));
 			}
 		}
@@ -488,7 +509,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -501,7 +523,8 @@ public class LazyTypedStore extends TypedStore {
 			 * check if typed object was deleted by the current transaction
 			 * context and is really a type
 			 */
-			if (!getLazyIdentityStore().isRemovedConstruct(t) && !getTypedRoles(t).isEmpty()) {
+			if (!getLazyIdentityStore().isRemovedConstruct(t)
+					&& !getTypedRoles(t).isEmpty()) {
 				set.add(getLazyIdentityStore().createLazyStub(t));
 			}
 		}
@@ -521,7 +544,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -534,7 +558,8 @@ public class LazyTypedStore extends TypedStore {
 			 * check if typed object was deleted by the current transaction
 			 * context and is really a type
 			 */
-			if (!getLazyIdentityStore().isRemovedConstruct(t) && !getTypedNames(t).isEmpty()) {
+			if (!getLazyIdentityStore().isRemovedConstruct(t)
+					&& !getTypedNames(t).isEmpty()) {
 				set.add(getLazyIdentityStore().createLazyStub(t));
 			}
 		}
@@ -554,7 +579,8 @@ public class LazyTypedStore extends TypedStore {
 		/*
 		 * get index of real store instance
 		 */
-		ITypeInstanceIndex index = getStore().getRealStore().getIndex(ITypeInstanceIndex.class);
+		ITypeInstanceIndex index = getStore().getRealStore().getIndex(
+				ITypeInstanceIndex.class);
 		if (!index.isOpen()) {
 			index.open();
 		}
@@ -567,7 +593,8 @@ public class LazyTypedStore extends TypedStore {
 			 * check if typed object was deleted by the current transaction
 			 * context and is really a type
 			 */
-			if (!getLazyIdentityStore().isRemovedConstruct(t) && !getTypedOccurrences(t).isEmpty()) {
+			if (!getLazyIdentityStore().isRemovedConstruct(t)
+					&& !getTypedOccurrences(t).isEmpty()) {
 				set.add(getLazyIdentityStore().createLazyStub(t));
 			}
 		}
@@ -625,9 +652,9 @@ public class LazyTypedStore extends TypedStore {
 			Set<ITypeable> set = changedTypes.get(oldType);
 			if (set == null) {
 				set = HashUtil.getHashSet();
+				changedTypes.put(oldType, set);
 			}
 			set.add(typed);
-			changedTypes.put(oldType, set);
 		}
 	}
 

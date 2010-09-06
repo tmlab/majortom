@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.inmemory.transaction.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -97,18 +98,21 @@ public class LazyScopeStore extends ScopeStore {
 			index.open();
 		}
 		Set<IScope> set = HashUtil.getHashSet();
-		scopes: for (IScope scope : index.getAssociationScopes()) {
+		for (IScope scope : index.getAssociationScopes()) {
 			for (Association association : index.getAssociations(scope)) {
 				if (getLazyIdentityStore().isRemovedConstruct((IAssociation) association)) {
 					continue;
 				}
 				if (modifiedScopeables == null || !modifiedScopeables.contains(association.getId())) {
 					set.add(getLazyIdentityStore().createLazyStub(scope));
-					continue scopes;
+					break;
 				}
 			}
 		}
 		set.addAll(super.getAssociationScopes());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -121,18 +125,21 @@ public class LazyScopeStore extends ScopeStore {
 			index.open();
 		}
 		Set<IScope> set = HashUtil.getHashSet();
-		scopes: for (IScope scope : index.getNameScopes()) {
+		for (IScope scope : index.getNameScopes()) {
 			for (Name name : index.getNames(scope)) {
 				if (getLazyIdentityStore().isRemovedConstruct((IName) name)) {
 					continue;
 				}
 				if (modifiedScopeables == null || !modifiedScopeables.contains(name.getId())) {
 					set.add(getLazyIdentityStore().createLazyStub(scope));
-					continue scopes;
+					break;
 				}
 			}
 		}
 		set.addAll(super.getNameScopes());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -145,18 +152,21 @@ public class LazyScopeStore extends ScopeStore {
 			index.open();
 		}
 		Set<IScope> set = HashUtil.getHashSet();
-		scopes: for (IScope scope : index.getOccurrenceScopes()) {
+		for (IScope scope : index.getOccurrenceScopes()) {
 			for (Occurrence occurrence : index.getOccurrences(scope)) {
 				if (getLazyIdentityStore().isRemovedConstruct((IOccurrence) occurrence)) {
 					continue;
 				}
 				if (modifiedScopeables == null || !modifiedScopeables.contains(occurrence.getId())) {
 					set.add(getLazyIdentityStore().createLazyStub(scope));
-					continue scopes;
+					break;
 				}
 			}
 		}
 		set.addAll(super.getOccurrenceScopes());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -169,18 +179,21 @@ public class LazyScopeStore extends ScopeStore {
 			index.open();
 		}
 		Set<IScope> set = HashUtil.getHashSet();
-		scopes: for (IScope scope : index.getVariantScopes()) {
+		for (IScope scope : index.getVariantScopes()) {
 			for (Variant variant : index.getVariants(scope)) {
 				if (getLazyIdentityStore().isRemovedConstruct((IVariant) variant)) {
 					continue;
 				}
 				if (modifiedScopeables == null || !modifiedScopeables.contains(variant.getId())) {
 					set.add(getLazyIdentityStore().createLazyStub(scope));
-					continue scopes;
+					break;
 				}
 			}
 		}
 		set.addAll(super.getVariantScopes());
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -217,11 +230,10 @@ public class LazyScopeStore extends ScopeStore {
 		if (getLazyIdentityStore().isRemovedConstruct(scoped)) {
 			throw new ConstructRemovedException(scoped);
 		}
-
 		if (containsScopeable(scoped)) {
 			return super.getScope(scoped);
 		}
-		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
+		return getLazyIdentityStore().createLazyStub((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 	}
 
 	/**
@@ -231,7 +243,7 @@ public class LazyScopeStore extends ScopeStore {
 		if (containsScopeable(scoped)) {
 			return super.getScope(scoped);
 		}
-		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
+		return getLazyIdentityStore().createLazyStub((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 	}
 
 	/**
@@ -241,7 +253,7 @@ public class LazyScopeStore extends ScopeStore {
 		if (containsScopeable(scoped)) {
 			return super.getScope(scoped);
 		}
-		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
+		return getLazyIdentityStore().createLazyStub((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 	}
 
 	/**
@@ -251,7 +263,7 @@ public class LazyScopeStore extends ScopeStore {
 		if (containsScopeable(scoped)) {
 			return super.getScope(scoped);
 		}
-		return (IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE);
+		return getLazyIdentityStore().createLazyStub((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 	}
 
 	/**
@@ -339,6 +351,7 @@ public class LazyScopeStore extends ScopeStore {
 		if (!index.isOpen()) {
 			index.open();
 		}
+		
 		Set<IScope> scopes = HashUtil.getHashSet();
 		for (IScope scope : index.getScopes(theme)) {
 			if (getLazyIdentityStore().isRemovedScope(scope)) {
@@ -357,43 +370,6 @@ public class LazyScopeStore extends ScopeStore {
 	 * {@inheritDoc}
 	 */
 	public void setScope(IAssociation scoped, IScope s) {
-		internalSetScope(scoped, s);
-		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setScope(IName scoped, IScope s) {
-		internalSetScope(scoped, s);
-		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setScope(IOccurrence scoped, IScope s) {
-		internalSetScope(scoped, s);
-		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setScope(IVariant scoped, IScope s) {
-		internalSetScope(scoped, s);
-		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
-	}
-
-	/**
-	 * Store the relation between the given scoped item and the scope.
-	 * 
-	 * @param scoped
-	 *            the scoped construct
-	 * @param s
-	 *            the scope
-	 */
-	private final void internalSetScope(IScopable scoped, IScope s) {
 		/*
 		 * old scope is out of transaction context
 		 */
@@ -403,41 +379,90 @@ public class LazyScopeStore extends ScopeStore {
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IScope removeScope(IAssociation scoped) {
+	public void setScope(IName scoped, IScope s) {
+		/*
+		 * old scope is out of transaction context
+		 */
+		if (!containsScopeable(scoped)) {
+			if (modifiedScopeables == null) {
+				modifiedScopeables = HashUtil.getHashSet();
+			}
+			modifiedScopeables.add(scoped.getId());
+		}
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setScope(IOccurrence scoped, IScope s) {
+		/*
+		 * old scope is out of transaction context
+		 */
+		if (!containsScopeable(scoped)) {
+			if (modifiedScopeables == null) {
+				modifiedScopeables = HashUtil.getHashSet();
+			}
+			modifiedScopeables.add(scoped.getId());
+		}
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setScope(IVariant scoped, IScope s) {
+		/*
+		 * old scope is out of transaction context
+		 */
+		if (!containsScopeable(scoped)) {
+			if (modifiedScopeables == null) {
+				modifiedScopeables = HashUtil.getHashSet();
+			}
+			modifiedScopeables.add(scoped.getId());
+		}
+		super.setScope(getLazyIdentityStore().createLazyStub(scoped), getLazyIdentityStore().createLazyStub(s));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IScope removeScoped(IAssociation scoped) {
 		IScope scope = getScope(scoped);
-		super.removeScope(scoped);
+		super.removeScoped(scoped);
 		return scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IScope removeScope(IName scoped) {
+	public IScope removeScoped(IName scoped) {
 		IScope scope = getScope(scoped);
-		super.removeScope(scoped);
+		super.removeScoped(scoped);
 		return scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IScope removeScope(IOccurrence scoped) {
+	public IScope removeScoped(IOccurrence scoped) {
 		IScope scope = getScope(scoped);
-		super.removeScope(scoped);
+		super.removeScoped(scoped);
 		return scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IScope removeScope(IVariant scoped) {
+	public IScope removeScoped(IVariant scoped) {
 		IScope scope = getScope(scoped);
-		super.removeScope(scoped);
+		super.removeScoped(scoped);
 		return scope;
 	}
 

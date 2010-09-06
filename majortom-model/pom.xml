@@ -33,8 +33,8 @@
 		</repository>
 		<repository>
 			<id>tmapi</id>
-			<name>http://www.tmapi.org/maven-repository</name>
-			<url>http://www.tmapi.org/maven-repository</url>
+			<name>http://www.tmapi.org/maven-repository/snapshots/</name>
+			<url>http://www.tmapi.org/maven-repository/snapshots/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>org.tmapi</groupId>
 			<artifactId>tmapi</artifactId>
-			<version>2.0.2</version>
+			<version>2.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
