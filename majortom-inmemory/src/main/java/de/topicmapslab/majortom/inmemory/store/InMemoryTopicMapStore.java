@@ -2,15 +2,13 @@ package de.topicmapslab.majortom.inmemory.store;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.tmapi.core.Association;
 import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.TopicInUseException;
@@ -62,7 +60,6 @@ import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
-import de.topicmapslab.majortom.model.exception.ConcurrentThreadsException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
@@ -124,12 +121,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	private IPagedIdentityIndex pagedIdentityIndex;
 	private IPagedLiteralIndex pagedLiteralIndex;
 	private IPagedConstructIndex pagedConstructIndex;
-
-	/**
-	 * thread specific attributes
-	 */
-	private boolean blocked = false;
-	private List<Runnable> queue;
 
 	/**
 	 * constructor
@@ -983,7 +974,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove old scope relation
 		 */
-		IScope oldScope = getScopeStore().removeScope(s);
+		IScope oldScope = getScopeStore().removeScoped(s);
 		/*
 		 * get new scope object
 		 */
@@ -1506,31 +1497,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		/*
-		 * get characteristics of the topic
+		 * get all characteristics
 		 */
-		Set<ICharacteristics> set = HashUtil.getHashSet();
+		Set<ICharacteristics> characteristics = HashUtil
+				.getHashSet(getCharacteristicsStore().getCharacteristics(t));
 		/*
-		 * get all types
+		 * filter by type
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all roles
-			 */
-			Set<ICharacteristics> characteristics = HashUtil
-					.getHashSet(getCharacteristicsStore().getCharacteristics(t));
-			/*
-			 * filter by type
-			 */
-			characteristics.retainAll(getTypedStore().getTyped(ty));
-			set.addAll(characteristics);
+		characteristics.retainAll(getTypedStore().getTyped(type));
+		if (characteristics.isEmpty()) {
+			return Collections.emptySet();
 		}
-		return set;
+		return characteristics;
 	}
 
 	/**
@@ -1539,35 +1517,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ICharacteristics> doReadCharacteristics(ITopic t,
 			ITopic type, IScope scope) throws TopicMapStoreException {
 		/*
-		 * get characteristics of the topic
+		 * get all characteristics
 		 */
-		Set<ICharacteristics> set = HashUtil.getHashSet();
-		/*
-		 * get all types
-		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all roles
-			 */
-			Set<ICharacteristics> characteristics = HashUtil
-					.getHashSet(getCharacteristicsStore().getCharacteristics(t));
-			/*
-			 * filter by type
-			 */
-			characteristics.retainAll(getTypedStore().getTyped(ty));
-			set.addAll(characteristics);
-		}
+		Set<ICharacteristics> characteristics = doReadCharacteristics(t, type);
 		/*
 		 * filter by scope
 		 */
-		set.retainAll(getScopeStore().getScoped(scope));
-		return set;
+		characteristics.retainAll(getScopeStore().getScoped(scope));
+		if (characteristics.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return characteristics;
 	}
 
 	/**
@@ -1584,6 +1544,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * filter by scope
 		 */
 		set.retainAll(getScopeStore().getScoped(scope));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -1645,7 +1608,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ILocator> doReadItemIdentifiers(IConstruct c)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getIdentityStore().getItemIdentifiers(c));
+		Set<ILocator> set = HashUtil.getHashSet(getIdentityStore()
+				.getItemIdentifiers(c));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -1659,7 +1627,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected Set<IName> doReadNames(ITopic t) throws TopicMapStoreException {
-		return HashUtil.getHashSet(getCharacteristicsStore().getNames(t));
+		Set<IName> set = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -1668,31 +1641,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<IName> doReadNames(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		/*
-		 * create result set
+		 * get all names
 		 */
-		Set<IName> set = HashUtil.getHashSet();
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(t));
 		/*
-		 * get all types
+		 * filter by type
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all roles
-			 */
-			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
-					.getNames(t));
-			/*
-			 * filter by type
-			 */
-			names.retainAll(getTypedStore().getTyped(ty));
-			set.addAll(names);
+		names.retainAll(getTypedStore().getTyped(type));
+		if (names.isEmpty()) {
+			return Collections.emptySet();
 		}
-		return set;
+		return names;
 	}
 
 	/**
@@ -1703,31 +1663,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * create result set
 		 */
-		Set<IName> set = HashUtil.getHashSet();
+		Set<IName> set = doReadNames(t, type);
 		/*
-		 * get all types
+		 * filter by scope
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all names
-			 */
-			Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
-					.getNames(t));
-			/*
-			 * filter by type
-			 */
-			names.retainAll(getTypedStore().getTyped(ty));
-			/*
-			 * filter by scope
-			 */
-			names.retainAll(getScopeStore().getScoped(scope));
-			set.addAll(names);
+		set.retainAll(getScopeStore().getScoped(scope));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -1740,12 +1682,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * get all names
 		 */
-		Set<IName> names = HashUtil.getHashSet();
-		names.addAll(getCharacteristicsStore().getNames(t));
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(t));
 		/*
 		 * filter by scope
 		 */
 		names.retainAll(getScopeStore().getScoped(scope));
+		if (names.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return names;
 	}
 
@@ -1762,8 +1707,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IOccurrence> doReadOccurrences(ITopic t)
 			throws TopicMapStoreException {
-		Set<IOccurrence> occurrences = HashUtil.getHashSet();
-		occurrences.addAll(getCharacteristicsStore().getOccurrences(t));
+		Set<IOccurrence> occurrences = HashUtil
+				.getHashSet(getCharacteristicsStore().getOccurrences(t));
+		if (occurrences.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return occurrences;
 	}
 
@@ -1772,32 +1720,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type)
 			throws TopicMapStoreException {
+
 		/*
-		 * create result set
+		 * get all occurrence
 		 */
-		Set<IOccurrence> set = HashUtil.getHashSet();
+		Set<IOccurrence> occurrences = HashUtil
+				.getHashSet(getCharacteristicsStore().getOccurrences(t));
 		/*
-		 * get all types
+		 * filter by type
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all occurrence
-			 */
-			Set<IOccurrence> occurrences = HashUtil
-					.getHashSet(getCharacteristicsStore().getOccurrences(t));
-			/*
-			 * filter by type
-			 */
-			occurrences.retainAll(getTypedStore().getTyped(ty));
-			set.addAll(occurrences);
+		occurrences.retainAll(getTypedStore().getTyped(type));
+		if (occurrences.isEmpty()) {
+			return Collections.emptySet();
 		}
-		return set;
+		return occurrences;
 	}
 
 	/**
@@ -1808,31 +1744,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * create result set
 		 */
-		Set<IOccurrence> set = HashUtil.getHashSet();
+		Set<IOccurrence> set = doReadOccurrences(t, type);
 		/*
-		 * get all types
+		 * filter by scope
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic ty : types) {
-			/*
-			 * get all occurrence
-			 */
-			Set<IOccurrence> occurrences = HashUtil
-					.getHashSet(getCharacteristicsStore().getOccurrences(t));
-			/*
-			 * filter by type
-			 */
-			occurrences.retainAll(getTypedStore().getTyped(ty));
-			/*
-			 * filter by scope
-			 */
-			occurrences.retainAll(getScopeStore().getScoped(scope));
-			set.addAll(occurrences);
+		set.retainAll(getScopeStore().getScoped(scope));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -1851,6 +1769,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * filter by scope
 		 */
 		occurrences.retainAll(getScopeStore().getScoped(scope));
+		if (occurrences.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return occurrences;
 	}
 
@@ -1909,6 +1830,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 */
 			set.add(getTypedStore().getType(r));
 		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return set;
 	}
 
@@ -1917,7 +1841,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IAssociationRole> doReadRoles(IAssociation association)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getAssociationStore().getRoles(association));
+		Set<IAssociationRole> set = HashUtil.getHashSet(getAssociationStore()
+				.getRoles(association));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -1926,31 +1855,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<IAssociationRole> doReadRoles(IAssociation association,
 			ITopic type) throws TopicMapStoreException {
 		/*
-		 * create result set
+		 * get all roles
 		 */
-		Set<IAssociationRole> set = HashUtil.getHashSet();
+		Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore()
+				.getRoles(association));
 		/*
-		 * get all types
+		 * filter by type
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic t : types) {
-			/*
-			 * get all roles
-			 */
-			Set<IAssociationRole> roles = HashUtil
-					.getHashSet(getAssociationStore().getRoles(association));
-			/*
-			 * filter by type
-			 */
-			roles.retainAll(getTypedStore().getTyped(t));
-			set.addAll(roles);
+		roles.retainAll(getTypedStore().getTyped(type));
+		if (roles.isEmpty()) {
+			return Collections.emptySet();
 		}
-		return set;
+		return roles;
 	}
 
 	/**
@@ -1958,7 +1874,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IAssociationRole> doReadRoles(ITopic player)
 			throws TopicMapStoreException {
-		return getAssociationStore().getRoles(player);
+		Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore()
+				.getRoles(player));
+		if (roles.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return roles;
 	}
 
 	/**
@@ -1967,31 +1888,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type)
 			throws TopicMapStoreException {
 		/*
-		 * create result set
+		 * get all roles
 		 */
-		Set<IAssociationRole> set = HashUtil.getHashSet();
+		Set<IAssociationRole> roles = HashUtil.getHashSet(getAssociationStore()
+				.getRoles(player));
 		/*
-		 * get all types
+		 * filter by type
 		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(type));
-		types.add(type);
-		/*
-		 * iterate over types
-		 */
-		for (ITopic t : types) {
-			/*
-			 * get all roles
-			 */
-			Set<IAssociationRole> roles = HashUtil
-					.getHashSet(getAssociationStore().getRoles(player));
-			/*
-			 * filter by type
-			 */
-			roles.retainAll(getTypedStore().getTyped(t));
-			set.addAll(roles);
+		roles.retainAll(getTypedStore().getTyped(type));
+		if (roles.isEmpty()) {
+			return Collections.emptySet();
 		}
-		return set;
+		return roles;
 	}
 
 	/**
@@ -2003,21 +1911,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * create result set
 		 */
 		Set<IAssociationRole> set = HashUtil.getHashSet();
-
-		/*
-		 * get all types
-		 */
-		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
-				.getSubtypes(assocType));
-		types.add(assocType);
-
 		for (IAssociationRole role : doReadRoles(player, type)) {
 			/*
 			 * check association type
 			 */
-			if (types.contains(doReadType(role.getParent()))) {
+			if (assocType.equals(doReadType(role.getParent()))) {
 				set.add(role);
 			}
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
 		}
 		return set;
 	}
@@ -2034,7 +1937,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ILocator> doReadSubjectIdentifiers(ITopic t)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getIdentityStore().getSubjectIdentifiers(t));
+		Set<ILocator> set = HashUtil.getHashSet(getIdentityStore()
+				.getSubjectIdentifiers(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2042,7 +1950,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ILocator> doReadSubjectLocators(ITopic t)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getIdentityStore().getSubjectLocators(t));
+		Set<ILocator> set = HashUtil.getHashSet(getIdentityStore()
+				.getSubjectLocators(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2050,7 +1963,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadSuptertypes(ITopic t)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getTopicTypeStore().getSupertypes(t));
+		Set<ITopic> set = HashUtil.getHashSet(getTopicTypeStore()
+				.getSupertypes(t));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2074,7 +1992,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadTopics(ITopicMap t)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getIdentityStore().getTopics());
+		Set<ITopic> set = HashUtil.getHashSet(getIdentityStore().getTopics());
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2082,8 +2004,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<ITopic> doReadTopics(ITopicMap t, ITopic type)
 			throws TopicMapStoreException {
-		return HashUtil
-				.getHashSet(getTopicTypeStore().getDirectInstances(type));
+		Set<ITopic> set = HashUtil.getHashSet(getTopicTypeStore()
+				.getDirectInstances(type));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2099,18 +2025,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		Set<ITopic> types = HashUtil.getHashSet(getTopicTypeStore()
 				.getDirectTypes(t));
-		if (recognizingTypeInstanceAssociation()
-				&& existsTmdmTypeInstanceAssociationType()) {
-			Collection<IAssociation> associations = doReadAssociation(t,
-					getTmdmTypeInstanceAssociationType());
-			for (Association association : associations) {
-				if (association.getRoles(getTmdmInstanceRoleType()).iterator()
-						.next().getPlayer().equals(t)) {
-					types.add((ITopic) association
-							.getRoles(getTmdmTypeRoleType()).iterator().next()
-							.getPlayer());
-				}
-			}
+		if (types.isEmpty()) {
+			return Collections.emptySet();
 		}
 		return types;
 	}
@@ -2150,7 +2066,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected Set<IVariant> doReadVariants(IName n)
 			throws TopicMapStoreException {
-		return HashUtil.getHashSet(getCharacteristicsStore().getVariants(n));
+		Set<IVariant> set = HashUtil.getHashSet(getCharacteristicsStore()
+				.getVariants(n));
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -2160,7 +2081,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			throws TopicMapStoreException {
 		Set<IVariant> variants = HashUtil.getHashSet(getCharacteristicsStore()
 				.getVariants(n));
+		/*
+		 * filter by scope
+		 */
 		variants.retainAll(getScopeStore().getScoped(scope));
+		if (variants.isEmpty()) {
+			return Collections.emptySet();
+		}
 		return variants;
 	}
 
@@ -2192,12 +2119,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	void removeAssocaition(IAssociation association, boolean cascade,
+	void removeAssociation(IAssociation association, boolean cascade,
 			IRevision revision) throws TopicMapStoreException {
 		/*
 		 * store lazy copy
 		 */
-		getRevisionStore().createLazyCopy(association);
+		if (isRevisionManagementEnabled()) {
+			getRevisionStore().createLazyCopy(association);
+		}
 		/*
 		 * remove roles
 		 */
@@ -2221,7 +2150,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove scope
 		 */
-		getScopeStore().removeScope(association);
+		getScopeStore().removeScoped(association);
 		/*
 		 * remove type
 		 */
@@ -2231,14 +2160,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getIdentityStore().removeConstruct(association);
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
-				association.getParent(), null, association);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
+				association.getParent(), null, association);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
 				association.getParent(), null, association);
 	}
 
@@ -2247,7 +2176,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade)
 			throws TopicMapStoreException {
-		removeAssocaition(association, cascade, createRevision());
+		removeAssociation(association, cascade, createRevision());
 	}
 
 	/**
@@ -2271,7 +2200,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		} else if (construct instanceof IOccurrence) {
 			removeOccurrence((IOccurrence) construct, cascade, revision);
 		} else if (construct instanceof IAssociation) {
-			removeAssocaition((IAssociation) construct, cascade, revision);
+			removeAssociation((IAssociation) construct, cascade, revision);
 		} else if (construct instanceof IAssociationRole) {
 			removeRole((IAssociationRole) construct, cascade, revision);
 		} else if (construct instanceof IVariant) {
@@ -2321,7 +2250,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove scope
 		 */
-		getScopeStore().removeScope(name);
+		getScopeStore().removeScoped(name);
 		/*
 		 * remove reification
 		 */
@@ -2335,15 +2264,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getTypedStore().removeType(name);
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null,
-				name);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.NAME_REMOVED,
 				name.getParent(), null, name);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null,
+				name);
 	}
 
 	/**
@@ -2371,7 +2300,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store lazy copy
 		 */
-		getRevisionStore().createLazyCopy(occurrence);
+		if (isRevisionManagementEnabled()) {
+			getRevisionStore().createLazyCopy(occurrence);
+		}
 		/*
 		 * remove construct
 		 */
@@ -2383,7 +2314,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove scope
 		 */
-		getScopeStore().removeScope(occurrence);
+		getScopeStore().removeScoped(occurrence);
 		/*
 		 * remove reification
 		 */
@@ -2397,14 +2328,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getTypedStore().removeType(occurrence);
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED,
-				occurrence.getParent(), null, occurrence);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
+				occurrence.getParent(), null, occurrence);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED,
 				occurrence.getParent(), null, occurrence);
 	}
 
@@ -2430,27 +2361,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeRole(IAssociationRole role, boolean cascade, IRevision revision)
 			throws TopicMapStoreException {
-		// REMOVED BECAUSE WILL BE HANDLED BY TOPICMAPSTOREIMPL
-		// /*
-		// * remove dependent association too?
-		// */
-		// if (cascade) {
-		// /*
-		// * remove parent association
-		// */
-		// doRemoveAssociation(role.getParent(), true);
-		// } else {
 		/*
 		 * store lazy copy of the object before deletion
 		 */
-		getRevisionStore().createLazyCopy(role);
+		if (isRevisionManagementEnabled()) {
+			getRevisionStore().createLazyCopy(role);
+		}
 		/*
 		 * remove role
 		 */
 		getAssociationStore().removeRole(role);
-		/*
-		 * remove reification
-		 */
 		/*
 		 * remove reification
 		 */
@@ -2468,16 +2388,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getIdentityStore().removeConstruct(role);
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
-				role);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.ROLE_REMOVED,
 				role.getParent(), null, role);
-		// }
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
+				role);
 	}
 
 	/**
@@ -2505,7 +2424,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store lazy copy
 		 */
-		getRevisionStore().createLazyCopy(variant);
+		if (isRevisionManagementEnabled()) {
+			getRevisionStore().createLazyCopy(variant);
+		}
 		/*
 		 * remove construct
 		 */
@@ -2517,7 +2438,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * remove scope
 		 */
-		getScopeStore().removeScope(variant);
+		getScopeStore().removeScoped(variant);
 		/*
 		 * remove reification
 		 */
@@ -2527,15 +2448,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			getReificationStore().removeReification(variant);
 		}
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
-				null, variant);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.VARIANT_REMOVED,
 				variant.getParent(), null, variant);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
+				null, variant);
 	}
 
 	/**
@@ -2587,7 +2508,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store lazy copy
 		 */
-		getRevisionStore().createLazyCopy(topic);
+		if (isRevisionManagementEnabled()) {
+			getRevisionStore().createLazyCopy(topic);
+		}
 
 		/*
 		 * remove all instances
@@ -2640,7 +2563,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		Set<IAssociation> associations = HashUtil
 				.getHashSet(doReadAssociation(topic));
 		for (IAssociation association : associations) {
-			removeAssocaition(association, cascade, revision);
+			removeAssociation(association, cascade, revision);
 		}
 
 		/*
@@ -2655,9 +2578,6 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				removeConstruct(scopable, cascade, revision);
 			}
 		}
-		// for (IScopable scopable : getScopeStore().removeScopes(topic)) {
-		// removeConstruct(scopable, cascade, revision);
-		// }
 
 		/*
 		 * remove scopes
@@ -2690,15 +2610,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getCharacteristicsStore().removeTopic(topic);
 		/*
-		 * notify listeners
-		 */
-		notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
-				null, topic);
-		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.TOPIC_REMOVED,
 				topic.getParent(), null, topic);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
+				null, topic);
 	}
 
 	/**
@@ -2756,8 +2676,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * used as role player
 		 */
 		Set<IAssociationRole> roles = getAssociationStore().getRoles(topic);
+		/*
+		 * ignore TMDM type-instance and supertype-subtype association
+		 */
 		if (existsTmdmSupertypeSubtypeAssociationType()
-				|| existsTmdmTypeInstanceAssociationType()) {
+				|| existsTmdmTypeInstanceAssociationType()) {			
 			for (IAssociationRole role : roles) {
 				if (existsTmdmInstanceRoleType()
 						&& role.getType().equals(getTmdmInstanceRoleType())) {
@@ -2798,14 +2721,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeItemIdentifier(IConstruct c, ILocator itemIdentifier,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeItemIdentifer(c, itemIdentifier);
-		notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null,
-				itemIdentifier);
+		getIdentityStore().removeItemIdentifer(c, itemIdentifier);		
 		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c,
 				null, itemIdentifier);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null,
+				itemIdentifier);
 	}
 
 	/**
@@ -2828,12 +2754,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * remove old scope relation
 			 */
-			IScope oldScope = getScopeStore().removeScope(s);
+			IScope oldScope = getScopeStore().removeScoped(s);
 			/*
 			 * get new scope object
 			 */
-			Collection<ITopic> themes = HashUtil.getHashSet();
-			themes.addAll(oldScope.getThemes());
+			Collection<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
 			themes.remove(theme);
 			IScope newScope = getScopeStore().getScope(themes);
 			/*
@@ -2841,15 +2766,15 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 */
 			getScopeStore().setScope(s, newScope);
 			/*
-			 * notify listeners
-			 */
-			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, newScope,
-					oldScope);
-			/*
 			 * store revision
 			 */
 			storeRevision(createRevision(), TopicMapEventType.SCOPE_MODIFIED,
 					s, newScope, oldScope);
+			/*
+			 * notify listeners
+			 */
+			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, newScope,
+					oldScope);
 		}
 	}
 
@@ -2867,14 +2792,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeSubjectIdentifier(ITopic t, ILocator subjectIdentifier,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);
-		notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null,
-				subjectIdentifier);
+		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);		
 		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED,
 				t, null, subjectIdentifier);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null,
+				subjectIdentifier);
 	}
 
 	/**
@@ -2899,14 +2827,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeSubjectLocator(ITopic t, ILocator subjectLocator,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeSubjectLocator(t, subjectLocator);
-		notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null,
-				subjectLocator);
+		getIdentityStore().removeSubjectLocator(t, subjectLocator);		
 		/*
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t,
 				null, subjectLocator);
+		/*
+		 * notify listeners
+		 */
+		notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null,
+				subjectLocator);
 	}
 
 	/**
@@ -2920,6 +2851,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO move association handling to topicTypeStore
 	protected void doRemoveSupertype(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getSupertypes(t).contains(type)) {
@@ -2929,18 +2861,22 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 					&& existsTmdmSupertypeSubtypeAssociationType()) {
 				removeSupertypeSubtypeAssociation(t, type, revision);
 			}
-			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 			/*
 			 * store revision
 			 */
 			storeRevision(revision, TopicMapEventType.SUPERTYPE_REMOVED, t,
 					null, type);
+			/*
+			 * notify listener
+			 */
+			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO move association handling to topicTypeStore
 	protected void doRemoveType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getTypes(t).contains(type)) {
@@ -2949,13 +2885,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			if (recognizingTypeInstanceAssociation()
 					&& existsTmdmTypeInstanceAssociationType()) {
 				removeTypeInstanceAssociation(t, type, revision);
-			}
-			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
+			}			
 			/*
 			 * store revision
 			 */
 			storeRevision(revision, TopicMapEventType.TYPE_REMOVED, t, null,
 					type);
+			/*
+			 * notify listener
+			 */			
+			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
 		}
 	}
 
@@ -3162,7 +3101,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 						&& association.getRoles(getTmdmSupertypeRoleType())
 								.iterator().next().getPlayer()
 								.equals(supertype)) {
-					removeAssocaition(association, false, revision);
+					removeAssociation(association, false, revision);
 					break;
 				}
 			} catch (NoSuchElementException e) {
@@ -3186,7 +3125,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 						.next().getPlayer().equals(instance)
 						&& association.getRoles(getTmdmTypeRoleType())
 								.iterator().next().getPlayer().equals(type)) {
-					removeAssocaition(association, false, revision);
+					removeAssociation(association, false, revision);
 					break;
 				}
 			} catch (NoSuchElementException e) {
@@ -3547,40 +3486,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void addTaskToThreadPool(Runnable task) {
-		if (blocked) {
-			queue.add(task);
-		} else {
-			super.addTaskToThreadPool(task);
-		}
+		// NOTHING TO DO
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commit() {
-		synchronized (this) {
-			if (blocked) {
-				throw new ConcurrentThreadsException(
-						"Topic Map Store already blocked!");
-			}
-			blocked = true;
-		}
-
-		queue = new LinkedList<Runnable>();
-		while (super.getThreadPool().getActiveCount() > 0) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				throw new ConcurrentThreadsException(e);
-			}
-		}
-		synchronized (queue) {
-			blocked = false;
-			for (Runnable r : queue) {
-				addTaskToThreadPool(r);
-			}
-		}
-		queue.clear();
+		// NOTHING TO DO
 	}
 
 	/**

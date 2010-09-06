@@ -1221,7 +1221,7 @@ public class InMemoryMergeUtils {
 				/*
 				 * remove duplicate
 				 */
-				store.removeAssocaition(duplicate, true, revision);
+				store.removeAssociation(duplicate, true, revision);
 				removed.add(duplicate);
 			}
 			/*

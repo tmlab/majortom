@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.inmemory.transaction.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +88,7 @@ public class LazyIdentityStore extends IdentityStore {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO check if access can be multi-threaded
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getSubjectLocators(ITopic t) {
 		if ( isRemovedConstruct(t)){
@@ -103,7 +105,11 @@ public class LazyIdentityStore extends IdentityStore {
 				super.addSubjectLocator(t, locator);
 			}
 		}
-		return super.getSubjectLocators(t);
+		Set<ILocator> set = super.getSubjectLocators(t);
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -161,6 +167,7 @@ public class LazyIdentityStore extends IdentityStore {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO check if access can be multi-threaded
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getSubjectIdentifiers(ITopic t) {
 		if ( isRemovedConstruct(t)){
@@ -177,7 +184,11 @@ public class LazyIdentityStore extends IdentityStore {
 				super.addSubjectIdentifier(t, locator);
 			}
 		}
-		return super.getSubjectIdentifiers(t);
+		Set<ILocator> set = super.getSubjectIdentifiers(t);
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -195,7 +206,8 @@ public class LazyIdentityStore extends IdentityStore {
 			} else {
 				return null;
 			}
-		}if ( isRemovedConstruct(topic)){
+		}
+		if ( isRemovedConstruct(topic)){
 			return null;
 		}
 		return topic;
@@ -234,6 +246,7 @@ public class LazyIdentityStore extends IdentityStore {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO check if access can be multi-threaded
 	@SuppressWarnings("unchecked")
 	public Set<ILocator> getItemIdentifiers(IConstruct c) {
 		if ( isRemovedConstruct(c)){
@@ -250,7 +263,11 @@ public class LazyIdentityStore extends IdentityStore {
 				super.addItemIdentifer(c, locator);
 			}
 		}
-		return super.getItemIdentifiers(c);
+		Set<ILocator> set = super.getItemIdentifiers(c);
+		if ( set.isEmpty()){
+			return Collections.emptySet();
+		}
+		return set;
 	}
 
 	/**
@@ -347,15 +364,15 @@ public class LazyIdentityStore extends IdentityStore {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IConstruct> T createLazyStub(T c) throws ConstructRemovedException {
-		if (lazyStubs == null) {
-			lazyStubs = HashUtil.getHashMap();
-		}
 		if (c == null) {
 			return null;
-		}
+		}	
 		if (removedIds != null && removedIds.contains(c.getId())) {
 			throw new ConstructRemovedException(c);
 		}
+		if (lazyStubs == null) {
+			lazyStubs = HashUtil.getHashMap();
+		}	
 		if (!lazyStubs.containsKey(c.getId())) {
 			T construct = LazyStubCreator.createLazyStub(c, getStore().getTransaction());
 			lazyStubs.put(c.getId(), construct);
@@ -374,11 +391,11 @@ public class LazyIdentityStore extends IdentityStore {
 	 *             thrown if at least one contained theme is marked as removed
 	 */
 	public IScope createLazyStub(IScope scope) throws ConstructRemovedException {
-		if (lazyScopes == null) {
-			lazyScopes = HashUtil.getHashSet();
-		}
 		if (scope == null) {
 			return null;
+		}
+		if (lazyScopes == null) {
+			lazyScopes = HashUtil.getHashSet();
 		}
 		if (!lazyScopes.contains(scope)) {
 			Set<ITopic> themes = HashUtil.getHashSet();

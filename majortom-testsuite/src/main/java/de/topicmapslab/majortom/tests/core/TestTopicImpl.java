@@ -87,11 +87,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 	 */
 	public void testGetCharacteristics() {
 
-		ITopic superType = createTopic();
 		ITopic type = createTopic();
-		type.addSupertype(superType);
 		ITopic otherType = createTopic();
-		otherType.addSupertype(superType);
 
 		ITopic topic = createTopicBySI("http://psi.example.org/topic");
 		Name n = topic.createName(type, "Name", new Topic[0]);
@@ -101,50 +98,28 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertTrue(topic.getCharacteristics(type).contains(n));
 		assertEquals(1, topic.getCharacteristics(otherType).size());
 		assertTrue(topic.getCharacteristics(otherType).contains(o));
-		assertEquals(2, topic.getCharacteristics(superType).size());
-		assertTrue(topic.getCharacteristics(superType).contains(o));
-		assertTrue(topic.getCharacteristics(superType).contains(n));
 		IScope scope = ((ScopeableImpl) o).getScopeObject();
-		assertEquals(2, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
-		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 
 		ITopic theme = createTopic();
 		o.addTheme(theme);
-		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		scope = ((ScopeableImpl) o).getScopeObject();
-		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
 		assertEquals(1, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(o));
 
 		o.removeTheme(theme);
-		assertEquals(0, topic.getCharacteristics(superType, scope).size());
 		assertEquals(0, topic.getCharacteristics(scope).size());
 
 		scope = ((ScopeableImpl) o).getScopeObject();
-		assertEquals(2, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType, scope).contains(o));
-		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		assertEquals(2, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(o));
 		assertTrue(topic.getCharacteristics(scope).contains(n));
 
 		o.remove();
-		assertEquals(1, topic.getCharacteristics(superType, scope).size());
-		assertTrue(topic.getCharacteristics(superType, scope).contains(n));
 		assertEquals(1, topic.getCharacteristics(scope).size());
 		assertTrue(topic.getCharacteristics(scope).contains(n));
 
 		n.addTheme(theme);
-		assertEquals(0, topic.getCharacteristics(superType, scope).size());
 		assertEquals(0, topic.getCharacteristics(scope).size());
-		assertEquals(1, topic.getCharacteristics(superType).size());
-		assertTrue(topic.getCharacteristics(superType).contains(n));
-
-		type.removeSupertype(superType);
-		assertEquals(0, topic.getCharacteristics(superType).size());
 	}
 
 	/**

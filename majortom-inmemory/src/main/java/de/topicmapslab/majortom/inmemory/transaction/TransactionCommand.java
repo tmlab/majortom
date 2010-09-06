@@ -54,8 +54,27 @@ public class TransactionCommand {
 	 */
 	private final Object result;
 
-	public TransactionCommand(final ITransaction transaction, final Object result, final TransactionOperation operation, final IConstruct context,
-			final TopicMapStoreParameterType parameterType, final Object... parameters) {
+	/**
+	 * constructor
+	 * 
+	 * @param transaction
+	 *            the transaction which creates this command
+	 * @param result
+	 *            the result of the transaction command
+	 * @param operation
+	 *            the operation type of the transaction
+	 * @param context
+	 *            the context of this command
+	 * @param parameterType
+	 *            the type of operation delegated to the underlying store
+	 * @param parameters
+	 *            parameters of the the called operation
+	 */
+	public TransactionCommand(final ITransaction transaction,
+			final Object result, final TransactionOperation operation,
+			final IConstruct context,
+			final TopicMapStoreParameterType parameterType,
+			final Object... parameters) {
 		this.operation = operation;
 		this.context = LazyStubCreator.createLazyStub(context, transaction);
 		this.paramterType = parameterType;
@@ -76,12 +95,14 @@ public class TransactionCommand {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	// TODO scope objects
-	public Object commit(ITopicMapStore store, Map<Object, Object> lazy) throws TopicMapStoreException {
-		IConstruct context_ = (IConstruct) cleanParameter(store, context, lazy);
+	public Object commit(ITopicMapStore store, Map<Object, Object> lazy)
+			throws TopicMapStoreException {
+		IConstruct context_ = (IConstruct) resolveTransactionObject(store,
+				context, lazy);
 		Object[] parameters_ = new Object[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
-			parameters_[i] = cleanParameter(store, parameters[i], lazy);
+			parameters_[i] = resolveTransactionObject(store, parameters[i],
+					lazy);
 		}
 
 		switch (operation) {
@@ -89,7 +110,8 @@ public class TransactionCommand {
 			return store.doCreate(context_, paramterType, parameters_);
 		}
 		case MERGE: {
-			store.doMerge(context_, Arrays.copyOfRange(parameters_, 0, parameters_.length, IConstruct[].class));
+			store.doMerge(context_, Arrays.copyOfRange(parameters_, 0,
+					parameters_.length, IConstruct[].class));
 		}
 			break;
 		case MODIFY: {
@@ -97,8 +119,13 @@ public class TransactionCommand {
 		}
 			break;
 		case REMOVE: {
+			/*
+			 * If parameterType is null -> remove a construct otherwise remove
+			 * some child information like a type, a theme etc.
+			 */
 			if (paramterType == null) {
-				boolean cascade = parameters_.length == 1 && ((Boolean) parameters_[0]);
+				boolean cascade = parameters_.length == 1
+						&& ((Boolean) parameters_[0]);
 				store.doRemove(context_, cascade);
 				if (context_ instanceof ConstructImpl) {
 					((ConstructImpl) context_).setRemoved(true);
@@ -113,19 +140,45 @@ public class TransactionCommand {
 	}
 
 	/**
+	 * Rolling back the committed changes of this transaction command.
+	 */
+	public void rollback() {
+		//TODO
+	}
+	
+	/**
+	 * The result of the transaction during the modification inside the
+	 * transaction context and not the commit result.
+	 * 
 	 * @return the result
 	 */
 	public Object getResult() {
 		return result;
 	}
 
-	private final Object cleanParameter(ITopicMapStore store, Object parameter, Map<Object, Object> lazy) {		
+	/**
+	 * Returns the real construct representing the context in the real topic map
+	 * outside the transaction.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param parameter
+	 *            the transaction object ( construct, string, locator etc.)
+	 * @param lazy
+	 *            a map containing the mapping between a construct inside and
+	 *            outside the transaction
+	 * @return the object outside the transaction
+	 */
+	private final Object resolveTransactionObject(ITopicMapStore store,
+			Object parameter, Map<Object, Object> lazy) {
 		if (lazy.containsKey(parameter)) {
 			return lazy.get(parameter);
 		}
 		if (parameter instanceof IConstruct) {
 			if (((IConstruct) parameter).getTopicMap() instanceof ITransaction) {
-				IConstruct param = (IConstruct) store.doRead(store.getTopicMap(), TopicMapStoreParameterType.BY_ID, ((IConstruct) parameter).getId());
+				IConstruct param = (IConstruct) store.doRead(
+						store.getTopicMap(), TopicMapStoreParameterType.BY_ID,
+						((IConstruct) parameter).getId());
 				return param;
 			}
 		}
