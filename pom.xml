@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.topicmapslab</groupId>
+	<groupId>de.topicmapslab.majortom</groupId>
 	
-	<artifactId>majortom</artifactId>
+	<artifactId>majortom-parent</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
@@ -53,10 +53,11 @@
 	
 	<modules>
         <module>geotype</module>
-        <module>majortom-api</module>
+        <module>majortom-model</module>
         <module>majortom-core</module>
         <module>majortom-inmemory</module>
         <module>majortom-db</module>
         <module>majortom-testsuite</module>
+	<module>majortom-testsuite-readonly</module>
 	</modules>
 </project>
