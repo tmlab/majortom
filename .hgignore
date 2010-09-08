@@ -4,6 +4,7 @@ target
 *.class
 *.log
 *.zip
+*pom.xml.versionsBackup
 build.properties
 .settings
 .classpath
