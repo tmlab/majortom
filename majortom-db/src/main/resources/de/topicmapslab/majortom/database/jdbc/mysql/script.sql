@@ -132,6 +132,7 @@ CREATE TABLE history
   subjectlocators varchar(1024),
   datatype varchar(1024),
   roles varchar(1024),
+  bestlabel varchar(256),
   CONSTRAINT pk_history PRIMARY KEY (id, id_revision, id_topicmap),
   CONSTRAINT fk_history_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE

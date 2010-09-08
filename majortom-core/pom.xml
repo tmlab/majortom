@@ -1,9 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>majortom-parent</artifactId>
+		<groupId>de.topicmapslab.majortom</groupId>
+		<version>1.1.2-SNAPSHOT</version>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.topicmapslab.majortom</groupId>
 	<artifactId>majortom-core</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<name>MaJorTom Core</name>
+	<version>${project.parent.version}</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -44,7 +50,7 @@
 		<dependency>
 			<groupId>de.topicmapslab.majortom</groupId>
 			<artifactId>majortom-model</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

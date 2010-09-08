@@ -1,5 +1,5 @@
 Bundle-SymbolicName: de.topicmapslab.geotype;singleton=true
-Bundle-Version: 0.0.2.SNAPSHOT
+Bundle-Version: 1.1.1
 Bundle-Name: geotype
 Provide-Package: de.topicmapslab.geotype.mercator,
  de.topicmapslab.geotype.model,

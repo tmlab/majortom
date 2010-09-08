@@ -18,6 +18,7 @@ package de.topicmapslab.majortom.util;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -243,4 +244,36 @@ public class HashUtil {
 		return new ArrayList<T>(initial);
 	}
 
+	/**
+	 * Clears the indexes in context to the given list, to avoid indexes out of
+	 * range.
+	 * 
+	 * @param list
+	 *            the list
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @return an two-
+	 */
+	public static  final <X> List<X> secureSubList(List<X> list, int offset, int limit) {
+		int from = offset;
+		if (from < 0) {
+			from = 0;
+		} else if (from >= list.size()) {
+			if (!list.isEmpty()) {
+				from = list.size() - 1;
+			} else {
+				from = 0;
+			}
+		}
+		int to = offset + limit;
+		if (to < 0) {
+			to = 0;
+		} else if (to > list.size()) {
+			to = list.size();
+		}
+		return Collections.unmodifiableList(list.subList(from, to));
+	}
+	
 }

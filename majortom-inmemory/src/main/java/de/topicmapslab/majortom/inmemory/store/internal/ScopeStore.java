@@ -786,4 +786,14 @@ public class ScopeStore implements IDataStore {
 		}
 		return variantScopes != null && variantScopes.containsKey(scopable);
 	}
+	
+	/**
+	 * Returns all scopes
+	 * @return the scopes
+	 */
+	public Set<IScope> getScopes(){
+		Set<IScope> set = HashUtil.getHashSet(scopes.keySet());
+		set.add(emptyScope);
+		return set;
+	}
 }

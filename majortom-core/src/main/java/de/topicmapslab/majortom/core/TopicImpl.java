@@ -242,8 +242,8 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<Topic> getSupertypes() {
-		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUPERTYPE));
+	public Collection<Topic> getSupertypes() {		
+		return Collections.unmodifiableCollection((Collection<Topic>)getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUPERTYPE));
 	}
 
 	/**
@@ -935,4 +935,11 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		return index.getNumberOfTypes(this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestLabel() {
+		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL);
+	}
+	
 }

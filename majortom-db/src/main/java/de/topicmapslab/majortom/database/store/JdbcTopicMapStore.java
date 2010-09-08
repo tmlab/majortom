@@ -21,7 +21,9 @@ package de.topicmapslab.majortom.database.store;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -1581,7 +1583,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadSuptertypes(ITopic t)
+	protected List<ITopic> doReadSuptertypes(ITopic t)
 			throws TopicMapStoreException {
 		return getSuptertypes(t, -1, -1);
 	}
@@ -1589,11 +1591,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> getSuptertypes(ITopic t, int offset, int limit)
+	public List<ITopic> getSuptertypes(ITopic t, int offset, int limit)
 			throws TopicMapStoreException {
 		try {
-			Set<ITopic> supertypes = HashUtil.getHashSet(provider
-					.getProcessor().doReadSuptertypes(t, offset, limit));
+			List<ITopic> supertypes = HashUtil.getList(provider.getProcessor()
+					.doReadSuptertypes(t, offset, limit));
 			if (existsTmdmSupertypeSubtypeAssociationType()) {
 				for (IAssociation association : provider.getProcessor()
 						.doReadAssociation(t,
@@ -1603,15 +1605,22 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 					Set<Role> rSupertypes = association
 							.getRoles(getTmdmSupertypeRoleType());
 					if (rSubtypes.size() == 1 && rSupertypes.size() == 1) {
-						if (rSubtypes.contains(t)) {
-							supertypes.add((ITopic) rSupertypes.iterator()
-									.next().getPlayer());
+						if (rSubtypes.iterator().next().getPlayer().equals(t)) {
+							ITopic player = (ITopic) rSupertypes.iterator()
+									.next().getPlayer();
+							if (!supertypes.contains(player)) {
+								supertypes.add(player);
+							}
 						}
 					} else {
 						throw new TopicMapStoreException(
 								"Invalid TMDM supertype-subtype association.");
 					}
 				}
+			}
+			if (offset != -1) {
+				Collections.sort(supertypes);
+				return HashUtil.secureSubList(supertypes, offset, limit);
 			}
 			return supertypes;
 		} catch (SQLException e) {
@@ -1805,6 +1814,18 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadMetadataByKey(revision, key);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String doReadBestLabel(ITopic topic)
+			throws TopicMapStoreException {
+		try {
+			return provider.getProcessor().doReadBestLabel(topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}

@@ -48,6 +48,7 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 	private Set<String> rolesPlayedIds = HashUtil.getHashSet();
 	private Set<String> associationsPlayedIds = HashUtil.getHashSet();
 	private final String reifiedId;
+	private final String bestLabel;
 
 	/*
 	 * cached value
@@ -111,6 +112,8 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 		for (Association association : clone.getAssociationsPlayed()) {
 			associationsPlayedIds.add(association.getId());
 		}
+		
+		this.bestLabel = clone.getBestLabel();
 	}
 
 	/**
@@ -306,5 +309,12 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 			}
 		}
 		return topics;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestLabel() {
+		return bestLabel;
 	}
 }
