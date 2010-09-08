@@ -85,7 +85,7 @@ public interface IConnectionProvider {
 	 * @throws TopicMapStoreException
 	 *             thrown if the connection is not established
 	 */
-	public IQueryProcessor getProcessor() throws TopicMapStoreException;
+	public <T extends IQueryProcessor> T getProcessor() throws TopicMapStoreException;
 
 	/**
 	 * Return the meta data of the existing connection. If the connection is not

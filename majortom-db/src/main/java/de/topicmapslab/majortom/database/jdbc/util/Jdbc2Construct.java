@@ -182,7 +182,7 @@ public class Jdbc2Construct {
 			throws SQLException {
 		try {
 			if (result.next()) {
-				return new LocatorImpl(result.getString(column));
+				return new LocatorImpl(result.getString(column),result.getString("id"));
 			}
 			return null;
 		} finally {
@@ -620,7 +620,7 @@ public class Jdbc2Construct {
 			throws SQLException {
 		List<ILocator> list = HashUtil.getList();
 		while (result.next()) {
-			list.add(new LocatorImpl(result.getString(column)));
+			list.add(new LocatorImpl(result.getString(column),result.getString("id")));
 		}
 		result.close();
 		return list;

@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.UUID;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.MalformedIRIException;
@@ -36,7 +37,8 @@ public class LocatorImpl implements ILocator {
 
 	private final URI uri;
 	private final String reference;
-
+	private final String id;
+	
 	/**
 	 * constructor
 	 * 
@@ -44,6 +46,16 @@ public class LocatorImpl implements ILocator {
 	 *            the reference
 	 */
 	public LocatorImpl(final String reference) throws MalformedIRIException {
+		this(reference, UUID.randomUUID().toString());
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param reference
+	 *            the reference
+	 */
+	public LocatorImpl(final String reference, final String id) throws MalformedIRIException {
 		if (reference == null || reference.isEmpty()) {
 			throw new MalformedIRIException("The given IRI reference is invalid.");
 		}
@@ -59,6 +71,7 @@ public class LocatorImpl implements ILocator {
 		if (!uri.isAbsolute()) {
 			throw new MalformedIRIException("Relative URI");
 		}
+		this.id = id;
 	}
 
 	/**
@@ -74,6 +87,7 @@ public class LocatorImpl implements ILocator {
 		} catch (UnsupportedEncodingException e) {
 			throw new MalformedIRIException("The given IRI reference is invalid.");
 		}
+		this.id = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -127,5 +141,11 @@ public class LocatorImpl implements ILocator {
 	public int hashCode() {
 		return reference.hashCode();
 	}
-
+	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 }

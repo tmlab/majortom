@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.jdbc.mysql.query;
+package de.topicmapslab.majortom.database.jdbc.rdbms.query;
 
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
@@ -28,7 +28,7 @@ import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
  * @author Sven Krosse
  * 
  */
-public interface IMySqlIndexQueries {
+public interface IIndexQueries {
 
 	/**
 	 * Query definitions to realize methods of {@link ITypeInstanceIndex}
