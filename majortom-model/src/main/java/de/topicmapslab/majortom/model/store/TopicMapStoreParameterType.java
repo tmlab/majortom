@@ -22,6 +22,8 @@ public enum TopicMapStoreParameterType {
 	CHARACTERISTICS,
 
 	NAME,
+	
+	BEST_LABEL,
 
 	OCCURRENCE,
 	

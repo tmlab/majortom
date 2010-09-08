@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.tests.core;
 
 import org.tmapi.core.Association;
+import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Topic;
@@ -222,6 +223,61 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		} catch (Exception e) {
 			fail("Topic is in use, but delete cascade!");
 		}
+	}
+	
+	public void testBestLabel(){
+		Locator si = createLocator("http://psi.example.org/si/topic");
+		Locator oSi = createLocator("http://psi.example.org/si/topic");
+		Locator sl = createLocator("http://psi.example.org/sl/topic");
+		Locator oSl = createLocator("http://psi.example.org/sl/topic");
+		Locator ii = createLocator("http://psi.example.org/ii/topic");
+		Locator oIi = createLocator("http://psi.example.org/ii/topic");
+		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
+		topic.removeSubjectIdentifier(si);
+		
+		assertEquals("Best label should be the id",topic.getId(), topic.getBestLabel());
+		
+		topic.addItemIdentifier(ii);
+		assertEquals("Best label should be the item-identifier", ii.getReference(), topic.getBestLabel());
+		topic.addItemIdentifier(oIi);
+		assertEquals("Best label should be the lexicographically smallest item-identifier",ii.getReference(), topic.getBestLabel());
+				
+		topic.addSubjectLocator(sl);
+		assertEquals("Best label should be the subject-locator",sl.getReference(), topic.getBestLabel());
+		topic.addSubjectLocator(oSl);
+		assertEquals("Best label should be the lexicographically smallest subject-locator",sl.getReference(), topic.getBestLabel());
+		
+		topic.addSubjectIdentifier(si);
+		assertEquals("Best label should be the subject-identifier",si.getReference(), topic.getBestLabel());
+		topic.addSubjectIdentifier(oSi);
+		assertEquals("Best label should be the lexicographically smallest subject-identifier",si.getReference(), topic.getBestLabel());
+		
+		Topic type = createTopic();
+		Topic theme = createTopic();
+		Topic otherTheme = createTopic();
+		
+		Name name1 = topic.createName("Name");
+		assertEquals("Best label should be the name",name1.getValue(), topic.getBestLabel());
+		Name name2 = topic.createName("NameZZZ");
+		assertEquals("Best label should be the the lexicographically smallest name value",name1.getValue(), topic.getBestLabel());
+		
+		name1.setType(type);
+		assertEquals("Best label should be the default name",name2.getValue(), topic.getBestLabel());
+		name2.setType(type);
+		assertEquals("Best label should be the default name",name1.getValue(), topic.getBestLabel());
+		
+		name1.addTheme(theme);
+		assertEquals("Best label should be the name with the unconstained scope",name2.getValue(), topic.getBestLabel());
+		name2.addTheme(theme);
+		assertEquals("Best label should be the name with the unconstained scope",name1.getValue(), topic.getBestLabel());
+		
+		name1.addTheme(otherTheme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name2.getValue(), topic.getBestLabel());
+		name2.addTheme(otherTheme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		
+		name1.removeTheme(otherTheme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
 	}
 
 }

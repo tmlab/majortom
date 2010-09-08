@@ -150,7 +150,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryReadVariants(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadVariantsWithScope() throws SQLException;
-
+	
 	// ***************
 	// * MERGE QUERY *
 	// ***************

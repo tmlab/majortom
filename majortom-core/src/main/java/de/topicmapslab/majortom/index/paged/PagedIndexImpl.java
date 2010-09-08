@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.index.paged;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.tmapi.index.Index;
@@ -23,6 +22,7 @@ import org.tmapi.index.Index;
 import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * special index implementation supporting paging
@@ -92,22 +92,6 @@ public abstract class PagedIndexImpl<T extends ITopicMapStore, E extends Index> 
 	 * @return an two-
 	 */
 	protected final <X> List<X> secureSubList(List<X> list, int offset, int limit) {
-		int from = offset;
-		if (from < 0) {
-			from = 0;
-		} else if (from >= list.size()) {
-			if (!list.isEmpty()) {
-				from = list.size() - 1;
-			} else {
-				from = 0;
-			}
-		}
-		int to = offset + limit;
-		if (to < 0) {
-			to = 0;
-		} else if (to > list.size()) {
-			to = list.size();
-		}
-		return Collections.unmodifiableList(list.subList(from, to));
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 }

@@ -54,7 +54,7 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 				.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "value", "id_datatype" }));
 		schemaInformation.put("history", Arrays.asList(new String[] { "id", "id_topicmap", "id_revision", "id_parent", "names", "occurrences", "variants",
 				"associations", "id_scope", "id_reification", "id_player", "types", "supertypes", "value", "type", "themes", "itemidentifiers",
-				"subjectidentifiers", "subjectlocators", "datatype", "roles" }));
+				"subjectidentifiers", "subjectlocators", "datatype", "roles", "bestlabel" }));
 		schemaInformation.put("literals", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "value" }));
 		schemaInformation.put("locators", Arrays.asList(new String[] { "id", "reference" }));
 		schemaInformation.put("metadata", Arrays.asList(new String[] { "id_revision", "key", "value" }));

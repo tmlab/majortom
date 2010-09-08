@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.tests.core;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -29,11 +28,13 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 import org.tmapi.index.Index;
+import org.tmapi.index.LiteralIndex;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.exception.IndexException;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
@@ -72,30 +73,27 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			index.open();
 
 			try {
-				index.getRevision("tag");
-				fail("Tag should be unknown!");
-			} catch (Exception e) {
-				// NOTHING TO DO
+				IRevision r = index.getRevision("tag");
+				assertNull("Tag should be unknown!", r);
+			} catch (IndexException e) {
+				//NOTHING TO DO
 			}
 
+			createTopic();
 			topicMap.addTag("tag");
-			try {
-				index.getRevision("tag");
-			} catch (Exception e) {
-				fail("Tag should be known!");
-			}
+			IRevision r = index.getRevision("tag");
+			assertNotNull("Tag should be known!", r);
+
+			createTopic();
 
 			Calendar c = new GregorianCalendar();
 			topicMap.addTag("tag2", c);
 
-			createTopic();
+			IRevision revisionByCalendar = index.getRevision(c);
+			IRevision revisionByTag = index.getRevision("tag2");
 
-			IRevision revisonByCalendar = index.getRevision(c);
-			IRevision revisonByTag = index.getRevision("tag2");
-
-			assertNotNull(revisonByTag);
-			assertNotNull(revisonByCalendar);
-			assertEquals(revisonByCalendar, revisonByTag);
+			assertNotNull(revisionByTag);
+			assertNotNull(revisionByCalendar);
 		}
 	}
 
@@ -124,7 +122,8 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertTrue(topicMap.getAssociations(type).contains(otherAssociation));
 
 		ITopic theme = createTopic();
-		IAssociation scopedAssociation = (IAssociation) topicMap.createAssociation(createTopic(), theme);
+		IAssociation scopedAssociation = (IAssociation) topicMap
+				.createAssociation(createTopic(), theme);
 		IScope scope = scopedAssociation.getScopeObject();
 		assertEquals(3, topicMap.getAssociations().size());
 		assertEquals(2, topicMap.getAssociations(type).size());
@@ -181,44 +180,59 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, association.getScope().size());
 		assertEquals(0, association.getScopeObject().getThemes().size());
 
-		IAssociation associationWithTopic = (IAssociation) topicMap.createAssociation(type, theme);
+		IAssociation associationWithTopic = (IAssociation) topicMap
+				.createAssociation(type, theme);
 		assertEquals(type, associationWithTopic.getType());
 		assertEquals(1, associationWithTopic.getScope().size());
 		assertTrue(associationWithTopic.getScope().contains(theme));
-		assertEquals(1, associationWithTopic.getScopeObject().getThemes().size());
-		assertTrue(associationWithTopic.getScopeObject().getThemes().contains(theme));
+		assertEquals(1, associationWithTopic.getScopeObject().getThemes()
+				.size());
+		assertTrue(associationWithTopic.getScopeObject().getThemes()
+				.contains(theme));
 
 		ITopic theme2 = createTopic();
-		IAssociation associationWithTopics = (IAssociation) topicMap.createAssociation(type, theme, theme2);
+		IAssociation associationWithTopics = (IAssociation) topicMap
+				.createAssociation(type, theme, theme2);
 		assertEquals(type, associationWithTopics.getType());
 		assertEquals(2, associationWithTopics.getScope().size());
 		assertTrue(associationWithTopics.getScope().contains(theme));
 		assertTrue(associationWithTopics.getScope().contains(theme2));
-		assertEquals(2, associationWithTopics.getScopeObject().getThemes().size());
-		assertTrue(associationWithTopics.getScopeObject().getThemes().contains(theme));
-		assertTrue(associationWithTopics.getScopeObject().getThemes().contains(theme2));
+		assertEquals(2, associationWithTopics.getScopeObject().getThemes()
+				.size());
+		assertTrue(associationWithTopics.getScopeObject().getThemes()
+				.contains(theme));
+		assertTrue(associationWithTopics.getScopeObject().getThemes()
+				.contains(theme2));
 
-		IAssociation associationWithTopicArray = (IAssociation) topicMap.createAssociation(type, new Topic[] { theme, theme2 });
+		IAssociation associationWithTopicArray = (IAssociation) topicMap
+				.createAssociation(type, new Topic[] { theme, theme2 });
 		assertEquals(type, associationWithTopicArray.getType());
 		assertEquals(2, associationWithTopicArray.getScope().size());
 		assertTrue(associationWithTopicArray.getScope().contains(theme));
 		assertTrue(associationWithTopicArray.getScope().contains(theme2));
-		assertEquals(2, associationWithTopicArray.getScopeObject().getThemes().size());
-		assertTrue(associationWithTopicArray.getScopeObject().getThemes().contains(theme));
-		assertTrue(associationWithTopicArray.getScopeObject().getThemes().contains(theme2));
+		assertEquals(2, associationWithTopicArray.getScopeObject().getThemes()
+				.size());
+		assertTrue(associationWithTopicArray.getScopeObject().getThemes()
+				.contains(theme));
+		assertTrue(associationWithTopicArray.getScopeObject().getThemes()
+				.contains(theme2));
 
 		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
 		themes.add(theme2);
 
-		IAssociation associationWithCollection = (IAssociation) topicMap.createAssociation(type, themes);
+		IAssociation associationWithCollection = (IAssociation) topicMap
+				.createAssociation(type, themes);
 		assertEquals(type, associationWithCollection.getType());
 		assertEquals(2, associationWithCollection.getScope().size());
 		assertTrue(associationWithCollection.getScope().contains(theme));
 		assertTrue(associationWithCollection.getScope().contains(theme2));
-		assertEquals(2, associationWithCollection.getScopeObject().getThemes().size());
-		assertTrue(associationWithCollection.getScopeObject().getThemes().contains(theme));
-		assertTrue(associationWithCollection.getScopeObject().getThemes().contains(theme2));
+		assertEquals(2, associationWithCollection.getScopeObject().getThemes()
+				.size());
+		assertTrue(associationWithCollection.getScopeObject().getThemes()
+				.contains(theme));
+		assertTrue(associationWithCollection.getScopeObject().getThemes()
+				.contains(theme2));
 	}
 
 	/**
@@ -244,7 +258,8 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, topic.getSubjectLocators().size());
 
 		Locator si = createLocator("http://psi.example.org/si");
-		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
+		ITopic topicWithSi = (ITopic) topicMap
+				.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
 		assertTrue(topicWithSi.getSubjectIdentifiers().contains(si));
 		assertEquals(0, topicWithSi.getItemIdentifiers().size());
@@ -283,7 +298,8 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		Variant v = n.createVariant("Var", createTopic());
 		assertEquals(v, topicMap.getConstructById(v.getId()));
 
-		Occurrence o = topic.createOccurrence(createTopic(), "Occ", new Topic[0]);
+		Occurrence o = topic.createOccurrence(createTopic(), "Occ",
+				new Topic[0]);
 		assertEquals(o, topicMap.getConstructById(o.getId()));
 
 		Association a = createAssociation(createTopic());
@@ -304,13 +320,17 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, topic.getSubjectIdentifiers().size());
 		assertEquals(1, topic.getItemIdentifiers().size());
 		assertEquals(0, topic.getSubjectLocators().size());
-		assertEquals(topic, topicMap.getConstructByItemIdentifier(topic.getItemIdentifiers().iterator().next()));
+		assertEquals(
+				topic,
+				topicMap.getConstructByItemIdentifier(topic
+						.getItemIdentifiers().iterator().next()));
 
 		Locator si = createLocator("http://psi.example.org/si");
 		Locator sl = createLocator("http://psi.example.org/sl");
 		Locator ii = createLocator("http://psi.example.org/ii");
 
-		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
+		ITopic topicWithSi = (ITopic) topicMap
+				.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
 		assertTrue(topicWithSi.getSubjectIdentifiers().contains(si));
 		assertEquals(0, topicWithSi.getItemIdentifiers().size());
@@ -344,12 +364,18 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 * .
 	 */
 	public void testGetIndex() {
-		for (Class<? extends Index> clazz : new Class[] { ITypeInstanceIndex.class, ITransitiveTypeInstanceIndex.class, IRevisionIndex.class,
-				IScopedIndex.class, ILiteralIndex.class, ISupertypeSubtypeIndex.class, IIdentityIndex.class }) {
+		for (Class<? extends Index> clazz : new Class[] {
+				ITypeInstanceIndex.class, ITransitiveTypeInstanceIndex.class,
+				IRevisionIndex.class, IScopedIndex.class, ILiteralIndex.class,
+				ISupertypeSubtypeIndex.class, IIdentityIndex.class }) {
 			try {
 				Index i = topicMap.getIndex(clazz);
-				assertNotNull("Index of type " + clazz.getSimpleName() + " should not be null", i);
-				assertTrue("Invalid type of index, expects " + clazz.getSimpleName(), clazz.isAssignableFrom(clazz));
+				assertNotNull("Index of type " + clazz.getSimpleName()
+						+ " should not be null", i);
+				assertTrue(
+						"Invalid type of index, expects "
+								+ clazz.getSimpleName(),
+						clazz.isAssignableFrom(clazz));
 				assertFalse(i.isOpen());
 			} catch (UnsupportedOperationException e) {
 				// NOTHING TO DO
@@ -392,6 +418,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 		try {
 			topicMap.getIndex(myIndex.getClass());
+			fail("Index should not be supported!");
 		} catch (UnsupportedOperationException e) {
 			// NOTHING TO DO
 		}
@@ -446,13 +473,19 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	 */
 	public void testMergeIn() throws Exception {
 
-		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.example.org/merge-in");
+		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem()
+				.createTopicMap("http://psi.example.org/merge-in");
 		try {
 			Locator si = createLocator("http://psi.example.org/si");
 			ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 			Name n = topic.createName("Name", new Topic[0]);
-			n.createVariant("Variant", topicMap.createTopicBySubjectIdentifier(topicMap.createLocator("http://psi.example.org/theme")));
-			topic.createOccurrence(topicMap.createTopicByItemIdentifier(topicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence", new Topic[0]);
+			n.createVariant("Variant", topicMap
+					.createTopicBySubjectIdentifier(topicMap
+							.createLocator("http://psi.example.org/theme")));
+			topic.createOccurrence(topicMap
+					.createTopicByItemIdentifier(topicMap
+							.createLocator("http://psi.example.org/occ-type")),
+					"Occurrence", new Topic[0]);
 
 			assertEquals(0, topic.getTypes().size());
 
@@ -461,17 +494,24 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 			assertEquals(6, topicMap.getTopics().size());
 
-			ITopic t = (ITopic) otherTopicMap.createTopicBySubjectIdentifier(si);
+			ITopic t = (ITopic) otherTopicMap
+					.createTopicBySubjectIdentifier(si);
 			n = t.createName("Name", new Topic[0]);
-			n.createVariant("Variant", otherTopicMap.createTopicBySubjectIdentifier(otherTopicMap.createLocator("http://psi.example.org/theme")));
-			t.createOccurrence(otherTopicMap.createTopicByItemIdentifier(otherTopicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence",
-					new Topic[0]);
+			n.createVariant("Variant", otherTopicMap
+					.createTopicBySubjectIdentifier(otherTopicMap
+							.createLocator("http://psi.example.org/theme")));
+			t.createOccurrence(otherTopicMap
+					.createTopicByItemIdentifier(otherTopicMap
+							.createLocator("http://psi.example.org/occ-type")),
+					"Occurrence", new Topic[0]);
 			t.addType(otherTopicMap.createTopic());
 
-			association = (IAssociation) otherTopicMap.createAssociation(otherTopicMap.createTopic(), new Topic[0]);
+			association = (IAssociation) otherTopicMap.createAssociation(
+					otherTopicMap.createTopic(), new Topic[0]);
 			association.createRole(otherTopicMap.createTopic(), t);
 
-			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory
+					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
@@ -479,12 +519,14 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 			topicMap.mergeIn(otherTopicMap);
 
-			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory
+					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
 			}
-			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory
+					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(12, topicMap.getTopics().size());
 			} else {
 				assertEquals(9, topicMap.getTopics().size());
@@ -493,10 +535,12 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			assertEquals(1, t.getNames().size());
 			assertEquals(1, topic.getNames().size());
 			assertEquals(1, t.getNames().iterator().next().getVariants().size());
-			assertEquals(1, topic.getNames().iterator().next().getVariants().size());
+			assertEquals(1, topic.getNames().iterator().next().getVariants()
+					.size());
 			assertEquals(1, t.getOccurrences().size());
 			assertEquals(1, topic.getOccurrences().size());
-			if (factory.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory
+					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(2, t.getAssociationsPlayed().size());
 				assertEquals(3, topic.getAssociationsPlayed().size());
 				assertEquals(2, t.getRolesPlayed().size());
@@ -536,26 +580,90 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertTrue(scope.containsTheme(theme4));
 
 	}
-	
-	public void testClear() {
-		try {
-			topicMap.getStore().enableRevisionManagement(false);
-			if(topicMap.getStore().isRevisionManagementSupported()){
-				topicMap.getStore().enableRevisionManagement(false);
-			}
-			readTopicMap("toytm.xtm");	
-			if(topicMap.getStore().isRevisionManagementSupported()){
-				IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
-				index.open();
-				assertNull(index.getFirstRevision());
-			}		
-			topicMap.clear();
-			assertEquals(0, topicMap.getAssociations().size());
-			assertEquals(0, topicMap.getTopics().size());			
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-		
-	}
 
+	public void testClear() {
+		LiteralIndex li = topicMap.getIndex(LiteralIndex.class);
+		if (!li.isOpen()) {
+			li.open();
+		}
+
+		// adding some constructs to the topic map
+		topicMap.setReifier(topicMap.createTopic());
+		assertNotNull(topicMap.getReifier());
+
+		topicMap.addItemIdentifier(topicMap
+				.createLocator("http://tmapi.org/test/topicmap"));
+		assertEquals(1, topicMap.getItemIdentifiers().size());
+
+		// create topic with name, variant and occurrence
+		Topic t = topicMap.createTopic();
+		assertNotNull(t);
+
+		Name n = t.createName("Test", topicMap.createTopic());
+		assertNotNull(n);
+
+		Variant v = n.createVariant("VariantName", topicMap.createTopic());
+		assertNotNull(v);
+
+		Occurrence occ = t.createOccurrence(topicMap.createTopic(),
+				"TestOccurrence");
+		assertNotNull(occ);
+
+		Association assoc = topicMap.createAssociation(topicMap.createTopic());
+		assertNotNull(assoc);
+
+		Role r = assoc.createRole(topicMap.createTopic(),
+				topicMap.createTopic());
+		assertNotNull(r);
+
+		// checking the literal index
+		if (!li.isAutoUpdated()) {
+			li.reindex();
+		}
+		assertEquals(1, li.getNames("Test").size());
+		assertEquals(n, li.getNames("Test").iterator().next());
+		assertEquals(1, li.getVariants("VariantName").size());
+		assertEquals(v, li.getVariants("VariantName").iterator().next());
+		assertEquals(1, li.getOccurrences("TestOccurrence").size());
+		assertEquals(occ, li.getOccurrences("TestOccurrence").iterator().next());
+
+		if (topicMap.getStore().isRevisionManagementSupported()) {
+			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+			if (!index.isOpen()) {
+				index.open();
+			}
+			assertNotNull(index.getFirstRevision());
+		}
+
+		// clear the topic map
+		topicMap.clear();
+
+		// check topic map
+
+		assertNotNull(topicMapSystem.getTopicMap(topicMap.getLocator()));
+
+		assertEquals(0, topicMap.getAssociations().size());
+		assertEquals(0, topicMap.getTopics().size());
+		assertEquals(0, topicMap.getItemIdentifiers().size());
+		assertNull(topicMap.getReifier());
+		assertEquals("http://psi.majortom.test", topicMap.getLocator()
+				.getReference());
+
+		// check index
+		if (!li.isAutoUpdated()) {
+			li.reindex();
+		}
+		assertEquals(0, li.getNames("Test").size());
+		assertEquals(0, li.getVariants("VariantName").size());
+		assertEquals(0, li.getOccurrences("TestOccurrence").size());
+
+		if (topicMap.getStore().isRevisionManagementSupported()) {
+			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+			if (!index.isOpen()) {
+				index.open();
+			}
+			assertNull(index.getFirstRevision());
+		}
+
+	}
 }

@@ -41,6 +41,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * 
  */
 public abstract class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
+		
 	/**
 	 * constructor
 	 * 
@@ -390,5 +391,7 @@ public abstract class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic 
 	public void removeType(Topic arg0) {
 		throw new UnsupportedOperationException("Construct is read only!");
 	}
+	
+	
 
 }

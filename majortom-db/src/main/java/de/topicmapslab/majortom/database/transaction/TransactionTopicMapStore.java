@@ -2,6 +2,7 @@ package de.topicmapslab.majortom.database.transaction;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,9 @@ import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
+import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
+import de.topicmapslab.majortom.comparator.NameByValueComparator;
+import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.database.store.JdbcIdentity;
@@ -2259,7 +2263,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		variants.retainAll(getScopeStore().getScoped(scope));
 		return variants;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2274,6 +2278,111 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	protected String doReadMetaData(IRevision revision, String key)
 			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
+	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String doReadBestLabel(ITopic topic)
+			throws TopicMapStoreException {
+		/*
+		 * get all names of the topic
+		 */
+		Set<IName> names = getCharacteristicsStore().getNames(topic);
+		if (!names.isEmpty()) {
+			return readBestName(topic, names);
+		}
+		return readBestIdentifier(topic);
+	}
+	
+	/**
+	 * Internal best label method only check name attributes.
+	 * @param topic the topic
+	 * @param set the non-empty set of names
+	 * @return the best name
+	 * @throws TopicMapStoreException thrown if operation fails
+	 */
+	private String readBestName(ITopic topic, Set<IName> names) throws TopicMapStoreException{
+		/*
+		 * check if default name type exists
+		 */
+		if (existsTmdmDefaultNameType()) {
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(getTypedStore().getTypedNames(
+					getTmdmDefaultNameType()));
+			/*
+			 * return the default name
+			 */
+			if (tmp.size() == 1) {
+				return tmp.iterator().next().getValue();
+			}
+			/*
+			 * more than one default name
+			 */
+			else if (tmp.size() > 1) {
+				names = tmp;
+			}
+		}
+		/*
+		 * filter by scoping themes
+		 */
+		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
+		scopes.add(getScopeStore().getEmptyScope());
+		if ( !scopes.isEmpty()){
+			/*
+			 * sort scopes by number of themes
+			 */
+			Collections.sort(scopes, ScopeComparator.getInstance(true));
+			for ( IScope s : scopes){
+				/*
+				 * get names of the scope and topic
+				 */
+				Set<IName> tmp = HashUtil.getHashSet(names);
+				tmp.retainAll(getScopeStore().getScopedNames(s));
+				/*
+				 * only one name of the current scope
+				 */
+				if (tmp.size() == 1) {
+					return tmp.iterator().next().getValue();
+				}
+				/*
+				 * more than one name
+				 */
+				else if ( tmp.size() > 1 ){
+					names = tmp;
+					break;
+				}
+			}
+		}
+		/*
+		 * sort by value
+		 */
+		List<IName> list = HashUtil.getList(names);
+		Collections.sort(list, NameByValueComparator.getInstance(true));
+		return list.get(0).getValue();
+	}
+	
+	/**
+	 * Internal best label method only check identifier attribute.
+	 * @param topic the topic	
+	 * @return the best identifier
+	 * @throws TopicMapStoreException thrown if operation fails
+	 */
+	private String readBestIdentifier(ITopic topic) throws TopicMapStoreException{
+		Set<ILocator> set = getIdentityStore().getSubjectIdentifiers(topic);
+		if ( set.isEmpty()){
+			set = getIdentityStore().getSubjectLocators(topic);
+			if ( set.isEmpty()){
+				set = getIdentityStore().getItemIdentifiers(topic);			
+				if ( set.isEmpty()){
+					return topic.getId();
+				}
+			}
+		}
+		List<ILocator> list = HashUtil.getList(set);
+		Collections.sort(list,LocatorByReferenceComparator.getInstance(true));
+		return list.iterator().next().getReference();
 	}
 
 	/**
@@ -3271,7 +3380,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(
 				TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);

@@ -43,6 +43,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	private boolean procedureTransitiveSupertypes = false;
 	private boolean procedureTransitiveSupertypesArray = false;
 	private boolean procedureTransitiveTypes = false;
+	private boolean procedureBestLabel = false;
 	private boolean procedureTypesAndSubtypes = false;
 	private boolean procedureTypesAndSubtypesArray = false;
 
@@ -145,6 +146,13 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 			}
 		}
 		rs.close();
+		
+		/*
+		 * Check if procedure 'best_label' exists
+		 */
+		rs = getDatabaseMetaData().getProcedures(null, null, "best_label");
+		procedureBestLabel = rs.next();
+		rs.close();
 	}
 
 	/**
@@ -238,6 +246,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 */
 	protected boolean existsProcedureTypesAndSubtypesArray() {
 		return procedureTypesAndSubtypesArray;
+	}
+	
+	/**
+	 * Method checks if the procedure 'best_label' exists.
+	 * 
+	 * @return <code>true</code> if the procedure exists, <code>false</code>
+	 *         otherwise.
+	 */
+	protected boolean existsProcedureBestLabel() {
+		return procedureBestLabel;
 	}
 
 }

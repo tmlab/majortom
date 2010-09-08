@@ -176,7 +176,8 @@ CREATE TABLE history (
     subjectidentifiers character varying[],
     subjectlocators character varying[],
     datatype character varying,
-    roles bigint[]
+    roles bigint[],    
+  	bestlabel character varying(256)
 );
 
 

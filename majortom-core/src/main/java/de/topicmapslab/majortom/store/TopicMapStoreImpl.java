@@ -309,15 +309,13 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 				/*
 				 * createOccurrence(ITopic, String, ILocator, ITopic[])
 				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
-						&& params[3] instanceof Topic[]) {
+				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator && params[3] instanceof Topic[]) {
 					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], convert((Topic[]) params[3]));
 				}
 				/*
 				 * createOccurrence(ITopic,String, ILocator, Collection<?>)
 				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
-						&& params[3] instanceof Collection<?>) {
+				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator && params[3] instanceof Collection<?>) {
 					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], (Collection<ITopic>) params[3]);
 				}
 			}
@@ -581,8 +579,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new association role item.
@@ -867,9 +864,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @return the topic to merge in the current one, <code>null</code> if no
 	 *         topic has to be merged
 	 * @throws IdentityConstraintException
-	 *             thrown if merge candidate detected and automatic merging is disabled or the constructs are not topics
+	 *             thrown if merge candidate detected and automatic merging is
+	 *             disabled or the constructs are not topics
 	 */
-	protected ITopic checkMergeConditionOfItemIdentifier(IConstruct c, ILocator identifier)  {
+	protected ITopic checkMergeConditionOfItemIdentifier(IConstruct c, ILocator identifier) {
 		/*
 		 * check if there is construct with the identifier as item-identifier
 		 */
@@ -1603,6 +1601,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
+		case BEST_LABEL: {
+			if (context instanceof ITopic && params.length == 0) {
+				return doReadBestLabel((ITopic) context);
+			}
+			throw new OperationSignatureException(context, paramType, params);
+		}
 		}
 		throw new OperationSignatureException(context, paramType, params);
 	}
@@ -2126,7 +2130,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException;
+	protected abstract Collection<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException;
 
 	/**
 	 * Read the topic identified by the given subject-identifier.
@@ -2294,6 +2298,49 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract String doReadMetaData(IRevision revision, final String key) throws TopicMapStoreException;
+
+	/**
+	 * Returns the best label for the current topic instance. The best label
+	 * will be identified satisfying the following rules in the given order.
+	 * <p>
+	 * 1. Names of the default name type are weighted higher than names of other
+	 * types.
+	 * </p>
+	 * <p>
+	 * 2. Names with the unconstrained scope are weighted higher than other
+	 * scoped names.
+	 * </p>
+	 * <p>
+	 * 3. Names with a smaller number of scoping themes are weighted higher than
+	 * others.
+	 * </p>
+	 * <p>
+	 * 4. Names with a lexicographically smaller value are weighted higher than
+	 * others.
+	 * </p>
+	 * <p>
+	 * 5. If no names are existing, the subject-identifier with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 6. If no subject-identifiers are existing, the subject-locators with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 7. If no subject-locators are existing, the item-identifier with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 8. At least the ID of the topic will be returned.
+	 * </p>
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 * @since 1.1.2
+	 */
+	protected abstract String doReadBestLabel(ITopic topic) throws TopicMapStoreException;
 
 	// ********************
 	// * REMOVE OPERATION *
@@ -2467,7 +2514,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		} else {
 			throw new TopicMapStoreException("Unknown construct type to remove '" + context.getClass() + "'.");
 		}
-		((ConstructImpl)context).setRemoved(true);
+		((ConstructImpl) context).setRemoved(true);
 	}
 
 	/**
@@ -2722,7 +2769,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		connected = true;
 
 		Object maximum = topicMapSystem.getProperty(TopicMapStoreProperty.THREADPOOL_MAXIMUM);
-		int max = Runtime.getRuntime().availableProcessors()+1;
+		int max = Runtime.getRuntime().availableProcessors() + 1;
 		if (maximum != null) {
 			try {
 				max = Integer.parseInt(maximum.toString());
@@ -2741,7 +2788,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		if (!isConnected()) {
 			return;
 		}
-		((TopicMapSystemImpl)topicMapSystem).removeTopicMap(((ITopicMap) topicMap).getLocator());
+		((TopicMapSystemImpl) topicMapSystem).removeTopicMap(((ITopicMap) topicMap).getLocator());
 		connected = false;
 		this.factory = null;
 	}
@@ -2804,7 +2851,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	public boolean isReadOnly() {
 		return this.featureReadOnlyStore;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2818,12 +2865,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	public boolean isRevisionManagementEnabled() {
 		return isRevisionManagementSupported() && this.revisionManagementEnabled;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
-		if ( !isRevisionManagementSupported() && enabled){
+		if (!isRevisionManagementSupported() && enabled) {
 			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
 		}
 		this.revisionManagementEnabled = enabled;
@@ -2914,12 +2961,12 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			listener.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 	}
-	
+
 	/**
 	 * @return the listeners
 	 */
 	public Set<ITopicMapListener> getListeners() {
-		if ( listeners == null ){
+		if (listeners == null) {
 			return Collections.emptySet();
 		}
 		return listeners;
@@ -3158,10 +3205,28 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	}
 
 	/**
+	 * Returns the topic type representing the default name type of the topic
+	 * map data model.
+	 * 
+	 * @return the topic type
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 * @since 1.1.2
+	 */
+	public ITopic getTmdmDefaultNameType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
+
+	/**
 	 * Check if the topic type representing the type-instance association type
 	 * of the topic map data model exists.
 	 * 
-	 *@return <code>true</code> if this topic type exists, <code>false</code>
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
@@ -3231,13 +3296,28 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * Check if the topic type representing the subtype association role type of
 	 * the topic map data model exists.
 	 * 
-	 *@return <code>true</code> if this topic type exists, <code>false</code>
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
 	 *         otherwise
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
+	}
+
+	/**
+	 * Check if the topic type representing the default name type of the topic
+	 * map data model exists.
+	 * 
+	 * @return <code>true</code> if this topic type exists, <code>false</code>
+	 *         otherwise
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 * @since 1.1.2
+	 */
+	public boolean existsTmdmDefaultNameType() throws TopicMapStoreException {
+		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -3296,7 +3376,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public void clear() {
 		doModifyReifier(getTopicMap(), null);
-		for ( ILocator ii : doReadItemIdentifiers(getTopicMap())){
+		for (ILocator ii : doReadItemIdentifiers(getTopicMap())) {
 			doRemoveItemIdentifier(getTopicMap(), ii);
 		}
 		for (ITopic t : doReadTopics(getTopicMap())) {
@@ -3307,9 +3387,9 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 					// NOTHING TO DO HERE
 				}
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

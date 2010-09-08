@@ -74,11 +74,11 @@ public class AssociationComparator implements Comparator<Association> {
 	 * </p>
 	 * <p>
 	 * Return <code>-1</code> if the identity of the first type is <i>higher</i>
-	 * or the first association has more roles
+	 * or the second association has more roles
 	 * </p>
 	 * <p>
 	 * Return <code>1</code> if the identity of the second type is <i>higher</i>
-	 * or the second association has more roles
+	 * or the first association has more roles
 	 * </p>
 	 */
 	public int compare(Association o1, Association o2) {

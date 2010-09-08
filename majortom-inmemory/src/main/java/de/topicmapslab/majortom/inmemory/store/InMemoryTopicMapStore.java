@@ -3,6 +3,7 @@ package de.topicmapslab.majortom.inmemory.store;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -18,6 +19,9 @@ import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
+import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
+import de.topicmapslab.majortom.comparator.NameByValueComparator;
+import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
 import de.topicmapslab.majortom.inmemory.index.InMemoryIdentityIndex;
@@ -2108,6 +2112,110 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	protected String doReadBestLabel(ITopic topic)
+			throws TopicMapStoreException {
+		/*
+		 * get all names of the topic
+		 */
+		Set<IName> names = getCharacteristicsStore().getNames(topic);
+		if (!names.isEmpty()) {
+			return readBestName(topic, names);
+		}
+		return readBestIdentifier(topic);
+	}
+	
+	/**
+	 * Internal best label method only check name attributes.
+	 * @param topic the topic
+	 * @param set the non-empty set of names
+	 * @return the best name
+	 * @throws TopicMapStoreException thrown if operation fails
+	 */
+	private String readBestName(ITopic topic, Set<IName> names) throws TopicMapStoreException{
+		/*
+		 * check if default name type exists
+		 */
+		if (existsTmdmDefaultNameType()) {
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(getTypedStore().getTypedNames(
+					getTmdmDefaultNameType()));
+			/*
+			 * return the default name
+			 */
+			if (tmp.size() == 1) {
+				return tmp.iterator().next().getValue();
+			}
+			/*
+			 * more than one default name
+			 */
+			else if (tmp.size() > 1) {
+				names = tmp;
+			}
+		}
+		/*
+		 * filter by scoping themes
+		 */
+		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
+		scopes.add(getScopeStore().getEmptyScope());
+		if ( !scopes.isEmpty()){
+			/*
+			 * sort scopes by number of themes
+			 */
+			Collections.sort(scopes, ScopeComparator.getInstance(true));
+			for ( IScope s : scopes){
+				/*
+				 * get names of the scope and topic
+				 */
+				Set<IName> tmp = HashUtil.getHashSet(names);
+				tmp.retainAll(getScopeStore().getScopedNames(s));
+				/*
+				 * only one name of the current scope
+				 */
+				if (tmp.size() == 1) {
+					return tmp.iterator().next().getValue();
+				}
+				/*
+				 * more than one name
+				 */
+				else if ( tmp.size() > 1 ){
+					names = tmp;
+					break;
+				}
+			}
+		}
+		/*
+		 * sort by value
+		 */
+		List<IName> list = HashUtil.getList(names);
+		Collections.sort(list, NameByValueComparator.getInstance(true));
+		return list.get(0).getValue();
+	}
+	
+	/**
+	 * Internal best label method only check identifier attribute.
+	 * @param topic the topic	
+	 * @return the best identifier
+	 * @throws TopicMapStoreException thrown if operation fails
+	 */
+	private String readBestIdentifier(ITopic topic) throws TopicMapStoreException{
+		Set<ILocator> set = getIdentityStore().getSubjectIdentifiers(topic);
+		if ( set.isEmpty()){
+			set = getIdentityStore().getSubjectLocators(topic);
+			if ( set.isEmpty()){
+				set = getIdentityStore().getItemIdentifiers(topic);			
+				if ( set.isEmpty()){
+					return topic.getId();
+				}
+			}
+		}
+		List<ILocator> list = HashUtil.getList(set);
+		Collections.sort(list,LocatorByReferenceComparator.getInstance(true));
+		return list.iterator().next().getReference();
+	}
+
+	/**
 	 * Internal method to remove an association
 	 * 
 	 * @param association
@@ -2680,7 +2788,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * ignore TMDM type-instance and supertype-subtype association
 		 */
 		if (existsTmdmSupertypeSubtypeAssociationType()
-				|| existsTmdmTypeInstanceAssociationType()) {			
+				|| existsTmdmTypeInstanceAssociationType()) {
 			for (IAssociationRole role : roles) {
 				if (existsTmdmInstanceRoleType()
 						&& role.getType().equals(getTmdmInstanceRoleType())) {
@@ -2721,7 +2829,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeItemIdentifier(IConstruct c, ILocator itemIdentifier,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeItemIdentifer(c, itemIdentifier);		
+		getIdentityStore().removeItemIdentifer(c, itemIdentifier);
 		/*
 		 * store revision
 		 */
@@ -2758,7 +2866,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * get new scope object
 			 */
-			Collection<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
+			Collection<ITopic> themes = HashUtil.getHashSet(oldScope
+					.getThemes());
 			themes.remove(theme);
 			IScope newScope = getScopeStore().getScope(themes);
 			/*
@@ -2792,7 +2901,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeSubjectIdentifier(ITopic t, ILocator subjectIdentifier,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);		
+		getIdentityStore().removeSubjectIdentifier(t, subjectIdentifier);
 		/*
 		 * store revision
 		 */
@@ -2827,7 +2936,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 */
 	void removeSubjectLocator(ITopic t, ILocator subjectLocator,
 			IRevision revision) throws TopicMapStoreException {
-		getIdentityStore().removeSubjectLocator(t, subjectLocator);		
+		getIdentityStore().removeSubjectLocator(t, subjectLocator);
 		/*
 		 * store revision
 		 */
@@ -2851,7 +2960,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO move association handling to topicTypeStore
+	// TODO move association handling to topicTypeStore
 	protected void doRemoveSupertype(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getSupertypes(t).contains(type)) {
@@ -2876,7 +2985,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO move association handling to topicTypeStore
+	// TODO move association handling to topicTypeStore
 	protected void doRemoveType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getTypes(t).contains(type)) {
@@ -2885,7 +2994,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			if (recognizingTypeInstanceAssociation()
 					&& existsTmdmTypeInstanceAssociationType()) {
 				removeTypeInstanceAssociation(t, type, revision);
-			}			
+			}
 			/*
 			 * store revision
 			 */
@@ -2893,7 +3002,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 					type);
 			/*
 			 * notify listener
-			 */			
+			 */
 			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
 		}
 	}
@@ -3214,6 +3323,19 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		}
 		return topic;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITopic getTmdmDefaultNameType() throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
+		if (topic == null) {
+			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
+		}
+		return topic;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -3265,9 +3387,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
+	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
 		ILocator loc = getIdentityStore().createLocator(
 				TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		return getIdentityStore().containsSubjectIdentifier(loc);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean existsTmdmDefaultNameType() throws TopicMapStoreException {
+		ILocator loc = getIdentityStore().createLocator(
+				TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 

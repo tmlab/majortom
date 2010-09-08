@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Started on 2010-08-17 12:11:24
+-- Started on 2010-09-08 08:58:34
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -11,11 +11,119 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET escape_string_warning = off;
 
+--
+-- TOC entry 401 (class 2612 OID 16386)
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
+--
+
+CREATE PROCEDURAL LANGUAGE plpgsql;
+
+
+ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
+
 SET search_path = public, pg_catalog;
 
 --
+-- TOC entry 49 (class 1255 OID 6732807)
+-- Dependencies: 6 401
+-- Name: best_label(bigint, bigint); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION best_label("topicMapId" bigint, "topicId" bigint) RETURNS character varying
+    LANGUAGE plpgsql
+    AS $_$DECLARE 
+	rec RECORD;
+	rec2 RECORD;
+	label character varying;
+	ids bigint[];		
+	typeId bigint;
+BEGIN
+
+	/*check if topic has more than one name*/
+	FOR rec IN SELECT id FROM names WHERE id_parent = $2 LOOP
+		ids := ids || rec.id;
+	END LOOP;	
+	/*topic has only one name*/
+	IF array_upper(ids,1) = 1 THEN	
+		SELECT value FROM names WHERE id IN ( SELECT unnest(ids)) INTO rec;
+		RETURN rec.value;
+	/* topic has more than one name */
+	ELSEIF array_upper(ids,1) > 1 THEN		
+		/*get if default name type*/
+		SELECT t.id FROM topics AS t, locators AS l, rel_subject_identifiers AS r WHERE l.reference = 'http://psi.topicmaps.org/iso13250/model/topic-name' AND r.id_locator = l.id AND r.id_topic = t.id AND t.id_topicmap = $1 INTO rec;
+		/*TMDM default name type exists */
+		IF rec IS NOT NULL THEN
+			typeId = rec.id;
+			/* get names of the default name type */
+			SELECT ARRAY(SELECT id FROM names WHERE id_type = typeId AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec;
+			/* only one default default name */			
+			IF array_upper(rec.a,1) = 1 THEN
+				/* get name values */
+				SELECT value FROM names WHERE id IN ( SELECT unnest(rec.a)) INTO rec;
+				RETURN rec.value;
+			/*more than one default name */
+			ELSEIF array_upper(rec.a,1) > 1 THEN
+				ids := rec.a;			
+			END IF;				
+		END IF;
+		/* get empty scope*/
+		SELECT ARRAY ( SELECT id FROM names WHERE id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a  INTO rec;
+		/* there is only one name with unconstrained scope*/			
+		IF array_upper(rec.a,1) = 1 THEN
+			/* get name values */
+			SELECT value FROM names WHERE id IN ( SELECT unnest(rec.a)) INTO rec;
+			RETURN rec.value;
+		/* there are more than one name with unconstrained scope*/
+		ELSEIF array_upper(rec.a,1) > 1 THEN
+			/* get name values */
+			SELECT value FROM names WHERE id IN ( SELECT unnest(rec.a)) ORDER BY value OFFSET 0 LIMIT 1 INTO rec2;
+			RETURN rec2.value;
+		END IF;
+		/* No name item with unconstrained scope -> order name items by number of themes */
+		FOR rec IN SELECT n.id_scope, COUNT(id_theme) AS c FROM names AS n, rel_themes AS r WHERE r.id_scope = n.id_scope AND id_parent = $2 GROUP BY n.id_scope ORDER BY c LOOP
+			/*Get scoped names*/
+			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec2;
+			/* there is only one scope name*/			
+			IF array_upper(rec2.a,1) = 1 THEN
+				/* get name values */
+				SELECT value FROM names WHERE id IN ( SELECT unnest(rec2.a)) INTO rec2;
+				RETURN rec2.value;
+			/* there are more than one scope name*/
+			ELSEIF array_upper(rec2.a,1) > 1 THEN
+				/* get name values */
+				SELECT value FROM names WHERE id IN ( SELECT unnest(rec2.a)) ORDER BY value OFFSET 0 LIMIT 1 INTO rec2;
+				RETURN rec2.value;
+			END IF;
+		/*END LOOP of scoped names*/
+		END LOOP;
+	/* topic has no names */
+	ELSE
+		/*check subject-identifier*/
+		SELECT reference FROM locators, rel_subject_identifiers WHERE id_topic = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
+		IF rec IS NOT NULL THEN
+			return rec.reference;
+		END IF;
+		/*check subject-locators*/
+		SELECT reference FROM locators, rel_subject_locators WHERE id_topic = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
+		IF rec IS NOT NULL THEN
+			return rec.reference;
+		END IF;
+		/*check item-identifiers*/
+		SELECT reference FROM locators, rel_item_identifiers WHERE id_construct = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
+		IF rec IS NOT NULL THEN
+			return rec.reference;
+		END IF;		
+		/*return the id*/		
+		RETURN $2;
+	END IF;
+END;$_$;
+
+
+ALTER FUNCTION public.best_label("topicMapId" bigint, "topicId" bigint) OWNER TO postgres;
+
+--
 -- TOC entry 19 (class 1255 OID 4801024)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: cast_as_timestamp(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -39,7 +147,7 @@ ALTER FUNCTION public.cast_as_timestamp(value character varying) OWNER TO postgr
 
 --
 -- TOC entry 20 (class 1255 OID 4801025)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: detect_duplicate_associations(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -91,7 +199,7 @@ ALTER FUNCTION public.detect_duplicate_associations() OWNER TO postgres;
 
 --
 -- TOC entry 21 (class 1255 OID 4801026)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: detect_duplicate_names(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -131,7 +239,7 @@ ALTER FUNCTION public.detect_duplicate_names() OWNER TO postgres;
 
 --
 -- TOC entry 22 (class 1255 OID 4801027)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: detect_duplicate_occurrences(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -169,7 +277,7 @@ ALTER FUNCTION public.detect_duplicate_occurrences() OWNER TO postgres;
 
 --
 -- TOC entry 23 (class 1255 OID 4801028)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: detect_duplicate_roles(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -207,7 +315,7 @@ ALTER FUNCTION public.detect_duplicate_roles() OWNER TO postgres;
 
 --
 -- TOC entry 24 (class 1255 OID 4801029)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: detect_duplicate_variants(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -245,7 +353,7 @@ ALTER FUNCTION public.detect_duplicate_variants() OWNER TO postgres;
 
 --
 -- TOC entry 25 (class 1255 OID 4801030)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: history_ako(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -273,7 +381,7 @@ ALTER FUNCTION public.history_ako() OWNER TO postgres;
 
 --
 -- TOC entry 26 (class 1255 OID 4801031)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: history_associations(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -310,7 +418,7 @@ ALTER FUNCTION public.history_associations() OWNER TO postgres;
 
 --
 -- TOC entry 27 (class 1255 OID 4801032)
--- Dependencies: 400 6
+-- Dependencies: 401 6
 -- Name: history_isa(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -338,7 +446,7 @@ ALTER FUNCTION public.history_isa() OWNER TO postgres;
 
 --
 -- TOC entry 28 (class 1255 OID 4801033)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: history_item_identifiers(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -366,7 +474,7 @@ ALTER FUNCTION public.history_item_identifiers() OWNER TO postgres;
 
 --
 -- TOC entry 29 (class 1255 OID 4801034)
--- Dependencies: 400 6
+-- Dependencies: 401 6
 -- Name: history_names(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -405,7 +513,7 @@ ALTER FUNCTION public.history_names() OWNER TO postgres;
 
 --
 -- TOC entry 30 (class 1255 OID 4801035)
--- Dependencies: 400 6
+-- Dependencies: 401 6
 -- Name: history_occurrences(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -445,7 +553,7 @@ ALTER FUNCTION public.history_occurrences() OWNER TO postgres;
 
 --
 -- TOC entry 31 (class 1255 OID 4801036)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: history_roles(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -482,7 +590,7 @@ ALTER FUNCTION public.history_roles() OWNER TO postgres;
 
 --
 -- TOC entry 32 (class 1255 OID 4801037)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: history_subject_identifiers(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -510,7 +618,7 @@ ALTER FUNCTION public.history_subject_identifiers() OWNER TO postgres;
 
 --
 -- TOC entry 33 (class 1255 OID 4801038)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: history_subject_locators(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -538,7 +646,7 @@ ALTER FUNCTION public.history_subject_locators() OWNER TO postgres;
 
 --
 -- TOC entry 34 (class 1255 OID 4801039)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: history_topics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -566,7 +674,7 @@ ALTER FUNCTION public.history_topics() OWNER TO postgres;
 
 --
 -- TOC entry 35 (class 1255 OID 4801040)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: history_variants(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -642,7 +750,7 @@ ALTER FUNCTION public.merge_topics("topicId" bigint, "otherId" bigint) OWNER TO 
 
 --
 -- TOC entry 38 (class 1255 OID 4801042)
--- Dependencies: 400 6
+-- Dependencies: 401 6
 -- Name: move_role_reifiers(bigint, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -675,7 +783,7 @@ ALTER FUNCTION public.move_role_reifiers(target bigint, source bigint) OWNER TO 
 
 --
 -- TOC entry 39 (class 1255 OID 4801043)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: scope_by_themes(bigint[], boolean, boolean, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -717,7 +825,7 @@ ALTER FUNCTION public.scope_by_themes("themeIds" bigint[], "matchAll" boolean, "
 
 --
 -- TOC entry 40 (class 1255 OID 4801044)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: topics_by_type_transitive(bigint[], boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -757,7 +865,7 @@ ALTER FUNCTION public.topics_by_type_transitive("typeIds" bigint[], "matchAll" b
 
 --
 -- TOC entry 41 (class 1255 OID 4801045)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: transitive_subtypes(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -786,7 +894,7 @@ ALTER FUNCTION public.transitive_subtypes("typeId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 42 (class 1255 OID 4801046)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: transitive_subtypes(bigint, bigint[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -818,7 +926,7 @@ ALTER FUNCTION public.transitive_subtypes("topicId" bigint, "knownTypes" bigint[
 
 --
 -- TOC entry 43 (class 1255 OID 4801047)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: transitive_subtypes(bigint[], boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -871,7 +979,7 @@ ALTER FUNCTION public.transitive_subtypes("typeIds" bigint[], "matchAll" boolean
 
 --
 -- TOC entry 44 (class 1255 OID 4801048)
--- Dependencies: 400 6
+-- Dependencies: 6 401
 -- Name: transitive_supertypes(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -901,7 +1009,7 @@ ALTER FUNCTION public.transitive_supertypes("typeId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 36 (class 1255 OID 4801049)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: transitive_supertypes(bigint, bigint[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -933,7 +1041,7 @@ ALTER FUNCTION public.transitive_supertypes("typeId" bigint, "knownTypes" bigint
 
 --
 -- TOC entry 45 (class 1255 OID 4801050)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: transitive_supertypes(bigint[], boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -986,7 +1094,7 @@ ALTER FUNCTION public.transitive_supertypes("typeIds" bigint[], "matchAll" boole
 
 --
 -- TOC entry 46 (class 1255 OID 4801051)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: transitive_types(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1013,7 +1121,7 @@ ALTER FUNCTION public.transitive_types("topicId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 47 (class 1255 OID 4801052)
--- Dependencies: 6 400
+-- Dependencies: 401 6
 -- Name: types_and_subtypes(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1036,7 +1144,7 @@ ALTER FUNCTION public.types_and_subtypes("typeId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 48 (class 1255 OID 4801053)
--- Dependencies: 6 400
+-- Dependencies: 6 401
 -- Name: types_and_subtypes(bigint[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1064,7 +1172,7 @@ ALTER FUNCTION public.types_and_subtypes("typeIds" bigint[]) OWNER TO postgres;
 SET search_path = pg_catalog;
 
 --
--- TOC entry 1838 (class 2605 OID 4801054)
+-- TOC entry 1839 (class 2605 OID 4801054)
 -- Dependencies: 19 19
 -- Name: CAST (character varying AS timestamp with time zone); Type: CAST; Schema: pg_catalog; Owner: 
 --
@@ -1075,7 +1183,7 @@ CREATE CAST (character varying AS timestamp with time zone) WITH FUNCTION public
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 1587 (class 1259 OID 4801055)
+-- TOC entry 1588 (class 1259 OID 4801055)
 -- Dependencies: 6
 -- Name: seq_construct_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -1095,8 +1203,8 @@ SET default_tablespace = '';
 SET default_with_oids = true;
 
 --
--- TOC entry 1588 (class 1259 OID 4801057)
--- Dependencies: 1897 6
+-- TOC entry 1589 (class 1259 OID 4801057)
+-- Dependencies: 1898 6
 -- Name: constructs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1110,8 +1218,8 @@ CREATE TABLE constructs (
 ALTER TABLE public.constructs OWNER TO postgres;
 
 --
--- TOC entry 1589 (class 1259 OID 4801061)
--- Dependencies: 1898 6 1588
+-- TOC entry 1590 (class 1259 OID 4801061)
+-- Dependencies: 1899 6 1589
 -- Name: reifiables; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1124,8 +1232,8 @@ INHERITS (constructs);
 ALTER TABLE public.reifiables OWNER TO postgres;
 
 --
--- TOC entry 1590 (class 1259 OID 4801065)
--- Dependencies: 1899 1900 1589 6
+-- TOC entry 1591 (class 1259 OID 4801065)
+-- Dependencies: 1900 1901 6 1590
 -- Name: scopeables; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1138,8 +1246,8 @@ INHERITS (reifiables);
 ALTER TABLE public.scopeables OWNER TO postgres;
 
 --
--- TOC entry 1591 (class 1259 OID 4801070)
--- Dependencies: 1901 1588 6
+-- TOC entry 1592 (class 1259 OID 4801070)
+-- Dependencies: 1902 6 1589
 -- Name: typeables; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1152,12 +1260,13 @@ INHERITS (constructs);
 ALTER TABLE public.typeables OWNER TO postgres;
 
 --
--- TOC entry 1592 (class 1259 OID 4801074)
--- Dependencies: 1902 1903 6 1591 1590
+-- TOC entry 1593 (class 1259 OID 4801074)
+-- Dependencies: 1903 1904 1592 6 1591
 -- Name: associations; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE associations (
+    id_type bigint
 )
 INHERITS (scopeables, typeables);
 
@@ -1165,7 +1274,7 @@ INHERITS (scopeables, typeables);
 ALTER TABLE public.associations OWNER TO postgres;
 
 --
--- TOC entry 1593 (class 1259 OID 4801079)
+-- TOC entry 1594 (class 1259 OID 4801079)
 -- Dependencies: 6
 -- Name: seq_changeset_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -1181,8 +1290,8 @@ CREATE SEQUENCE seq_changeset_id
 ALTER TABLE public.seq_changeset_id OWNER TO postgres;
 
 --
--- TOC entry 1594 (class 1259 OID 4801081)
--- Dependencies: 1904 6
+-- TOC entry 1595 (class 1259 OID 4801081)
+-- Dependencies: 1905 6
 -- Name: changesets; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1200,8 +1309,8 @@ CREATE TABLE changesets (
 ALTER TABLE public.changesets OWNER TO postgres;
 
 --
--- TOC entry 1595 (class 1259 OID 4801088)
--- Dependencies: 1905 1588 6
+-- TOC entry 1596 (class 1259 OID 4801088)
+-- Dependencies: 1906 1589 6
 -- Name: literals; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1214,12 +1323,13 @@ INHERITS (constructs);
 ALTER TABLE public.literals OWNER TO postgres;
 
 --
--- TOC entry 1596 (class 1259 OID 4801095)
--- Dependencies: 1906 1907 6 1590 1595
+-- TOC entry 1597 (class 1259 OID 4801095)
+-- Dependencies: 1907 1908 1596 6 1591
 -- Name: datatypeawares; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE datatypeawares (
+    value character varying,
     id_datatype bigint NOT NULL
 )
 INHERITS (scopeables, literals);
@@ -1228,7 +1338,7 @@ INHERITS (scopeables, literals);
 ALTER TABLE public.datatypeawares OWNER TO postgres;
 
 --
--- TOC entry 1597 (class 1259 OID 4801103)
+-- TOC entry 1598 (class 1259 OID 4801103)
 -- Dependencies: 6
 -- Name: history; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1254,14 +1364,15 @@ CREATE TABLE history (
     subjectidentifiers character varying[],
     subjectlocators character varying[],
     datatype character varying,
-    roles bigint[]
+    roles bigint[],
+    bestlabel character varying(256)
 );
 
 
 ALTER TABLE public.history OWNER TO postgres;
 
 --
--- TOC entry 1598 (class 1259 OID 4801109)
+-- TOC entry 1599 (class 1259 OID 4801109)
 -- Dependencies: 6
 -- Name: seq_locator_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -1277,8 +1388,8 @@ CREATE SEQUENCE seq_locator_id
 ALTER TABLE public.seq_locator_id OWNER TO postgres;
 
 --
--- TOC entry 1599 (class 1259 OID 4801111)
--- Dependencies: 1908 6
+-- TOC entry 1600 (class 1259 OID 4801111)
+-- Dependencies: 1909 6
 -- Name: locators; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1291,7 +1402,7 @@ CREATE TABLE locators (
 ALTER TABLE public.locators OWNER TO postgres;
 
 --
--- TOC entry 1600 (class 1259 OID 4801118)
+-- TOC entry 1601 (class 1259 OID 4801118)
 -- Dependencies: 6
 -- Name: metadata; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1306,12 +1417,14 @@ CREATE TABLE metadata (
 ALTER TABLE public.metadata OWNER TO postgres;
 
 --
--- TOC entry 1601 (class 1259 OID 4801124)
--- Dependencies: 1909 1910 1595 1591 1590 6
+-- TOC entry 1602 (class 1259 OID 4801124)
+-- Dependencies: 1910 1911 1596 1591 6 1592
 -- Name: names; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE names (
+    id_type bigint,
+    value character varying
 )
 INHERITS (scopeables, typeables, literals);
 
@@ -1319,12 +1432,13 @@ INHERITS (scopeables, typeables, literals);
 ALTER TABLE public.names OWNER TO postgres;
 
 --
--- TOC entry 1602 (class 1259 OID 4801132)
--- Dependencies: 1911 1912 1591 1596 6
+-- TOC entry 1603 (class 1259 OID 4801132)
+-- Dependencies: 1912 1913 1592 1597 6
 -- Name: occurrences; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE occurrences (
+    id_type bigint
 )
 INHERITS (datatypeawares, typeables);
 
@@ -1332,7 +1446,7 @@ INHERITS (datatypeawares, typeables);
 ALTER TABLE public.occurrences OWNER TO postgres;
 
 --
--- TOC entry 1603 (class 1259 OID 4801140)
+-- TOC entry 1604 (class 1259 OID 4801140)
 -- Dependencies: 6
 -- Name: rel_instance_of; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1346,7 +1460,7 @@ CREATE TABLE rel_instance_of (
 ALTER TABLE public.rel_instance_of OWNER TO postgres;
 
 --
--- TOC entry 1604 (class 1259 OID 4801143)
+-- TOC entry 1605 (class 1259 OID 4801143)
 -- Dependencies: 6
 -- Name: rel_item_identifiers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1360,7 +1474,7 @@ CREATE TABLE rel_item_identifiers (
 ALTER TABLE public.rel_item_identifiers OWNER TO postgres;
 
 --
--- TOC entry 1605 (class 1259 OID 4801146)
+-- TOC entry 1606 (class 1259 OID 4801146)
 -- Dependencies: 6
 -- Name: rel_kind_of; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1374,7 +1488,7 @@ CREATE TABLE rel_kind_of (
 ALTER TABLE public.rel_kind_of OWNER TO postgres;
 
 --
--- TOC entry 1606 (class 1259 OID 4801149)
+-- TOC entry 1607 (class 1259 OID 4801149)
 -- Dependencies: 6
 -- Name: rel_subject_identifiers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1388,7 +1502,7 @@ CREATE TABLE rel_subject_identifiers (
 ALTER TABLE public.rel_subject_identifiers OWNER TO postgres;
 
 --
--- TOC entry 1607 (class 1259 OID 4801152)
+-- TOC entry 1608 (class 1259 OID 4801152)
 -- Dependencies: 6
 -- Name: rel_subject_locators; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1402,7 +1516,7 @@ CREATE TABLE rel_subject_locators (
 ALTER TABLE public.rel_subject_locators OWNER TO postgres;
 
 --
--- TOC entry 1608 (class 1259 OID 4801155)
+-- TOC entry 1609 (class 1259 OID 4801155)
 -- Dependencies: 6
 -- Name: rel_themes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1416,7 +1530,7 @@ CREATE TABLE rel_themes (
 ALTER TABLE public.rel_themes OWNER TO postgres;
 
 --
--- TOC entry 1609 (class 1259 OID 4801158)
+-- TOC entry 1610 (class 1259 OID 4801158)
 -- Dependencies: 6
 -- Name: seq_revision_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -1432,8 +1546,8 @@ CREATE SEQUENCE seq_revision_id
 ALTER TABLE public.seq_revision_id OWNER TO postgres;
 
 --
--- TOC entry 1610 (class 1259 OID 4801160)
--- Dependencies: 1913 6
+-- TOC entry 1611 (class 1259 OID 4801160)
+-- Dependencies: 1914 6
 -- Name: revisions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1447,12 +1561,13 @@ CREATE TABLE revisions (
 ALTER TABLE public.revisions OWNER TO postgres;
 
 --
--- TOC entry 1611 (class 1259 OID 4801164)
--- Dependencies: 1914 1589 6 1591
+-- TOC entry 1612 (class 1259 OID 4801164)
+-- Dependencies: 1915 1592 1590 6
 -- Name: roles; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE roles (
+    id_type bigint,
     id_player bigint NOT NULL
 )
 INHERITS (reifiables, typeables);
@@ -1461,7 +1576,7 @@ INHERITS (reifiables, typeables);
 ALTER TABLE public.roles OWNER TO postgres;
 
 --
--- TOC entry 1612 (class 1259 OID 4801168)
+-- TOC entry 1613 (class 1259 OID 4801168)
 -- Dependencies: 6
 -- Name: seq_scope_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -1477,8 +1592,8 @@ CREATE SEQUENCE seq_scope_id
 ALTER TABLE public.seq_scope_id OWNER TO postgres;
 
 --
--- TOC entry 1613 (class 1259 OID 4801170)
--- Dependencies: 1915 6
+-- TOC entry 1614 (class 1259 OID 4801170)
+-- Dependencies: 1916 6
 -- Name: scopes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1491,7 +1606,23 @@ CREATE TABLE scopes (
 ALTER TABLE public.scopes OWNER TO postgres;
 
 --
--- TOC entry 1615 (class 1259 OID 4801176)
+-- TOC entry 1615 (class 1259 OID 4801174)
+-- Dependencies: 6
+-- Name: seq_topicmap_id; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE seq_topicmap_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.seq_topicmap_id OWNER TO postgres;
+
+--
+-- TOC entry 1616 (class 1259 OID 4801176)
 -- Dependencies: 6
 -- Name: tags; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
@@ -1505,12 +1636,14 @@ CREATE TABLE tags (
 ALTER TABLE public.tags OWNER TO postgres;
 
 --
--- TOC entry 1616 (class 1259 OID 4801182)
--- Dependencies: 1916 6 1589
+-- TOC entry 1617 (class 1259 OID 4801182)
+-- Dependencies: 1917 1590 6
 -- Name: topicmaps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE topicmaps (
+    id bigint DEFAULT nextval('seq_topicmap_id'::regclass),
+    id_reifier bigint,
     id_base_locator bigint NOT NULL
 )
 INHERITS (reifiables);
@@ -1519,8 +1652,8 @@ INHERITS (reifiables);
 ALTER TABLE public.topicmaps OWNER TO postgres;
 
 --
--- TOC entry 1617 (class 1259 OID 4801186)
--- Dependencies: 1917 1588 6
+-- TOC entry 1618 (class 1259 OID 4801186)
+-- Dependencies: 1918 1589 6
 -- Name: topics; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1532,8 +1665,8 @@ INHERITS (constructs);
 ALTER TABLE public.topics OWNER TO postgres;
 
 --
--- TOC entry 1618 (class 1259 OID 4801190)
--- Dependencies: 1918 1919 1596 6
+-- TOC entry 1619 (class 1259 OID 4801190)
+-- Dependencies: 1919 1920 1597 6
 -- Name: variants; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1545,8 +1678,8 @@ INHERITS (datatypeawares);
 ALTER TABLE public.variants OWNER TO postgres;
 
 --
--- TOC entry 1927 (class 2606 OID 4801199)
--- Dependencies: 1592 1592
+-- TOC entry 1928 (class 2606 OID 4801199)
+-- Dependencies: 1593 1593
 -- Name: pk_associations; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1555,8 +1688,8 @@ ALTER TABLE ONLY associations
 
 
 --
--- TOC entry 1929 (class 2606 OID 4801201)
--- Dependencies: 1594 1594
+-- TOC entry 1930 (class 2606 OID 4801201)
+-- Dependencies: 1595 1595
 -- Name: pk_changeset; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1565,8 +1698,8 @@ ALTER TABLE ONLY changesets
 
 
 --
--- TOC entry 1921 (class 2606 OID 4801203)
--- Dependencies: 1588 1588
+-- TOC entry 1922 (class 2606 OID 4801203)
+-- Dependencies: 1589 1589
 -- Name: pk_constructs; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1575,8 +1708,8 @@ ALTER TABLE ONLY constructs
 
 
 --
--- TOC entry 1931 (class 2606 OID 4801205)
--- Dependencies: 1596 1596
+-- TOC entry 1932 (class 2606 OID 4801205)
+-- Dependencies: 1597 1597
 -- Name: pk_datatypeawares; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1585,8 +1718,8 @@ ALTER TABLE ONLY datatypeawares
 
 
 --
--- TOC entry 1933 (class 2606 OID 4801207)
--- Dependencies: 1597 1597 1597 1597
+-- TOC entry 1934 (class 2606 OID 4801207)
+-- Dependencies: 1598 1598 1598 1598
 -- Name: pk_history; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1595,8 +1728,8 @@ ALTER TABLE ONLY history
 
 
 --
--- TOC entry 1935 (class 2606 OID 4801209)
--- Dependencies: 1599 1599
+-- TOC entry 1936 (class 2606 OID 4801209)
+-- Dependencies: 1600 1600
 -- Name: pk_locators; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1605,8 +1738,8 @@ ALTER TABLE ONLY locators
 
 
 --
--- TOC entry 1939 (class 2606 OID 4801211)
--- Dependencies: 1600 1600 1600
+-- TOC entry 1940 (class 2606 OID 4801211)
+-- Dependencies: 1601 1601 1601
 -- Name: pk_metadata; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1615,8 +1748,8 @@ ALTER TABLE ONLY metadata
 
 
 --
--- TOC entry 1941 (class 2606 OID 4801213)
--- Dependencies: 1601 1601
+-- TOC entry 1942 (class 2606 OID 4801213)
+-- Dependencies: 1602 1602
 -- Name: pk_names; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1625,8 +1758,8 @@ ALTER TABLE ONLY names
 
 
 --
--- TOC entry 1943 (class 2606 OID 4801215)
--- Dependencies: 1602 1602
+-- TOC entry 1944 (class 2606 OID 4801215)
+-- Dependencies: 1603 1603
 -- Name: pk_occurrences; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1635,8 +1768,8 @@ ALTER TABLE ONLY occurrences
 
 
 --
--- TOC entry 1923 (class 2606 OID 4801217)
--- Dependencies: 1589 1589
+-- TOC entry 1924 (class 2606 OID 4801217)
+-- Dependencies: 1590 1590
 -- Name: pk_reifiables; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1645,8 +1778,8 @@ ALTER TABLE ONLY reifiables
 
 
 --
--- TOC entry 1945 (class 2606 OID 4801219)
--- Dependencies: 1610 1610
+-- TOC entry 1946 (class 2606 OID 4801219)
+-- Dependencies: 1611 1611
 -- Name: pk_revisions; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1655,8 +1788,8 @@ ALTER TABLE ONLY revisions
 
 
 --
--- TOC entry 1947 (class 2606 OID 4801221)
--- Dependencies: 1611 1611
+-- TOC entry 1948 (class 2606 OID 4801221)
+-- Dependencies: 1612 1612
 -- Name: pk_roles; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1665,8 +1798,8 @@ ALTER TABLE ONLY roles
 
 
 --
--- TOC entry 1949 (class 2606 OID 4801223)
--- Dependencies: 1613 1613
+-- TOC entry 1950 (class 2606 OID 4801223)
+-- Dependencies: 1614 1614
 -- Name: pk_scope; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1675,8 +1808,8 @@ ALTER TABLE ONLY scopes
 
 
 --
--- TOC entry 1925 (class 2606 OID 4801225)
--- Dependencies: 1590 1590
+-- TOC entry 1926 (class 2606 OID 4801225)
+-- Dependencies: 1591 1591
 -- Name: pk_scopes; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1685,8 +1818,8 @@ ALTER TABLE ONLY scopeables
 
 
 --
--- TOC entry 1951 (class 2606 OID 4801227)
--- Dependencies: 1615 1615
+-- TOC entry 1952 (class 2606 OID 4801227)
+-- Dependencies: 1616 1616
 -- Name: pk_tags; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1695,8 +1828,8 @@ ALTER TABLE ONLY tags
 
 
 --
--- TOC entry 1953 (class 2606 OID 4801229)
--- Dependencies: 1616 1616
+-- TOC entry 1954 (class 2606 OID 4801229)
+-- Dependencies: 1617 1617
 -- Name: pk_topicmap; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1705,8 +1838,8 @@ ALTER TABLE ONLY topicmaps
 
 
 --
--- TOC entry 1955 (class 2606 OID 4801231)
--- Dependencies: 1617 1617
+-- TOC entry 1956 (class 2606 OID 4801231)
+-- Dependencies: 1618 1618
 -- Name: pk_topics; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1715,8 +1848,8 @@ ALTER TABLE ONLY topics
 
 
 --
--- TOC entry 1957 (class 2606 OID 4801233)
--- Dependencies: 1618 1618
+-- TOC entry 1958 (class 2606 OID 4801233)
+-- Dependencies: 1619 1619
 -- Name: pk_variants; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1725,8 +1858,8 @@ ALTER TABLE ONLY variants
 
 
 --
--- TOC entry 1937 (class 2606 OID 4801235)
--- Dependencies: 1599 1599
+-- TOC entry 1938 (class 2606 OID 4801235)
+-- Dependencies: 1600 1600
 -- Name: unique_reference; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1735,8 +1868,8 @@ ALTER TABLE ONLY locators
 
 
 --
--- TOC entry 1990 (class 2620 OID 4801236)
--- Dependencies: 20 1611
+-- TOC entry 1991 (class 2620 OID 4801236)
+-- Dependencies: 20 1612
 -- Name: trigger_detect_duplicate_associations; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1747,8 +1880,8 @@ CREATE TRIGGER trigger_detect_duplicate_associations
 
 
 --
--- TOC entry 1988 (class 2620 OID 4801237)
--- Dependencies: 21 1601
+-- TOC entry 1989 (class 2620 OID 4801237)
+-- Dependencies: 1602 21
 -- Name: trigger_detect_duplicate_names_on_update; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1759,8 +1892,8 @@ CREATE TRIGGER trigger_detect_duplicate_names_on_update
 
 
 --
--- TOC entry 1989 (class 2620 OID 4801238)
--- Dependencies: 22 1602
+-- TOC entry 1990 (class 2620 OID 4801238)
+-- Dependencies: 22 1603
 -- Name: trigger_detect_duplicate_occurrences; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1771,8 +1904,8 @@ CREATE TRIGGER trigger_detect_duplicate_occurrences
 
 
 --
--- TOC entry 1991 (class 2620 OID 4801239)
--- Dependencies: 1611 23
+-- TOC entry 1992 (class 2620 OID 4801239)
+-- Dependencies: 1612 23
 -- Name: trigger_detect_duplicate_roles; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1785,8 +1918,8 @@ ALTER TABLE roles DISABLE TRIGGER trigger_detect_duplicate_roles;
 
 
 --
--- TOC entry 1984 (class 2606 OID 4801240)
--- Dependencies: 1599 1616 1934
+-- TOC entry 1985 (class 2606 OID 4801240)
+-- Dependencies: 1935 1600 1617
 -- Name: fk_baselocator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1795,8 +1928,8 @@ ALTER TABLE ONLY topicmaps
 
 
 --
--- TOC entry 1964 (class 2606 OID 4801245)
--- Dependencies: 1599 1596 1934
+-- TOC entry 1965 (class 2606 OID 4801245)
+-- Dependencies: 1935 1597 1600
 -- Name: fk_datatype; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1805,8 +1938,8 @@ ALTER TABLE ONLY datatypeawares
 
 
 --
--- TOC entry 1970 (class 2606 OID 4801250)
--- Dependencies: 1617 1603 1954
+-- TOC entry 1971 (class 2606 OID 4801250)
+-- Dependencies: 1618 1604 1955
 -- Name: fk_instance; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1815,8 +1948,8 @@ ALTER TABLE ONLY rel_instance_of
 
 
 --
--- TOC entry 1972 (class 2606 OID 4801255)
--- Dependencies: 1604 1599 1934
+-- TOC entry 1973 (class 2606 OID 4801255)
+-- Dependencies: 1600 1605 1935
 -- Name: fk_locator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1825,8 +1958,8 @@ ALTER TABLE ONLY rel_item_identifiers
 
 
 --
--- TOC entry 1975 (class 2606 OID 4801260)
--- Dependencies: 1599 1606 1934
+-- TOC entry 1976 (class 2606 OID 4801260)
+-- Dependencies: 1600 1607 1935
 -- Name: fk_locator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1835,8 +1968,8 @@ ALTER TABLE ONLY rel_subject_identifiers
 
 
 --
--- TOC entry 1977 (class 2606 OID 4801265)
--- Dependencies: 1934 1599 1607
+-- TOC entry 1978 (class 2606 OID 4801265)
+-- Dependencies: 1608 1600 1935
 -- Name: fk_locator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1845,8 +1978,8 @@ ALTER TABLE ONLY rel_subject_locators
 
 
 --
--- TOC entry 1962 (class 2606 OID 4801270)
--- Dependencies: 1952 1592 1616
+-- TOC entry 1963 (class 2606 OID 4801270)
+-- Dependencies: 1953 1593 1617
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1855,8 +1988,8 @@ ALTER TABLE ONLY associations
 
 
 --
--- TOC entry 1968 (class 2606 OID 4801275)
--- Dependencies: 1617 1954 1601
+-- TOC entry 1969 (class 2606 OID 4801275)
+-- Dependencies: 1602 1955 1618
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1865,8 +1998,8 @@ ALTER TABLE ONLY names
 
 
 --
--- TOC entry 1982 (class 2606 OID 4801280)
--- Dependencies: 1592 1926 1611
+-- TOC entry 1983 (class 2606 OID 4801280)
+-- Dependencies: 1593 1612 1927
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1875,8 +2008,8 @@ ALTER TABLE ONLY roles
 
 
 --
--- TOC entry 1986 (class 2606 OID 4801285)
--- Dependencies: 1952 1616 1617
+-- TOC entry 1987 (class 2606 OID 4801285)
+-- Dependencies: 1618 1617 1953
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1885,8 +2018,8 @@ ALTER TABLE ONLY topics
 
 
 --
--- TOC entry 1987 (class 2606 OID 4801290)
--- Dependencies: 1618 1940 1601
+-- TOC entry 1988 (class 2606 OID 4801290)
+-- Dependencies: 1619 1941 1602
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1895,8 +2028,8 @@ ALTER TABLE ONLY variants
 
 
 --
--- TOC entry 1969 (class 2606 OID 4801295)
--- Dependencies: 1617 1602 1954
+-- TOC entry 1970 (class 2606 OID 4801295)
+-- Dependencies: 1603 1618 1955
 -- Name: fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1905,8 +2038,8 @@ ALTER TABLE ONLY occurrences
 
 
 --
--- TOC entry 1985 (class 2606 OID 4801300)
--- Dependencies: 1616 1617 1954
+-- TOC entry 1986 (class 2606 OID 4801300)
+-- Dependencies: 1618 1955 1617
 -- Name: fk_reifier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1915,8 +2048,8 @@ ALTER TABLE ONLY topicmaps
 
 
 --
--- TOC entry 1959 (class 2606 OID 4801305)
--- Dependencies: 1954 1589 1617
+-- TOC entry 1960 (class 2606 OID 4801305)
+-- Dependencies: 1618 1955 1590
 -- Name: fk_reifier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1925,8 +2058,8 @@ ALTER TABLE ONLY reifiables
 
 
 --
--- TOC entry 1965 (class 2606 OID 4801310)
--- Dependencies: 1610 1597 1944
+-- TOC entry 1966 (class 2606 OID 4801310)
+-- Dependencies: 1598 1945 1611
 -- Name: fk_reivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1935,8 +2068,8 @@ ALTER TABLE ONLY history
 
 
 --
--- TOC entry 1963 (class 2606 OID 4801315)
--- Dependencies: 1594 1944 1610
+-- TOC entry 1964 (class 2606 OID 4801315)
+-- Dependencies: 1611 1945 1595
 -- Name: fk_revision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1945,8 +2078,8 @@ ALTER TABLE ONLY changesets
 
 
 --
--- TOC entry 1967 (class 2606 OID 4801320)
--- Dependencies: 1944 1600 1610
+-- TOC entry 1968 (class 2606 OID 4801320)
+-- Dependencies: 1945 1601 1611
 -- Name: fk_revision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1955,8 +2088,8 @@ ALTER TABLE ONLY metadata
 
 
 --
--- TOC entry 1979 (class 2606 OID 4801325)
--- Dependencies: 1613 1948 1608
+-- TOC entry 1980 (class 2606 OID 4801325)
+-- Dependencies: 1614 1609 1949
 -- Name: fk_scope; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1965,8 +2098,8 @@ ALTER TABLE ONLY rel_themes
 
 
 --
--- TOC entry 1960 (class 2606 OID 4801330)
--- Dependencies: 1613 1948 1590
+-- TOC entry 1961 (class 2606 OID 4801330)
+-- Dependencies: 1949 1591 1614
 -- Name: fk_scope; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1975,8 +2108,8 @@ ALTER TABLE ONLY scopeables
 
 
 --
--- TOC entry 1973 (class 2606 OID 4801335)
--- Dependencies: 1617 1954 1605
+-- TOC entry 1974 (class 2606 OID 4801335)
+-- Dependencies: 1618 1606 1955
 -- Name: fk_subtype; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1985,8 +2118,8 @@ ALTER TABLE ONLY rel_kind_of
 
 
 --
--- TOC entry 1974 (class 2606 OID 4801340)
--- Dependencies: 1605 1954 1617
+-- TOC entry 1975 (class 2606 OID 4801340)
+-- Dependencies: 1955 1606 1618
 -- Name: fk_supertype; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1995,8 +2128,8 @@ ALTER TABLE ONLY rel_kind_of
 
 
 --
--- TOC entry 1980 (class 2606 OID 4801345)
--- Dependencies: 1608 1617 1954
+-- TOC entry 1981 (class 2606 OID 4801345)
+-- Dependencies: 1618 1955 1609
 -- Name: fk_theme; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2005,8 +2138,8 @@ ALTER TABLE ONLY rel_themes
 
 
 --
--- TOC entry 1976 (class 2606 OID 4801350)
--- Dependencies: 1606 1954 1617
+-- TOC entry 1977 (class 2606 OID 4801350)
+-- Dependencies: 1618 1607 1955
 -- Name: fk_topic; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2015,8 +2148,8 @@ ALTER TABLE ONLY rel_subject_identifiers
 
 
 --
--- TOC entry 1978 (class 2606 OID 4801355)
--- Dependencies: 1954 1617 1607
+-- TOC entry 1979 (class 2606 OID 4801355)
+-- Dependencies: 1608 1955 1618
 -- Name: fk_topic; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2025,8 +2158,8 @@ ALTER TABLE ONLY rel_subject_locators
 
 
 --
--- TOC entry 1958 (class 2606 OID 4801360)
--- Dependencies: 1588 1952 1616
+-- TOC entry 1959 (class 2606 OID 4801360)
+-- Dependencies: 1617 1953 1589
 -- Name: fk_topicmap; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2035,8 +2168,8 @@ ALTER TABLE ONLY constructs
 
 
 --
--- TOC entry 1983 (class 2606 OID 4801365)
--- Dependencies: 1952 1613 1616
+-- TOC entry 1984 (class 2606 OID 4801365)
+-- Dependencies: 1953 1614 1617
 -- Name: fk_topicmap; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2045,8 +2178,8 @@ ALTER TABLE ONLY scopes
 
 
 --
--- TOC entry 1966 (class 2606 OID 4801370)
--- Dependencies: 1597 1616 1952
+-- TOC entry 1967 (class 2606 OID 4801370)
+-- Dependencies: 1598 1617 1953
 -- Name: fk_topicmap; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2055,8 +2188,8 @@ ALTER TABLE ONLY history
 
 
 --
--- TOC entry 1981 (class 2606 OID 4801375)
--- Dependencies: 1952 1610 1616
+-- TOC entry 1982 (class 2606 OID 4801375)
+-- Dependencies: 1611 1953 1617
 -- Name: fk_topicmap; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2065,8 +2198,8 @@ ALTER TABLE ONLY revisions
 
 
 --
--- TOC entry 1971 (class 2606 OID 4801380)
--- Dependencies: 1603 1954 1617
+-- TOC entry 1972 (class 2606 OID 4801380)
+-- Dependencies: 1955 1618 1604
 -- Name: fk_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2075,8 +2208,8 @@ ALTER TABLE ONLY rel_instance_of
 
 
 --
--- TOC entry 1961 (class 2606 OID 4801385)
--- Dependencies: 1617 1591 1954
+-- TOC entry 1962 (class 2606 OID 4801385)
+-- Dependencies: 1592 1618 1955
 -- Name: fk_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2085,7 +2218,7 @@ ALTER TABLE ONLY typeables
 
 
 --
--- TOC entry 1996 (class 0 OID 0)
+-- TOC entry 1997 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -2096,7 +2229,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2010-08-17 12:11:24
+-- Completed on 2010-09-08 08:58:35
 
 --
 -- PostgreSQL database dump complete

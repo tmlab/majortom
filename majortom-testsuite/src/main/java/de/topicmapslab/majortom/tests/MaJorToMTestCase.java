@@ -29,6 +29,7 @@ import org.tmapix.io.XTMTopicMapReader;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
@@ -41,24 +42,26 @@ public class MaJorToMTestCase extends TestCase {
 
 	protected ITopicMap topicMap;
 	protected TopicMapSystemFactory factory;
+	protected ITopicMapSystem topicMapSystem;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void setUp() throws Exception {
 		factory = TopicMapSystemFactory.newInstance();
-		// factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS,
-		// InMemoryTopicMapStore.class.getCanonicalName());
 		factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
-		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, false);
-		topicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.majortom.test");
+		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION,
+				false);
+		topicMapSystem = (ITopicMapSystem) factory.newTopicMapSystem();
+		topicMap = (ITopicMap) topicMapSystem
+				.createTopicMap("http://psi.majortom.test");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void tearDown() throws Exception {
-		topicMap.remove(true);		
+		topicMap.remove(true);
 	}
 
 	protected Locator createLocator(final String reference) {
@@ -70,15 +73,18 @@ public class MaJorToMTestCase extends TestCase {
 	}
 
 	protected ITopic createTopicByII(String reference) {
-		return (ITopic) topicMap.createTopicByItemIdentifier(createLocator(reference));
+		return (ITopic) topicMap
+				.createTopicByItemIdentifier(createLocator(reference));
 	}
-	
+
 	protected ITopic createTopicBySI(String reference) {
-		return (ITopic) topicMap.createTopicBySubjectIdentifier(createLocator(reference));
+		return (ITopic) topicMap
+				.createTopicBySubjectIdentifier(createLocator(reference));
 	}
 
 	protected ITopic createTopicBySL(String reference) {
-		return (ITopic) topicMap.createTopicBySubjectLocator(createLocator(reference));
+		return (ITopic) topicMap
+				.createTopicBySubjectLocator(createLocator(reference));
 	}
 
 	protected IAssociation createAssociation(final Topic type) {
@@ -86,18 +92,20 @@ public class MaJorToMTestCase extends TestCase {
 	}
 
 	protected void readTopicMap(String filename) throws IOException {
-		InputStream is = getClass().getResourceAsStream("/"+filename);
-		if (is==null)
-			throw new FileNotFoundException("The file is not in the main/resource folder");
-				
-		XTMTopicMapReader reader = new XTMTopicMapReader(topicMap, is, "http://majortomtest.de/");	
-		if(topicMap.getStore().isRevisionManagementSupported()){
+		InputStream is = getClass().getResourceAsStream("/" + filename);
+		if (is == null)
+			throw new FileNotFoundException(
+					"The file is not in the main/resource folder");
+
+		XTMTopicMapReader reader = new XTMTopicMapReader(topicMap, is,
+				"http://majortomtest.de/");
+		if (topicMap.getStore().isRevisionManagementSupported()) {
 			topicMap.getStore().enableRevisionManagement(false);
 		}
 		reader.read();
-		if(topicMap.getStore().isRevisionManagementSupported()){
+		if (topicMap.getStore().isRevisionManagementSupported()) {
 			topicMap.getStore().enableRevisionManagement(true);
 		}
 	}
-	
+
 }

@@ -176,5 +176,12 @@ public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 			throw new TopicMapStoreException(e);
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestLabel() {
+		return (String) doReadHistoryValue(TopicMapStoreParameterType.BEST_LABEL);
+	}
 
 }
