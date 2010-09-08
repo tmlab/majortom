@@ -24,4 +24,9 @@ public interface ILocator extends Locator {
 	 */
 	public URI toUri() throws URISyntaxException;
 
+	/**
+	 * @return the id
+	 */
+	public String getId();
+
 }

@@ -259,7 +259,7 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_OCCURRENCE_DATATYPE = "SELECT reference FROM locators AS l, occurrences AS d WHERE d.id_datatype = l.id AND d.id = ?";
+		public static final String QUERY_READ_OCCURRENCE_DATATYPE = "SELECT l.id, reference FROM locators AS l, occurrences AS d WHERE d.id_datatype = l.id AND d.id = ?";
 
 		/**
 		 * Query to read the data type of an occurrence or variant
@@ -267,7 +267,7 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_VARIANT_DATATYPE = "SELECT reference FROM locators AS l, variants AS d WHERE d.id_datatype = l.id AND d.id = ?";
+		public static final String QUERY_READ_VARIANT_DATATYPE = "SELECT l.id, reference FROM locators AS l, variants AS d WHERE d.id_datatype = l.id AND d.id = ?";
 
 		// ***********************
 		// * READ ITEMIDENTIFIER *
@@ -279,7 +279,7 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ? AND r.id_locator = l.id";
+		public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT l.id, reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ? AND r.id_locator = l.id";
 
 		// **************
 		// * READ NAMES *
@@ -497,7 +497,7 @@ public interface IMySqlSelectQueries {
 		 * <b>parameters(1):</b> topic id
 		 * </p>
 		 */
-		public static final String QUERY_READ_SUBJECT_LOCATORS = "SELECT reference FROM locators AS l, rel_subject_locators AS r , topics AS t WHERE r.id_topic = ? AND r.id_locator = l.id  AND t.id = r.id_topic";
+		public static final String QUERY_READ_SUBJECT_LOCATORS = "SELECT l.id,reference FROM locators AS l, rel_subject_locators AS r , topics AS t WHERE r.id_topic = ? AND r.id_locator = l.id  AND t.id = r.id_topic";
 
 		// **************
 		// * READ TOPICS *

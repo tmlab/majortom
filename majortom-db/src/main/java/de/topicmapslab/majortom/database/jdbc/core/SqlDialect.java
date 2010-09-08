@@ -24,6 +24,8 @@ package de.topicmapslab.majortom.database.jdbc.core;
  */
 public enum SqlDialect {
 
+	RDBMS,
+	
 	POSTGRESQL,
 	
 	POSTGRESQL99,

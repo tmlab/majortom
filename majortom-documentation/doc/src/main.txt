@@ -4,6 +4,8 @@ The MaJorToM ( Merging Topic Maps Engine ) project was founded to develop a ligh
 
 The project is hosted on http://code.google.com/p/majortom/. If you find bugs or have feature requests please file a http://code.google.com/p/majortom/issues/list[ticket].
 
+The JavaDocs of the MaJorToM API are located http://docs.topicmapslab.de/majortom/javadoc/index.html[here].
+
 include::scope.txt[]
 
 include::core/main.txt[]

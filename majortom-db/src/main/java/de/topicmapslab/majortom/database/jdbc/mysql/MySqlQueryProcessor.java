@@ -183,12 +183,20 @@ public class MySqlQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryReadLocator();
 		stmt.setString(1, reference);
 		ResultSet rs = stmt.executeQuery();
+		final String id;
 		if (!rs.next()) {
 			stmt = queryBuilder.getQueryCreateLocator();
 			stmt.setString(1, reference);
 			stmt.execute();
+			ResultSet set = stmt.getGeneratedKeys();
+			set.next();
+			id = set.getString(1);
+			set.close();
+		}else{
+			id =rs.getString(1);
 		}
-		return new LocatorImpl(reference);
+		rs.close();
+		return new LocatorImpl(reference,id);
 	}
 
 	/**

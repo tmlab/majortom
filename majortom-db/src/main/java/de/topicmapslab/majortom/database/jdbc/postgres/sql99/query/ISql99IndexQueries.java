@@ -387,11 +387,11 @@ public interface ISql99IndexQueries {
 
 		interface NonPaged {
 
-			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct;";
+			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.id,l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct;";
 
-			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
+			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.id,l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
 
-			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
+			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.id,l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic  ;";
 
 			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "WITH locs AS ( SELECT id FROM locators WHERE reference ~* ? ), iis AS (SELECT id_construct AS id FROM rel_item_identifiers WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_locators WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_identifiers WHERE id_locator IN ( SELECT id FROM locs ) )"
 					+ "SELECT DISTINCT r.id, r.id_parent, r.other, r.type FROM ("
@@ -430,11 +430,11 @@ public interface ISql99IndexQueries {
 
 		interface Paged {
 
-			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct ORDER BY l.reference OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_ITEM_IDENTIFIERS = "SELECT l.id,l.reference FROM locators AS l, rel_item_identifiers, constructs AS c WHERE ( c.id_topicmap = ? OR c.id = ? ) AND l.id = id_locator AND c.id = id_construct ORDER BY l.reference OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_SUBJECT_IDENTIFIERS = "SELECT l.id,l.reference FROM locators AS l, rel_subject_identifiers, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_SUBJECT_LOCATORS = "SELECT l.id,l.reference FROM locators AS l, rel_subject_locators, topics AS t WHERE t.id_topicmap = ? AND l.id = id_locator AND t.id = id_topic ORDER BY l.reference OFFSET ? LIMIT ? ;";
 
 			public static final String QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN = "WITH locs AS ( SELECT id FROM locators WHERE reference ~* ? ), iis AS (SELECT id_construct AS id FROM rel_item_identifiers WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_locators WHERE id_locator IN ( SELECT id FROM locs ) UNION SELECT id_topic AS id FROM rel_subject_identifiers WHERE id_locator IN ( SELECT id FROM locs ) )"
 					+ "SELECT DISTINCT r.id, r.id_parent, r.other, r.type FROM ("
