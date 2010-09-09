@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jli-mapping
+	xmlns="http://www.topicmapslab.de/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.topicmapslab.de/mapping mapping.xsd">
+
+	<connection-settings>
+		<url>//localhost:3306</url>
+		<name>jli</name>
+		<user>root</user>
+		<password></password>
+		<catalog>public</catalog>
+	</connection-settings>
+
+	<mapping>
+			
+		<topic id="persons" type="person">
+			<identifier type="SI">
+				<jdbc_link table="person" column="id"/>
+			</identifier>
+			<identifier type="SI">
+				<jdbc_link table="person" column="email"/>
+			</identifier>
+			<name>
+				<jdbc_link table="person" column="name"/>
+			</name>
+			<occurrence type="date-of-birth" datatype="xsd:date">
+				<jdbc_link table="person" column="date_of_birth"/>
+			</occurrence>
+		</topic>
+	</mapping>
+	
+</jli-mapping>
