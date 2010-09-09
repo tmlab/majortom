@@ -39,6 +39,7 @@ import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.core.TopicImpl;
+import de.topicmapslab.majortom.database.cache.Cache;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcIdentityIndex;
 import de.topicmapslab.majortom.database.jdbc.index.JdbcLiteralIndex;
@@ -91,6 +92,7 @@ import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceI
 import de.topicmapslab.majortom.model.index.paging.IPagedTypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
@@ -118,6 +120,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * the base locator of the topic map
 	 */
 	private ILocator baseLocator;
+	
+	private Cache cache;
 
 	// Index Instances
 	private ITypeInstanceIndex typeInstanceIndex;
@@ -1030,11 +1034,20 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object doRead(IConstruct context,
+			TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		return cache.doRead(context, paramType, params);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t)
+	public Set<IAssociation> doReadAssociation(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1047,7 +1060,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyMetaData(IRevision revision, String key, String value)
+	public void doModifyMetaData(IRevision revision, String key, String value)
 			throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doCreateMetadata(revision, key, value);
@@ -1059,7 +1072,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type)
+	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1072,7 +1085,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, ITopic type,
+	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type,
 			IScope scope) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1085,7 +1098,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopic t, IScope scope)
+	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1098,7 +1111,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm)
+	public Set<IAssociation> doReadAssociation(ITopicMap tm)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1111,7 +1124,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type)
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1124,7 +1137,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type,
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type,
 			IScope scope) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1137,7 +1150,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope)
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1150,7 +1163,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Changeset doReadChangeSet(IRevision r)
+	public Changeset doReadChangeSet(IRevision r)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadChangeset(getTopicMap(), r);
@@ -1162,7 +1175,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t)
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1175,7 +1188,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type)
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1188,7 +1201,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t,
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t,
 			ITopic type, IScope scope) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1201,7 +1214,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope)
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1214,7 +1227,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IConstruct doReadConstruct(ITopicMap t, String id)
+	public IConstruct doReadConstruct(ITopicMap t, String id)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadConstruct(t, id, false);
@@ -1226,7 +1239,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier)
+	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadConstruct(t, itemIdentifier);
@@ -1238,7 +1251,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ILocator doReadDataType(IDatatypeAware d)
+	public ILocator doReadDataType(IDatatypeAware d)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadDataType(d);
@@ -1250,7 +1263,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadFutureRevision(IRevision r)
+	public IRevision doReadFutureRevision(IRevision r)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadFutureRevision(getTopicMap(),
@@ -1263,7 +1276,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String doReadId(IConstruct c) throws TopicMapStoreException {
+	public String doReadId(IConstruct c) throws TopicMapStoreException {
 		if (c instanceof ITopicMap) {
 			return this.identity.getId();
 		}
@@ -1273,7 +1286,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadItemIdentifiers(IConstruct c)
+	public Set<ILocator> doReadItemIdentifiers(IConstruct c)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1286,14 +1299,14 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException {
+	public ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException {
 		return baseLocator;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t) throws TopicMapStoreException {
+	public Set<IName> doReadNames(ITopic t) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t,
 					-1, -1));
@@ -1305,7 +1318,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, ITopic type)
+	public Set<IName> doReadNames(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t,
@@ -1318,7 +1331,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, ITopic type, IScope scope)
+	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t,
@@ -1331,7 +1344,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IName> doReadNames(ITopic t, IScope scope)
+	public Set<IName> doReadNames(ITopic t, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadNames(t,
@@ -1344,7 +1357,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t)
+	public Set<IOccurrence> doReadOccurrences(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1357,7 +1370,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type)
+	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1370,7 +1383,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type,
+	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type,
 			IScope scope) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1383,7 +1396,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope)
+	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1396,7 +1409,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadPlayer(IAssociationRole role)
+	public ITopic doReadPlayer(IAssociationRole role)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadPlayer(role);
@@ -1408,7 +1421,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRevision doReadPastRevision(IRevision r)
+	public IRevision doReadPastRevision(IRevision r)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadPastRevision(getTopicMap(), r);
@@ -1420,7 +1433,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IReifiable doReadReification(ITopic t)
+	public IReifiable doReadReification(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadReification(t);
@@ -1432,7 +1445,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadReification(IReifiable r)
+	public ITopic doReadReification(IReifiable r)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadReification(r);
@@ -1444,7 +1457,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Calendar doReadRevisionTimestamp(IRevision r)
+	public Calendar doReadRevisionTimestamp(IRevision r)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadTimestamp(r);
@@ -1456,7 +1469,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadRoleTypes(IAssociation association)
+	public Set<ITopic> doReadRoleTypes(IAssociation association)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoleTypes(
@@ -1469,7 +1482,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(IAssociation association)
+	public Set<IAssociationRole> doReadRoles(IAssociation association)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(
@@ -1482,7 +1495,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(IAssociation association,
+	public Set<IAssociationRole> doReadRoles(IAssociation association,
 			ITopic type) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(
@@ -1495,7 +1508,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player)
+	public Set<IAssociationRole> doReadRoles(ITopic player)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(
@@ -1508,7 +1521,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type)
+	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(
@@ -1521,7 +1534,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IAssociationRole> doReadRoles(ITopic player, ITopic type,
+	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type,
 			ITopic assocType) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadRoles(
@@ -1534,7 +1547,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IScope doReadScope(IScopable s) throws TopicMapStoreException {
+	public IScope doReadScope(IScopable s) throws TopicMapStoreException {
 		try {
 			IScope scope = provider.getProcessor().doReadScope(s);
 			/*
@@ -1557,7 +1570,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadSubjectIdentifiers(ITopic t)
+	public Set<ILocator> doReadSubjectIdentifiers(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1570,7 +1583,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ILocator> doReadSubjectLocators(ITopic t)
+	public Set<ILocator> doReadSubjectLocators(ITopic t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
@@ -1583,7 +1596,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected List<ITopic> doReadSuptertypes(ITopic t)
+	public List<ITopic> doReadSuptertypes(ITopic t)
 			throws TopicMapStoreException {
 		return getSuptertypes(t, -1, -1);
 	}
@@ -1631,7 +1644,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadTopicBySubjectIdentifier(ITopicMap t,
+	public ITopic doReadTopicBySubjectIdentifier(ITopicMap t,
 			ILocator subjectIdentifier) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadTopicBySubjectIdentifier(t,
@@ -1644,7 +1657,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadTopicBySubjectLocator(ITopicMap t,
+	public ITopic doReadTopicBySubjectLocator(ITopicMap t,
 			ILocator subjectLocator) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadTopicBySubjectLocator(t,
@@ -1657,7 +1670,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadTopics(ITopicMap t)
+	public Set<ITopic> doReadTopics(ITopicMap t)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadTopics(t));
@@ -1669,7 +1682,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadTopics(ITopicMap t, ITopic type)
+	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadTopics(t,
@@ -1682,7 +1695,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doReadType(ITypeable typed) throws TopicMapStoreException {
+	public ITopic doReadType(ITypeable typed) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadType(typed);
 		} catch (SQLException e) {
@@ -1693,7 +1706,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
+	public Set<ITopic> doReadTypes(ITopic t) throws TopicMapStoreException {
 		return getTypes(t, -1, -1);
 	}
 
@@ -1733,7 +1746,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Object doReadValue(IName n) throws TopicMapStoreException {
+	public Object doReadValue(IName n) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadValue(n);
 		} catch (SQLException e) {
@@ -1744,7 +1757,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Object doReadValue(IDatatypeAware t)
+	public Object doReadValue(IDatatypeAware t)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadValue(t);
@@ -1757,7 +1770,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T doReadValue(IDatatypeAware t, Class<T> type)
+	public <T> T doReadValue(IDatatypeAware t, Class<T> type)
 			throws TopicMapStoreException {
 		try {
 			return (T) DatatypeAwareUtils.toValue(provider.getProcessor()
@@ -1772,7 +1785,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IVariant> doReadVariants(IName n)
+	public Set<IVariant> doReadVariants(IName n)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadVariants(
@@ -1785,7 +1798,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Set<IVariant> doReadVariants(IName n, IScope scope)
+	public Set<IVariant> doReadVariants(IName n, IScope scope)
 			throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadVariants(
@@ -1798,7 +1811,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Map<String, String> doReadMetaData(IRevision revision)
+	public Map<String, String> doReadMetaData(IRevision revision)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadMetadata(revision);
@@ -1810,7 +1823,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String doReadMetaData(IRevision revision, String key)
+	public String doReadMetaData(IRevision revision, String key)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadMetadataByKey(revision, key);
@@ -1822,7 +1835,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String doReadBestLabel(ITopic topic)
+	public String doReadBestLabel(ITopic topic)
 			throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadBestLabel(topic);
@@ -2358,6 +2371,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 					"Cannot open connection to database!", e);
 		}
 		this.baseLocator = (ILocator) topicMapBaseLocator;
+		cache = new Cache(this);
+		cache.initialize(baseLocator);
+		cache.connect();		
 	}
 
 	/**
@@ -2370,6 +2386,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException(
 					"Cannot close connection to database!", e);
 		}
+		cache.close();
 		super.close();
 	}
 

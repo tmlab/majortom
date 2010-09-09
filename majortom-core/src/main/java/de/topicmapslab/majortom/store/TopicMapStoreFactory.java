@@ -44,12 +44,16 @@ public class TopicMapStoreFactory {
 	 * Create a new topic map store object using the properties given by the
 	 * first argument.
 	 * 
-	 * @param factory the factory containing the set properties
-	 * @param topicMapSystem the topic map system
-	 * @param topicMapBaseLocator the base locator of the topic map {@link TopicMap#getLocator()}
+	 * @param factory
+	 *            the factory containing the set properties
+	 * @param topicMapSystem
+	 *            the topic map system
+	 * @param topicMapBaseLocator
+	 *            the base locator of the topic map
+	 *            {@link TopicMap#getLocator()}
 	 * @return the generated topic map store
-	 * @throws TopicMapStoreException thrown if the topic map store cannot
-	 *             create
+	 * @throws TopicMapStoreException
+	 *             thrown if the topic map store cannot create
 	 */
 	public static ITopicMapStore createTopicMapStore(final TopicMapSystemFactory factory, final ITopicMapSystem topicMapSystem, Locator topicMapBaseLocator) throws TopicMapStoreException {
 		Object className = factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS);
@@ -68,18 +72,20 @@ public class TopicMapStoreFactory {
 			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
 			return store;
+		} catch (TopicMapStoreException e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw new TopicMapStoreException("Cannot load topic map store instance '" + className + "'", e);
-		} 
+		}
 	}
 
 	private final static List<String> defaultTopicMapStores = new LinkedList<String>();
 	private static Map<String, ITopicMapStoreFactory> storeFactories;
-	
-	static{
+
+	static {
 		defaultTopicMapStores.add("de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore");
 	}
-	
+
 	private static ITopicMapStoreFactory loadWithJavaServices() {
 		initStoreFactories();
 		switch (getStoreFactories().size()) {
@@ -90,8 +96,8 @@ public class TopicMapStoreFactory {
 			return getStoreFactories().values().iterator().next();
 		}
 		default: {
-			for ( String defaultTopicMapStore : defaultTopicMapStores ){
-				if ( getStoreFactories().containsKey(defaultTopicMapStore)){
+			for (String defaultTopicMapStore : defaultTopicMapStores) {
+				if (getStoreFactories().containsKey(defaultTopicMapStore)) {
 					return getStoreFactories().get(defaultTopicMapStore);
 				}
 			}
@@ -102,27 +108,30 @@ public class TopicMapStoreFactory {
 
 	/**
 	 * Returns a map of store factories initialized by OSGi or Java services.
+	 * 
 	 * @return a map of store factories initialized by OSGi or Java services
 	 */
 	public static Map<String, ITopicMapStoreFactory> getStoreFactories() {
-		if (storeFactories==null){
+		if (storeFactories == null) {
 			initStoreFactories();
 		}
 		return storeFactories;
 	}
-	
+
 	/**
-	 * loads the store list either from the bundle activator or from the services
+	 * loads the store list either from the bundle activator or from the
+	 * services
 	 */
 	private static void initStoreFactories() {
 		Iterable<ITopicMapStoreFactory> list = null;
 		// try to load the extension points via OSGi
 		try {
-			// check if we are in an OSGi environment if not an exception is thrown
-			if (MajorToMActivator.getDefault()!=null) {
+			// check if we are in an OSGi environment if not an exception is
+			// thrown
+			if (MajorToMActivator.getDefault() != null) {
 				list = MajorToMActivator.getDefault().getTopicMapStoreFactories();
 				storeFactories = new HashMap<String, ITopicMapStoreFactory>();
-	
+
 				for (ITopicMapStoreFactory fac : list) {
 					storeFactories.put(fac.getClassName(), fac);
 				}
@@ -130,8 +139,8 @@ public class TopicMapStoreFactory {
 		} catch (Throwable e) {
 			// we do nothing, cause we are not in an OSGi environment
 		}
-		
-		if (list==null) {
+
+		if (list == null) {
 			ServiceLoader<ITopicMapStore> loader = ServiceLoader.load(ITopicMapStore.class, TopicMapStoreFactory.class.getClassLoader());
 			storeFactories = new HashMap<String, ITopicMapStoreFactory>();
 
@@ -139,13 +148,12 @@ public class TopicMapStoreFactory {
 				storeFactories.put(store.getClass().getName(), new TMStoreFactory(store));
 			}
 		}
-		
-		
+
 	}
-	
+
 	private static class TMStoreFactory implements ITopicMapStoreFactory {
 		private final ITopicMapStore store;
-		
+
 		public TMStoreFactory(ITopicMapStore store) {
 			this.store = store;
 		}
