@@ -482,7 +482,7 @@ public class CharacteristicsStore implements IDataStore {
 		}
 		Object value = values.get(obj);
 		if (value instanceof Calendar) {
-			return cloneCalendar((Calendar) value);
+			return DatatypeAwareUtils.cloneCalendar((Calendar) value);
 		}
 		return value;
 	}
@@ -521,7 +521,7 @@ public class CharacteristicsStore implements IDataStore {
 		}
 		Object value_ = value;
 		if (value instanceof Calendar) {
-			value_ = cloneCalendar((Calendar) value);
+			value_ = DatatypeAwareUtils.cloneCalendar((Calendar) value);
 		}
 		values.put(obj, value_);
 
@@ -581,24 +581,6 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	protected final boolean containsDatatype(IDatatypeAware aware) {
 		return dataTypes != null && dataTypes.containsKey(aware);
-	}
-
-	/**
-	 * Method clones the given calendar object, because the {@link Calendar} is
-	 * not immutable.
-	 * 
-	 * @param calendar
-	 *            the calendar
-	 * @return the clone
-	 */
-	private Calendar cloneCalendar(Calendar calendar) {
-		Calendar c = Calendar.getInstance();
-		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH,
-				Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE,
-				Calendar.SECOND, Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
-			c.set(field, calendar.get(field));
-		}
-		return c;
 	}
 
 }
