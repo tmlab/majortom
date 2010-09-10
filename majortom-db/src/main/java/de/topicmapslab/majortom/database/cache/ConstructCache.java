@@ -27,6 +27,7 @@ public class ConstructCache implements ITopicMapListener {
 	private TypedCache typedCache;
 	private TopicTypeCache topicTypeCache;
 	private AssociationCache associationCache;
+	private RevisionCache revisionCache;
 
 	class CacheKey {
 
@@ -375,7 +376,7 @@ public class ConstructCache implements ITopicMapListener {
 	 */
 	public void cacheTopics(ITopic type, Set<ITopic> set) {
 		if (topics == null) {
-			roles = HashUtil.getHashMap();
+			topics = HashUtil.getHashMap();
 		}
 		topics.put(generateCacheKey(null, type, null), set);
 	}
@@ -466,15 +467,26 @@ public class ConstructCache implements ITopicMapListener {
 	public AssociationCache getAssociationCache() {
 		if (associationCache == null) {
 			associationCache = new AssociationCache();
-
 		}
 		return associationCache;
 	}
 
 	/**
+	 * Returns the internal cache reference handling the history
+	 * 
+	 * @return the revisionCache
+	 */
+	public RevisionCache getRevisionCache() {
+		if (revisionCache == null) {
+			revisionCache = new RevisionCache();
+		}
+		return revisionCache;
+	}
+
+	/**
 	 * closing the cache instance
 	 */
-	public void close() {
+	public void clear() {
 		if (associations != null) {
 			associations.clear();
 		}
@@ -497,25 +509,28 @@ public class ConstructCache implements ITopicMapListener {
 			topicTypeCache.clear();
 		}
 		if (typedCache != null) {
-			typedCache.close();
+			typedCache.clear();
 		}
 		if (characteristicsCache != null) {
-			characteristicsCache.close();
+			characteristicsCache.clear();
 		}
 		if (identityCache != null) {
-			identityCache.close();
+			identityCache.clear();
 		}
 		if (reificationCache != null) {
-			reificationCache.close();
+			reificationCache.clear();
 		}
 		if (scopeCache != null) {
-			scopeCache.close();
+			scopeCache.clear();
 		}
 		if (associationCache != null) {
-			associationCache.close();
+			associationCache.clear();
 		}
 		if (relevantCacheKeys != null) {
-			relevantCacheKeys.clear();
+			relevantCacheKeys = HashUtil.getHashMap();
+		}
+		if (revisionCache != null) {
+			revisionCache.clear();
 		}
 	}
 
@@ -595,9 +610,10 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * a topic was removed or created
 		 */
-		else if (topics != null
-				&& (event == TopicMapEventType.TOPIC_ADDED || event == TopicMapEventType.TOPIC_REMOVED)) {
-			topics.clear();
+		else if ((event == TopicMapEventType.TOPIC_ADDED || event == TopicMapEventType.TOPIC_REMOVED)) {
+			if (topics != null) {
+				topics.clear();
+			}
 			if (names != null) {
 				names.clear();
 			}
@@ -617,14 +633,14 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * a type was modified
 		 */
-		else if ( event == TopicMapEventType.TYPE_SET ){
+		else if (event == TopicMapEventType.TYPE_SET) {
 			Set<CacheKey> keys = HashUtil.getHashSet();
 			// get cache keys of old type
 			keys.addAll(getRelevantCacheKeys(oldValue));
 			// get cache keys of new type
 			keys.addAll(getRelevantCacheKeys(newValue));
 			// remove all type relevant cache entries
-			for (CacheKey key : getRelevantCacheKeys(notifier)) {
+			for (CacheKey key : keys) {
 				if (names != null) {
 					names.remove(key);
 				}
@@ -642,23 +658,26 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * a type was added or removed
 		 */
-		else if ( topics != null &&  event == TopicMapEventType.TYPE_REMOVED){	
+		else if (topics != null
+				&& (event == TopicMapEventType.TYPE_REMOVED || event == TopicMapEventType.TYPE_ADDED)) {
+			Object ref = event == TopicMapEventType.TYPE_REMOVED ? oldValue
+					: newValue;
 			// remove all type filtered topic instances
-			for (CacheKey key : getRelevantCacheKeys(oldValue)) {
+			for (CacheKey key : getRelevantCacheKeys(ref)) {
 				topics.remove(key);
 			}
 		}
 		/*
 		 * scope was modified
 		 */
-		else if ( event == TopicMapEventType.SCOPE_MODIFIED ){
+		else if (event == TopicMapEventType.SCOPE_MODIFIED) {
 			Set<CacheKey> keys = HashUtil.getHashSet();
 			// get cache keys of old scope
 			keys.addAll(getRelevantCacheKeys(oldValue));
 			// get cache keys of new scope
 			keys.addAll(getRelevantCacheKeys(newValue));
 			// remove all scope relevant cache entries
-			for (CacheKey key : getRelevantCacheKeys(notifier)) {
+			for (CacheKey key : keys) {
 				if (names != null) {
 					names.remove(key);
 				}
@@ -673,7 +692,14 @@ public class ConstructCache implements ITopicMapListener {
 				}
 			}
 		}
-		
+		/*
+		 * topics are merging
+		 */
+		else if (event == TopicMapEventType.MERGE) {
+			// clear all caches
+			clear();
+		}
+
 		/*
 		 * call sub caches
 		 */
@@ -701,6 +727,10 @@ public class ConstructCache implements ITopicMapListener {
 		}
 		if (associationCache != null) {
 			associationCache.topicMapChanged(id, event, notifier, newValue,
+					oldValue);
+		}
+		if (revisionCache != null) {
+			revisionCache.topicMapChanged(id, event, notifier, newValue,
 					oldValue);
 		}
 	}

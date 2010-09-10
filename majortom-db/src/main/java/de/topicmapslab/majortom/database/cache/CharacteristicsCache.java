@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.database.cache;
 
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ class CharacteristicsCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
+	public void clear() {
 		if (dataTypes != null) {
 			dataTypes.clear();
 		}
@@ -105,7 +106,11 @@ class CharacteristicsCache implements ITopicMapListener {
 		if (values == null || !values.containsKey(obj)) {
 			return null;
 		}
-		return values.get(obj);
+		Object value = values.get(obj);
+		if (value instanceof Calendar) {
+			return DatatypeAwareUtils.cloneCalendar((Calendar) value);
+		}
+		return value;
 	}
 
 	/**
@@ -123,12 +128,11 @@ class CharacteristicsCache implements ITopicMapListener {
 		if (obj instanceof IName) {
 			return value.toString();
 		}
-		ILocator datatype = getDatatype((IDatatypeAware)obj);
-		if ( datatype == null ){
+		ILocator datatype = getDatatype((IDatatypeAware) obj);
+		if (datatype == null) {
 			return null;
 		}
-		return DatatypeAwareUtils.toString(value,
-				datatype);
+		return DatatypeAwareUtils.toString(value, datatype);
 	}
 
 	/**
@@ -143,7 +147,11 @@ class CharacteristicsCache implements ITopicMapListener {
 		if (values == null) {
 			values = HashUtil.getHashMap();
 		}
-		values.put(construct, value);
+		Object value_ = value;
+		if (value instanceof Calendar) {
+			value_ = DatatypeAwareUtils.cloneCalendar((Calendar) value);
+		}
+		values.put(construct, value_);
 	}
 
 	/**
@@ -224,11 +232,12 @@ class CharacteristicsCache implements ITopicMapListener {
 					dataTypes.remove(notifier);
 					if (dataTyped != null && dataTyped.containsKey(locator)) {
 						dataTyped.get(locator).remove(oldValue);
-					} else {
-						// clear whole cache -> because the datatype is unknown
-						dataTyped.clear();
 					}
+				} else if (dataTyped != null) {
+					// clear whole cache -> because the datatype is unknown
+					dataTyped.clear();
 				}
+
 			}
 		}
 	}

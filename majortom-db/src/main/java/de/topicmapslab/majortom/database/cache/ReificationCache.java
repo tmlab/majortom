@@ -24,7 +24,7 @@ class ReificationCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
+	public void clear() {
 		if (reification != null) {
 			reification.clear();
 		}
@@ -82,13 +82,13 @@ class ReificationCache implements ITopicMapListener {
 		 * reification modified
 		 */
 		if (event == TopicMapEventType.REIFIER_SET) {
-			ITopic newReifier = (ITopic) oldValue;
+			ITopic newReifier = (ITopic) newValue;
 			IReifiable reifiable = (IReifiable) notifier;
 			/*
 			 * reification removed
 			 */
 			if (newReifier == null && reification != null) {
-				reification.remove(newReifier);
+				reification.removeValue(reifiable);
 			}
 			/*
 			 * reification set

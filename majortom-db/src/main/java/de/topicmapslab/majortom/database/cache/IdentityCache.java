@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.database.cache;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
@@ -25,6 +26,7 @@ import org.tmapi.core.Construct;
 
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -102,7 +104,7 @@ class IdentityCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
+	public void clear() {
 		if (identities != null) {
 			identities.clear();
 		}
@@ -279,7 +281,7 @@ class IdentityCache implements ITopicMapListener {
 		if (map == null || !map.containsKey(construct)) {
 			return null;
 		}
-		return map.get(construct);
+		return HashUtil.getHashSet(map.get(construct));
 	}
 
 	/**
@@ -327,7 +329,7 @@ class IdentityCache implements ITopicMapListener {
 		if (constructItemIdentifiers == null) {
 			constructItemIdentifiers = HashUtil.getHashMap();
 		}
-		constructItemIdentifiers.put(c, identifiers);
+		constructItemIdentifiers.put(c, HashUtil.getHashSet(identifiers));
 	}
 
 	/**
@@ -342,7 +344,7 @@ class IdentityCache implements ITopicMapListener {
 		if (topicSubjectIdentifiers == null) {
 			topicSubjectIdentifiers = HashUtil.getHashMap();
 		}
-		topicSubjectIdentifiers.put(t, identifiers);
+		topicSubjectIdentifiers.put(t, HashUtil.getHashSet(identifiers));
 	}
 
 	/**
@@ -357,7 +359,7 @@ class IdentityCache implements ITopicMapListener {
 		if (topicSubjectLocators == null) {
 			topicSubjectLocators = HashUtil.getHashMap();
 		}
-		topicSubjectLocators.put(t, identifiers);
+		topicSubjectLocators.put(t, HashUtil.getHashSet(identifiers));
 	}
 
 	/**
@@ -478,59 +480,7 @@ class IdentityCache implements ITopicMapListener {
 		 * topic was removed
 		 */
 		if (event == TopicMapEventType.TOPIC_REMOVED) {
-			ITopic topic = (ITopic) oldValue;
-			/*
-			 * clear subject-identifiers
-			 */
-			if (topicSubjectIdentifiers != null
-					&& topicSubjectIdentifiers.containsKey(oldValue)) {
-				if (subjectIdentifiers != null) {
-					for (ILocator si : topicSubjectIdentifiers.get(topic)) {
-						subjectIdentifiers.remove(si);
-					}
-				}
-				topicSubjectIdentifiers.remove(topic);
-			}
-			/*
-			 * clear subject-locators
-			 */
-			if (topicSubjectLocators != null
-					&& topicSubjectLocators.containsKey(oldValue)) {
-				if (subjectLocators != null) {
-					for (ILocator si : topicSubjectLocators.get(topic)) {
-						subjectLocators.remove(si);
-					}
-				}
-				topicSubjectLocators.remove(topic);
-			}
-			/*
-			 * clear item-identifiers
-			 */
-			if (constructItemIdentifiers != null
-					&& constructItemIdentifiers.containsKey(oldValue)) {
-				if (itemIdentifiers != null) {
-					for (ILocator si : constructItemIdentifiers.get(topic)) {
-						itemIdentifiers.remove(si);
-					}
-				}
-				constructItemIdentifiers.remove(topic);
-			}
-			/*
-			 * clear id
-			 */
-			if (ids != null) {
-				ids.remove(topic.getId());
-			}
-			/*
-			 * remove best label
-			 */
-			if (bestLabels != null) {
-				bestLabels.remove(topic);
-			}
-			/*
-			 * clear identities
-			 */
-			identities.clear();
+			removeTopicItemFromCache((ITopic) oldValue, (IConstruct) notifier);
 		}
 		/*
 		 * construct was removed
@@ -540,138 +490,255 @@ class IdentityCache implements ITopicMapListener {
 				|| event == TopicMapEventType.OCCURRENCE_REMOVED
 				|| event == TopicMapEventType.VARIANT_REMOVED
 				|| event == TopicMapEventType.ASSOCIATION_REMOVED) {
-			IConstruct construct = (IConstruct) oldValue;
-			/*
-			 * clear item-identifiers
-			 */
-			if (constructItemIdentifiers != null
-					&& constructItemIdentifiers.containsKey(oldValue)) {
-				if (itemIdentifiers != null) {
-					for (ILocator si : constructItemIdentifiers.get(construct)) {
-						itemIdentifiers.remove(si);
-					}
-				}
-				constructItemIdentifiers.remove(construct);
-			}
-			/*
-			 * clear id
-			 */
-			if (ids != null) {
-				ids.remove(construct.getId());
-			}
-			/*
-			 * clear identities
-			 */
-			identities.remove(Key.ITEM_IDENTIFIER);
+			removeConstructItemFromCache((IConstruct) oldValue,
+					(IConstruct) notifier);
 		}
 		/*
 		 * subject-identifier added
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_IDENTIFIER_ADDED ){
+		else if (event == TopicMapEventType.SUBJECT_IDENTIFIER_ADDED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) newValue;
-			if ( topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(topic)){
+			if (topicSubjectIdentifiers != null
+					&& topicSubjectIdentifiers.containsKey(topic)) {
 				topicSubjectIdentifiers.get(topic).add(locator);
 			}
 			cacheSubjectIdentifier(locator, topic);
-			if ( identities != null && identities.containsKey(Key.SUBJECT_IDENTIFIER)){
+			if (identities != null
+					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).add(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(topic);
 			}
 		}
 		/*
 		 * subject-locator added
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_LOCATOR_ADDED ){
+		else if (event == TopicMapEventType.SUBJECT_LOCATOR_ADDED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) newValue;
-			if ( topicSubjectLocators != null && topicSubjectLocators.containsKey(topic)){
+			if (topicSubjectLocators != null
+					&& topicSubjectLocators.containsKey(topic)) {
 				topicSubjectLocators.get(topic).add(locator);
 			}
 			cacheSubjectLocator(locator, topic);
-			if ( identities != null && identities.containsKey(Key.SUBJEC_LOCATOR)){
+			if (identities != null
+					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).add(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(topic);
 			}
 		}
 		/*
 		 * item-identifier added
 		 */
-		else if ( event == TopicMapEventType.ITEM_IDENTIFIER_ADDED ){
+		else if (event == TopicMapEventType.ITEM_IDENTIFIER_ADDED) {
 			IConstruct construct = (IConstruct) notifier;
 			ILocator locator = (ILocator) newValue;
-			if ( constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)){
+			if (constructItemIdentifiers != null
+					&& constructItemIdentifiers.containsKey(construct)) {
 				constructItemIdentifiers.get(construct).add(locator);
 			}
 			cacheItemIdentifier(locator, construct);
-			if ( identities != null && identities.containsKey(Key.ITEM_IDENTIFIER)){
+			if (identities != null
+					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).add(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(construct);
 			}
 		}
 		/*
 		 * subject-identifier removed
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED ){
+		else if (event == TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if ( topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(topic)){
+			if (topicSubjectIdentifiers != null
+					&& topicSubjectIdentifiers.containsKey(topic)) {
 				topicSubjectIdentifiers.get(topic).remove(locator);
 			}
-			if ( subjectIdentifiers != null ){
+			if (subjectIdentifiers != null) {
 				subjectIdentifiers.remove(locator);
 			}
-			if ( identities != null && identities.containsKey(Key.SUBJECT_IDENTIFIER)){
+			if (identities != null
+					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).remove(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(topic);
 			}
 		}
 		/*
 		 * subject-locator removed
 		 */
-		else if ( event == TopicMapEventType.SUBJECT_LOCATOR_REMOVED ){
+		else if (event == TopicMapEventType.SUBJECT_LOCATOR_REMOVED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if ( topicSubjectLocators != null && topicSubjectLocators.containsKey(topic)){
+			if (topicSubjectLocators != null
+					&& topicSubjectLocators.containsKey(topic)) {
 				topicSubjectLocators.get(topic).remove(locator);
 			}
-			if ( subjectLocators != null ){
+			if (subjectLocators != null) {
 				subjectLocators.remove(locator);
 			}
-			if ( identities != null && identities.containsKey(Key.SUBJEC_LOCATOR)){
+			if (identities != null
+					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).remove(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(topic);
 			}
 		}
 		/*
 		 * item-identifier removed
 		 */
-		else if ( event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED ){
+		else if (event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED) {
 			IConstruct construct = (IConstruct) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if ( constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)){
+			if (constructItemIdentifiers != null
+					&& constructItemIdentifiers.containsKey(construct)) {
 				constructItemIdentifiers.get(construct).remove(locator);
 			}
-			if ( itemIdentifiers != null ){
+			if (itemIdentifiers != null) {
 				itemIdentifiers.remove(locator);
 			}
-			if ( identities != null && identities.containsKey(Key.ITEM_IDENTIFIER)){
+			if (identities != null
+					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).remove(locator);
 			}
-			if ( bestLabels != null ){
+			if (bestLabels != null) {
 				bestLabels.remove(construct);
 			}
 		}
-		
+		/*
+		 * name was added
+		 */
+		else if (event == TopicMapEventType.NAME_ADDED && bestLabels != null
+				&& bestLabels.containsKey(notifier)) {
+			bestLabels.remove(notifier);
+		}
+		/*
+		 * type or scope of name was modified
+		 */
+		else if ((event == TopicMapEventType.TYPE_SET || event == TopicMapEventType.SCOPE_MODIFIED)
+				&& notifier instanceof IName
+				&& bestLabels != null
+				&& bestLabels.containsKey(notifier.getParent())) {
+			bestLabels.remove(notifier.getParent());
+		}
+		/*
+		 * topics are merging
+		 */
+		else if (event == TopicMapEventType.MERGE) {
+			removeTopicItemFromCache((ITopic) newValue, (IConstruct) notifier);
+			removeTopicItemFromCache((ITopic) oldValue, (IConstruct) notifier);
+		}
+
+	}
+
+	/**
+	 * Internal method to remove all topic dependent entries from internal
+	 * caches.
+	 * 
+	 * @param topic
+	 *            the topic reference to remove
+	 * @param notifier
+	 *            the parent
+	 */
+	private final void removeTopicItemFromCache(ITopic topic,
+			IConstruct notifier) {
+		/*
+		 * clear subject-identifiers
+		 */
+		if (topicSubjectIdentifiers != null
+				&& topicSubjectIdentifiers.containsKey(topic)) {
+			topicSubjectIdentifiers.remove(topic);
+		}
+		if (subjectIdentifiers != null) {
+			for (Entry<ILocator, ITopic> si : HashUtil
+					.getHashSet(subjectIdentifiers.entrySet())) {
+				if (si.getValue().equals(topic)) {
+					subjectIdentifiers.remove(si.getKey());
+				}
+			}
+		}
+		/*
+		 * clear subject-locators
+		 */
+		if (topicSubjectLocators != null
+				&& topicSubjectLocators.containsKey(topic)) {
+			topicSubjectLocators.remove(topic);
+		}
+		if (subjectLocators != null) {
+			for (Entry<ILocator, ITopic> sl : HashUtil
+					.getHashSet(subjectLocators.entrySet())) {
+				if (sl.getValue().equals(topic)) {
+					subjectLocators.remove(sl.getKey());
+				}
+			}
+		}
+		removeConstructItemFromCache(topic, notifier);
+		/*
+		 * remove best label
+		 */
+		if (bestLabels != null) {
+			bestLabels.remove(topic);
+		}
+		/*
+		 * clear identities
+		 */
+		if (identities != null) {
+			identities.clear();
+		}
+	}
+
+	/**
+	 * Remove all relevant cache entries for the given construct
+	 * 
+	 * @param construct
+	 *            the construct
+	 * @param notifier
+	 *            the parent
+	 */
+	private final void removeConstructItemFromCache(IConstruct construct,
+			IConstruct notifier) {
+		/*
+		 * clear item-identifiers
+		 */
+		if (constructItemIdentifiers != null
+				&& constructItemIdentifiers.containsKey(construct)) {
+			constructItemIdentifiers.remove(construct);
+		}
+		if (itemIdentifiers != null) {
+			for (Entry<ILocator, IConstruct> ii : HashUtil
+					.getHashSet(itemIdentifiers.entrySet())) {
+				if (ii.getValue().equals(construct)) {
+					itemIdentifiers.remove(ii.getKey());
+				}
+			}
+		}
+		/*
+		 * clear id
+		 */
+		if (ids != null) {
+			ids.remove(construct.getId());
+		}
+		/*
+		 * clear identities
+		 */
+		if (identities != null) {
+			identities.remove(Key.ITEM_IDENTIFIER);
+		}
+
+		/*
+		 * remove best label of parent topic if name was removed
+		 */
+		if (construct instanceof IName && bestLabels != null
+				&& bestLabels.containsKey(notifier)) {
+			bestLabels.remove(notifier);
+		}
 	}
 }
