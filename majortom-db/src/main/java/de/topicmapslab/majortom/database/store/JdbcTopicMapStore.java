@@ -109,6 +109,11 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 public class JdbcTopicMapStore extends TopicMapStoreImpl {
 
 	/**
+	 * flag indicates if the caching is enabled or disabled
+	 */
+	private boolean enableCaching = true;
+
+	/**
 	 * the connection provider
 	 */
 	private IConnectionProvider provider;
@@ -120,7 +125,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	 * the base locator of the topic map
 	 */
 	private ILocator baseLocator;
-	
+
 	private Cache cache;
 
 	// Index Instances
@@ -639,13 +644,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	// TODO revision and event?
 	protected void doMergeTopicMaps(TopicMap context, TopicMap other)
 			throws TopicMapStoreException {
-		TypeInstanceIndex index = other.getIndex(TypeInstanceIndex.class);
-		if (!index.isOpen()) {
-			index.open();
-		}
 		MergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
 	}
 
@@ -657,32 +657,37 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		try {
 			ITopic newTopic = provider.getProcessor()
 					.doCreateTopicWithoutIdentifier(getTopicMap());
-			provider.getProcessor().doMergeTopics(newTopic, context);
-			provider.getProcessor().doMergeTopics(newTopic, other);
-			// ((TopicImpl) other).getIdentity().setId(context.getId());
 			/*
-			 * notify listener
-			 */
-			notifyListeners(TopicMapEventType.TOPIC_ADDED, getTopicMap(),
-					newTopic, null);
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
-					context);
-			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
-					other);
-			/*
-			 * store history
+			 * store history and notify listeners
 			 */
 			storeRevision(TopicMapEventType.TOPIC_ADDED, getTopicMap(),
 					newTopic, null);
+			notifyListeners(TopicMapEventType.TOPIC_ADDED, getTopicMap(),
+					newTopic, null);
+			/*
+			 * merge topics
+			 */
+			provider.getProcessor().doMergeTopics(newTopic, context);
+			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			/*
+			 * store history and notify listeners
+			 */
 			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic,
 					context);
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
+					context);
+			/*
+			 * merge topics
+			 */
+			provider.getProcessor().doMergeTopics(newTopic, other);
+			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			/*
+			 * store history and notify listeners
+			 */
 			storeRevision(TopicMapEventType.MERGE, getTopicMap(), newTopic,
 					other);
-			/*
-			 * change id
-			 */
-			((TopicImpl) context).getIdentity().setId(newTopic.getId());
-			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
+					other);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1034,14 +1039,26 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object doRead(IConstruct context,
 			TopicMapStoreParameterType paramType, Object... params)
 			throws TopicMapStoreException {
-		return cache.doRead(context, paramType, params);
+		/*
+		 * avoid caching of transaction constructs
+		 */
+		if (context != null && context.getTopicMap() instanceof ITransaction) {
+			return super.doRead(context, paramType, params);
+		}
+		/*
+		 * check if caching is enabled
+		 */
+		if (isCachingEnabled()) {
+			return cache.doRead(context, paramType, params);
+		}
+		return super.doRead(context, paramType, params);
 	}
 
 	/**
@@ -1163,8 +1180,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Changeset doReadChangeSet(IRevision r)
-			throws TopicMapStoreException {
+	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadChangeset(getTopicMap(), r);
 		} catch (SQLException e) {
@@ -1201,8 +1217,8 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t,
-			ITopic type, IScope scope) throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type,
+			IScope scope) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor()
 					.doReadCharacteristics(t, type, scope));
@@ -1433,8 +1449,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IReifiable doReadReification(ITopic t)
-			throws TopicMapStoreException {
+	public IReifiable doReadReification(ITopic t) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadReification(t);
 		} catch (SQLException e) {
@@ -1445,8 +1460,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic doReadReification(IReifiable r)
-			throws TopicMapStoreException {
+	public ITopic doReadReification(IReifiable r) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadReification(r);
 		} catch (SQLException e) {
@@ -1670,8 +1684,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTopics(ITopicMap t)
-			throws TopicMapStoreException {
+	public Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadTopics(t));
 		} catch (SQLException e) {
@@ -1757,8 +1770,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doReadValue(IDatatypeAware t)
-			throws TopicMapStoreException {
+	public Object doReadValue(IDatatypeAware t) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadValue(t);
 		} catch (SQLException e) {
@@ -1785,8 +1797,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IVariant> doReadVariants(IName n)
-			throws TopicMapStoreException {
+	public Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException {
 		try {
 			return HashUtil.getHashSet(provider.getProcessor().doReadVariants(
 					n, -1, -1));
@@ -1831,12 +1842,11 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic)
-			throws TopicMapStoreException {
+	public String doReadBestLabel(ITopic topic) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadBestLabel(topic);
 		} catch (SQLException e) {
@@ -2373,7 +2383,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		this.baseLocator = (ILocator) topicMapBaseLocator;
 		cache = new Cache(this);
 		cache.initialize(baseLocator);
-		cache.connect();		
+		cache.connect();
 	}
 
 	/**
@@ -2588,8 +2598,50 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	public void clear() {
 		try {
 			getProcessor().doClearTopicMap(getTopicMap());
+			cache.clear();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+
+	/**
+	 * Method returns the internal state of caching.
+	 * 
+	 * @return <code>true</code> if caching is enabled, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isCachingEnabled() {
+		return enableCaching;
+	}
+
+	/**
+	 * Enable the caching mechanism of the database topic map store. If the
+	 * caching is enabled, the cache stores any read access and deliver the
+	 * values from cache instead calling the database. The cache will be updated
+	 * automatically. If the cache is disabled, it will be destroyed. Any cached
+	 * values are lost.
+	 * 
+	 * @param enable
+	 *            <code>true</code> to enable the cache, <code>false</code> to
+	 *            disable it
+	 */
+	public void enableCaching(boolean enable) {
+		/*
+		 * switch cache on if it does not still running
+		 */
+		if (enable && !isCachingEnabled()) {
+			cache = new Cache(this);
+			cache.connect();
+			cache.initialize(baseLocator);
+			enableCaching = enable;
+		}
+		/*
+		 * disable caching if does still running
+		 */
+		else if (!enable && isCachingEnabled()) {
+			enable = false;
+			cache.close();
+			cache = null;
 		}
 	}
 }

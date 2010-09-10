@@ -45,7 +45,7 @@ class ScopeCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
+	public void clear() {
 		if (scopes != null) {
 			scopes.clear();
 		}
@@ -271,8 +271,14 @@ class ScopeCache implements ITopicMapListener {
 		/*
 		 * scope was modified
 		 */
-		else if (event == TopicMapEventType.SCOPE_MODIFIED) {
-			cacheScope((IScopable) notifier, (IScope) newValue);
+		else if (event == TopicMapEventType.SCOPE_MODIFIED) {			
+			cacheScope((IScopable) notifier, (IScope) newValue);		
+			/*
+			 * variant scopes are dependent from the parent name scope
+			 */
+			if ( ( notifier instanceof IName || notifier instanceof IVariant ) && variantScopes != null ){
+				variantScopes.clear();
+			}
 		}
 	}
 

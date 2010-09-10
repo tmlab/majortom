@@ -24,7 +24,7 @@ public class AssociationCache implements ITopicMapListener {
 	/**
 	 * remove all contents from the internal cache
 	 */
-	public void close() {
+	public void clear() {
 		if (players != null) {
 			players.clear();
 		}

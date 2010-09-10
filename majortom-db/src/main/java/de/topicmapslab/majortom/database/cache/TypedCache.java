@@ -66,7 +66,7 @@ class TypedCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
+	public void clear() {
 		if (nameTypes != null) {
 			nameTypes.clear();
 		}

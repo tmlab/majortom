@@ -216,8 +216,8 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope)
 			throws TopicMapStoreException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		set.addAll(doReadNames(t, null, scope));
-		set.addAll(doReadOccurrences(t, null, scope));
+		set.addAll(doReadNames(t, scope));
+		set.addAll(doReadOccurrences(t, scope));
 		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
@@ -845,7 +845,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public void close() throws TopicMapStoreException {
 		getParentStore().removeTopicMapListener(cache);
-		cache.close();
+		cache.clear();
 		super.close();
 	}
 
@@ -870,7 +870,8 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public IRevision doReadFutureRevision(IRevision r)
 			throws TopicMapStoreException {
-		return null;
+		//TODO use revision
+		return getParentStore().doReadFutureRevision(r);
 	}
 
 	/**
@@ -878,7 +879,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public IRevision doReadPastRevision(IRevision r)
 			throws TopicMapStoreException {
-		return null;
+		return getParentStore().doReadPastRevision(r);
 	}
 
 	/**
@@ -886,14 +887,14 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Calendar doReadRevisionTimestamp(IRevision r)
 			throws TopicMapStoreException {
-		return null;
+		return getParentStore().doReadRevisionTimestamp(r);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
-		return null;
+		return getParentStore().doReadChangeSet(r);
 	}
 
 	/**
@@ -901,7 +902,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Map<String, String> doReadMetaData(IRevision revision)
 			throws TopicMapStoreException {
-		return null;
+		return getParentStore().doReadMetaData(revision);
 	}
 
 	/**
@@ -909,7 +910,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public String doReadMetaData(IRevision revision, String key)
 			throws TopicMapStoreException {
-		return null;
+		return getParentStore().doReadMetaData(revision, key);
 	}
 
 	/**
@@ -929,6 +930,14 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public ReadOnlyTopicMapStoreImpl getParentStore() {
 		return parentStore;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void clear(){
+		cache.clear();
 	}
 
 }

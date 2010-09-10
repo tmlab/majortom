@@ -3714,7 +3714,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			// TODO undo command
 			command.notify();
 		}
-		commited.clear();
+		commited.clear();		
 	}
 
 	/**

@@ -56,14 +56,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PostGreSqlQueryProcessor getProcessor() throws TopicMapStoreException {
+	public PostGreSqlQueryProcessor getProcessor()
+			throws TopicMapStoreException {
 		return (PostGreSqlQueryProcessor) super.getProcessor();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected PostGreSqlQueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
+	protected PostGreSqlQueryProcessor createProcessor(
+			IConnectionProvider provider, Connection connection) {
 		return new PostGreSqlQueryProcessor(this, connection);
 	}
 
@@ -87,30 +89,35 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void openConnection(String host, String database, String user, String password) throws SQLException, TopicMapStoreException {
+	public void openConnection(String host, String database, String user,
+			String password) throws SQLException, TopicMapStoreException {
 		super.openConnection(host, database, user, password);
 		/*
 		 * Check if procedure 'scope_by_themes' exists
 		 */
-		ResultSet rs = getDatabaseMetaData().getProcedures(null, null, "scope_by_themes");
+		ResultSet rs = getDatabaseMetaData().getProcedures(null, null,
+				"scope_by_themes");
 		procedureScopeByThemes = rs.next();
 		rs.close();
 		/*
 		 * Check if procedure 'topics_by_type_transitive' exists
 		 */
-		rs = getDatabaseMetaData().getProcedures(null, null, "topics_by_type_transitive");
+		rs = getDatabaseMetaData().getProcedures(null, null,
+				"topics_by_type_transitive");
 		procedureTopicsByTypeTransitive = rs.next();
 		rs.close();
 		/*
 		 * Check if procedure 'transitive_types' exists
 		 */
-		rs = getDatabaseMetaData().getProcedures(null, null, "transitive_types");
+		rs = getDatabaseMetaData()
+				.getProcedures(null, null, "transitive_types");
 		procedureTransitiveTypes = rs.next();
 		rs.close();
 		/*
 		 * Check if procedures 'transitive_subtypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null, "transitive_subtypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null,
+				"transitive_subtypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -123,7 +130,8 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedures 'transitive_supertypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null, "transitive_supertypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null,
+				"transitive_supertypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -136,7 +144,8 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedures 'types_and_subtypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null, "types_and_subtypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null,
+				"types_and_subtypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -146,7 +155,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 			}
 		}
 		rs.close();
-		
+
 		/*
 		 * Check if procedure 'best_label' exists
 		 */
@@ -247,7 +256,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	protected boolean existsProcedureTypesAndSubtypesArray() {
 		return procedureTypesAndSubtypesArray;
 	}
-	
+
 	/**
 	 * Method checks if the procedure 'best_label' exists.
 	 * 
