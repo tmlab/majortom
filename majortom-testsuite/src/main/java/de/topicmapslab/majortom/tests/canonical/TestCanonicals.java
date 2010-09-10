@@ -124,7 +124,10 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
+		System.out.println("Before remove duplicates");
+		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		System.out.println("After remove duplicate: " + ( System.currentTimeMillis() - t) + "ms.");
 		assertEquals("reifier should be merged", topics.length * 2 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
 			assertEquals("Number of occurrences should be 1", 1, topics[i].getOccurrences().size());

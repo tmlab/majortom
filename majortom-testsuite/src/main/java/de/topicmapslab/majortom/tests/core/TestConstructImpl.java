@@ -211,8 +211,8 @@ public class TestConstructImpl extends MaJorToMTestCase {
 			name.addItemIdentifier(locator);
 			fail("Item-identifier in use!");
 		}catch(IdentityConstraintException e){
-			assertEquals(e.getReporter(), name);
-			assertEquals(e.getExisting(), topic);
+			assertEquals(name, e.getReporter());
+			assertEquals(topic,e.getExisting());
 		}
 		/*
 		 * used by variant

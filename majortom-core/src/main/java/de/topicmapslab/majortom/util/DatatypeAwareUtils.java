@@ -284,6 +284,25 @@ public class DatatypeAwareUtils {
 		return obj.getValue();
 	}
 	
+
+
+	/**
+	 * Method clones the given calendar object, because the {@link Calendar} is
+	 * not immutable.
+	 * 
+	 * @param calendar
+	 *            the calendar
+	 * @return the clone
+	 */
+	public static Calendar cloneCalendar(Calendar calendar) {
+		Calendar c = Calendar.getInstance();
+		for (int field : new int[] { Calendar.YEAR, Calendar.MONTH,
+				Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE,
+				Calendar.SECOND, Calendar.MILLISECOND, Calendar.ZONE_OFFSET }) {
+			c.set(field, calendar.get(field));
+		}
+		return c;
+	}
 	
 
 }
