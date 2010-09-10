@@ -101,6 +101,7 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1,ass2.size());
 
 	}
+	
 
 	/* Collection<Association> getAssociationsPlayed(Topic type)
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayedTopic/topic/1) has
@@ -623,93 +624,234 @@ public class TestTopicImpl extends AbstractTest {
 	}
 
 	/* Occurrence createOccurrence(Topic type, String value, Collection<Topic> themes)
-	 * 
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/topic/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/type/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/theme/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/theme/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateOccurrenceTopicStringCollectionOfTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/type/1"));
+		assertNotNull(type);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/theme/1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/theme/2"));
+		assertNotNull(theme2);
+		
+		Collection<Topic> themes = new HashSet<Topic>();
+		themes.add(theme1);
+		themes.add(theme2);
+		
+		topic.createOccurrence(type, "Occurrence", themes);
 	}
 
 	/* Occurrence createOccurrence(Topic type, Locator value, Topic... themes)
-	 * 
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/topic/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/type/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/theme/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/theme/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateOccurrenceTopicLocatorTopicArray() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/type/1"));
+		assertNotNull(type);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/theme/1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/theme/2"));
+		assertNotNull(theme2);
+		
+		topic.createOccurrence(type, map.createLocator("http://occurrence/value"), theme1, theme2);
 	}
 
 	/* Occurrence createOccurrence(Topic type, Locator value, Collection<Topic> themes)
-	 * 
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/topic/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/type/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/theme/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/theme/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateOccurrenceTopicLocatorCollectionOfTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/type/1"));
+		assertNotNull(type);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/theme/1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/theme/2"));
+		assertNotNull(theme2);
+		
+		Collection<Topic> themes = new HashSet<Topic>();
+		themes.add(theme1);
+		themes.add(theme2);
+		
+		topic.createOccurrence(type, map.createLocator("http://occurrence/value"), themes);
 	}
 
 	/* Occurrence createOccurrence(Topic type, String value, Locator datatype, Topic... themes)
-	 * 
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/topic/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/type/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/theme/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/theme/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateOccurrenceTopicStringLocatorTopicArray() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/type/1"));
+		assertNotNull(type);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/theme/1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/theme/2"));
+		assertNotNull(theme2);
+		
+		topic.createOccurrence(type, "value",map.createLocator("xsd:string"), theme1, theme2);
 	}
 
 	/* Occurrence createOccurrence(Topic type, String value, Locator datatype, Collection<Topic> themes)
-	 * 
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/topic/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/type/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/theme/1)
+	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/theme/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateOccurrenceTopicStringLocatorCollectionOfTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/type/1"));
+		assertNotNull(type);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/theme/1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/theme/2"));
+		assertNotNull(theme2);
+		
+		Collection<Topic> themes = new HashSet<Topic>();
+		themes.add(theme1);
+		themes.add(theme2);
+		
+		topic.createOccurrence(type, "value", map.createLocator("xsd:string"), themes);
 	}
 
 	/* Set<Name> getNames()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetNames/topic/1) has
+	 * 1 default name and
+	 * 2 name of type(http://TestTopicImpl/testGetNames/name)
 	 */
 	@Test
 	public void testGetNames() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetNames/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(3, topic.getNames().size());
 	}
 
 	/* Set<Name> getNames(Topic type)
-	 * 
+	 * Topic (http://TestTopicImpl/testGetNamesTopic/topic/1) has
+	 * 1 default name and
+	 * 2 name of type(http://TestTopicImpl/testGetNamesTopic/name)
 	 */
 	@Test
 	public void testGetNamesTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetNamesTopic/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(3, topic.getNames().size());
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetNamesTopic/name"));
+		assertNotNull(type);
+		
+		assertEquals(2, topic.getNames(type).size());
+		
 	}
 
 	/* Set<Occurrence> getOccurrences()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetOccurrences/topic/1) has
+	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrences/occ/1)
+	 * 2 occurrences of type(http://TestTopicImpl/testGetOccurrences/occ/2)
 	 */
 	@Test
 	public void testGetOccurrences() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetOccurrences/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(3, topic.getOccurrences().size());
 	}
 
 	/* Set<Occurrence> getOccurrences(Topic type)
-	 * 
+	 * Topic (http://TestTopicImpl/testGetOccurrencesTopic/topic/1) has
+	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrencesTopic/occ/1)
+	 * 2 occurrences of type(http://TestTopicImpl/testGetOccurrencesTopic/occ/2)
 	 */
 	@Test
 	public void testGetOccurrencesTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetOccurrencesTopic/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(3, topic.getOccurrences().size());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetOccurrencesTopic/occ/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetOccurrencesTopic/occ/2"));
+		assertNotNull(type2);
+		
+		assertEquals(1, topic.getOccurrences(type1).size());
+		assertEquals(2, topic.getOccurrences(type2).size());
 	}
 
 	/* ITopicMap getParent()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetParent/topic/1)
 	 */
 	@Test
 	public void testGetParent() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetParent/topic/1"));
+		assertNotNull(topic);
+		assertNotNull(topic.getParent());
+		assertEquals(map, topic.getParent());
+		
 	}
 
 	/* Reifiable getReified()
