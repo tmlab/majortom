@@ -30,20 +30,20 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.index.IndexImpl;
+import de.topicmapslab.majortom.index.nonpaged.CachedTypeInstanceIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
-import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implements ITypeInstanceIndex {
+public class JdbcTypeInstanceIndex extends
+		CachedTypeInstanceIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * @param store
@@ -56,13 +56,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	 * 
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Topic type) {
+	public Collection<Association> doGetAssociations(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByType((ITopic) type, -1, -1));
+			col.addAll(getStore().getProcessor().getAssociationsByType(
+					(ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -76,17 +77,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<Association> col = HashUtil.getHashSet();
-		for (Topic type : types) {
-			col.addAll(getAssociations(type));
-		}
-		return col;
+		return getAssociations(Arrays.asList(types));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> getAssociations(Collection<? extends Topic> types) {
+	public Collection<Association> doGetAssociations(
+			Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -100,7 +98,7 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getCharacteristicTypes() {
+	public Collection<Topic> doGetCharacteristicTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -112,7 +110,7 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Topic type) {
+	public Collection<ICharacteristics> doGetCharacteristics(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -133,20 +131,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<ICharacteristics> col = HashUtil.getHashSet();
-		for (Name n : getNames(types)) {
-			col.add((IName) n);
-		}
-		for (Occurrence o : getOccurrences(types)) {
-			col.add((IOccurrence) o);
-		}
-		return col;
+		return doGetCharacteristics(Arrays.asList(types));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(Collection<? extends Topic> types) {
+	public Collection<ICharacteristics> doGetCharacteristics(
+			Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -164,13 +156,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	 * 
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Topic type) {
+	public Collection<Name> doGetNames(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByType((ITopic) type, -1, -1));
+			col.addAll(getStore().getProcessor().getNamesByType((ITopic) type,
+					-1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -184,17 +177,13 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<Name> col = HashUtil.getHashSet();
-		for (Topic type : types) {
-			col.addAll(getNames(type));
-		}
-		return col;
+		return getNames(Arrays.asList(types));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Name> getNames(Collection<? extends Topic> types) {
+	public Collection<Name> doGetNames(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -209,13 +198,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	 * 
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Topic type) {
+	public Collection<Occurrence> doGetOccurrences(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByType((ITopic) type, -1, -1));
+			col.addAll(getStore().getProcessor().getOccurrencesByType(
+					(ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -229,17 +219,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<Occurrence> col = HashUtil.getHashSet();
-		for (Topic type : types) {
-			col.addAll(getOccurrences(type));
-		}
-		return col;
+		return getOccurrences(Arrays.asList(types));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> getOccurrences(Collection<? extends Topic> types) {
+	public Collection<Occurrence> doGetOccurrences(
+			Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -254,13 +241,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	 * 
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Topic type) {
+	public Collection<Role> doGetRoles(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRolesByType((ITopic) type, -1, -1));
+			col.addAll(getStore().getProcessor().getRolesByType((ITopic) type,
+					-1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -274,17 +262,13 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<Role> col = HashUtil.getHashSet();
-		for (Topic type : types) {
-			col.addAll(getRoles(type));
-		}
-		return col;
+		return getRoles(Arrays.asList(types));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Role> getRoles(Collection<? extends Topic> types) {
+	public Collection<Role> doGetRoles(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -298,13 +282,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Topic type) {
+	public Collection<Topic> doGetTopics(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByType(getStore().getTopicMap(), type, -1, -1));
+			col.addAll(getStore().getProcessor().getTopicsByType(
+					getStore().getTopicMap(), type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -318,13 +303,7 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {
-			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), all, -1, -1));
-			return col;
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
-		}
+		return getTopics(Arrays.asList(types), all);
 	}
 
 	/**
@@ -334,13 +313,7 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		try {
-			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypes(Arrays.asList(types), false, -1, -1));
-			return col;
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
-		}
+		return getTopics(Arrays.asList(types), false);
 	}
 
 	/**
@@ -350,9 +323,20 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		return getTopics(types, false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> doGetTopics(Collection<Topic> types, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypes(types, false, -1, -1));
+			col.addAll(getStore().getProcessor().getTopicsByTypes(types, all,
+					-1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -362,13 +346,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopics(Collection<Topic> types, boolean all) {
+	public Collection<Topic> doGetAssociationTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypes(types, all, -1, -1));
+			col.addAll(getStore().getProcessor().getAssociationTypes(
+					getStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -378,13 +363,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getAssociationTypes() {
+	public Collection<Topic> doGetNameTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationTypes(getStore().getTopicMap(), -1, -1));
+			col.addAll(getStore().getProcessor().getNameTypes(
+					getStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -394,13 +380,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getNameTypes() {
+	public Collection<Topic> doGetOccurrenceTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNameTypes(getStore().getTopicMap(), -1, -1));
+			col.addAll(getStore().getProcessor().getOccurrenceTypes(
+					getStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -410,13 +397,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getOccurrenceTypes() {
+	public Collection<Topic> doGetRoleTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrenceTypes(getStore().getTopicMap(), -1, -1));
+			col.addAll(getStore().getProcessor().getRoleTypes(
+					getStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -426,29 +414,14 @@ public class JdbcTypeInstanceIndex extends IndexImpl<JdbcTopicMapStore> implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getRoleTypes() {
+	public Collection<Topic> doGetTopicTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRoleTypes(getStore().getTopicMap(), -1, -1));
-			return col;
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<Topic> getTopicTypes() {
-		if (!isOpen()) {
-			throw new TMAPIRuntimeException("Index is closed!");
-		}
-		try {
-			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicTypes(getStore().getTopicMap(), -1, -1));
+			col.addAll(getStore().getProcessor().getTopicTypes(
+					getStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

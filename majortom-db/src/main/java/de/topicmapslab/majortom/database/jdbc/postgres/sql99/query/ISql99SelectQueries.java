@@ -156,13 +156,13 @@ public interface ISql99SelectQueries {
 		 * </p>
 		 */
 		public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? ";
-		/**
-		 * Query to read all associations within a specific type
-		 * <p>
-		 * <b>parameters(2):</b> topic map id, scope id
-		 * </p>
-		 */
-		public static String QUERY_READ_ASSOCIATIONS_WITH_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ? ";
+//		/**
+//		 * Query to read all associations within a specific type
+//		 * <p>
+//		 * <b>parameters(2):</b> topic map id, scope id
+//		 * </p>
+//		 */
+//		public static String QUERY_READ_ASSOCIATIONS_WITH_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ? ";
 
 		/**
 		 * Query to read all associations of a specific type and within a

@@ -18,7 +18,7 @@ package de.topicmapslab.majortom.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
-import de.topicmapslab.majortom.tests.canonical.CanonicalTestSuite;
+import de.topicmapslab.majortom.tests.index.IndexTestSuite;
 
 /**
  * @author Sven Krosse
@@ -33,13 +33,13 @@ public class MaJorToMTestSuite {
 		// $JUnit-BEGIN$
 		// suite.addTest(CoreTestSuite.suite());
 		// suite.addTest(EventTestSuite.suite());
-		// suite.addTest(IndexTestSuite.suite());
+		suite.addTest(IndexTestSuite.suite());
 		// suite.addTest(MergeTestSuite.suite());
 		// // // suite.addTest(IOTestSuite.suite());
 		// suite.addTest(RevisionTestSuite.suite());
 		// suite.addTest(TransactionSuite.suite());
 		// suite.addTest(org.tmapi.AllTests.suite());
-		suite.addTest(CanonicalTestSuite.suite());
+		// suite.addTest(CanonicalTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

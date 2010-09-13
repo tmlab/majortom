@@ -260,5 +260,4 @@ public interface ITopicMapStore {
 	 * @return the internal construct factory
 	 */
 	public IConstructFactory getConstructFactory();
-	
 }

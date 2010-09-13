@@ -1186,11 +1186,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm, IScope scope)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder
-				.getQueryReadAssociationWithScope();
-		stmt.setLong(1, Long.parseLong(tm.getId()));
-		stmt.setLong(2, Long.parseLong(scope.getId()));
-		return Jdbc2Construct.toAssociations(tm, stmt.executeQuery(), "id");
+		return getAssociationsByScope(tm, scope, -1, -1);
 	}
 
 	/**

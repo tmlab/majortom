@@ -99,7 +99,7 @@ public abstract class ConstructImpl implements IConstruct {
 	 * {@inheritDoc}
 	 */
 	public String getId() {
-		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
+		return getIdentity().getId();//(String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
 
 	/**

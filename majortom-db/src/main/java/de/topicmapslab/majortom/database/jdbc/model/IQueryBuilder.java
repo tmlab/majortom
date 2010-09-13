@@ -75,7 +75,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadAssociationWithTypeAndScope() throws SQLException;
 
-	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException;
+//	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException;
 
 	public PreparedStatement getQueryReadConstructById() throws SQLException;
 

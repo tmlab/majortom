@@ -30,16 +30,16 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.index.IndexImpl;
+import de.topicmapslab.majortom.index.nonpaged.CachedIdentityIndexImpl;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
-import de.topicmapslab.majortom.model.index.IIdentityIndex;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements IIdentityIndex {
+public class JdbcIdentityIndex extends
+		CachedIdentityIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * constructor
@@ -61,7 +61,8 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsIdentifier(getStore().getTopicMap().createLocator(reference));
+		return existsIdentifier(getStore().getTopicMap().createLocator(
+				reference));
 	}
 
 	/**
@@ -74,7 +75,9 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
 		}
-		return existsItemIdentifier(locator) || existsSubjectIdentifier(locator) || existsSubjectLocator(locator);
+		return existsItemIdentifier(locator)
+				|| existsSubjectIdentifier(locator)
+				|| existsSubjectLocator(locator);
 	}
 
 	/**
@@ -87,7 +90,8 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsItemIdentifier(getStore().getTopicMap().createLocator(reference));
+		return existsItemIdentifier(getStore().getTopicMap().createLocator(
+				reference));
 	}
 
 	/**
@@ -113,7 +117,8 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectIdentifier(getStore().getTopicMap().createLocator(reference));
+		return existsSubjectIdentifier(getStore().getTopicMap().createLocator(
+				reference));
 	}
 
 	/**
@@ -139,7 +144,8 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectLocator(getStore().getTopicMap().createLocator(reference));
+		return existsSubjectLocator(getStore().getTopicMap().createLocator(
+				reference));
 	}
 
 	/**
@@ -158,14 +164,16 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Construct getConstructByItemIdentifier(String reference) throws MalformedIRIException {
+	public Construct getConstructByItemIdentifier(String reference)
+			throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getConstructByItemIdentifier(getStore().getTopicMap().createLocator(reference));
+		return getConstructByItemIdentifier(getStore().getTopicMap()
+				.createLocator(reference));
 	}
 
 	/**
@@ -184,16 +192,19 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(String regExp) {
+	public Collection<Construct> doGetConstructsByIdentifier(String regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression  cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression  cannot be null");
 		}
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor().getConstructsByIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
+			constructs.addAll(getStore().getProcessor()
+					.getConstructsByIdentitifer(getStore().getTopicMap(),
+							regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -203,30 +214,34 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByIdentifier(Pattern regExp) {
+	public Collection<Construct> doGetConstructsByIdentifier(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression  cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression  cannot be null");
 		}
-		return getConstructsByIdentifier(regExp.pattern());
+		return doGetConstructsByIdentifier(regExp.pattern());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(String regExp) {
+	public Collection<Construct> doGetConstructsByItemIdentifier(String regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression  cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression  cannot be null");
 		}
 
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor().getConstructsByItemIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
+			constructs.addAll(getStore().getProcessor()
+					.getConstructsByItemIdentitifer(getStore().getTopicMap(),
+							regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -236,26 +251,28 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Construct> getConstructsByItemIdentifier(Pattern regExp) {
+	public Collection<Construct> doGetConstructsByItemIdentifier(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression  cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression  cannot be null");
 		}
-		return getConstructsByItemIdentifier(regExp.pattern());
+		return doGetConstructsByItemIdentifier(regExp.pattern());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getItemIdentifiers() {
+	public Collection<Locator> doGetItemIdentifiers() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getItemIdentifiers(getStore().getTopicMap(), -1, -1));
+			locators.addAll(getStore().getProcessor().getItemIdentifiers(
+					getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -265,13 +282,14 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectIdentifiers() {
+	public Collection<Locator> doGetSubjectIdentifiers() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectIdentifiers(getStore().getTopicMap(), -1, -1));
+			locators.addAll(getStore().getProcessor().getSubjectIdentifiers(
+					getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -281,13 +299,14 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Locator> getSubjectLocators() {
+	public Collection<Locator> doGetSubjectLocators() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectLocators(getStore().getTopicMap(), -1, -1));
+			locators.addAll(getStore().getProcessor().getSubjectLocators(
+					getStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -297,14 +316,16 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic getTopicBySubjectIdentifier(String reference) throws MalformedIRIException {
+	public Topic getTopicBySubjectIdentifier(String reference)
+			throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectIdentifier(getStore().getTopicMap().createLocator(reference));
+		return getTopicBySubjectIdentifier(getStore().getTopicMap()
+				.createLocator(reference));
 	}
 
 	/**
@@ -323,14 +344,16 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic getTopicBySubjectLocator(String reference) throws MalformedIRIException {
+	public Topic getTopicBySubjectLocator(String reference)
+			throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectLocator(getStore().getTopicMap().createLocator(reference));
+		return getTopicBySubjectLocator(getStore().getTopicMap().createLocator(
+				reference));
 	}
 
 	/**
@@ -349,16 +372,19 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(String regExp) {
+	public Collection<Topic> doGetTopicsBySubjectIdentifier(String regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression cannot be null");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getTopicsBySubjectIdentitifer(getStore().getTopicMap(), regExp, -1, -1));
+			topics.addAll(getStore().getProcessor()
+					.getTopicsBySubjectIdentitifer(getStore().getTopicMap(),
+							regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -368,29 +394,32 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(Pattern regExp) {
+	public Collection<Topic> doGetTopicsBySubjectIdentifier(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression cannot be null");
 		}
-		return getTopicsBySubjectIdentifier(regExp.pattern());
+		return doGetTopicsBySubjectIdentifier(regExp.pattern());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(String regExp) {
+	public Collection<Topic> doGetTopicsBySubjectLocator(String regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression cannot be null");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getTopicsBySubjectLocator(getStore().getTopicMap(), regExp, -1, -1));
+			topics.addAll(getStore().getProcessor().getTopicsBySubjectLocator(
+					getStore().getTopicMap(), regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -400,14 +429,15 @@ public class JdbcIdentityIndex extends IndexImpl<JdbcTopicMapStore> implements I
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(Pattern regExp) {
+	public Collection<Topic> doGetTopicsBySubjectLocator(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException("Regular expression cannot be null");
+			throw new IllegalArgumentException(
+					"Regular expression cannot be null");
 		}
-		return getTopicsBySubjectLocator(regExp.pattern());
+		return doGetTopicsBySubjectLocator(regExp.pattern());
 	}
 
 }

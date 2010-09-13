@@ -27,17 +27,17 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.index.IndexImpl;
+import de.topicmapslab.majortom.index.nonpaged.CachedSupertypeSubtypeIndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
-import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> implements ISupertypeSubtypeIndex {
+public class JdbcSupertypeSubtypeIndex extends
+		CachedSupertypeSubtypeIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * constructor
@@ -52,13 +52,14 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSubtypes(Topic type) {
+	public Collection<Topic> doGetDirectSubtypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getDirectSubtypes(getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getStore().getProcessor().getDirectSubtypes(
+					getStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -68,13 +69,14 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getDirectSupertypes(Topic type) {
+	public Collection<Topic> doGetDirectSupertypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getDirectSupertypes(getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getStore().getProcessor().getDirectSupertypes(
+					getStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -84,13 +86,14 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes() {
+	public Collection<Topic> doGetSubtypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), -1, -1));
+			topics.addAll(getStore().getProcessor().getSubtypes(
+					getStore().getTopicMap(), -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -100,13 +103,14 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Topic type) {
+	public Collection<Topic> doGetSubtypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getStore().getProcessor().getSubtypes(
+					getStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -116,7 +120,7 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Topic... types) {
+	public Collection<Topic> doGetSubtypes(Topic... types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -129,7 +133,7 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types) {
+	public Collection<Topic> doGetSubtypes(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -142,7 +146,8 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, boolean all) {
+	public Collection<Topic> doGetSubtypes(Collection<? extends Topic> types,
+			boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -151,7 +156,8 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), types, all, -1, -1));
+			topics.addAll(getStore().getProcessor().getSubtypes(
+					getStore().getTopicMap(), types, all, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -161,13 +167,14 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes() {
+	public Collection<Topic> doGetSupertypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), -1, -1));
+			topics.addAll(getStore().getProcessor().getSupertypes(
+					getStore().getTopicMap(), -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -177,16 +184,19 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Topic type) {
+	public Collection<Topic> doGetSupertypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (type != null && !type.getTopicMap().equals(getStore().getTopicMap())) {
-			throw new IllegalArgumentException("Topic has to be a part of this topic map.");
+		if (type != null
+				&& !type.getTopicMap().equals(getStore().getTopicMap())) {
+			throw new IllegalArgumentException(
+					"Topic has to be a part of this topic map.");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getStore().getProcessor().getSupertypes(
+					getStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -196,7 +206,7 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Topic... types) {
+	public Collection<Topic> doGetSupertypes(Topic... types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -209,7 +219,7 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types) {
+	public Collection<Topic> doGetSupertypes(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -222,7 +232,8 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all) {
+	public Collection<Topic> doGetSupertypes(Collection<? extends Topic> types,
+			boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -231,7 +242,8 @@ public class JdbcSupertypeSubtypeIndex extends IndexImpl<JdbcTopicMapStore> impl
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), types, all, -1, -1));
+			topics.addAll(getStore().getProcessor().getSupertypes(
+					getStore().getTopicMap(), types, all, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

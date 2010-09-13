@@ -151,7 +151,7 @@ public class RevisionCache implements ITopicMapListener {
 	 * @return the following revision or <code>null</code> if the value was not
 	 *         cached before
 	 */
-	public IRevision getNextRevision(IRevision revision) {
+	public IRevision getFutureRevision(IRevision revision) {
 		return getCachedEntry(revisionDependents, revision, FUTURE);
 	}
 
@@ -387,7 +387,7 @@ public class RevisionCache implements ITopicMapListener {
 	 * @param future
 	 *            the revision after the given one
 	 */
-	public void cacheNextRevision(IRevision revision, IRevision future) {
+	public void cacheFutureRevision(IRevision revision, IRevision future) {
 		if (revisionDependents == null) {
 			revisionDependents = HashUtil.getHashMap();
 		}

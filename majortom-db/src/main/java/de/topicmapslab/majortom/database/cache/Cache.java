@@ -830,7 +830,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 		}
 		return variants;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -870,8 +870,14 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public IRevision doReadFutureRevision(IRevision r)
 			throws TopicMapStoreException {
-		//TODO use revision
-		return getParentStore().doReadFutureRevision(r);
+		IRevision revision = cache.getRevisionCache().getFutureRevision(r);
+		if ( revision == null ){
+			revision = getParentStore().doReadFutureRevision(r);
+			if ( revision != null ){
+				cache.getRevisionCache().cacheFutureRevision(r, revision);
+			}
+		}
+		return revision;
 	}
 
 	/**
@@ -879,7 +885,14 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public IRevision doReadPastRevision(IRevision r)
 			throws TopicMapStoreException {
-		return getParentStore().doReadPastRevision(r);
+		IRevision revision = cache.getRevisionCache().getPastRevision(r);
+		if ( revision == null ){
+			revision = getParentStore().doReadPastRevision(r);
+			if ( revision != null ){
+				cache.getRevisionCache().cachePastRevision(r, revision);
+			}
+		}
+		return revision;
 	}
 
 	/**
@@ -887,14 +900,24 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Calendar doReadRevisionTimestamp(IRevision r)
 			throws TopicMapStoreException {
-		return getParentStore().doReadRevisionTimestamp(r);
+		Calendar c = cache.getRevisionCache().getRevisionTimestamp(r);
+		if ( c == null ){
+			c = getParentStore().doReadRevisionTimestamp(r);
+			cache.getRevisionCache().cacheRevisionTimestamp(r, c);
+		}
+		return DatatypeAwareUtils.cloneCalendar(c);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
-		return getParentStore().doReadChangeSet(r);
+		Changeset changeset = cache.getRevisionCache().getChangeset(r);
+		if ( changeset == null ){
+			changeset = getParentStore().doReadChangeSet(r);
+			cache.getRevisionCache().cacheChangeset(r, changeset);
+		}
+		return changeset;
 	}
 
 	/**
@@ -902,15 +925,21 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Map<String, String> doReadMetaData(IRevision revision)
 			throws TopicMapStoreException {
-		return getParentStore().doReadMetaData(revision);
+		Map<String, String> metaData = cache.getRevisionCache().getMetaData(revision);
+		if ( metaData == null ){
+			metaData = getParentStore().doReadMetaData(revision);
+			cache.getRevisionCache().cacheMetaData(revision, metaData);
+		}
+		return HashUtil.getHashMap(metaData);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String doReadMetaData(IRevision revision, String key)
-			throws TopicMapStoreException {
-		return getParentStore().doReadMetaData(revision, key);
+			throws TopicMapStoreException {		
+		Map<String, String> metaData = doReadMetaData(revision);
+		return metaData.get(key);
 	}
 
 	/**
@@ -939,5 +968,4 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public void clear(){
 		cache.clear();
 	}
-
 }

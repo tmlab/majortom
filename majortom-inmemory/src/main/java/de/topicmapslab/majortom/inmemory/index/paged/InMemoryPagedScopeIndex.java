@@ -26,7 +26,8 @@ import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
  * @author Sven Krosse
  * 
  */
-public class InMemoryPagedScopeIndex extends PagedScopeIndexImpl<InMemoryTopicMapStore> {
+public class InMemoryPagedScopeIndex extends
+		PagedScopeIndexImpl<InMemoryTopicMapStore> {
 
 	/**
 	 * constructor
@@ -36,7 +37,8 @@ public class InMemoryPagedScopeIndex extends PagedScopeIndexImpl<InMemoryTopicMa
 	 * @param parentIndex
 	 *            the parent index
 	 */
-	public InMemoryPagedScopeIndex(InMemoryTopicMapStore store, IScopedIndex parentIndex) {
+	public InMemoryPagedScopeIndex(InMemoryTopicMapStore store,
+			IScopedIndex parentIndex) {
 		super(store, parentIndex);
 	}
 

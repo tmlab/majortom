@@ -303,15 +303,15 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 		return this.preparedStatementReadAssociation;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException {
-		if (this.preparedStatementReadAssociationWithScope == null) {
-			this.preparedStatementReadAssociationWithScope = getConnection().prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS_WITH_SCOPE);
-		}
-		return this.preparedStatementReadAssociationWithScope;
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException {
+//		if (this.preparedStatementReadAssociationWithScope == null) {
+//			this.preparedStatementReadAssociationWithScope = getConnection().prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS_WITH_SCOPE);
+//		}
+//		return this.preparedStatementReadAssociationWithScope;
+//	}
 
 	/**
 	 * {@inheritDoc}

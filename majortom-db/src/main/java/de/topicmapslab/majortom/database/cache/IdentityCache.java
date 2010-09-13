@@ -724,7 +724,7 @@ class IdentityCache implements ITopicMapListener {
 		 * clear id
 		 */
 		if (ids != null) {
-			ids.remove(construct.getId());
+			ids.clear();
 		}
 		/*
 		 * clear identities
