@@ -74,6 +74,8 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 *            the id to set
 	 */
 	public void setId(String id) {
+		// System.out.println("Id change from '" + this.id + "' to '" + id +
+		// "'.");
 		this.id = id;
 	}
 

@@ -2644,4 +2644,14 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			cache = null;
 		}
 	}
+
+	/**
+	 * Returns the internal cache instance
+	 * 
+	 * @return the cache or <code>null</code> if caching is disabled
+	 */
+	public Cache getCache() {
+		return cache;
+	}
+
 }

@@ -1236,5 +1236,4 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	public boolean isConnected() {
 		return connected;
 	}
-
 }

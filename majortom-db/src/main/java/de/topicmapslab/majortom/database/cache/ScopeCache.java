@@ -20,7 +20,7 @@ import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
-class ScopeCache implements ITopicMapListener {
+public class ScopeCache implements ITopicMapListener {
 	/**
 	 * storage map of scope-themes mapping
 	 */
@@ -40,7 +40,7 @@ class ScopeCache implements ITopicMapListener {
 	/**
 	 * storage map of association-scope relation
 	 */
-	private Map<IAssociation, IScope> associationScopes;
+	private Map<IAssociation, IScope> associationScopes;	
 
 	/**
 	 * {@inheritDoc}
