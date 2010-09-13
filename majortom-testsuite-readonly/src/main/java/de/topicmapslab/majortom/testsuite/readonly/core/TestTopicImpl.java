@@ -15,6 +15,8 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
+import org.tmapi.core.Reifiable;
+import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMapExistsException;
 
@@ -855,102 +857,245 @@ public class TestTopicImpl extends AbstractTest {
 	}
 
 	/* Reifiable getReified()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetReified/topic/1) playes in exactly one association
+	 * which has an reifier
 	 */
 	@Test
 	public void testGetReified() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetReified/topic/1"));
+		assertNotNull(topic);
+		
+		Collection<Association> ass = topic.getAssociationsPlayed();
+		assertEquals(1, ass.size());
+		
+		Association a = ass.iterator().next();
+		
+		Topic reifier = a.getReifier();
+		assertNotNull(reifier);
+		
+		// check
+		Reifiable r = reifier.getReified();
+		assertNotNull(r);
+		assertEquals(r, a);
+		
+		
 	}
 
 	/* Set<Role> getRolesPlayed()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetRolesPlayed/topic/1) plays
+	 * exactly 2 roles of type(http://TestTopicImpl/testGetRolesPlayed/roletype)
 	 */
 	@Test
 	public void testGetRolesPlayed() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayed/topic/1"));
+		assertNotNull(topic);
+		
+		Set<Role> roles = topic.getRolesPlayed();
+		assertEquals(2, roles.size());
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayed/roletype"));
+		assertNotNull(type);
+		
+		for(Role r:roles)
+			assertEquals(type, r.getType());
 	}
 
 	/* Set<Role> getRolesPlayed(Topic roleType)
-	 * 
+	 * Topic (http://TestTopicImpl/testGetRolesPlayedTopic/topic/1) plays
+	 * exactly 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopic/roletype1)
+	 * and 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopic/roletype2)
 	 */
 	@Test
 	public void testGetRolesPlayedTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopic/topic/1"));
+		assertNotNull(topic);
+		
+		Set<Role> roles = topic.getRolesPlayed();
+		assertEquals(2, roles.size());
+		
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopic/roletype1"));
+		assertNotNull(type);
+		
+		Set<Role> typedRoles = topic.getRolesPlayed(type);
+		assertEquals(1, typedRoles.size());
 	}
 
 	/* Set<Role> getRolesPlayed(Topic roleType, Topic associtaionType)
-	 * 
+	 * Topic (http://TestTopicImpl/testGetRolesPlayedTopicTopic/topic/1) plays
+	 * exactly 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/roletype1)
+	 * in association of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype1)
+	 * 1 role of type(http://TestTopicImpl/testGetRolesPlayed/roletype2)
+	 * in in association of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype1)
+	 * and 1 role of type(http://TestTopicImpl/testGetRolesPlayed/roletype1)
+	 * in in association of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype2)
 	 */
 	@Test
 	public void testGetRolesPlayedTopicTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopicTopic/topic/1"));
+		assertNotNull(topic);
+		
+		Set<Role> roles = topic.getRolesPlayed();
+		assertEquals(3, roles.size());
+		
+		ITopic roletype1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopicTopic/roletype1"));
+		assertNotNull(roletype1);
+		
+		ITopic roletype2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopicTopic/roletype2"));
+		assertNotNull(roletype2);
+		
+		ITopic asstype1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype1"));
+		assertNotNull(asstype1);
+		
+		ITopic asstype2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype2"));
+		assertNotNull(asstype2);
+		
+		roles = topic.getRolesPlayed(roletype1);
+		assertEquals(2, roles.size());
+		
+		roles = topic.getRolesPlayed(roletype2);
+		assertEquals(1, roles.size());
+		
+		roles = topic.getRolesPlayed(roletype1, asstype1);
+		assertEquals(1, roles.size());
 	}
 
 	/* Set<Locator> getSubjectIdentifiers()
-	 *  
+	 *  Topic  has subject identifier 
+	 *  http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si1
+	 *  http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2
 	 */
 	@Test
 	public void testGetSubjectIdentifiers() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si1"));
+		assertNotNull(topic);
+		assertEquals(2, topic.getSubjectIdentifiers().size());
+		assertEquals(topic, (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2")));
 	}
 
 	/* Set<Locator> getSubjectLocators()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetSubjectLocators/topic/1) has
+	 * 2 subjectLocator (http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1) and
+	 * (http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2)
 	 */
 	@Test
 	public void testGetSubjectLocators() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1"));
+		assertNotNull(topic);
+		assertEquals(2, topic.getSubjectLocators().size());
+		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1")));
+		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2")));
+
 	}
 
 	/* Set<Topic> getTypes()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetTypes/topic/1) has
+	 * type (http://TestTopicImpl/testGetTypes/type1)
+	 * and type (http://TestTopicImpl/testGetTypes/type2)
 	 */
 	@Test
 	public void testGetTypes() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetTypes/topic/1"));
+		assertNotNull(topic);
+		
+		Set<Topic> types = topic.getTypes();
+		assertEquals(2, types.size());
+		
+		Object[] ta = types.toArray();
+		
+		assertTrue(((Topic)ta[0]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type1") 
+				|| ((Topic)ta[0]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type2"));
+		
+		assertTrue(((Topic)ta[1]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type1") 
+				|| ((Topic)ta[1]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type2"));
+		
 	}
 
 	/* void addType(Topic type)
-	 * 
+	 * Topic (http://TestTopicImpl/testAddType/topic/1)
+	 * Topic (http://TestTopicImpl/testAddType/topic/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testAddType() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testAddType/topic/1"));
+		assertNotNull(topic1);
+		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testAddType/topic/2"));
+		assertNotNull(topic2);
+		
+		topic1.addType(topic2);
 	}
 
 	/* void removeType(Topic type)
-	 * 
+	 * Topic (http://TestTopicImpl/testRemoveType/topic/1)
+	 * has type (http://TestTopicImpl/testRemoveType/type)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveType() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testRemoveType/topic/1"));
+		assertNotNull(topic);
+		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testRemoveType/type"));
+		assertNotNull(type);
+		assertEquals(1, topic.getTypes().size());
+		assertEquals(type, topic.getTypes().iterator().next());
+		
+		topic.removeType(type);
 	}
 
 	/* void mergeIn(Topic topic)
-	 * 
+	 * Topic (http://TestTopicImpl/testMergeIn/topic/1)
+	 * Topic (http://TestTopicImpl/testMergeIn/topic/2)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testMergeIn() {
 
-		fail("Not yet implemented");
+		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testMergeIn/topic/1"));
+		assertNotNull(topic1);
+		
+		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testMergeIn/topic/2"));
+		assertNotNull(topic2);
+		
+		topic1.mergeIn(topic2);
 	}
 
 	/* void removeSubjectIdentifier(Locator identifier)
-	 * 
+	 * Topic (http://TestTopicImpl/testRemoveSubjectIdentifier/topic/1)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveSubjectIdentifier() {
 
-		fail("Not yet implemented");
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testRemoveSubjectIdentifier/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(1, topic.getSubjectIdentifiers().size());
+		Locator si = topic.getSubjectIdentifiers().iterator().next();
+		
+		topic.removeSubjectIdentifier(si);
 	}
 
 	/* void removeSubjectLocator(Locator locator)
