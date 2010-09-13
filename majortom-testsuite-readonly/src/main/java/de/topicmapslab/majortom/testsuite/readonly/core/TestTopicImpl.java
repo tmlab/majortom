@@ -1250,10 +1250,8 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfAssociationsPlayed() {
 
-		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetNumberOfAssociationsPlayed/topic/1"));
-		assertNotNull(topic);
-		
-		/// TODO assertEquals(2, topic.getNumberOfAssociationsPlayed());
+		/// TODO implement
+		fail("Not yet implemented");
 		
 	}
 
@@ -1263,6 +1261,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfNames() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1272,6 +1271,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfOccurrences() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1281,6 +1281,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfRolesPlayed() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1290,6 +1291,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfSupertypes() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1299,6 +1301,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNumberOfTypes() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 }
