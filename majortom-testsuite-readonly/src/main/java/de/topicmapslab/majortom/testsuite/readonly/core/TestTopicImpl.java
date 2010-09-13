@@ -1099,12 +1099,19 @@ public class TestTopicImpl extends AbstractTest {
 	}
 
 	/* void removeSubjectLocator(Locator locator)
-	 * 
+	 * Topic (http://TestTopicImpl/testRemoveSubjectLocator/topic/1)
+	 * has one subject locator
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveSubjectLocator() {
 
-		fail("Not yet implemented");
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testRemoveSubjectLocator/topic/1"));
+		assertNotNull(topic);
+		
+		assertEquals(1, topic.getSubjectLocators().size());
+		Locator sl = topic.getSubjectLocators().iterator().next();
+		
+		topic.removeSubjectLocator(sl);
 	}
 
 	/* String toString()
@@ -1113,7 +1120,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testToString() {
 
-		fail("Not yet implemented");
+		/// TODO is this one needed?
 	}
 
 	/* List<Association> getAssociationsPlayed(int offset, int limit)
@@ -1122,6 +1129,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetAssociationsPlayedIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1131,6 +1139,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetAssociationsPlayedIntIntComparatorOfAssociation() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1140,6 +1149,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNamesIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1149,6 +1159,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetNamesIntIntComparatorOfName() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1158,6 +1169,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetOccurrencesIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1167,6 +1179,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetOccurrencesIntIntComparatorOfOccurrence() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1176,6 +1189,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetRolesPlayedIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
  
@@ -1185,6 +1199,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetRolesPlayedIntIntComparatorOfRole() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1194,6 +1209,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetSupertypesIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1203,6 +1219,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetSupertypesIntIntComparatorOfTopic() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1212,6 +1229,7 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetTypesIntInt() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
@@ -1221,16 +1239,22 @@ public class TestTopicImpl extends AbstractTest {
 	@Test
 	public void testGetTypesIntIntComparatorOfTopic() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
 	/* long getNumberOfAssociationsPlayed()
-	 * 
+	 * Topic (http://TestTopicImpl/testGetNumberOfAssociationsPlayed/topic/1)
+	 * playes in 2 different associations
 	 */
 	@Test
 	public void testGetNumberOfAssociationsPlayed() {
 
-		fail("Not yet implemented");
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetNumberOfAssociationsPlayed/topic/1"));
+		assertNotNull(topic);
+		
+		/// TODO assertEquals(2, topic.getNumberOfAssociationsPlayed());
+		
 	}
 
 	/* long getNumberOfNames()
