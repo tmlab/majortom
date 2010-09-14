@@ -1160,9 +1160,9 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IName> list = null;
+		List<Name> list = null;
 
-		Comparator<IName> comp = new ConstructByItemIdentifierComparator<IName>();
+		Comparator<Name> comp = new ConstructByItemIdentifierComparator<Name>();
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(i * 10, 10, comp);
@@ -1211,9 +1211,9 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IOccurrence> list = null;
+		List<Occurrence> list = null;
 
-		Comparator<IOccurrence> comp = new ConstructByItemIdentifierComparator<IOccurrence>();
+		Comparator<Occurrence> comp = new ConstructByItemIdentifierComparator<Occurrence>();
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(i * 10, 10, comp);
@@ -1317,9 +1317,9 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IVariant> list = null;
+		List<Variant> list = null;
 
-		Comparator<IVariant> comp = new ConstructByItemIdentifierComparator<IVariant>();
+		Comparator<Variant> comp = new ConstructByItemIdentifierComparator<Variant>();
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getVariants(i * 10, 10, comp);

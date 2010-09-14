@@ -3657,4 +3657,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		this.associationStore = createAssociationStore(this);
 		this.revisionStore = createRevisionStore(this);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void enableCaching(boolean enable) {
+		// NOTHING TO DO
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isCachingEnabled() {		
+		return false;
+	}
 }

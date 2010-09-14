@@ -61,7 +61,10 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
+		System.out.print("Remove duplicates ... ");
+		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("reifier should be merged", topics.length * 12 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
 			assertEquals("Number of names should be 1", 1, topics[i].getNames().size());
@@ -96,7 +99,10 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
+		System.out.print("Remove duplicates ... ");
+		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("Number of names should be 1", 1, parent.getNames().size());
 		Name n = parent.getNames().iterator().next();
 		assertEquals("Name should have one variants!", 1, n.getVariants().size());
@@ -124,10 +130,10 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
-		System.out.println("Before remove duplicates");
+		System.out.print("Remove duplicates ... ");
 		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
-		System.out.println("After remove duplicate: " + ( System.currentTimeMillis() - t) + "ms.");
+		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("reifier should be merged", topics.length * 2 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
 			assertEquals("Number of occurrences should be 1", 1, topics[i].getOccurrences().size());
@@ -157,7 +163,10 @@ public class TestCanonicals extends MaJorToMTestCase {
 		/*
 		 * remove duplicates
 		 */
+		System.out.print("Remove duplicates ... ");
+		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals(1, topicMap.getAssociations().size());
 		assertEquals("reifier should be merged", 3, topicMap.getTopics().size());
 		Association a = topicMap.getAssociations().iterator().next();

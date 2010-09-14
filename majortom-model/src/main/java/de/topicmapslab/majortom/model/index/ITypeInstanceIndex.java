@@ -33,7 +33,7 @@ import de.topicmapslab.majortom.model.core.ICharacteristics;
  * @author Sven Krosse
  * 
  */
-public interface ITypeInstanceIndex extends TypeInstanceIndex {
+public interface ITypeInstanceIndex extends TypeInstanceIndex, IIndex {
 
 	/**
 	 * Returns all instances being typed by at least of one given topic type.

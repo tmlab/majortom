@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.tmapi.core.Locator;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Variant;
 
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedLiteralIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.IName;
-import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
@@ -535,16 +535,16 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	 * of comparators. The operation can be very slowly.
 	 * </p>
 	 */
-	protected List<IName> doGetNames(int offset, int limit, Comparator<IName> comparator) {
+	protected List<Name> doGetNames(int offset, int limit, Comparator<Name> comparator) {
 		return super.doGetNames(offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected List<IName> doGetNames(int offset, int limit) {
+	protected List<Name> doGetNames(int offset, int limit) {
 		try {
-			List<IName> list = HashUtil.getList();
+			List<Name> list = HashUtil.getList();
 			list.addAll(getStore().getProcessor().getNames(getStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -559,16 +559,16 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	 * of comparators. The operation can be very slowly.
 	 * </p>
 	 */
-	protected List<IOccurrence> doGetOccurrences(int offset, int limit, Comparator<IOccurrence> comparator) {
+	protected List<Occurrence> doGetOccurrences(int offset, int limit, Comparator<Occurrence> comparator) {
 		return super.doGetOccurrences(offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected List<IOccurrence> doGetOccurrences(int offset, int limit) {
+	protected List<Occurrence> doGetOccurrences(int offset, int limit) {
 		try {
-			List<IOccurrence> list = HashUtil.getList();
+			List<Occurrence> list = HashUtil.getList();
 			list.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -607,16 +607,16 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	 * of comparators. The operation can be very slowly.
 	 * </p>
 	 */
-	protected List<IVariant> doGetVariants(int offset, int limit, Comparator<IVariant> comparator) {
+	protected List<Variant> doGetVariants(int offset, int limit, Comparator<Variant> comparator) {
 		return super.doGetVariants(offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected List<IVariant> doGetVariants(int offset, int limit) {
+	protected List<Variant> doGetVariants(int offset, int limit) {
 		try {
-			List<IVariant> list = HashUtil.getList();
+			List<Variant> list = HashUtil.getList();
 			list.addAll(getStore().getProcessor().getVariants(getStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {

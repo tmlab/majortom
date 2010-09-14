@@ -72,6 +72,13 @@ public abstract class IndexImpl<T extends ITopicMapStore> implements Index {
 	public void open() {
 		open = true;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		//NOTHING TO DO
+	}
 
 	/**
 	 * {@inheritDoc}

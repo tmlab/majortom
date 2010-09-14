@@ -15,10 +15,12 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.index.paged;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Construct;
@@ -29,7 +31,7 @@ import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.majortom.index.IndexImpl;
+import de.topicmapslab.majortom.index.core.BaseCachedIndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -43,15 +45,12 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends IndexImpl<T> implements IPagedConstructIndex, ITopicMapListener {
+public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends BaseCachedIndexImpl<T> implements IPagedConstructIndex, ITopicMapListener {
 
-	/**
-	 * enumeration of map keys
-	 */
-	public enum Key {
+	enum Type {
+		SUPERTYPES,
+
 		TYPES,
-
-		SUPERTYPE,
 
 		NAMES,
 
@@ -61,14 +60,12 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 
 		ROLES,
 
-		ASSOCIATIONS_PLAYED,
-
-		ROLES_PLAYED
+		ASSOCIATION
 	}
 
-	private Map<Key, Map<Construct, Long>> cachedNumbersOfChildren;
-	private Map<Key, Map<Construct, List<? extends Construct>>> cachedConstructs;
-	private Map<Key, Map<Construct, Map<Comparator<? extends Construct>, List<? extends Construct>>>> cachedComparedConstructs;
+	private Map<ConstructCacheKey, Long> cachedNumbersOfChildren;
+	private Map<ConstructCacheKey, List<? extends Construct>> cachedConstructs;
+	private Map<Object, Set<ConstructCacheKey>> dependentKeys;
 
 	/**
 	 * @param store
@@ -84,11 +81,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Association> cache = read(Key.ASSOCIATIONS_PLAYED, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetAssociationsPlayed(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Association> cache = readConstructs(Type.ASSOCIATION, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetAssociationsPlayed(topic, offset, limit);
+			cacheConstructs(Type.ASSOCIATION, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -98,11 +102,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Association> cache = read(Key.ASSOCIATIONS_PLAYED, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetAssociationsPlayed(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Association> cache = readConstructs(Type.ASSOCIATION, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetAssociationsPlayed(topic, offset, limit, comparator);
+			cacheConstructs(Type.ASSOCIATION, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -112,9 +123,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.ASSOCIATIONS_PLAYED, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfAssociationsPlayed(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.ASSOCIATION, topic);
+		if (noc == null) {
+			noc = doGetNumberOfAssociationsPlayed(topic);
+			cacheNumberOfConstructs(Type.ASSOCIATION, topic, noc);
 		}
 		return noc;
 	}
@@ -126,11 +144,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Name> cache = read(Key.NAMES, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNames(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Name> cache = readConstructs(Type.NAMES, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetNames(topic, offset, limit);
+			cacheConstructs(Type.NAMES, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -140,11 +165,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Name> cache = read(Key.NAMES, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNames(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Name> cache = readConstructs(Type.NAMES, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetNames(topic, offset, limit, comparator);
+			cacheConstructs(Type.NAMES, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -154,9 +186,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.NAMES, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfNames(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.NAMES, topic);
+		if (noc == null) {
+			noc = doGetNumberOfNames(topic);
+			cacheNumberOfConstructs(Type.NAMES, topic, noc);
 		}
 		return noc;
 	}
@@ -168,11 +207,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Occurrence> cache = read(Key.OCCURRENCES, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetOccurrences(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Occurrence> cache = readConstructs(Type.OCCURRENCES, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetOccurrences(topic, offset, limit);
+			cacheConstructs(Type.OCCURRENCES, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -182,11 +228,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Occurrence> cache = read(Key.OCCURRENCES, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetOccurrences(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Occurrence> cache = readConstructs(Type.OCCURRENCES, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetOccurrences(topic, offset, limit, comparator);
+			cacheConstructs(Type.OCCURRENCES, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -196,9 +249,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.OCCURRENCES, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfOccurrences(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.OCCURRENCES, topic);
+		if (noc == null) {
+			noc = doGetNumberOfOccurrences(topic);
+			cacheNumberOfConstructs(Type.OCCURRENCES, topic, noc);
 		}
 		return noc;
 	}
@@ -210,11 +270,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Role> cache = read(Key.ROLES, association);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetRoles(association, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Role> cache = readConstructs(Type.ROLES, association, offset, limit);
+		if (cache == null) {
+			cache = doGetRoles(association, offset, limit);
+			cacheConstructs(Type.ROLES, association, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -224,11 +291,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Role> cache = read(Key.ROLES, association, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetRoles(association, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Role> cache = readConstructs(Type.ROLES, association, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetRoles(association, offset, limit, comparator);
+			cacheConstructs(Type.ROLES, association, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -238,9 +312,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.ROLES, association);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetNumberOfRoles(association);
+		}
+		Long noc = readNumberOfConstructs(Type.ROLES, association);
+		if (noc == null) {
+			noc = doGetNumberOfRoles(association);
+			cacheNumberOfConstructs(Type.ROLES, association, noc);
 		}
 		return noc;
 	}
@@ -252,11 +333,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Role> cache = read(Key.ROLES_PLAYED, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetRolesPlayed(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Role> cache = readConstructs(Type.ROLES, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetRolesPlayed(topic, offset, limit);
+			cacheConstructs(Type.ROLES, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -266,11 +354,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Role> cache = read(Key.ROLES_PLAYED, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetRolesPlayed(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Role> cache = readConstructs(Type.ROLES, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetRolesPlayed(topic, offset, limit, comparator);
+			cacheConstructs(Type.ROLES, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -280,9 +375,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.ROLES_PLAYED, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfRolesPlayed(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.ROLES, topic);
+		if (noc == null) {
+			noc = doGetNumberOfRolesPlayed(topic);
+			cacheNumberOfConstructs(Type.ROLES, topic, noc);
 		}
 		return noc;
 	}
@@ -294,11 +396,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Topic> cache = read(Key.SUPERTYPE, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetSupertypes(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Topic> cache = readConstructs(Type.SUPERTYPES, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetSupertypes(topic, offset, limit);
+			cacheConstructs(Type.SUPERTYPES, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -308,11 +417,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Topic> cache = read(Key.SUPERTYPE, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetSupertypes(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Topic> cache = readConstructs(Type.SUPERTYPES, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetSupertypes(topic, offset, limit, comparator);
+			cacheConstructs(Type.SUPERTYPES, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -322,9 +438,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.SUPERTYPE, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfSupertypes(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.SUPERTYPES, topic);
+		if (noc == null) {
+			noc = doGetNumberOfSupertypes(topic);
+			cacheNumberOfConstructs(Type.SUPERTYPES, topic, noc);
 		}
 		return noc;
 	}
@@ -336,11 +459,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Topic> cache = read(Key.TYPES, topic);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetTypes(topic, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Topic> cache = readConstructs(Type.TYPES, topic, offset, limit);
+		if (cache == null) {
+			cache = doGetTypes(topic, offset, limit);
+			cacheConstructs(Type.TYPES, topic, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -350,11 +480,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Topic> cache = read(Key.TYPES, topic, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetTypes(topic, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Topic> cache = readConstructs(Type.TYPES, topic, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetTypes(topic, offset, limit, comparator);
+			cacheConstructs(Type.TYPES, topic, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -364,9 +501,16 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.TYPES, topic);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfTypes(topic);
+		}
+		Long noc = readNumberOfConstructs(Type.TYPES, topic);
+		if (noc == null) {
+			noc = doGetNumberOfTypes(topic);
+			cacheNumberOfConstructs(Type.TYPES, topic, noc);
 		}
 		return noc;
 	}
@@ -378,11 +522,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Variant> cache = read(Key.VARIANTS, name);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetVariants(name, offset, limit);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Variant> cache = readConstructs(Type.VARIANTS, name, offset, limit);
+		if (cache == null) {
+			cache = doGetVariants(name, offset, limit);
+			cacheConstructs(Type.VARIANTS, name, offset, limit, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -392,11 +543,18 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		List<Variant> cache = read(Key.VARIANTS, name, comparator);
-		if (cache == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetVariants(name, offset, limit, comparator);
 		}
-		return secureSubList(cache, offset, limit);
+		List<Variant> cache = readConstructs(Type.VARIANTS, name, offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetVariants(name, offset, limit, comparator);
+			cacheConstructs(Type.VARIANTS, name, offset, limit, comparator, cache);
+		}
+		return cache;
 	}
 
 	/**
@@ -406,23 +564,30 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Long noc = readNumberOfChildren(Key.VARIANTS, name);
-		if (noc == null) {
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetNumberOfVariants(name);
+		}
+		Long noc = readNumberOfConstructs(Type.VARIANTS, name);
+		if (noc == null) {
+			noc = doGetNumberOfVariants(name);
+			cacheNumberOfConstructs(Type.VARIANTS, name, noc);
 		}
 		return noc;
 	}
 
 	/**
-	 * Internal method to read the stored number of children from cache.
+	 * Internal method to read the number of contained construct.
 	 * 
-	 * @param key
-	 *            the children type
-	 * @param construct
-	 *            the parent construct
-	 * @return the number of children or <code>null</code>
+	 * @param type
+	 *            the class
+	 * @param context
+	 *            the context
+	 * @return dependent constructs from cache
 	 */
-	private Long readNumberOfChildren(Key key, Construct construct) {
+	protected final Long readNumberOfConstructs(Type type, Construct context) {
 		/*
 		 * check main cache
 		 */
@@ -430,29 +595,23 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 			return null;
 		}
 		/*
-		 * get mapping of parent construct
+		 * get constructs by key
 		 */
-		Map<Construct, Long> map = cachedNumbersOfChildren.get(key);
-		if (map == null) {
-			return null;
-		}
-		/*
-		 * return number of children
-		 */
-		return map.get(construct);
+		return cachedNumbersOfChildren.get(generateCacheKey(type, context, null, null, null));
 	}
 
 	/**
-	 * Internal method to add the number of children to internal cache
+	 * Internal method to read the number of contained construct.
 	 * 
-	 * @param key
-	 *            the children type
-	 * @param construct
-	 *            the parent construct
-	 * @param numberOfChildren
-	 *            the number of children
+	 * @param type
+	 *            the class
+	 * @param context
+	 *            the context
+	 * @param noc
+	 *            the number of constructs to cache
+	 * @return dependent constructs from cache
 	 */
-	protected final void storeNumberOfChildren(Key key, Construct construct, Long numberOfChildren) {
+	protected final void cacheNumberOfConstructs(Type type, Construct context, Long noc) {
 		/*
 		 * check main cache
 		 */
@@ -460,17 +619,9 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 			cachedNumbersOfChildren = HashUtil.getHashMap();
 		}
 		/*
-		 * get mapping of parent construct
+		 * add to internal cache
 		 */
-		Map<Construct, Long> map = cachedNumbersOfChildren.get(key);
-		if (map == null) {
-			map = HashUtil.getWeakHashMap();
-			cachedNumbersOfChildren.put(key, map);
-		}
-		/*
-		 * store number of children
-		 */
-		map.put(construct, numberOfChildren);
+		cachedNumbersOfChildren.put(generateCacheKey(type, context, null, null, null), noc);
 	}
 
 	/**
@@ -479,66 +630,19 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
-	 * @param key
-	 *            the key of dependent constructs
-	 * @param parent
-	 *            the parent construct
-	 * @return dependent constructs of the given parent construct or
-	 *         <code>null</code>
-	 */
-	@SuppressWarnings("unchecked")
-	private final <X extends Construct> List<X> read(Key key, Construct parent) {
-		/*
-		 * check main cache
-		 */
-		if (cachedConstructs == null) {
-			return null;
-		}
-		/*
-		 * get mapping of cached constructs
-		 */
-		Map<Construct, List<? extends Construct>> map = cachedConstructs.get(key);
-		if (map == null) {
-			return null;
-		}
-		/*
-		 * get constructs
-		 */
-		return (List<X>) map.get(parent);
-	}
-
-	/**
-	 * Internal method to add dependent constructs of the given parent construct
-	 * to cache.
 	 * 
-	 * @param <X>
-	 *            the type of dependent constructs
-	 * @param key
-	 *            the key of dependent constructs
-	 * @param parent
-	 *            the parent construct
-	 * @param values
-	 *            the values to store
+	 * @param type
+	 *            the type
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
+	 * @return dependent constructs from cache
 	 */
-	protected final <X extends Construct> void store(Key key, Construct parent, List<X> values) {
-		/*
-		 * initialize cache
-		 */
-		if (cachedConstructs == null) {
-			cachedConstructs = HashUtil.getHashMap();
-		}
-		/*
-		 * get mapping of cached constructs
-		 */
-		Map<Construct, List<? extends Construct>> map = cachedConstructs.get(key);
-		if (map == null) {
-			map = HashUtil.getWeakHashMap();
-			cachedConstructs.put(key, map);
-		}
-		/*
-		 * store constructs
-		 */
-		map.put(parent, values);
+	protected final <X extends Construct> List<X> readConstructs(Type type, Construct context, Integer offset, Integer limit) {
+		return readConstructs(type, context, offset, limit, null);
 	}
 
 	/**
@@ -547,41 +651,31 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
-	 * @param key
-	 *            the key of dependent constructs
-	 * @param parent
-	 *            the parent construct
+	 * 
+	 * @param type
+	 *            the type
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
 	 * @param comparator
-	 *            the comparators
-	 * @return dependent constructs of the given parent construct or
-	 *         <code>null</code> if key-pair is unknown
+	 *            the comparator or <code>null</code>
+	 * @return dependent constructs from cache
 	 */
 	@SuppressWarnings("unchecked")
-	private final <X extends Construct> List<X> read(Key key, Construct parent, Comparator<X> comparator) {
+	protected final <X extends Construct> List<X> readConstructs(Type type, Construct context, Integer offset, Integer limit, Comparator<?> comparator) {
 		/*
 		 * check main cache
 		 */
-		if (cachedComparedConstructs == null) {
+		if (cachedConstructs == null) {
 			return null;
 		}
 		/*
-		 * get mapping of parent to cached compared constructs by key
+		 * get constructs by key
 		 */
-		Map<Construct, Map<Comparator<? extends Construct>, List<? extends Construct>>> compared = cachedComparedConstructs.get(key);
-		if (compared == null) {
-			return null;
-		}
-		/*
-		 * get mapping of cached compared constructs by parent
-		 */
-		Map<Comparator<? extends Construct>, List<? extends Construct>> map = compared.get(parent);
-		if (map == null) {
-			return null;
-		}
-		/*
-		 * get constructs by comparator
-		 */
-		return (List<X>) map.get(comparator);
+		return (List<X>) cachedConstructs.get(generateCacheKey(type, context, offset, limit, comparator));
 	}
 
 	/**
@@ -590,51 +684,205 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
-	 * @param key
-	 *            the key of dependent constructs
-	 * @param parent
-	 *            the parent construct
-	 * @param comparator
-	 *            the comparators
+	 * 
+	 * @param type
+	 *            the type
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
 	 * @param values
 	 *            the values to store
 	 */
-	protected final <X extends Construct> void store(Key key, Construct parent, Comparator<X> comparator, List<X> values) {
+	protected final <X extends Construct> void cacheConstructs(Type type, Construct context, Integer offset, Integer limit, List<X> values) {
+		cacheConstructs(type, context, offset, limit, null, values);
+	}
+
+	/**
+	 * Internal method to add dependent constructs of the given parent construct
+	 * to internal cache
+	 * 
+	 * @param <X>
+	 *            the type of dependent constructs
+	 * 
+	 * @param type
+	 *            the type
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
+	 * @param comparator
+	 *            the comparator or <code>null</code>
+	 * @param values
+	 *            the values to store
+	 */
+	protected final <X extends Construct> void cacheConstructs(Type type, Construct context, Integer offset, Integer limit, Comparator<X> comparator, List<X> values) {
 		/*
 		 * initialize cache
 		 */
-		if (cachedComparedConstructs == null) {
-			cachedComparedConstructs = HashUtil.getHashMap();
+		if (cachedConstructs == null) {
+			cachedConstructs = HashUtil.getHashMap();
 		}
 		/*
-		 * get mapping of parent to cached compared constructs by key
+		 * add to internal cache
 		 */
-		Map<Construct, Map<Comparator<? extends Construct>, List<? extends Construct>>> compared = cachedComparedConstructs.get(key);
-		if (compared == null) {
-			compared = HashUtil.getWeakHashMap();
-			cachedComparedConstructs.put(key, compared);
-		}
-		/*
-		 * get mapping of cached compared constructs by parent
-		 */
-		Map<Comparator<? extends Construct>, List<? extends Construct>> map = compared.get(parent);
-		if (map == null) {
-			map = HashUtil.getWeakHashMap();
-			compared.put(parent, map);
-		}
-		/*
-		 * store constructs by comparator
-		 */
-		map.put(comparator, values);
+		cachedConstructs.put(generateCacheKey(type, context, offset, limit, comparator), values);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() {
-		clearCache();
-		getStore().removeTopicMapListener(this);
-		super.close();
+	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
+		Set<ConstructCacheKey> keys = HashUtil.getHashSet();
+
+		/*
+		 * topic removed or merged
+		 */
+		if (event == TopicMapEventType.TOPIC_REMOVED || event == TopicMapEventType.MERGE) {
+			clearCache();
+		}
+		/*
+		 * variant added or removed
+		 */
+		else if (event == TopicMapEventType.VARIANT_ADDED || event == TopicMapEventType.VARIANT_REMOVED) {
+			keys.addAll(getDependentKeys(Type.VARIANTS));
+			keys.retainAll(getDependentKeys(notifier));
+		}
+		/*
+		 * name added or removed
+		 */
+		else if (event == TopicMapEventType.NAME_ADDED || event == TopicMapEventType.NAME_REMOVED) {
+			keys.addAll(getDependentKeys(Type.NAMES));
+			keys.retainAll(getDependentKeys(notifier));
+		}
+		/*
+		 * occurrence added or removed
+		 */
+		else if (event == TopicMapEventType.OCCURRENCE_ADDED || event == TopicMapEventType.OCCURRENCE_REMOVED) {
+			keys.addAll(getDependentKeys(Type.OCCURRENCES));
+			keys.retainAll(getDependentKeys(notifier));
+		}
+		/*
+		 * topic role added or removed
+		 */
+		else if (event == TopicMapEventType.ROLE_ADDED || event == TopicMapEventType.ROLE_REMOVED) {
+			// played roles
+			keys.addAll(getDependentKeys(Type.ROLES));
+			// played association
+			keys.addAll(getDependentKeys(Type.ASSOCIATION));
+		}
+		/*
+		 * type changed or removed
+		 */
+		else if (event == TopicMapEventType.TYPE_ADDED || event == TopicMapEventType.TYPE_REMOVED) {
+			keys.addAll(getDependentKeys(Type.TYPES));
+			keys.retainAll(getDependentKeys(notifier));
+		}
+		/*
+		 * supertype changed or removed
+		 */
+		else if (event == TopicMapEventType.SUPERTYPE_ADDED || event == TopicMapEventType.SUPERTYPE_REMOVED) {
+			keys.addAll(getDependentKeys(Type.SUPERTYPES));
+			keys.retainAll(getDependentKeys(notifier));
+		}
+		/*
+		 * player modified or removed
+		 */
+		else if (event == TopicMapEventType.PLAYER_MODIFIED) {
+			// played roles
+			keys.addAll(getDependentKeys(Type.ROLES));
+			// played association
+			keys.addAll(getDependentKeys(Type.ASSOCIATION));
+			// old and new player
+			Collection<ConstructCacheKey> others = HashUtil.getHashSet(getDependentKeys(newValue));
+			others.addAll(getDependentKeys(oldValue));
+			// intersection
+			keys.retainAll(others);
+		}
+
+		/*
+		 * clear cache for dependent keys
+		 */
+		for (ConstructCacheKey key : keys) {
+			if (cachedNumbersOfChildren != null) {
+				cachedNumbersOfChildren.remove(key);
+			}
+			if (cachedConstructs != null) {
+				cachedConstructs.remove(key);
+			}
+		}
+	}
+
+	/**
+	 * Internal method to clear the cache
+	 */
+	public final void clearCache() {
+		if (cachedConstructs != null) {
+			cachedConstructs.clear();
+		}
+		if (cachedNumbersOfChildren != null) {
+			cachedNumbersOfChildren.clear();
+		}
+		if (dependentKeys != null) {
+			dependentKeys.clear();
+		}
+	}
+
+	/**
+	 * Generates a key for internal caching
+	 * 
+	 * @param type
+	 *            the type
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
+	 * @param comparator
+	 *            the comparator or <code>null</code>
+	 * @return the generated cache key;
+	 */
+	private ConstructCacheKey generateCacheKey(Type type, Construct context, Integer offset, Integer limit, Comparator<?> comparator) {
+		ConstructCacheKey key = new ConstructCacheKey(type, context, offset, limit, comparator);
+		/*
+		 * store dependent keys for clearing cache
+		 */
+		if (dependentKeys == null) {
+			dependentKeys = HashUtil.getHashMap();
+		}
+		Set<ConstructCacheKey> keys = dependentKeys.get(type);
+		if (keys == null) {
+			keys = HashUtil.getHashSet();
+			dependentKeys.put(type, keys);
+		}
+		keys.add(key);
+
+		keys = dependentKeys.get(context);
+		if (keys == null) {
+			keys = HashUtil.getHashSet();
+			dependentKeys.put(context, keys);
+		}
+		keys.add(key);
+		return key;
+	}
+
+	/**
+	 * Returns a set of cache keys dependents on the given criteria
+	 * 
+	 * @param criteria
+	 *            the criteria
+	 * @return all dependent keys
+	 */
+	private Set<ConstructCacheKey> getDependentKeys(Object criteria) {
+		if (dependentKeys == null || !dependentKeys.containsKey(criteria)) {
+			return Collections.emptySet();
+		}
+		return dependentKeys.get(criteria);
 	}
 
 	/**
@@ -648,206 +896,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-		/*
-		 * construct was removed
-		 */
-		if (event == TopicMapEventType.VARIANT_REMOVED) {
-			clearVariantCache();
-		} else if (event == TopicMapEventType.NAME_REMOVED) {
-			clearNameCache();
-		} else if (event == TopicMapEventType.OCCURRENCE_REMOVED) {
-			clearOccurrenceCache();
-		} else if (event == TopicMapEventType.TOPIC_REMOVED) {
-			clearTopicCache();
-		} else if (event == TopicMapEventType.ASSOCIATION_REMOVED) {
-			clearAssociationCache();
-		} else if (event == TopicMapEventType.ROLE_REMOVED) {
-			clearRoleCache();
-		}
-
-		/*
-		 * variant added
-		 */
-		else if (event == TopicMapEventType.VARIANT_ADDED) {
-			clearVariantCache();
-		}
-		/*
-		 * name added
-		 */
-		else if (event == TopicMapEventType.NAME_ADDED) {
-			clearNameCache();
-		}
-		/*
-		 * occurrence added
-		 */
-		else if (event == TopicMapEventType.OCCURRENCE_ADDED) {
-			clearOccurrenceCache();
-		}
-		/*
-		 * topic role added
-		 */
-		else if (event == TopicMapEventType.ROLE_ADDED) {
-			clearRoleCache();
-		}
-		/*
-		 * type changed
-		 */
-		else if (event == TopicMapEventType.TYPE_ADDED || event == TopicMapEventType.TYPE_REMOVED) {
-			clearTypesCache();
-		}
-		/*
-		 * supertype changed
-		 */
-		else if (event == TopicMapEventType.SUPERTYPE_ADDED || event == TopicMapEventType.SUPERTYPE_REMOVED) {
-			clearSupertypesCache();
-		}
-		/*
-		 * player modified
-		 */
-		else if (event == TopicMapEventType.PLAYER_MODIFIED) {
-			clearAssociationCache();
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache
-	 */
-	private final void clearCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.clear();
-			cachedConstructs = null;
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.clear();
-			cachedComparedConstructs = null;
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on names
-	 */
-	private final void clearNameCache() {
-		clearVariantCache();
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.NAMES);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.NAMES);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on occurrences
-	 */
-	private final void clearOccurrenceCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.OCCURRENCES);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.OCCURRENCES);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on topic types
-	 */
-	private final void clearTopicCache() {
-		clearTypesCache();
-		clearSupertypesCache();
-		clearAssociationCache();
-		clearNameCache();
-		clearOccurrenceCache();
-	}
-
-	/**
-	 * Internal method to clear the cache depends on topic types
-	 */
-	private final void clearTypesCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.TYPES);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.TYPES);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on topic supertypes
-	 */
-	private final void clearSupertypesCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.SUPERTYPE);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.SUPERTYPE);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on variants
-	 */
-	private final void clearVariantCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.VARIANTS);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.VARIANTS);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on roles
-	 */
-	private final void clearRoleCache() {
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.ROLES);
-			cachedConstructs.remove(Key.ROLES_PLAYED);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.ROLES_PLAYED);
-		}
-	}
-
-	/**
-	 * Internal method to clear the cache depends on assocaition
-	 */
-	private final void clearAssociationCache() {
-		clearRoleCache();
-		if (cachedConstructs != null) {
-			cachedConstructs.remove(Key.ASSOCIATIONS_PLAYED);
-		}
-		if (cachedComparedConstructs != null) {
-			cachedComparedConstructs.remove(Key.ASSOCIATIONS_PLAYED);
-		}
-	}
-
-	/**
-	 * Clears the indexes in context to the given list, to avoid indexes out of
-	 * range.
-	 * 
-	 * @param list
-	 *            the list
-	 * @param offset
-	 *            the offset
-	 * @param limit
-	 *            the limit
-	 * @return an two-
-	 */
-	protected final <E> List<E> secureSubList(List<E> list, int offset, int limit) {
-		int from = offset;
-		if (from < 0 || list.isEmpty()) {
-			from = 0;
-		} else if (from >= list.size()) {
-			from = list.size() - 1;
-		}
-		int to = offset + limit;
-		if (to < 0) {
-			to = 0;
-		} else if (to > list.size()) {
-			to = list.size();
-		}
-		return Collections.unmodifiableList(list.subList(from, to));
+	public void close() {
+		clearCache();
+		getStore().removeTopicMapListener(this);
+		super.close();
 	}
 
 	/**
@@ -863,10 +915,8 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getTypes());
-		store(Key.TYPES, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
-
 
 	/**
 	 * Returns all types of the given topic as a sorted list within the given
@@ -886,8 +936,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getTypes());
 		Collections.sort(list, comparator);
-		store(Key.TYPES, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -899,7 +948,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfTypes(Topic topic) {
 		long noc = ((ITopic) topic).getTypes().size();
-		storeNumberOfChildren(Key.TYPES, topic, noc);
 		return noc;
 	}
 
@@ -918,8 +966,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getSupertypes());
-		store(Key.SUPERTYPE, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -940,8 +987,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getSupertypes());
 		Collections.sort(list, comparator);
-		store(Key.SUPERTYPE, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -953,7 +999,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfSupertypes(Topic topic) {
 		long noc = ((ITopic) topic).getSupertypes().size();
-		storeNumberOfChildren(Key.SUPERTYPE, topic, noc);
 		return noc;
 	}
 
@@ -970,8 +1015,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Name> doGetNames(Topic topic, int offset, int limit) {
 		List<Name> list = HashUtil.getList(((ITopic) topic).getNames());
-		store(Key.NAMES, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -992,8 +1036,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Name> doGetNames(Topic topic, int offset, int limit, Comparator<Name> comparator) {
 		List<Name> list = HashUtil.getList(((ITopic) topic).getNames());
 		Collections.sort(list, comparator);
-		store(Key.NAMES, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1005,7 +1048,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfNames(Topic topic) {
 		long noc = ((ITopic) topic).getNames().size();
-		storeNumberOfChildren(Key.NAMES, topic, noc);
 		return noc;
 	}
 
@@ -1024,8 +1066,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit) {
 		List<Occurrence> list = HashUtil.getList(((ITopic) topic).getOccurrences());
-		store(Key.OCCURRENCES, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1046,8 +1087,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit, Comparator<Occurrence> comparator) {
 		List<Occurrence> list = HashUtil.getList(((ITopic) topic).getOccurrences());
 		Collections.sort(list, comparator);
-		store(Key.OCCURRENCES, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1059,7 +1099,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfOccurrences(Topic topic) {
 		long noc = ((ITopic) topic).getOccurrences().size();
-		storeNumberOfChildren(Key.OCCURRENCES, topic, noc);
 		return noc;
 	}
 
@@ -1076,8 +1115,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Variant> doGetVariants(Name name, int offset, int limit) {
 		List<Variant> list = HashUtil.getList(name.getVariants());
-		store(Key.VARIANTS, name, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1098,8 +1136,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Variant> doGetVariants(Name name, int offset, int limit, Comparator<Variant> comparator) {
 		List<Variant> list = HashUtil.getList(name.getVariants());
 		Collections.sort(list, comparator);
-		store(Key.VARIANTS, name, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1111,7 +1148,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfVariants(Name name) {
 		long noc = name.getVariants().size();
-		storeNumberOfChildren(Key.VARIANTS, name, noc);
 		return noc;
 	}
 
@@ -1130,8 +1166,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Role> doGetRoles(Association association, int offset, int limit) {
 		List<Role> list = HashUtil.getList(association.getRoles());
-		store(Key.ROLES, association, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1152,8 +1187,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Role> doGetRoles(Association association, int offset, int limit, Comparator<Role> comparator) {
 		List<Role> list = HashUtil.getList(association.getRoles());
 		Collections.sort(list, comparator);
-		store(Key.ROLES, association, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1165,7 +1199,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfRoles(Association association) {
 		long noc = association.getRoles().size();
-		storeNumberOfChildren(Key.ROLES, association, noc);
 		return noc;
 	}
 
@@ -1184,8 +1217,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit) {
 		List<Association> list = HashUtil.getList(((ITopic) topic).getAssociationsPlayed());
-		store(Key.ASSOCIATIONS_PLAYED, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1206,8 +1238,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit, Comparator<Association> comparator) {
 		List<Association> list = HashUtil.getList(((ITopic) topic).getAssociationsPlayed());
 		Collections.sort(list, comparator);
-		store(Key.ASSOCIATIONS_PLAYED, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1220,7 +1251,6 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfAssociationsPlayed(Topic topic) {
 		long noc = ((ITopic) topic).getAssociationsPlayed().size();
-		storeNumberOfChildren(Key.ASSOCIATIONS_PLAYED, topic, noc);
 		return noc;
 	}
 
@@ -1237,8 +1267,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit) {
 		List<Role> list = HashUtil.getList(topic.getRolesPlayed());
-		store(Key.ROLES_PLAYED, topic, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1259,8 +1288,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit, Comparator<Role> comparator) {
 		List<Role> list = HashUtil.getList(topic.getRolesPlayed());
 		Collections.sort(list, comparator);
-		store(Key.ROLES_PLAYED, topic, comparator, list);
-		return secureSubList(list, offset, limit);
+		return HashUtil.secureSubList(list, offset, limit);
 	}
 
 	/**
@@ -1272,9 +1300,79 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfRolesPlayed(Topic topic) {
 		long noc = topic.getRolesPlayed().size();
-		storeNumberOfChildren(Key.ROLES_PLAYED, topic, noc);
 		return noc;
 	}
-	
-	
+
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
+	}
+
+}
+
+/**
+ * Class defining a cache key for {@link IPagedConstructIndex}
+ * 
+ * @author Sven Krosse
+ * 
+ */
+class ConstructCacheKey {
+	PagedConstructIndexImpl.Type type;
+	Construct context;
+	Integer offset;
+	Integer limit;
+	Comparator<?> comparator;
+
+	/**
+	 * constructor
+	 * 
+	 * @param type
+	 *            the type of constructs
+	 * @param context
+	 *            the context
+	 * @param offset
+	 *            the offset or <code>null</code>
+	 * @param limit
+	 *            the limit or <code>null</code>
+	 * @param comparator
+	 *            the comparator or <code>null</code>
+	 */
+	public ConstructCacheKey(PagedConstructIndexImpl.Type type, Construct context, Integer offset, Integer limit, Comparator<?> comparator) {
+		this.type = type;
+		this.context = context;
+		this.offset = offset;
+		this.limit = limit;
+		this.comparator = comparator;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object obj) {
+		if (obj instanceof ConstructCacheKey) {
+			ConstructCacheKey key = (ConstructCacheKey) obj;
+			boolean result = key.type.equals(type);
+			result &= context.equals(key.context);
+			result &= (comparator == null) ? key.comparator == null : comparator.equals(key.comparator);
+			result &= (offset == null) ? key.offset == null : offset.equals(key.offset);
+			result &= (limit == null) ? key.limit == null : limit.equals(key.limit);
+			return result;
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		int hashCode = type.hashCode();
+		hashCode |= context.hashCode();
+		hashCode |= (comparator == null) ? 0 : comparator.hashCode();
+		hashCode |= (offset == null) ? 0 : offset.hashCode();
+		hashCode |= (limit == null) ? 0 : limit.hashCode();
+		return hashCode;
+	}
+
 }

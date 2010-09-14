@@ -37,6 +37,7 @@ import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.transaction.ITransaction;
 
 /**
  * Implementation of {@link IPagedScopedIndex}
@@ -78,6 +79,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		}
 		if (themes == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetScope(themes);
 		}
 		IScope scope = readScope(themes);
 		if (scope == null) {
@@ -123,6 +130,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (themes == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetScopes(themes, matchAll);
+		}
 		Collection<IScope> scopes = readScopes(IScopable.class, themes, matchAll);
 		if (scopes == null) {
 			scopes = doGetScopes(themes, matchAll);
@@ -137,6 +150,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<IScope> getAssociationScopes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetAssociationScopes();
 		}
 		Collection<IScope> scopes = readScopes(IAssociation.class);
 		if (scopes == null) {
@@ -153,6 +172,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetAssociationThemes();
+		}
 		Collection<Topic> themes = readThemes(IAssociation.class);
 		if (themes == null) {
 			themes = doGetAssociationThemes();
@@ -167,6 +192,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Association> getAssociations(Topic theme) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || theme.getTopicMap() instanceof ITransaction) {
+			return doGetAssociations(theme);
 		}
 		Collection<Association> associations = read(IAssociation.class, theme, false);
 		if (associations == null) {
@@ -183,6 +214,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetAssociations(themes, all);
+		}
 		Collection<Association> associations = read(IAssociation.class, themes, all);
 		if (associations == null) {
 			associations = doGetAssociations(themes, all);
@@ -197,6 +234,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Association> getAssociations(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetAssociations(scope);
 		}
 		Collection<Association> associations = read(IAssociation.class, scope, false);
 		if (associations == null) {
@@ -220,6 +263,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetAssociations(scopes);
+		}
 		Collection<Association> associations = read(IAssociation.class, scopes, false);
 		if (associations == null) {
 			associations = doGetAssociations(scopes);
@@ -234,6 +283,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<ICharacteristics> getCharacteristics(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetCharacteristics(scope);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, scope, false);
 		if (results == null) {
@@ -251,6 +306,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<IScope> col = Arrays.asList(scopes);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetCharacteristics(col);
+		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, col, false);
 		if (results == null) {
 			results = doGetCharacteristics(col);
@@ -265,6 +326,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<IScope> getNameScopes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNameScopes();
 		}
 		Collection<IScope> scopes = readScopes(IName.class);
 		if (scopes == null) {
@@ -281,6 +348,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNameThemes();
+		}
 		Collection<Topic> themes = readThemes(IName.class);
 		if (themes == null) {
 			themes = doGetNameThemes();
@@ -295,6 +368,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Name> getNames(Topic theme) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || theme.getTopicMap() instanceof ITransaction) {
+			return doGetNames(theme);
 		}
 		Collection<Name> results = read(IName.class, theme, false);
 		if (results == null) {
@@ -311,6 +390,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetNames(themes, all);
+		}
 		Collection<Name> results = read(IName.class, themes, all);
 		if (results == null) {
 			results = doGetNames(themes, all);
@@ -325,6 +410,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Name> getNames(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNames(scope);
 		}
 		Collection<Name> results = read(IName.class, scope, false);
 		if (results == null) {
@@ -348,6 +439,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetNames(scopes);
+		}
 		Collection<Name> results = read(IName.class, scopes, false);
 		if (results == null) {
 			results = doGetNames(scopes);
@@ -362,6 +459,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<IScope> getOccurrenceScopes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrenceScopes();
 		}
 		Collection<IScope> scopes = readScopes(IOccurrence.class);
 		if (scopes == null) {
@@ -378,6 +481,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrenceThemes();
+		}
 		Collection<Topic> themes = readThemes(IOccurrence.class);
 		if (themes == null) {
 			themes = doGetOccurrenceThemes();
@@ -392,6 +501,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Occurrence> getOccurrences(Topic theme) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetOccurrences(theme);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, theme, false);
 		if (results == null) {
@@ -408,6 +523,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetOccurrences(themes, all);
+		}
 		Collection<Occurrence> results = read(IOccurrence.class, themes, all);
 		if (results == null) {
 			results = doGetOccurrences(themes, all);
@@ -422,6 +543,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Occurrence> getOccurrences(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetOccurrences(scope);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, scope, false);
 		if (results == null) {
@@ -445,6 +572,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetOccurrences(scopes);
+		}
 		Collection<Occurrence> results = read(IOccurrence.class, scopes, false);
 		if (results == null) {
 			results = doGetOccurrences(scopes);
@@ -460,6 +593,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetScopables(scope);
+		}
 		Collection<Scoped> results = read(IScopable.class, scope, false);
 		if (results == null) {
 			results = doGetScopables(scope);
@@ -467,7 +606,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		}
 		return results;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -476,6 +615,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<IScope> col = Arrays.asList(scopes);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetScopables(col);
+		}
 		Collection<Scoped> results = read(IScopable.class, col, false);
 		if (results == null) {
 			results = doGetScopables(col);
@@ -490,6 +635,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<IScope> getVariantScopes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetVariantScopes();
 		}
 		Collection<IScope> scopes = readScopes(IVariant.class);
 		if (scopes == null) {
@@ -506,6 +657,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetVariantThemes();
+		}
 		Collection<Topic> themes = readThemes(IVariant.class);
 		if (themes == null) {
 			themes = doGetVariantThemes();
@@ -520,6 +677,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Variant> getVariants(Topic theme) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetVariants(theme);
 		}
 		Collection<Variant> results = read(IVariant.class, theme, false);
 		if (results == null) {
@@ -536,6 +699,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetVariants(themes, all);
+		}
 		Collection<Variant> results = read(IVariant.class, themes, all);
 		if (results == null) {
 			results = doGetVariants(themes, all);
@@ -550,6 +719,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Variant> getVariants(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetVariants(scope);
 		}
 		Collection<Variant> results = read(IVariant.class, scope, false);
 		if (results == null) {
@@ -572,6 +747,12 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Variant> getVariants(Collection<IScope> scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetVariants(scopes);
 		}
 		Collection<Variant> results = read(IVariant.class, scopes, false);
 		if (results == null) {
@@ -610,13 +791,14 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	 * @return a Collection of all constructs scoped by the given scope
 	 */
 	protected abstract Collection<Scoped> doGetScopables(IScope scope);
-	
+
 	/**
 	 * Returns all constructs scoped by one of the given scope object.
 	 * 
 	 * @param scope
 	 *            the scope
-	 * @return a Collection of all constructs scoped by  one of the given scope object.
+	 * @return a Collection of all constructs scoped by one of the given scope
+	 *         object.
 	 */
 	protected abstract Collection<Scoped> doGetScopables(Collection<IScope> scopes);
 

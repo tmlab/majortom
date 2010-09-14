@@ -28,7 +28,6 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
@@ -48,7 +47,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends IndexImpl<T> implements ITopicMapListener {
+public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends BaseCachedIndexImpl<T> implements ITopicMapListener {
 
 	/**
 	 * Cache containing the scopes of specific constructs
@@ -124,7 +123,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	/**
 	 * Clear all caches
 	 */
-	private final void clearCache() {
+	protected final void clearCache() {
 		if (cachedConstructs != null) {
 			cachedConstructs.clear();
 		}
@@ -682,6 +681,13 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 		clearCache();
 		getStore().removeTopicMapListener(this);
 		super.close();
+	}
+
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
 	}
 
 }

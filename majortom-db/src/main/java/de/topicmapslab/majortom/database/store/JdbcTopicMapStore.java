@@ -2599,6 +2599,50 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		try {
 			getProcessor().doClearTopicMap(getTopicMap());
 			cache.clear();
+			if ( typeInstanceIndex != null ){
+				typeInstanceIndex.clear();
+			}
+			if ( transitiveTypeInstanceIndex != null ){
+				transitiveTypeInstanceIndex.clear();
+			}
+			if ( supertSubtypeIndex != null ){
+				supertSubtypeIndex.clear();
+			}
+			if ( scopedIndex != null ){
+				scopedIndex.clear();		
+			}
+			if ( literalIndex != null ){
+				literalIndex.clear();			
+			}
+			if ( identityIndex != null ){	
+				identityIndex.clear();
+			}
+			if ( revisionIndex != null ){
+				revisionIndex.clear();
+			}
+
+			// Paged Indexes
+			if ( pagedTypeInstanceIndex != null ){
+				pagedTypeInstanceIndex.clear();	
+			}
+			if ( pagedIdentityIndex != null ){
+				pagedIdentityIndex.clear();			
+			}
+			if ( pagedConstructIndex != null ){
+				pagedConstructIndex.clear();				
+			}
+			if ( pagedScopedIndex != null ){
+				pagedScopedIndex.clear();	
+			}
+			if ( pagedSupertypeSubtypeIndex != null ){
+				pagedSupertypeSubtypeIndex.clear();	
+			}
+			if ( pagedTransitiveTypeInstanceIndex != null ){
+				pagedTransitiveTypeInstanceIndex.clear();			
+			}
+			if ( pagedLiteralIndex != null ){
+				pagedLiteralIndex.clear();					
+			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}

@@ -682,31 +682,37 @@ public class InMemoryLiteralIndex extends IndexImpl<InMemoryTopicMapStore> imple
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNames() {
+	public Collection<Name> getNames() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getNames());
+		Collection<Name> col = HashUtil.getHashSet();
+		col.addAll(getStore().getCharacteristicsStore().getNames());
+		return col; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences() {
+	public Collection<Occurrence> getOccurrences() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getOccurrences());
+		Collection<Occurrence> col = HashUtil.getHashSet();
+		col.addAll(getStore().getCharacteristicsStore().getOccurrences());
+		return col;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariants() {
+	public Collection<Variant> getVariants() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getVariants());
+		Collection<Variant> col = HashUtil.getHashSet();
+		col.addAll(getStore().getCharacteristicsStore().getVariants());
+		return col;
 	}
 
 }

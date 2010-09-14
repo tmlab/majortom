@@ -3761,8 +3761,26 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		return obj;
 	}
 
+	/**
+	 * Generates an identity for a constructs
+	 * @return the generate id
+	 */
 	public ITopicMapStoreIdentity generateIdentity() {
 		return new JdbcIdentity(Long.toString(Math.round(Math.random()
 				* Long.MAX_VALUE)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isCachingEnabled() {
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void enableCaching(boolean enable) {
+		// NOTHING TO DO HERE		
 	}
 }

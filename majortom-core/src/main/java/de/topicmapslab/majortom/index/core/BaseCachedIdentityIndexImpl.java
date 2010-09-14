@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 
-import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
@@ -38,7 +37,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> extends IndexImpl<T> implements ITopicMapListener {
+public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> extends BaseCachedIndexImpl<T> implements ITopicMapListener {
 
 	/**
 	 * enumeration representing the map keys
@@ -111,7 +110,7 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 	/**
 	 * Clear all caches
 	 */
-	private void clearCache() {
+	protected void clearCache() {
 		if (cachedIdentifiers != null) {
 			cachedIdentifiers.clear();
 		}
@@ -435,6 +434,12 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 		super.close();
 	}
 
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
+	}
 }
 
 class IdentityCacheKey {

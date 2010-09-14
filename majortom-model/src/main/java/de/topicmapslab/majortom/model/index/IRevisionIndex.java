@@ -20,7 +20,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.exception.IndexException;
 import de.topicmapslab.majortom.model.revision.Changeset;
@@ -33,7 +32,7 @@ import de.topicmapslab.majortom.model.revision.IRevision;
  * @author Sven Krosse
  * 
  */
-public interface IRevisionIndex extends Index {
+public interface IRevisionIndex extends IIndex {
 
 	/**
 	 * Method returns the last revision of the topic map.
@@ -53,7 +52,8 @@ public interface IRevisionIndex extends Index {
 	 * Method returns the newest revision which was valid until the given
 	 * time-stamp.
 	 * 
-	 * @param timestamp the times-stamp
+	 * @param timestamp
+	 *            the times-stamp
 	 * @return the revision or <code>null</code>
 	 */
 	public IRevision getRevision(final Calendar timestamp);
@@ -62,16 +62,19 @@ public interface IRevisionIndex extends Index {
 	 * Method returns the newest revision which was valid until the given
 	 * time-stamp symbolized by the given tag.
 	 * 
-	 * @param tag the tag symbolizing the end of the validation range
+	 * @param tag
+	 *            the tag symbolizing the end of the validation range
 	 * @return the revision or <code>null</code>
-	 * @throws IndexException thrown if the given tag is unknown
+	 * @throws IndexException
+	 *             thrown if the given tag is unknown
 	 */
 	public IRevision getRevision(final String tag) throws IndexException;
 
 	/**
 	 * Method returns the revision with the given id.
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the revision or <code>null</code>
 	 */
 	public IRevision getRevision(final long id);
@@ -93,7 +96,8 @@ public interface IRevisionIndex extends Index {
 	/**
 	 * Returns a list containing all revisions of the given topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return all revisions
 	 */
 	public List<IRevision> getRevisions(Topic topic);
@@ -101,7 +105,8 @@ public interface IRevisionIndex extends Index {
 	/**
 	 * Returns the change set of the given topic
 	 * 
-	 * @param topic the topic
+	 * @param topic
+	 *            the topic
 	 * @return the change set
 	 */
 	public Changeset getChangeset(Topic topic);
@@ -110,7 +115,8 @@ public interface IRevisionIndex extends Index {
 	 * Returns a list containing all revisions of all association items of the
 	 * specified type.
 	 * 
-	 * @param associationType the association type
+	 * @param associationType
+	 *            the association type
 	 * @return all revisions
 	 */
 	public List<IRevision> getAssociationRevisions(Topic associationType);
@@ -118,7 +124,8 @@ public interface IRevisionIndex extends Index {
 	/**
 	 * Returns the change set of all association items of the specified type
 	 * 
-	 * @param associationType the association type
+	 * @param associationType
+	 *            the association type
 	 * @return the change set
 	 */
 	public Changeset getAssociationChangeset(Topic associationType);
@@ -127,8 +134,10 @@ public interface IRevisionIndex extends Index {
 	 * Converts the internal history to a XML document and store them to the
 	 * given file.
 	 * 
-	 * @param file the file
-	 * @throws IndexException thrown if write operation fails
+	 * @param file
+	 *            the file
+	 * @throws IndexException
+	 *             thrown if write operation fails
 	 */
 	public void toXml(File file) throws IndexException;
 

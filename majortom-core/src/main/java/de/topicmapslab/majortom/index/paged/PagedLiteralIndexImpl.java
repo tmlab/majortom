@@ -24,16 +24,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.tmapi.core.Locator;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
 import org.tmapi.core.TMAPIRuntimeException;
+import org.tmapi.core.Variant;
 
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.index.core.BaseCachedLiteralIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.ILocator;
-import de.topicmapslab.majortom.model.core.IName;
-import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -70,6 +69,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetBooleans(value, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(Boolean.class, value, null, offset, limit, null);
 		if (results == null) {
 			results = doGetBooleans(value, offset, limit);
@@ -84,6 +89,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getBooleans(boolean value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetBooleans(value, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(Boolean.class, value, null, offset, limit, comparator);
 		if (results == null) {
@@ -100,6 +111,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(value, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(String.class, value, null, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristics(value, offset, limit);
@@ -114,6 +131,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(String value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(value, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(String.class, value, null, offset, limit, comparator);
 		if (results == null) {
@@ -130,6 +153,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(datatype, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(String.class, datatype, null, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristics(datatype, offset, limit);
@@ -144,6 +173,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(datatype, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(String.class, datatype, null, offset, limit, comparator);
 		if (results == null) {
@@ -160,6 +195,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(value, datatype, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(String.class, value, datatype, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristics(value, datatype, offset, limit);
@@ -174,6 +215,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristics(value, datatype, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(String.class, value, datatype, offset, limit, comparator);
 		if (results == null) {
@@ -231,6 +278,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicsMatches(regExp, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, null, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristicsMatches(regExp, offset, limit);
@@ -245,6 +298,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicsMatches(regExp, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, null, offset, limit, comparator);
 		if (results == null) {
@@ -261,6 +320,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicsMatches(regExp, datatype, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, datatype, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristicsMatches(regExp, datatype, offset, limit);
@@ -275,6 +340,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicsMatches(regExp, datatype, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, datatype, offset, limit, comparator);
 		if (results == null) {
@@ -291,6 +362,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCoordinates(value, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, null, offset, limit, null);
 		if (results == null) {
 			results = doGetCoordinates(value, offset, limit);
@@ -305,6 +382,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCoordinates(Wgs84Coordinate value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCoordinates(value, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, null, offset, limit, comparator);
 		if (results == null) {
@@ -321,6 +404,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCoordinates(value, deviance, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, deviance, offset, limit, null);
 		if (results == null) {
 			results = doGetCoordinates(value, deviance, offset, limit);
@@ -335,6 +424,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCoordinates(value, deviance, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
@@ -351,10 +446,16 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IDatatypeAware> results = read(IDatatypeAware.class, dataType, offset, limit, null);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDatatypeAwares(dataType, offset, limit);
+		}
+		Collection<IDatatypeAware> results = readConstructs(IDatatypeAware.class, null, dataType, offset, limit, null);
 		if (results == null) {
 			results = doGetDatatypeAwares(dataType, offset, limit);
-			cache(IDatatypeAware.class, dataType, offset, limit, null, results);
+			cacheConstructs(IDatatypeAware.class, null, dataType, offset, limit, null, results);
 		}
 		return (List<IDatatypeAware>) results;
 	}
@@ -366,10 +467,16 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IDatatypeAware> results = read(ILocator.class, dataType, null, offset, limit, comparator);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDatatypeAwares(dataType, offset, limit, comparator);
+		}
+		Collection<IDatatypeAware> results = readConstructs(IDatatypeAware.class, null, dataType, offset, limit, comparator);
 		if (results == null) {
 			results = doGetDatatypeAwares(dataType, offset, limit, comparator);
-			cache(ILocator.class, dataType, null, offset, limit, comparator, results);
+			cacheConstructs(IDatatypeAware.class, null, dataType, offset, limit, comparator, results);
 		}
 		return (List<IDatatypeAware>) results;
 	}
@@ -380,6 +487,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDateTime(Calendar value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDateTime(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -396,6 +509,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDateTime(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetDateTime(value, offset, limit, comparator);
@@ -410,6 +529,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDateTime(value, deviance, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, deviance, offset, limit, null);
 		if (results == null) {
@@ -426,6 +551,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDateTime(value, deviance, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
 			results = doGetDateTime(value, deviance, offset, limit, comparator);
@@ -440,6 +571,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDoubles(double value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDoubles(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Double.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -456,6 +593,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDoubles(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Double.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetDoubles(value, offset, limit, comparator);
@@ -470,6 +613,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDoubles(value, deviance, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Double.class, value, deviance, offset, limit, null);
 		if (results == null) {
@@ -486,6 +635,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetDoubles(value, deviance, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Double.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
 			results = doGetDoubles(value, deviance, offset, limit, comparator);
@@ -500,6 +655,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getFloats(float value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetFloats(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Float.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -516,6 +677,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetFloats(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Float.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetFloats(value, offset, limit, comparator);
@@ -530,6 +697,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getFloats(float value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetFloats(value, deviance, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Float.class, value, deviance, offset, limit, null);
 		if (results == null) {
@@ -546,6 +719,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetFloats(value, deviance, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Float.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
 			results = doGetFloats(value, deviance, offset, limit, comparator);
@@ -560,6 +739,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getIntegers(int value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetIntegers(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Integer.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -576,6 +761,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetIntegers(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Integer.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetIntegers(value, offset, limit, comparator);
@@ -590,6 +781,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetIntegers(value, deviance, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Integer.class, value, deviance, offset, limit, null);
 		if (results == null) {
@@ -606,6 +803,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetIntegers(value, deviance, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Integer.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
 			results = doGetIntegers(value, deviance, offset, limit, comparator);
@@ -620,6 +823,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getLongs(long value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetLongs(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Long.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -636,6 +845,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetLongs(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Long.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetLongs(value, offset, limit, comparator);
@@ -650,6 +865,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getLongs(long value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetLongs(value, deviance, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(Long.class, value, deviance, offset, limit, null);
 		if (results == null) {
@@ -666,6 +887,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetLongs(value, deviance, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(Long.class, value, deviance, offset, limit, comparator);
 		if (results == null) {
 			results = doGetLongs(value, deviance, offset, limit, comparator);
@@ -677,61 +904,85 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IName> getNames(int offset, int limit) {
+	public List<Name> getNames(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IName> results = read(IName.class, offset, limit, null);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNames(offset, limit);
+		}
+		Collection<Name> results = readConstructs(Name.class, offset, limit, null);
 		if (results == null) {
 			results = doGetNames(offset, limit);
-			cache(IName.class, offset, limit, null, results);
+			cacheConstructs(Name.class, offset, limit, null, results);
 		}
-		return (List<IName>) results;
+		return (List<Name>) results;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IName> getNames(int offset, int limit, Comparator<IName> comparator) {
+	public List<Name> getNames(int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IName> results = read(IName.class, offset, limit, comparator);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNames(offset, limit, comparator);
+		}
+		Collection<Name> results = readConstructs(Name.class, offset, limit, comparator);
 		if (results == null) {
 			results = doGetNames(offset, limit, comparator);
-			cache(IName.class, offset, limit, comparator, results);
+			cacheConstructs(Name.class, offset, limit, comparator, results);
 		}
-		return (List<IName>) results;
+		return (List<Name>) results;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IOccurrence> getOccurrences(int offset, int limit) {
+	public List<Occurrence> getOccurrences(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IOccurrence> results = read(IOccurrence.class, offset, limit, null);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrences(offset, limit);
+		}
+		Collection<Occurrence> results = readConstructs(Occurrence.class, offset, limit, null);
 		if (results == null) {
 			results = doGetOccurrences(offset, limit);
-			cache(IOccurrence.class, offset, limit, null, results);
+			cacheConstructs(Occurrence.class, offset, limit, null, results);
 		}
-		return (List<IOccurrence>) results;
+		return (List<Occurrence>) results;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IOccurrence> getOccurrences(int offset, int limit, Comparator<IOccurrence> comparator) {
+	public List<Occurrence> getOccurrences(int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IOccurrence> results = read(IOccurrence.class, offset, limit, comparator);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrences(offset, limit, comparator);
+		}
+		Collection<Occurrence> results = readConstructs(Occurrence.class, offset, limit, comparator);
 		if (results == null) {
 			results = doGetOccurrences(offset, limit, comparator);
-			cache(IOccurrence.class, offset, limit, comparator, results);
+			cacheConstructs(Occurrence.class, offset, limit, comparator, results);
 		}
-		return (List<IOccurrence>) results;
+		return (List<Occurrence>) results;
 	}
 
 	/**
@@ -740,6 +991,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getUris(URI value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetUris(value, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(URI.class, value, null, offset, limit, null);
 		if (results == null) {
@@ -756,6 +1013,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetUris(value, offset, limit, comparator);
+		}
 		Collection<ICharacteristics> results = read(URI.class, value, null, offset, limit, comparator);
 		if (results == null) {
 			results = doGetUris(value, offset, limit, comparator);
@@ -767,31 +1030,43 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IVariant> getVariants(int offset, int limit) {
+	public List<Variant> getVariants(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IVariant> results = read(IVariant.class, offset, limit, null);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetVariants(offset, limit);
+		}
+		Collection<Variant> results = readConstructs(Variant.class, offset, limit, null);
 		if (results == null) {
 			results = doGetVariants(offset, limit);
-			cache(IVariant.class, offset, limit, null, results);
+			cacheConstructs(Variant.class, offset, limit, null, results);
 		}
-		return (List<IVariant>) results;
+		return (List<Variant>) results;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IVariant> getVariants(int offset, int limit, Comparator<IVariant> comparator) {
+	public List<Variant> getVariants(int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		Collection<IVariant> results = read(IVariant.class, offset, limit, comparator);
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetVariants(offset, limit, comparator);
+		}
+		Collection<Variant> results = readConstructs(Variant.class, offset, limit, comparator);
 		if (results == null) {
 			results = doGetVariants(offset, limit, comparator);
-			cache(IVariant.class, offset, limit, comparator, results);
+			cacheConstructs(Variant.class, offset, limit, comparator, results);
 		}
-		return (List<IVariant>) results;
+		return (List<Variant>) results;
 	}
 
 	/**
@@ -1639,8 +1914,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the maximum count of returned values
 	 * @return all names within the given range of the topic map
 	 */
-	protected List<IName> doGetNames(int offset, int limit) {
-		List<IName> list = HashUtil.getList(getParentIndex().getNames());
+	protected List<Name> doGetNames(int offset, int limit) {
+		List<Name> list = HashUtil.getList(getParentIndex().getNames());
 		return HashUtil.secureSubList(list, offset, limit);
 	}
 
@@ -1656,8 +1931,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the comparator
 	 * @return all names within the given range of the topic map
 	 */
-	protected List<IName> doGetNames(int offset, int limit, Comparator<IName> comparator) {
-		List<IName> list = HashUtil.getList(getParentIndex().getNames());
+	protected List<Name> doGetNames(int offset, int limit, Comparator<Name> comparator) {
+		List<Name> list = HashUtil.getList(getParentIndex().getNames());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
 	}
@@ -1672,8 +1947,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the maximum count of returned values
 	 * @return all occurrences within the given range of the topic map
 	 */
-	protected List<IOccurrence> doGetOccurrences(int offset, int limit) {
-		List<IOccurrence> list = HashUtil.getList(getParentIndex().getOccurrences());
+	protected List<Occurrence> doGetOccurrences(int offset, int limit) {
+		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences());
 		return HashUtil.secureSubList(list, offset, limit);
 	}
 
@@ -1689,8 +1964,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the comparator
 	 * @return all occurrences within the given range of the topic map
 	 */
-	protected List<IOccurrence> doGetOccurrences(int offset, int limit, Comparator<IOccurrence> comparator) {
-		List<IOccurrence> list = HashUtil.getList(getParentIndex().getOccurrences());
+	protected List<Occurrence> doGetOccurrences(int offset, int limit, Comparator<Occurrence> comparator) {
+		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
 	}
@@ -1705,8 +1980,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the maximum count of returned values
 	 * @return all variants within the given range of the topic map
 	 */
-	protected List<IVariant> doGetVariants(int offset, int limit) {
-		List<IVariant> list = HashUtil.getList(getParentIndex().getVariants());
+	protected List<Variant> doGetVariants(int offset, int limit) {
+		List<Variant> list = HashUtil.getList(getParentIndex().getVariants());
 		return HashUtil.secureSubList(list, offset, limit);
 	}
 
@@ -1722,8 +1997,8 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	 *            the comparator
 	 * @return all variants within the given range of the topic map
 	 */
-	protected List<IVariant> doGetVariants(int offset, int limit, Comparator<IVariant> comparator) {
-		List<IVariant> list = HashUtil.getList(getParentIndex().getVariants());
+	protected List<Variant> doGetVariants(int offset, int limit, Comparator<Variant> comparator) {
+		List<Variant> list = HashUtil.getList(getParentIndex().getVariants());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
 	}

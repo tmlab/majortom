@@ -18,6 +18,10 @@ package de.topicmapslab.majortom.inmemory.transaction.internal;
 import java.util.Collections;
 import java.util.Set;
 
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Variant;
+
 import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
 import de.topicmapslab.majortom.inmemory.transaction.InMemoryTransactionTopicMapStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
@@ -172,9 +176,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			index.open();
 		}
 		Set<IName> set = HashUtil.getHashSet();
-		for (IName name : index.getNames()) {
-			if (!getLazyIdentityStore().isRemovedConstruct(name)) {
-				set.add(getLazyIdentityStore().createLazyStub(name));
+		for (Name name : index.getNames()) {
+			if (!getLazyIdentityStore().isRemovedConstruct((IName)name)) {
+				set.add(getLazyIdentityStore().createLazyStub((IName)name));
 			}
 		}
 		set.addAll(super.getNames());
@@ -213,9 +217,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			index.open();
 		}
 		Set<IOccurrence> set = HashUtil.getHashSet();
-		for (IOccurrence occurrence : index.getOccurrences()) {
-			if (!getLazyIdentityStore().isRemovedConstruct(occurrence)) {
-				set.add(getLazyIdentityStore().createLazyStub(occurrence));
+		for ( Occurrence occurrence : index.getOccurrences()) {
+			if (!getLazyIdentityStore().isRemovedConstruct((IOccurrence)occurrence)) {
+				set.add(getLazyIdentityStore().createLazyStub((IOccurrence)occurrence));
 			}
 		}
 		set.addAll(super.getOccurrences());
@@ -255,9 +259,9 @@ public class LazyCharacteristicsStore extends CharacteristicsStore {
 			index.open();
 		}
 		Set<IVariant> set = HashUtil.getHashSet();
-		for (IVariant variant : index.getVariants()) {
-			if (!getLazyIdentityStore().isRemovedConstruct(variant)) {
-				set.add(getLazyIdentityStore().createLazyStub(variant));
+		for (Variant variant : index.getVariants()) {
+			if (!getLazyIdentityStore().isRemovedConstruct((IVariant)variant)) {
+				set.add(getLazyIdentityStore().createLazyStub((IVariant)variant));
 			}
 		}
 		set.addAll(super.getVariants());

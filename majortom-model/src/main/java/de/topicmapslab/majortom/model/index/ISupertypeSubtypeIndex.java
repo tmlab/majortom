@@ -18,7 +18,6 @@ package de.topicmapslab.majortom.model.index;
 import java.util.Collection;
 
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
 
 /**
  * Interface definition of an index handling the supertype-subtype relations of
@@ -27,7 +26,7 @@ import org.tmapi.index.Index;
  * @author Sven Krosse
  * 
  */
-public interface ISupertypeSubtypeIndex extends Index {
+public interface ISupertypeSubtypeIndex extends IIndex {
 
 	/**
 	 * Returns all topic types being a supertype of a topic type contained by
@@ -92,7 +91,8 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 *            of every given type
 	 * @return a collection of all supertypes of at least one of the given type
 	 */
-	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all);
+	public Collection<Topic> getSupertypes(Collection<? extends Topic> types,
+			boolean all);
 
 	/**
 	 * Returns all topic types being a subtype of a topic type contained by the
@@ -155,5 +155,6 @@ public interface ISupertypeSubtypeIndex extends Index {
 	 *            of every given type
 	 * @return a collection of all subtypes of at least one of the given type
 	 */
-	public Collection<Topic> getSubtypes(Collection<? extends Topic> types, boolean all);
+	public Collection<Topic> getSubtypes(Collection<? extends Topic> types,
+			boolean all);
 }

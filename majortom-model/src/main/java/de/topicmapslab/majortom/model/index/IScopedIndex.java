@@ -36,7 +36,7 @@ import de.topicmapslab.majortom.model.core.IScope;
  * @author Sven Krosse
  * 
  */
-public interface IScopedIndex extends ScopedIndex {
+public interface IScopedIndex extends ScopedIndex, IIndex {
 
 	/**
 	 * Returns the scope object containing exactly the given themes.

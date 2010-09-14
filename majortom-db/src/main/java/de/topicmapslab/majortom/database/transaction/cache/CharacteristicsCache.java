@@ -16,8 +16,12 @@
 package de.topicmapslab.majortom.database.transaction.cache;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.database.transaction.TransactionTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -90,7 +94,8 @@ public class CharacteristicsCache implements IDataStore {
 	 * @param xsdString
 	 *            the locator of XSD string
 	 */
-	public CharacteristicsCache(TransactionTopicMapStore topicMapStore, ILocator xsdString) {
+	public CharacteristicsCache(TransactionTopicMapStore topicMapStore,
+			ILocator xsdString) {
 		this.topicMapStore = topicMapStore;
 		this.xsdString = xsdString;
 	}
@@ -217,7 +222,8 @@ public class CharacteristicsCache implements IDataStore {
 		if (containsDatatype(dataTypeAware)) {
 			return dataTypes.get(dataTypeAware);
 		}
-		return (ILocator) getTopicMapStore().doRead(dataTypeAware, TopicMapStoreParameterType.DATATYPE);
+		return (ILocator) getTopicMapStore().doRead(dataTypeAware,
+				TopicMapStoreParameterType.DATATYPE);
 	}
 
 	/**
@@ -250,8 +256,10 @@ public class CharacteristicsCache implements IDataStore {
 			if (isRemovedConstruct(datatypeAware)) {
 				continue;
 			}
-			if (changedDatatypes == null || !changedDatatypes.contains(datatypeAware.getId())) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(datatypeAware));
+			if (changedDatatypes == null
+					|| !changedDatatypes.contains(datatypeAware.getId())) {
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub(datatypeAware));
 			}
 		}
 		if (dataTyped != null && dataTyped.containsKey(locator)) {
@@ -271,9 +279,10 @@ public class CharacteristicsCache implements IDataStore {
 			index.open();
 		}
 		Set<IName> set = HashUtil.getHashSet();
-		for (IName name : index.getNames()) {
-			if (!isRemovedConstruct(name)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(name));
+		for (Name name : index.getNames()) {
+			if (!isRemovedConstruct((IName) name)) {
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub((IName) name));
 			}
 		}
 		if (names != null) {
@@ -294,9 +303,11 @@ public class CharacteristicsCache implements IDataStore {
 	@SuppressWarnings("unchecked")
 	public Set<IName> getNames(ITopic t) {
 		Set<IName> set = HashUtil.getHashSet();
-		for (IName name : (Set<IName>) getTopicMapStore().doRead(t, TopicMapStoreParameterType.NAME)) {
+		for (IName name : (Set<IName>) getTopicMapStore().doRead(t,
+				TopicMapStoreParameterType.NAME)) {
 			if (!isRemovedConstruct(name)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(name));
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub(name));
 			}
 		}
 		if (names != null && names.containsKey(t)) {
@@ -316,9 +327,10 @@ public class CharacteristicsCache implements IDataStore {
 			index.open();
 		}
 		Set<IOccurrence> set = HashUtil.getHashSet();
-		for (IOccurrence occurrence : index.getOccurrences()) {
-			if (!isRemovedConstruct(occurrence)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(occurrence));
+		for (Occurrence occurrence : index.getOccurrences()) {
+			if (!isRemovedConstruct((IOccurrence) occurrence)) {
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub((IOccurrence) occurrence));
 			}
 		}
 		if (occurrences != null) {
@@ -339,9 +351,11 @@ public class CharacteristicsCache implements IDataStore {
 	@SuppressWarnings("unchecked")
 	public Set<IOccurrence> getOccurrences(ITopic t) {
 		Set<IOccurrence> set = HashUtil.getHashSet();
-		for (IOccurrence occurrence : (Set<IOccurrence>) getTopicMapStore().doRead(t, TopicMapStoreParameterType.OCCURRENCE)) {
+		for (IOccurrence occurrence : (Set<IOccurrence>) getTopicMapStore()
+				.doRead(t, TopicMapStoreParameterType.OCCURRENCE)) {
 			if (!isRemovedConstruct(occurrence)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(occurrence));
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub(occurrence));
 			}
 		}
 		if (occurrences != null && occurrences.containsKey(t)) {
@@ -361,9 +375,10 @@ public class CharacteristicsCache implements IDataStore {
 			index.open();
 		}
 		Set<IVariant> set = HashUtil.getHashSet();
-		for (IVariant variant : index.getVariants()) {
-			if (!isRemovedConstruct(variant)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(variant));
+		for (Variant variant : index.getVariants()) {
+			if (!isRemovedConstruct((IVariant) variant)) {
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub((IVariant) variant));
 			}
 		}
 		if (variants != null) {
@@ -384,9 +399,11 @@ public class CharacteristicsCache implements IDataStore {
 	@SuppressWarnings("unchecked")
 	public Set<IVariant> getVariants(IName n) {
 		Set<IVariant> set = HashUtil.getHashSet();
-		for (IVariant variant : (Set<IVariant>) getTopicMapStore().doRead(n, TopicMapStoreParameterType.VARIANT)) {
+		for (IVariant variant : (Set<IVariant>) getTopicMapStore().doRead(n,
+				TopicMapStoreParameterType.VARIANT)) {
 			if (!isRemovedConstruct(variant)) {
-				set.add(getTransactionStore().getIdentityStore().createLazyStub(variant));
+				set.add(getTransactionStore().getIdentityStore()
+						.createLazyStub(variant));
 			}
 		}
 		if (variants != null && variants.containsKey(n)) {
@@ -408,7 +425,8 @@ public class CharacteristicsCache implements IDataStore {
 			value = values.get(obj);
 		}
 		if (value == null) {
-			value = getTopicMapStore().doRead(obj, TopicMapStoreParameterType.VALUE);
+			value = getTopicMapStore().doRead(obj,
+					TopicMapStoreParameterType.VALUE);
 		}
 		return value;
 	}
@@ -512,7 +530,8 @@ public class CharacteristicsCache implements IDataStore {
 		if (names != null && names.containsKey(n.getParent())) {
 			Set<IName> set = names.get(n.getParent());
 			if (set == null) {
-				throw new TopicMapStoreException("Unknown topic " + n.toString());
+				throw new TopicMapStoreException("Unknown topic "
+						+ n.toString());
 			}
 			set.remove(n);
 			names.put(n.getParent(), set);
@@ -543,7 +562,8 @@ public class CharacteristicsCache implements IDataStore {
 		if (variants != null && variants.containsKey(v.getParent())) {
 			Set<IVariant> set = variants.get(v.getParent());
 			if (set == null) {
-				throw new TopicMapStoreException("Unknown variant " + v.toString());
+				throw new TopicMapStoreException("Unknown variant "
+						+ v.toString());
 			}
 			set.remove(v);
 			variants.put(v.getParent(), set);
@@ -581,7 +601,8 @@ public class CharacteristicsCache implements IDataStore {
 		if (occurrences != null && occurrences.containsKey(o.getParent())) {
 			Set<IOccurrence> set = occurrences.get(o.getParent());
 			if (set == null) {
-				throw new TopicMapStoreException("Unknown occurrence " + o.toString());
+				throw new TopicMapStoreException("Unknown occurrence "
+						+ o.toString());
 			}
 			set.remove(o);
 			occurrences.put(o.getParent(), set);
@@ -654,7 +675,8 @@ public class CharacteristicsCache implements IDataStore {
 		if (obj instanceof IName) {
 			return value.toString();
 		}
-		return DatatypeAwareUtils.toString(value, getDatatype((IDatatypeAware) obj));
+		return DatatypeAwareUtils.toString(value,
+				getDatatype((IDatatypeAware) obj));
 	}
 
 	/**

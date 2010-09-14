@@ -22,7 +22,6 @@ import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.core.ITopicMap;
 
@@ -34,7 +33,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
  * @author Sven Krosse
  * 
  */
-public interface IIdentityIndex extends Index {
+public interface IIdentityIndex extends IIndex {
 
 	/**
 	 * Returns all known item-identifiers of the current topic map.
@@ -69,8 +68,8 @@ public interface IIdentityIndex extends Index {
 	 * @throws MalformedIriException
 	 *             thrown by {@link ITopicMap#createLocator(String)}
 	 */
-	public Construct getConstructByItemIdentifier(
-			final String reference) throws MalformedIRIException;
+	public Construct getConstructByItemIdentifier(final String reference)
+			throws MalformedIRIException;
 
 	/**
 	 * The method try to identify a construct by the given item-identifier.
@@ -79,8 +78,7 @@ public interface IIdentityIndex extends Index {
 	 *            the identifier
 	 * @return the identified construct or <code>null</code>
 	 */
-	public Construct getConstructByItemIdentifier(
-			final Locator locator);
+	public Construct getConstructByItemIdentifier(final Locator locator);
 
 	/**
 	 * The method try to identify all construct using an item-identifier
@@ -118,8 +116,8 @@ public interface IIdentityIndex extends Index {
 	 * @throws MalformedIriException
 	 *             thrown by {@link ITopicMap#createLocator(String)}
 	 */
-	public Topic getTopicBySubjectIdentifier(
-			final String reference) throws MalformedIRIException;
+	public Topic getTopicBySubjectIdentifier(final String reference)
+			throws MalformedIRIException;
 
 	/**
 	 * The method try to identify a topic by the given subject-identifier.
@@ -138,8 +136,7 @@ public interface IIdentityIndex extends Index {
 	 *            the regular expression
 	 * @return a collection of all identified topics but never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(
-			final String regExp);
+	public Collection<Topic> getTopicsBySubjectIdentifier(final String regExp);
 
 	/**
 	 * The method try to identify all construct using an subject-identifier
@@ -149,8 +146,7 @@ public interface IIdentityIndex extends Index {
 	 *            the regular expression
 	 * @return a collection of all identified topics but never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectIdentifier(
-			final Pattern regExp);
+	public Collection<Topic> getTopicsBySubjectIdentifier(final Pattern regExp);
 
 	/**
 	 * The method try to identify a topic by the given string reference of its
@@ -184,8 +180,7 @@ public interface IIdentityIndex extends Index {
 	 *            the regular expression
 	 * @return a collection of all identified topics but never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(
-			final String regExp);
+	public Collection<Topic> getTopicsBySubjectLocator(final String regExp);
 
 	/**
 	 * The method try to identify all topic using a subject-locator matching the
@@ -195,8 +190,7 @@ public interface IIdentityIndex extends Index {
 	 *            the regular expression
 	 * @return a collection of all identified topics but never <code>null</code>
 	 */
-	public Collection<Topic> getTopicsBySubjectLocator(
-			final Pattern regExp);
+	public Collection<Topic> getTopicsBySubjectLocator(final Pattern regExp);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -208,8 +202,7 @@ public interface IIdentityIndex extends Index {
 	 * @return a collection of all identified constructs but never
 	 *         <code>null</code>
 	 */
-	public Collection<Construct> getConstructsByIdentifier(
-			final String regExp);
+	public Collection<Construct> getConstructsByIdentifier(final String regExp);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -221,8 +214,7 @@ public interface IIdentityIndex extends Index {
 	 * @return a collection of all identified constructs but never
 	 *         <code>null</code>
 	 */
-	public Collection<Construct> getConstructsByIdentifier(
-			final Pattern regExp);
+	public Collection<Construct> getConstructsByIdentifier(final Pattern regExp);
 
 	/**
 	 * Method checks if the given string reference is known as

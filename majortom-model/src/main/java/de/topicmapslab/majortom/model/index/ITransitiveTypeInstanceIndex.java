@@ -21,6 +21,6 @@ package de.topicmapslab.majortom.model.index;
  * @author Sven Krosse
  * 
  */
-public interface ITransitiveTypeInstanceIndex extends ITypeInstanceIndex {
+public interface ITransitiveTypeInstanceIndex extends ITypeInstanceIndex, IIndex {
 
 }

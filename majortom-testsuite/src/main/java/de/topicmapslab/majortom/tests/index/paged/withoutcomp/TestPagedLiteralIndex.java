@@ -881,7 +881,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IName> list = null;
+		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(i * 10, 10);
 			assertEquals(10, list.size());
@@ -918,7 +918,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IOccurrence> list = null;
+		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(i * 10, 10);
 			assertEquals(10, list.size());
@@ -996,7 +996,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			}
 		}
 
-		List<IVariant> list = null;
+		List<Variant> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getVariants(i * 10, 10);
 			assertEquals(10, list.size());

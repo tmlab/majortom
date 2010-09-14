@@ -682,30 +682,36 @@ public class TransactionLiteralIndex extends IndexImpl<TransactionTopicMapStore>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNames() {
+	public Collection<Name> getNames() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getNames());
+		Collection<Name> names = HashUtil.getHashSet();
+		names.addAll( getStore().getCharacteristicsStore().getNames());
+		return names;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences() {
+	public Collection<Occurrence> getOccurrences() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getOccurrences());
+		Collection<Occurrence> occurrences = HashUtil.getHashSet();
+		occurrences.addAll( getStore().getCharacteristicsStore().getOccurrences());
+		return occurrences;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariants() {
+	public Collection<Variant> getVariants() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return HashUtil.getHashSet(getStore().getCharacteristicsStore().getVariants());
+		Collection<Variant> variants = HashUtil.getHashSet();
+		variants.addAll( getStore().getCharacteristicsStore().getVariants());
+		return variants;
 	}
 }

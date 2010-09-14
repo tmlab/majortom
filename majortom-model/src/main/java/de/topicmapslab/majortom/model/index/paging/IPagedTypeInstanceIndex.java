@@ -24,9 +24,9 @@ import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.core.ICharacteristics;
+import de.topicmapslab.majortom.model.index.IIndex;
 
 /**
  * Special type-instance index supporting paging.
@@ -34,7 +34,7 @@ import de.topicmapslab.majortom.model.core.ICharacteristics;
  * @author Sven Krosse
  * 
  */
-public interface IPagedTypeInstanceIndex extends Index {
+public interface IPagedTypeInstanceIndex extends IIndex {
 
 	/**
 	 * Returns all topic types of the topic map.

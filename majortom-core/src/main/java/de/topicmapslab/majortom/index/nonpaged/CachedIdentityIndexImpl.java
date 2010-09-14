@@ -62,6 +62,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetConstructsByIdentifier(regExp);
+		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.IDENTIFIER, regExp);
 		if (constructs == null) {
 			constructs = doGetConstructsByIdentifier(regExp);
@@ -87,6 +93,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetConstructsByItemIdentifier(regExp);
+		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, regExp);
 		if (constructs == null) {
 			constructs = doGetConstructsByItemIdentifier(regExp);
@@ -101,6 +113,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Locator> getItemIdentifiers() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetItemIdentifiers();
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER);
 		if (locators == null) {
@@ -117,6 +135,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetSubjectIdentifiers();
+		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER);
 		if (locators == null) {
 			locators = doGetSubjectIdentifiers();
@@ -131,6 +155,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Locator> getSubjectLocators() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetSubjectLocators();
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR);
 		if (locators == null) {
@@ -157,6 +187,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetTopicsBySubjectIdentifier(regExp);
+		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, regExp);
 		if (topics == null) {
 			topics = doGetTopicsBySubjectIdentifier(regExp);
@@ -181,6 +217,12 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Topic> getTopicsBySubjectLocator(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if ( !getStore().isCachingEnabled()){
+			return doGetTopicsBySubjectLocator(regExp);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, regExp);
 		if (topics == null) {

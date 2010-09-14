@@ -77,6 +77,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetAssociationTypes(offset, limit);
+		}
 		Collection<Topic> types = read(IAssociation.class, offset, limit, null);
 		if (types == null) {
 			types = doGetAssociationTypes(offset, limit);
@@ -91,6 +97,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getAssociationTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetAssociationTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IAssociation.class, offset, limit, comparator);
 		if (types == null) {
@@ -107,6 +119,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetAssociations(type, offset, limit);
+		}
 		Collection<Association> results = read(IAssociation.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetAssociations(type, offset, limit);
@@ -121,6 +139,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Association> getAssociations(Topic type, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetAssociations(type, offset, limit, comparator);
 		}
 		Collection<Association> results = read(IAssociation.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -137,6 +161,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetAssociations(types, offset, limit);
+		}
 		Collection<Association> results = read(IAssociation.class, types, false, offset, limit, null);
 		if (results == null) {
 			results = doGetAssociations(types, offset, limit);
@@ -151,6 +181,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetAssociations(types, offset, limit, comparator);
 		}
 		Collection<Association> results = read(IAssociation.class, types, false, offset, limit, comparator);
 		if (results == null) {
@@ -167,6 +203,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicTypes(offset, limit);
+		}
 		Collection<Topic> types = read(ICharacteristics.class, offset, limit, null);
 		if (types == null) {
 			types = doGetCharacteristicTypes(offset, limit);
@@ -181,6 +223,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getCharacteristicTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(ICharacteristics.class, offset, limit, comparator);
 		if (types == null) {
@@ -197,6 +245,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetCharacteristics(type, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristics(type, offset, limit);
@@ -211,6 +265,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<ICharacteristics> getCharacteristics(Topic type, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetCharacteristics(type, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -227,6 +287,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetCharacteristics(types, offset, limit);
+		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false, offset, limit, null);
 		if (results == null) {
 			results = doGetCharacteristics(types, offset, limit);
@@ -241,6 +307,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetCharacteristics(types, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false, offset, limit, comparator);
 		if (results == null) {
@@ -257,6 +329,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNameTypes(offset, limit);
+		}
 		Collection<Topic> types = read(IName.class, offset, limit, null);
 		if (types == null) {
 			types = doGetNameTypes(offset, limit);
@@ -271,6 +349,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getNameTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNameTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IName.class, offset, limit, comparator);
 		if (types == null) {
@@ -287,6 +371,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNames(type, offset, limit);
+		}
 		Collection<Name> results = read(IName.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetNames(type, offset, limit);
@@ -301,6 +391,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Name> getNames(Topic type, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNames(type, offset, limit, comparator);
 		}
 		Collection<Name> results = read(IName.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -317,6 +413,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNames(types, offset, limit);
+		}
 		Collection<Name> results = read(IName.class, types, false, offset, limit, null);
 		if (results == null) {
 			results = doGetNames(types, offset, limit);
@@ -331,6 +433,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Name> getNames(Collection<? extends Topic> types, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNames(types, offset, limit, comparator);
 		}
 		Collection<Name> results = read(IName.class, types, false, offset, limit, comparator);
 		if (results == null) {
@@ -347,6 +455,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrenceTypes(offset, limit);
+		}
 		Collection<Topic> types = read(IOccurrence.class, offset, limit, null);
 		if (types == null) {
 			types = doGetOccurrenceTypes(offset, limit);
@@ -361,6 +475,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getOccurrenceTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrenceTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IOccurrence.class, offset, limit, comparator);
 		if (types == null) {
@@ -377,6 +497,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetOccurrences(type, offset, limit);
+		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetOccurrences(type, offset, limit);
@@ -391,6 +517,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Occurrence> getOccurrences(Topic type, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetOccurrences(type, offset, limit, comparator);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -407,6 +539,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetOccurrences(types, offset, limit);
+		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false, offset, limit, null);
 		if (results == null) {
 			results = doGetOccurrences(types, offset, limit);
@@ -421,6 +559,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetOccurrences(types, offset, limit, comparator);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false, offset, limit, comparator);
 		if (results == null) {
@@ -437,6 +581,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetRoleTypes(offset, limit);
+		}
 		Collection<Topic> types = read(IAssociationRole.class, offset, limit, null);
 		if (types == null) {
 			types = doGetRoleTypes(offset, limit);
@@ -451,6 +601,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getRoleTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetRoleTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IAssociationRole.class, offset, limit, comparator);
 		if (types == null) {
@@ -467,6 +623,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetRoles(type, offset, limit);
+		}
 		Collection<Role> results = read(IAssociationRole.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetRoles(type, offset, limit);
@@ -481,6 +643,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Role> getRoles(Topic type, int offset, int limit, Comparator<Role> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetRoles(type, offset, limit, comparator);
 		}
 		Collection<Role> results = read(IAssociationRole.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -497,6 +665,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetRoles(types, offset, limit);
+		}
 		Collection<Role> results = read(IAssociationRole.class, types, false, offset, limit, null);
 		if (results == null) {
 			results = doGetRoles(types, offset, limit);
@@ -511,6 +685,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Role> getRoles(Collection<? extends Topic> types, int offset, int limit, Comparator<Role> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetRoles(types, offset, limit, comparator);
 		}
 		Collection<Role> results = read(IAssociationRole.class, types, false, offset, limit, comparator);
 		if (results == null) {
@@ -527,6 +707,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetTopicTypes(offset, limit);
+		}
 		Collection<Topic> types = read(ITopic.class, offset, limit, null);
 		if (types == null) {
 			types = doGetTopicTypes(offset, limit);
@@ -541,6 +727,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getTopicTypes(int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetTopicTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(ITopic.class, offset, limit, comparator);
 		if (types == null) {
@@ -557,6 +749,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetTopics(type, offset, limit);
+		}
 		Collection<Topic> results = read(ITopic.class, type, false, offset, limit, null);
 		if (results == null) {
 			results = doGetTopics(type, offset, limit);
@@ -571,6 +769,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getTopics(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetTopics(type, offset, limit, comparator);
 		}
 		Collection<Topic> results = read(ITopic.class, type, false, offset, limit, comparator);
 		if (results == null) {
@@ -607,6 +811,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetTopics(types, all, offset, limit);
+		}
 		Collection<Topic> results = read(ITopic.class, types, all, offset, limit, null);
 		if (results == null) {
 			results = doGetTopics(types, all, offset, limit);
@@ -621,6 +831,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetTopics(types, all, offset, limit, comparator);
 		}
 		Collection<Topic> results = read(ITopic.class, types, all, offset, limit, comparator);
 		if (results == null) {

@@ -22,7 +22,6 @@ import java.util.Map;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.index.paging.IPagedSupertypeSubtypeIndex;
@@ -35,7 +34,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> extends IndexImpl<T> implements ITopicMapListener {
+public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> extends BaseCachedIndexImpl<T> implements ITopicMapListener {
 
 	/**
 	 * enumeration to specify the type of type-hierarchy
@@ -46,9 +45,9 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	public enum Type {
 
 		ALL_SUPERTYPES,
-		
+
 		ALL_SUBTYPES,
-		
+
 		SUPERTYPE,
 
 		DIRECT_SUPERTYPE,
@@ -91,7 +90,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	/**
 	 * Clear all caches
 	 */
-	private final void clearCache() {
+	protected final void clearCache() {
 		if (cache != null) {
 			cache.clear();
 		}
@@ -233,6 +232,13 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 		clearCache();
 		getStore().removeTopicMapListener(this);
 		super.close();
+	}
+
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
 	}
 
 }

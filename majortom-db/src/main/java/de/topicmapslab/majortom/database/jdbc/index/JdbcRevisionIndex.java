@@ -235,5 +235,12 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 		}
 		throw new UnsupportedOperationException();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clear() {
+		//NOTHING TO DO
+	}
 
 }

@@ -968,4 +968,18 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public void clear(){
 		cache.clear();
 	}
+		
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isCachingEnabled() {
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void enableCaching(boolean enable) {
+		// NOTHING TO DO HERE		
+	}
 }

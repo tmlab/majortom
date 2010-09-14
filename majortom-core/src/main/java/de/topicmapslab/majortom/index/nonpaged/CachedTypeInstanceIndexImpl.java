@@ -59,6 +59,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetAssociationTypes();
+		}
 		Collection<Topic> types = read(IAssociation.class);
 		if (types == null) {
 			types = doGetAssociationTypes();
@@ -73,6 +79,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Association> getAssociations(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetAssociations(type);
 		}
 		Collection<Association> results = read(IAssociation.class, type, false);
 		if (results == null) {
@@ -89,6 +101,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetAssociations(types);
+		}
 		Collection<Association> results = read(IAssociation.class, types, false);
 		if (results == null) {
 			results = doGetAssociations(types);
@@ -103,6 +121,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Topic> getCharacteristicTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetCharacteristicTypes();
 		}
 		Collection<Topic> types = read(ICharacteristics.class);
 		if (types == null) {
@@ -119,6 +143,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetCharacteristics(type);
+		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false);
 		if (results == null) {
 			results = doGetCharacteristics(type);
@@ -133,6 +163,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<ICharacteristics> getCharacteristics(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetCharacteristics(types);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false);
 		if (results == null) {
@@ -149,6 +185,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetNameTypes();
+		}
 		Collection<Topic> types = read(IName.class);
 		if (types == null) {
 			types = doGetNameTypes();
@@ -163,6 +205,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Name> getNames(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNames(type);
 		}
 		Collection<Name> results = read(IName.class, type, false);
 		if (results == null) {
@@ -179,6 +227,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNames(types);
+		}
 		Collection<Name> results = read(IName.class, types, false);
 		if (results == null) {
 			results = doGetNames(types);
@@ -193,6 +247,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Topic> getOccurrenceTypes() {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetOccurrenceTypes();
 		}
 		Collection<Topic> types = read(IOccurrence.class);
 		if (types == null) {
@@ -209,6 +269,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetOccurrences(type);
+		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false);
 		if (results == null) {
 			results = doGetOccurrences(type);
@@ -223,6 +289,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Occurrence> getOccurrences(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetOccurrences(types);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false);
 		if (results == null) {
@@ -239,6 +311,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetRoleTypes();
+		}
 		Collection<Topic> types = read(IAssociationRole.class);
 		if (types == null) {
 			types = doGetRoleTypes();
@@ -253,6 +331,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Role> getRoles(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetRoles(type);
 		}
 		Collection<Role> results = read(IAssociationRole.class, type, false);
 		if (results == null) {
@@ -269,6 +353,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetRoles(types);
+		}
 		Collection<Role> results = read(IAssociationRole.class, types, false);
 		if (results == null) {
 			results = doGetRoles(types);
@@ -284,6 +374,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetTopicTypes();
+		}
 		Collection<Topic> types = read(ITopic.class);
 		if (types == null) {
 			types = doGetTopicTypes();
@@ -298,6 +394,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Topic> getTopics(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetTopics(type);
 		}
 		Collection<Topic> results = read(ITopic.class, type, false);
 		if (results == null) {
@@ -323,6 +425,12 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Topic> getTopics(Collection<Topic> types, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetTopics(types, all);
 		}
 		Collection<Topic> results = read(ITopic.class, types, all);
 		if (results == null) {

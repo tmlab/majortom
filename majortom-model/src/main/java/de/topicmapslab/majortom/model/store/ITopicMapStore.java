@@ -260,4 +260,29 @@ public interface ITopicMapStore {
 	 * @return the internal construct factory
 	 */
 	public IConstructFactory getConstructFactory();
+
+	/**
+	 * Method returns the internal state of caching.
+	 * 
+	 * @return <code>true</code> if caching is enabled, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isCachingEnabled();
+
+	/**
+	 * Enable the caching mechanism of the database topic map store. If the
+	 * caching is enabled, the cache stores any read access and deliver the
+	 * values from cache instead calling the database. The cache will be updated
+	 * automatically. If the cache is disabled, it will be destroyed. Any cached
+	 * values are lost.
+	 * 
+	 * <p>
+	 * <b>Hint:</b> If the topic map store does not support caching, the method has no effect.
+	 * </p>
+	 * 
+	 * @param enable
+	 *            <code>true</code> to enable the cache, <code>false</code> to
+	 *            disable it            
+	 */
+	public void enableCaching(boolean enable);
 }

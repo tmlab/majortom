@@ -51,6 +51,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetDirectSubtypes(type);
+		}
 		Collection<Topic> topics = read(Type.DIRECT_SUBTYPE, type, false);
 		if (topics == null) {
 			topics = doGetDirectSubtypes(type);
@@ -65,6 +71,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 	public Collection<Topic> getDirectSupertypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetDirectSupertypes(type);
 		}
 		Collection<Topic> topics = read(Type.DIRECT_SUPERTYPE, type, false);
 		if (topics == null) {
@@ -81,6 +93,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetSubtypes();
+		}
 		Collection<Topic> topics = read(Type.ALL_SUBTYPES, null, false);
 		if (topics == null) {
 			topics = doGetSubtypes();
@@ -95,6 +113,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 	public Collection<Topic> getSubtypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetSubtypes(type);
 		}
 		Collection<Topic> topics = read(Type.ALL_SUBTYPES, type, false);
 		if (topics == null) {
@@ -134,6 +158,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetSubtypes(types, all);
+		}
 		Collection<Topic> topics = read(Type.SUBTYPE, types, all);
 		if (topics == null) {
 			topics = doGetSubtypes(types, all);
@@ -149,6 +179,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled()) {
+			return doGetSupertypes();
+		}
 		Collection<Topic> topics = read(Type.ALL_SUPERTYPES, null, false);
 		if (topics == null) {
 			topics = doGetSupertypes();
@@ -163,6 +199,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 	public Collection<Topic> getSupertypes(Topic type) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetSupertypes(type);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, type, false);
 		if (topics == null) {
@@ -201,6 +243,12 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetSupertypes(types, all);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, types, all);
 		if (topics == null) {

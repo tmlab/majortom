@@ -20,7 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
+
+import de.topicmapslab.majortom.model.index.IIndex;
 
 /**
  * Special supertype-subtype index supports paging.
@@ -28,7 +29,7 @@ import org.tmapi.index.Index;
  * @author Sven Krosse
  * 
  */
-public interface IPagedSupertypeSubtypeIndex extends Index {
+public interface IPagedSupertypeSubtypeIndex extends IIndex {
 
 	/**
 	 * Returns all topic types being a supertype of a topic type contained by
@@ -56,7 +57,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * 
 	 * @return a list of all supertypes within the given range
 	 */
-	public List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a supertype of the given topic type.If the
@@ -92,7 +94,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * 
 	 * @return a list of all supertypes of the given type within the given range
 	 */
-	public List<Topic> getSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Topic type, int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a direct supertype of the given topic type.
@@ -128,7 +131,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * 
 	 * @return a list of all supertypes of the given type within the given range
 	 */
-	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a supertype of at least one given topic
@@ -144,7 +148,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all supertypes of at least one given type within the
 	 *         given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types,
+			int offset, int limit);
 
 	/**
 	 * Returns all topic types being a supertype of at least one given topic
@@ -162,7 +167,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all supertypes of at least one given type within the
 	 *         given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types,
+			int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a supertype of at least one given type or
@@ -181,7 +187,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all supertypes of at least one of the given type within
 	 *         the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types,
+			boolean all, int offset, int limit);
 
 	/**
 	 * Returns all topic types being a supertype of at least one given type or
@@ -202,7 +209,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all supertypes of at least one of the given type within
 	 *         the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types,
+			boolean all, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a subtype of a topic type contained by the
@@ -230,7 +238,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 *            the comparator
 	 * @return a list of all subtypes within the given range
 	 */
-	public List<Topic> getSubtypes(int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a subtype of the given topic type. If the
@@ -259,7 +268,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * 
 	 * @return a list of all subtypes of the given type within the given range
 	 */
-	public List<Topic> getSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Topic type, int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a direct subtype of the given topic type.
@@ -295,7 +305,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * 
 	 * @return a list of all subtypes of the given type within the given range
 	 */
-	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit,
+			Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
@@ -310,7 +321,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all subtypes of at least one given type within the
 	 *         given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types,
+			int offset, int limit);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
@@ -327,7 +339,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all subtypes of at least one given type within the
 	 *         given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types,
+			int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given type or of
@@ -346,7 +359,8 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 * @return a list of all subtypes of at least one of the given type within
 	 *         the given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types,
+			boolean all, int offset, int limit);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given type or of
@@ -366,6 +380,7 @@ public interface IPagedSupertypeSubtypeIndex extends Index {
 	 *            the comparator
 	 * @return a collection of all subtypes of at least one of the given type
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types,
+			boolean all, int offset, int limit, Comparator<Topic> comparator);
 
 }

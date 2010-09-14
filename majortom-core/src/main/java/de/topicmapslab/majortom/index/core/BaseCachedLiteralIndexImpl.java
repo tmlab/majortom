@@ -16,14 +16,11 @@
 package de.topicmapslab.majortom.index.core;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Set;
 
 import org.tmapi.core.Construct;
 
-import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -34,9 +31,8 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> extends IndexImpl<X> implements ITopicMapListener {
+public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> extends BaseCachedIndexImpl<X> implements ITopicMapListener {
 
-	private Map<Class<?>, Set<LiteralCacheKey>> dependentCacheKeys;
 	private Map<LiteralCacheKey, Collection<? extends Construct>> cachedConstructs;
 	private Map<LiteralCacheKey, Collection<? extends Construct>> cachedLiterals;
 
@@ -82,10 +78,10 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the type of construct
 	 * @return the list or <code>null</code> if the key-pair is unknown
 	 */
-	protected final <T extends Construct> Collection<T> read(Class<T> clazz) {
-		return read(clazz, null, null, null, null);
+	protected final <T extends Construct> Collection<T> readConstructs(Class<T> clazz) {
+		return readConstructs(clazz, null, null, null, null, null);
 	}
-	
+
 	/**
 	 * Internal method to read constructs
 	 * 
@@ -95,10 +91,12 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria - the datatype or <code>null</code>
+	 * @param datatype
+	 *            the datatype
 	 * @return the list or <code>null</code> if the key-pair is unknown
 	 */
-	protected final <T extends Construct> Collection<T> read(Class<T> clazz, Object filter) {
-		return read(clazz, filter, null, null, null);
+	protected final <T extends Construct> Collection<T> readConstructs(Class<T> clazz, Object filter, Object datatype) {
+		return readConstructs(clazz, filter, datatype, null, null, null);
 	}
 
 	/**
@@ -116,10 +114,10 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the comparator or <code>null</code>
 	 * @return the list or <code>null</code> if the key-pair is unknown
 	 */
-	protected final <T extends Construct> Collection<T> read(Class<T> clazz, Integer offset, Integer limit, Comparator<T> comparator) {
-		return read(clazz, null, offset, limit,comparator);
+	protected final <T extends Construct> Collection<T> readConstructs(Class<T> clazz, Integer offset, Integer limit, Comparator<T> comparator) {
+		return readConstructs(clazz, null, null, offset, limit, comparator);
 	}
-	
+
 	/**
 	 * Internal method to read constructs
 	 * 
@@ -129,6 +127,8 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria - the datatype or <code>null</code>
+	 * @param datatype
+	 *            the datatype
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -138,7 +138,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 * @return the list or <code>null</code> if the key-pair is unknown
 	 */
 	@SuppressWarnings("unchecked")
-	protected final <T extends Construct> Collection<T> read(Class<T> clazz, Object filter, Integer offset, Integer limit, Comparator<T> comparator) {
+	protected final <T extends Construct> Collection<T> readConstructs(Class<T> clazz, Object filter, Object datatype, Integer offset, Integer limit, Comparator<T> comparator) {
 		/*
 		 * check main cache
 		 */
@@ -148,7 +148,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 		/*
 		 * get cached constructs by type
 		 */
-		return (Collection<T>) cachedConstructs.get(generateCacheKey(clazz, filter, null, offset, limit, comparator));
+		return (Collection<T>) cachedConstructs.get(generateCacheKey(clazz, filter, datatype, offset, limit, comparator));
 	}
 
 	/**
@@ -161,10 +161,10 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 * @param values
 	 *            the values to store
 	 */
-	protected final <T extends Construct> void cache(Class<T> clazz, Collection<T> values) {
-		cache(clazz,null, null, null, null, values);
+	protected final <T extends Construct> void cacheConstructs(Class<T> clazz, Collection<T> values) {
+		cacheConstructs(clazz, null, null, null, null, null, values);
 	}
-	
+
 	/**
 	 * Internal method to add constructs of the given type to internal store.
 	 * 
@@ -174,13 +174,15 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria - the datatype or <code>null</code>
+	 * @param datatype
+	 *            the datatype
 	 * @param values
 	 *            the values to store
 	 */
-	protected final <T extends Construct> void cache(Class<T> clazz, Object filter,  Collection<T> values) {
-		cache(clazz,filter, null, null, null, values);
+	protected final <T extends Construct> void cacheConstructs(Class<T> clazz, Object filter, Object datatype, Collection<T> values) {
+		cacheConstructs(clazz, filter, datatype, null, null, null, values);
 	}
-	
+
 	/**
 	 * Internal method to add constructs of the given type to internal store. *
 	 * 
@@ -197,8 +199,8 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 * @param values
 	 *            the values to store
 	 */
-	protected final <T extends Construct> void cache(Class<T> clazz, Integer offset, Integer limit, Comparator<T> comparator, Collection<T> values) {
-		cache(clazz, null, offset, limit, comparator, values);
+	protected final <T extends Construct> void cacheConstructs(Class<T> clazz, Integer offset, Integer limit, Comparator<T> comparator, Collection<T> values) {
+		cacheConstructs(clazz, null, null, offset, limit, comparator, values);
 	}
 
 	/**
@@ -210,6 +212,8 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria - the datatype or <code>null</code>
+	 * @param datatype
+	 *            the datatype
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -219,7 +223,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 * @param values
 	 *            the values to store
 	 */
-	protected final <T extends Construct> void cache(Class<T> clazz, Object filter, Integer offset, Integer limit, Comparator<T> comparator, Collection<T> values) {
+	protected final <T extends Construct> void cacheConstructs(Class<T> clazz, Object filter, Object datatype, Integer offset, Integer limit, Comparator<T> comparator, Collection<T> values) {
 		/*
 		 * initialize cache
 		 */
@@ -229,7 +233,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 		/*
 		 * store cached constructs by type
 		 */
-		cachedConstructs.put(generateCacheKey(clazz, filter, null, offset, limit, comparator), values);
+		cachedConstructs.put(generateCacheKey(clazz, filter, datatype, offset, limit, comparator), values);
 	}
 
 	/**
@@ -338,34 +342,12 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	/**
 	 * Internal method to clear all caches
 	 */
-	private final void clearCache() {
+	protected final void clearCache() {
 		if (cachedConstructs != null) {
 			cachedConstructs.clear();
 		}
 		if (cachedLiterals != null) {
 			cachedLiterals.clear();
-		}
-		if (dependentCacheKeys != null) {
-			dependentCacheKeys.clear();
-		}
-	}
-
-	/**
-	 * Clear all caches depend on the given types
-	 * 
-	 * @param types
-	 *            the types
-	 */
-	private void clearDependentCache(Class<?>... types) {
-		for (Class<?> type : types) {
-			for (LiteralCacheKey key : getDependentKeys(type)) {
-				if (cachedLiterals != null) {
-					cachedLiterals.remove(key);
-				}
-				if (cachedConstructs != null) {
-					cachedConstructs.remove(key);
-				}
-			}
 		}
 	}
 
@@ -388,33 +370,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 */
 	private LiteralCacheKey generateCacheKey(Class<?> clazz, Object filter, Object deviance, Integer offset, Integer limit, Comparator<?> comparator) {
 		LiteralCacheKey key = new LiteralCacheKey(clazz, filter, deviance, offset, limit, comparator);
-		/*
-		 * store dependent keys for clearing cache
-		 */
-		if (dependentCacheKeys == null) {
-			dependentCacheKeys = HashUtil.getHashMap();
-		}
-		Set<LiteralCacheKey> keys = dependentCacheKeys.get(clazz);
-		if (keys == null) {
-			keys = HashUtil.getHashSet();
-			dependentCacheKeys.put(clazz, keys);
-		}
-		keys.add(key);
 		return key;
-	}
-
-	/**
-	 * Returns a set of cache keys dependents on the given type
-	 * 
-	 * @param type
-	 *            the type
-	 * @return all dependent keys
-	 */
-	private Set<LiteralCacheKey> getDependentKeys(Class<?> type) {
-		if (dependentCacheKeys == null || !dependentCacheKeys.containsKey(type)) {
-			return Collections.emptySet();
-		}
-		return dependentCacheKeys.get(type);
 	}
 
 	/**
@@ -432,6 +388,13 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 		clearCache();
 		getStore().removeTopicMapListener(this);
 		super.close();
+	}
+
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
 	}
 
 }
@@ -463,6 +426,7 @@ class LiteralCacheKey {
 	 */
 	public LiteralCacheKey(Class<?> clazz, Object filter, Object deviance, Integer offset, Integer limit, Comparator<?> comparator) {
 		this.clazz = clazz;
+		this.deviance = deviance;
 		this.offset = offset;
 		this.limit = limit;
 		this.filter = filter;

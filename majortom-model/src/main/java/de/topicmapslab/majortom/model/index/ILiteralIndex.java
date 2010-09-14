@@ -21,14 +21,14 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.tmapi.core.Locator;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Variant;
 import org.tmapi.index.LiteralIndex;
 
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
-import de.topicmapslab.majortom.model.core.IName;
-import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.IVariant;
 
 /**
  * Interface definition of an index for characteristics of topic items.
@@ -36,7 +36,7 @@ import de.topicmapslab.majortom.model.core.IVariant;
  * @author Sven Krosse
  * 
  */
-public interface ILiteralIndex extends LiteralIndex {
+public interface ILiteralIndex extends LiteralIndex,IIndex {
 
 	/**
 	 * Returns all characteristics with the given value.
@@ -282,19 +282,19 @@ public interface ILiteralIndex extends LiteralIndex {
 	 * 
 	 * @return all names of the topic map
 	 */
-	public Collection<IName> getNames();
+	public Collection<Name> getNames();
 
 	/**
 	 * Return all occurrences contained by the current topic map.
 	 * 
 	 * @return all occurrences of the topic map
 	 */
-	public Collection<IOccurrence> getOccurrences();
+	public Collection<Occurrence> getOccurrences();
 
 	/**
 	 * Return all variants contained by the current topic map.
 	 * 
 	 * @return all variants of the topic map
 	 */
-	public Collection<IVariant> getVariants();
+	public Collection<Variant> getVariants();
 }

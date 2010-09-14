@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
-import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.index.IIdentityIndex;
+import de.topicmapslab.majortom.model.index.IIndex;
 
 /**
  * Special {@link IIdentityIndex} supporting paging.
@@ -32,7 +32,7 @@ import de.topicmapslab.majortom.model.index.IIdentityIndex;
  * @author Sven Krosse
  * 
  */
-public interface IPagedIdentityIndex extends Index{
+public interface IPagedIdentityIndex extends IIndex {
 
 	/**
 	 * Returns all known item-identifiers of the current topic map within the
@@ -60,7 +60,8 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the comparator
 	 * @return a list of all known item-identifiers within the given range
 	 */
-	public List<Locator> getItemIdentifiers(int offset, int limit, Comparator<Locator> comparator);
+	public List<Locator> getItemIdentifiers(int offset, int limit,
+			Comparator<Locator> comparator);
 
 	/**
 	 * Returns all known subject-identifiers of the current topic map
@@ -70,8 +71,7 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all known subject-identifiers within the given
-	 *         range
+	 * @return a list of all known subject-identifiers within the given range
 	 */
 	public List<Locator> getSubjectIdentifiers(int offset, int limit);
 
@@ -85,10 +85,10 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all known subject-identifiers within the given
-	 *         range
+	 * @return a list of all known subject-identifiers within the given range
 	 */
-	public List<Locator> getSubjectIdentifiers(int offset, int limit, Comparator<Locator> comparator);
+	public List<Locator> getSubjectIdentifiers(int offset, int limit,
+			Comparator<Locator> comparator);
 
 	/**
 	 * Returns all known subject-locators of the current topic map
@@ -114,7 +114,8 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the comparator
 	 * @return a list of all known subject-locators within the given range
 	 */
-	public List<Locator> getSubjectLocators(int offset, int limit, Comparator<Locator> comparator);
+	public List<Locator> getSubjectLocators(int offset, int limit,
+			Comparator<Locator> comparator);
 
 	/**
 	 * The method try to identify all construct using an item-identifier
@@ -127,44 +128,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
 	 */
-	public List<Construct> getConstructsByItemIdentifier(final String regExp, int offset, int limit);
-
-	/**
-	 * The method try to identify all construct using an item-identifier
-	 * matching the given regular expression within the given range.
-	 * 
-	 * @param regExp
-	 *            the regular expression
-	 * 
-	 * @param offset
-	 *            the index of the first item
-	 * @param limit
-	 *            the maximum count of returned values
-	 * @param comparator
-	 *            the comparator
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
-	 */
-	public List<Construct> getConstructsByItemIdentifier(final String regExp, int offset, int limit, Comparator<Construct> comparator);
-
-	/**
-	 * The method try to identify all construct using an item-identifier
-	 * matching the given regular expression within the given range.
-	 * 
-	 * @param regExp
-	 *            the regular expression
-	 * 
-	 * @param offset
-	 *            the index of the first item
-	 * @param limit
-	 *            the maximum count of returned values
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
-	 */
-	public List<Construct> getConstructsByItemIdentifier(final Pattern regExp, int offset, int limit);
+	public List<Construct> getConstructsByItemIdentifier(final String regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all construct using an item-identifier
@@ -179,10 +147,47 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
 	 */
-	public List<Construct> getConstructsByItemIdentifier(final Pattern regExp, int offset, int limit, Comparator<Construct> comparator);
+	public List<Construct> getConstructsByItemIdentifier(final String regExp,
+			int offset, int limit, Comparator<Construct> comparator);
+
+	/**
+	 * The method try to identify all construct using an item-identifier
+	 * matching the given regular expression within the given range.
+	 * 
+	 * @param regExp
+	 *            the regular expression
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
+	 */
+	public List<Construct> getConstructsByItemIdentifier(final Pattern regExp,
+			int offset, int limit);
+
+	/**
+	 * The method try to identify all construct using an item-identifier
+	 * matching the given regular expression within the given range.
+	 * 
+	 * @param regExp
+	 *            the regular expression
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @param comparator
+	 *            the comparator
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
+	 */
+	public List<Construct> getConstructsByItemIdentifier(final Pattern regExp,
+			int offset, int limit, Comparator<Construct> comparator);
 
 	/**
 	 * The method try to identify all construct using an subject-identifier
@@ -195,10 +200,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectIdentifier(final String regExp, int offset, int limit);
+	public List<Topic> getTopicsBySubjectIdentifier(final String regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all construct using an subject-identifier
@@ -213,10 +219,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectIdentifier(final String regExp, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getTopicsBySubjectIdentifier(final String regExp,
+			int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * The method try to identify all construct using an subject-identifier
@@ -229,10 +236,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectIdentifier(final Pattern regExp, int offset, int limit);
+	public List<Topic> getTopicsBySubjectIdentifier(final Pattern regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all construct using an subject-identifier
@@ -247,10 +255,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectIdentifier(final Pattern regExp, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getTopicsBySubjectIdentifier(final Pattern regExp,
+			int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * The method try to identify all topic using a subject-Topic matching the
@@ -263,44 +272,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectLocator(final String regExp, int offset, int limit);
-
-	/**
-	 * The method try to identify all topic using a subject-Topic matching the
-	 * given regular expression within the given range.
-	 * 
-	 * @param regExp
-	 *            the regular expression
-	 * 
-	 * @param offset
-	 *            the index of the first item
-	 * @param limit
-	 *            the maximum count of returned values
-	 * @param comparator
-	 *            the comparator
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
-	 */
-	public List<Topic> getTopicsBySubjectLocator(final String regExp, int offset, int limit, Comparator<Topic> comparator);
-
-	/**
-	 * The method try to identify all topic using a subject-Topic matching the
-	 * given regular expression within the given range.
-	 * 
-	 * @param regExp
-	 *            the regular expression
-	 * 
-	 * @param offset
-	 *            the index of the first item
-	 * @param limit
-	 *            the maximum count of returned values
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
-	 */
-	public List<Topic> getTopicsBySubjectLocator(final Pattern regExp, int offset, int limit);
+	public List<Topic> getTopicsBySubjectLocator(final String regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all topic using a subject-Topic matching the
@@ -315,10 +291,47 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all identified topics within the given range but
-	 *         never <code>null</code>
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
 	 */
-	public List<Topic> getTopicsBySubjectLocator(final Pattern regExp, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getTopicsBySubjectLocator(final String regExp,
+			int offset, int limit, Comparator<Topic> comparator);
+
+	/**
+	 * The method try to identify all topic using a subject-Topic matching the
+	 * given regular expression within the given range.
+	 * 
+	 * @param regExp
+	 *            the regular expression
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
+	 */
+	public List<Topic> getTopicsBySubjectLocator(final Pattern regExp,
+			int offset, int limit);
+
+	/**
+	 * The method try to identify all topic using a subject-Topic matching the
+	 * given regular expression within the given range.
+	 * 
+	 * @param regExp
+	 *            the regular expression
+	 * 
+	 * @param offset
+	 *            the index of the first item
+	 * @param limit
+	 *            the maximum count of returned values
+	 * @param comparator
+	 *            the comparator
+	 * @return a list of all identified topics within the given range but never
+	 *         <code>null</code>
+	 */
+	public List<Topic> getTopicsBySubjectLocator(final Pattern regExp,
+			int offset, int limit, Comparator<Topic> comparator);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -332,10 +345,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
 	 */
-	public List<Construct> getConstructsByIdentifier(final String regExp, int offset, int limit);
+	public List<Construct> getConstructsByIdentifier(final String regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -351,10 +365,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
 	 */
-	public List<Construct> getConstructsByIdentifier(final String regExp, int offset, int limit, Comparator<Construct> comparator);
+	public List<Construct> getConstructsByIdentifier(final String regExp,
+			int offset, int limit, Comparator<Construct> comparator);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -368,10 +383,11 @@ public interface IPagedIdentityIndex extends Index{
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all identified constructs within the given range
-	 *         but never <code>null</code>
+	 * @return a list of all identified constructs within the given range but
+	 *         never <code>null</code>
 	 */
-	public List<Construct> getConstructsByIdentifier(final Pattern regExp, int offset, int limit);
+	public List<Construct> getConstructsByIdentifier(final Pattern regExp,
+			int offset, int limit);
 
 	/**
 	 * The method try to identify all construct using an item-identifier,
@@ -390,6 +406,7 @@ public interface IPagedIdentityIndex extends Index{
 	 * @return a collection of all identified constructs within the given range
 	 *         but never <code>null</code>
 	 */
-	public List<Construct> getConstructsByIdentifier(final Pattern regExp, int offset, int limit, Comparator<Construct> comparator);
+	public List<Construct> getConstructsByIdentifier(final Pattern regExp,
+			int offset, int limit, Comparator<Construct> comparator);
 
 }

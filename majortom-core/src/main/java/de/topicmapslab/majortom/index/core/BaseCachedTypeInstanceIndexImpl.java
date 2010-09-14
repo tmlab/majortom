@@ -24,7 +24,6 @@ import java.util.Set;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -45,7 +44,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> extends IndexImpl<E> implements ITopicMapListener {
+public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> extends BaseCachedIndexImpl<E> implements ITopicMapListener {
 
 	private Map<Class<?>, Set<TypeInstanceCacheKey>> dependentCacheKeys;
 
@@ -132,12 +131,15 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	public final void clearCache() {
 		if (cachedTypes != null) {
 			cachedTypes.clear();
+			cachedTypes = HashUtil.getHashMap();
 		}
 		if (cachedConstructs != null) {
 			cachedConstructs.clear();
+			cachedConstructs = HashUtil.getHashMap();
 		}
 		if (dependentCacheKeys != null) {
 			dependentCacheKeys.clear();
+			dependentCacheKeys = HashUtil.getHashMap();
 		}
 	}
 
@@ -401,6 +403,13 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 		clearCache();
 		getStore().removeTopicMapListener(this);
 		super.close();
+	}
+
+	/**
+	 * Removed any cached content from internal cache
+	 */
+	public void clear() {
+		clearCache();
 	}
 
 }
