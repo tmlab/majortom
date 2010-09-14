@@ -75,10 +75,7 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals("aa", topic9.getBestLabel());
 
 	}
-		
-	
-	
-	
+
 	/* Collection<Association> getAssociationsPlayed()
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayed/topic/1) has not associations
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayed/topic/2) has exactly one association
