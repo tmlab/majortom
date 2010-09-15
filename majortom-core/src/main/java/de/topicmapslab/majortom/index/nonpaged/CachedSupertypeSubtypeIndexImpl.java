@@ -158,6 +158,9 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -243,6 +246,9 @@ public abstract class CachedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> 
 	public Collection<Topic> getSupertypes(Collection<? extends Topic> types, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

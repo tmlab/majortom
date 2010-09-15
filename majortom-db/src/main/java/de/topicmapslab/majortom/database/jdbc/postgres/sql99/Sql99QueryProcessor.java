@@ -91,20 +91,24 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 
 	private final Sql99QueryBuilder queryBuilder;
 	private final Sql99ConnectionProvider provider;
-	private final Connection connection;
+	private final Connection writerConnection;
+	private final Connection readerConnection;
 
 	/**
 	 * constructor
 	 * 
-	 * @param processor
-	 *            the query processor
-	 * @param connection
-	 *            the JDBC connection
+	 * @param provider
+	 *            the connection provider
+	 * @param readerConnection
+	 *            the JDBC connection to read database
+	 * @param writerConnection
+	 *            the JDBC connection to modify database
 	 */
 	public Sql99QueryProcessor(Sql99ConnectionProvider provider,
-			Connection connection) {
+			Connection readerConnection, Connection writerConnection) {
 		this.provider = provider;
-		this.connection = connection;
+		this.readerConnection = readerConnection;
+		this.writerConnection = writerConnection;
 		this.queryBuilder = createQueryBuilder();
 	}
 
@@ -121,8 +125,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * 
 	 * @return the connection the connection
 	 */
-	public Connection getConnection() {
-		return connection;
+	public Connection getWriterConnection() {
+		return writerConnection;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Connection getReaderConnection() {
+		return readerConnection;
 	}
 
 	/**
@@ -2473,7 +2484,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2513,7 +2524,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		Array a = getConnection().createArrayOf("bigint", ids);
+		Array a = getWriterConnection().createArrayOf("bigint", ids);
 		stmt.setArray(1, a);
 		stmt.setArray(2, a);
 		if (offset != -1) {
@@ -2559,7 +2570,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2603,7 +2614,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2647,7 +2658,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3294,7 +3305,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3346,7 +3357,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3457,7 +3468,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3508,7 +3519,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3598,7 +3609,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3648,7 +3659,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3758,7 +3769,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, connection.createArrayOf("bigint", ids));
+		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3800,7 +3811,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (Topic t : themes) {
 			ids[n++] = Long.parseLong(t.getId());
 		}
-		Array array = connection.createArrayOf("bigint", ids);
+		Array array = getReaderConnection().createArrayOf("bigint", ids);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setArray(2, array);
 		n = 3;
@@ -5650,14 +5661,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void openTransaction() throws SQLException {
-		connection.setAutoCommit(false);
+		getWriterConnection().setAutoCommit(false);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commit() throws SQLException {
-		connection.commit();
-		connection.setAutoCommit(true);
+		getWriterConnection().commit();
+		getWriterConnection().setAutoCommit(true);
 	}
 }

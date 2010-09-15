@@ -37,7 +37,6 @@ import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
-import de.topicmapslab.majortom.model.transaction.ITransaction;
 
 /**
  * Implementation of {@link IPagedScopedIndex}
@@ -196,7 +195,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || theme.getTopicMap() instanceof ITransaction) {
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetAssociations(theme);
 		}
 		Collection<Association> associations = read(IAssociation.class, theme, false);
@@ -213,6 +212,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Association> getAssociations(Topic[] themes, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -234,6 +236,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Association> getAssociations(IScope scope) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -263,6 +268,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -284,6 +292,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -304,6 +315,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<ICharacteristics> getCharacteristics(IScope... scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		Collection<IScope> col = Arrays.asList(scopes);
 		/*
@@ -372,7 +386,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || theme.getTopicMap() instanceof ITransaction) {
+		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetNames(theme);
 		}
 		Collection<Name> results = read(IName.class, theme, false);
@@ -389,6 +403,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Name> getNames(Topic[] themes, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -411,6 +428,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -429,6 +449,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	 * {@inheritDoc}
 	 */
 	public Collection<Name> getNames(IScope... scopes) {
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getNames(Arrays.asList(scopes));
 	}
 
@@ -438,6 +461,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Name> getNames(Collection<IScope> scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -523,6 +549,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -544,6 +573,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -562,6 +594,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	 * {@inheritDoc}
 	 */
 	public Collection<Occurrence> getOccurrences(IScope... scopes) {
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getOccurrences(Arrays.asList(scopes));
 	}
 
@@ -571,6 +606,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Occurrence> getOccurrences(Collection<IScope> scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -593,6 +631,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -613,6 +654,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Scoped> getScopables(IScope... scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		Collection<IScope> col = Arrays.asList(scopes);
 		/*
@@ -678,6 +722,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (theme == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -698,6 +745,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Variant> getVariants(Topic[] themes, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -720,6 +770,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -738,6 +791,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	 * {@inheritDoc}
 	 */
 	public Collection<Variant> getVariants(IScope... scopes) {
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getVariants(Arrays.asList(scopes));
 	}
 
@@ -747,6 +803,9 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 	public Collection<Variant> getVariants(Collection<IScope> scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

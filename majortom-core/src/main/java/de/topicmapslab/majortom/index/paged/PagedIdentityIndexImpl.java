@@ -69,6 +69,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit);
 	}
 
@@ -79,6 +82,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
@@ -88,6 +97,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Construct> getConstructsByIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -110,6 +122,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -131,6 +149,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit);
 	}
 
@@ -141,6 +162,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
@@ -150,6 +177,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -171,6 +201,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Construct> getConstructsByItemIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -220,6 +256,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!getStore().isCachingEnabled()) {
 			return doGetItemIdentifiers(offset, limit, comparator);
 		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, offset, limit, comparator);
 		if (locators == null) {
 			locators = doGetItemIdentifiers(offset, limit, comparator);
@@ -255,6 +294,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Locator> getSubjectIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -298,6 +340,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -319,6 +364,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit);
 	}
 
@@ -329,6 +377,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
@@ -338,6 +392,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Topic> getTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -360,6 +417,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -381,6 +444,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit);
 	}
 
@@ -391,6 +457,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit, comparator);
 	}
 
@@ -400,6 +472,9 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -421,6 +496,12 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	public List<Topic> getTopicsBySubjectLocator(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( comparator == null ){
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

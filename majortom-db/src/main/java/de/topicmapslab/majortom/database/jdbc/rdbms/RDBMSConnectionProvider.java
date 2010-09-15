@@ -40,9 +40,13 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 public class RDBMSConnectionProvider implements IConnectionProvider {
 
 	/**
-	 * the JDBC connection
+	 * the JDBC connection to modify database
 	 */
-	private Connection connection;
+	private Connection writerConnection;
+	/**
+	 * the JDBC connection to read from database
+	 */
+	private Connection readerConnection;
 	/**
 	 * the meta data
 	 */
@@ -68,7 +72,7 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 */
 	@SuppressWarnings("unchecked")
 	public RDBMSQueryProcessor getProcessor() throws TopicMapStoreException {
-		if (connection == null) {
+		if (processor == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
 		return processor;
@@ -93,11 +97,18 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void closeConnection() throws SQLException {
-		if (connection != null && !connection.isClosed()) {
+	public void closeConnections() throws SQLException {
+		if (((readerConnection != null && !readerConnection.isClosed()))
+				|| (writerConnection != null && !writerConnection.isClosed())) {
 			processor.close();
-			connection.close();
-			connection = null;
+		}
+		if (readerConnection != null && !readerConnection.isClosed()) {
+			readerConnection.close();
+			readerConnection = null;
+		}
+		if (writerConnection != null && !writerConnection.isClosed()) {
+			writerConnection.close();
+			writerConnection = null;
 		}
 	}
 
@@ -122,24 +133,31 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void openConnection(String host, String database, String user,
+	public void openConnections(String host, String database, String user,
 			String password) throws SQLException, TopicMapStoreException {
 		if (store == null) {
 			throw new TopicMapStoreException("Topic map store not set!");
-		}
-		if (connection != null) {
-			throw new TopicMapStoreException("Connection already established!");
 		}
 		try {
 			Class.forName(getDriverClassName());
 		} catch (ClassNotFoundException e) {
 			throw new TopicMapStoreException("Cannot find driver class for "
 					+ getRdbmsName() + "!", e);
+		}		
+		if (writerConnection == null || writerConnection.isClosed()) {
+			writerConnection = DriverManager.getConnection("jdbc:postgresql://"
+					+ host + "/" + database, user, password);
 		}
-		connection = DriverManager.getConnection("jdbc:" + getRdbmsName()
-				+ "://" + host + "/" + database, user, password);
-		metaData = connection.getMetaData();
-		processor = createProcessor(this, connection);
+		if (readerConnection == null || readerConnection.isClosed()) {
+			readerConnection = DriverManager.getConnection("jdbc:postgresql://"
+					+ host + "/" + database, user, password);
+		}
+		if (metaData == null) {
+			metaData = readerConnection.getMetaData();
+		}
+		if (processor == null) {
+			processor = createProcessor(this, readerConnection, writerConnection);
+		}
 		int state = getDatabaseState();
 		switch (state) {
 		case STATE_DATABASE_IS_EMPTY: {
@@ -168,15 +186,16 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 * @return the created query processor instance
 	 */
 	protected RDBMSQueryProcessor createProcessor(
-			RDBMSConnectionProvider provider, Connection connection) {
-		return new RDBMSQueryProcessor(provider, connection);
+			RDBMSConnectionProvider provider, Connection readerConnection,
+			Connection writerConnetion) {
+		return new RDBMSQueryProcessor(provider, readerConnection, writerConnetion);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException {
-		if (connection == null) {
+		if (readerConnection == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
 		return metaData;
@@ -186,7 +205,7 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	public void createSchema() throws SQLException {
-		Statement stmt = connection.createStatement(
+		Statement stmt = writerConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		stmt.executeUpdate(getSchemaQuery());
 	}

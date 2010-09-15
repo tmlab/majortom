@@ -40,12 +40,12 @@ public class MaJorToMTestSuite {
 		suite.addTest(CoreTestSuite.suite());
 		suite.addTest(EventTestSuite.suite());
 		suite.addTest(IndexTestSuite.suite());
-		 suite.addTest(MergeTestSuite.suite());
-		 // // suite.addTest(IOTestSuite.suite());
-		 suite.addTest(RevisionTestSuite.suite());
-		 suite.addTest(TransactionSuite.suite());
-		 suite.addTest(org.tmapi.AllTests.suite());
-		 suite.addTest(CanonicalTestSuite.suite());
+		suite.addTest(MergeTestSuite.suite());
+		// // suite.addTest(IOTestSuite.suite());
+		suite.addTest(RevisionTestSuite.suite());
+		suite.addTest(TransactionSuite.suite());
+		suite.addTest(org.tmapi.AllTests.suite());
+		suite.addTest(CanonicalTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

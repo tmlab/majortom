@@ -1291,7 +1291,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyType(ITopic t, ITopic type)
+	protected void doModifyTopicType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		modifyType(t, type, createRevision());
 	}

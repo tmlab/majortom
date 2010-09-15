@@ -27,6 +27,7 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
@@ -128,23 +129,30 @@ public class TestTopicImpl extends MaJorToMTestCase {
 	 * {@link de.topicmapslab.majortom.core.TopicImpl#addSupertype(org.tmapi.core.Topic)}
 	 * .
 	 */
-	public void testSupertypes() {
-		Association a = createAssociation(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION));
+	public void testSupertypes() throws Exception {
+		int cnt = 0;
 		ITopic t = createTopic();
-		a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE), t);
-		a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE), createTopic());
-		assertEquals(1, t.getSupertypes().size());
+		if ( factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION)){
+			Association a = createAssociation(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION));
+			a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE), t);
+			a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE), createTopic());
+			cnt++;
+		}		
+		assertEquals(cnt, t.getSupertypes().size());
 
 		t.addSupertype(createTopic());
-		assertEquals(2, t.getSupertypes().size());
+		cnt++;
+		assertEquals(cnt, t.getSupertypes().size());
 
 		ITopic st = createTopic();
 		t.addSupertype(st);
-		assertEquals(3, t.getSupertypes().size());
+		cnt++;
+		assertEquals(cnt, t.getSupertypes().size());
 		assertTrue(t.getSupertypes().contains(st));
 
 		t.removeSupertype(st);
-		assertEquals(2, t.getSupertypes().size());
+		cnt--;
+		assertEquals(cnt, t.getSupertypes().size());
 		assertFalse(t.getSupertypes().contains(st));
 	}
 

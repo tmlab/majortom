@@ -14,6 +14,7 @@ import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.FeatureStrings;
 
 public class TestTransitiveTypeInstanceIndex extends MaJorToMTestCase {
 
@@ -1449,7 +1450,9 @@ public class TestTransitiveTypeInstanceIndex extends MaJorToMTestCase {
 		index.close();
 	}
 
-	public void testGetTopicsTopic() {
+	public void testGetTopicsTopic() throws Exception {
+		boolean hasFeatureISA = factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+		boolean hasFeatureAKO = factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ITransitiveTypeInstanceIndex index = topicMap.getIndex(ITransitiveTypeInstanceIndex.class);
 		Assert.assertNotNull(index);
 		index.open();		
@@ -1465,18 +1468,27 @@ public class TestTransitiveTypeInstanceIndex extends MaJorToMTestCase {
 		assertTrue(index.getTopics(supertype).isEmpty());
 		assertTrue(index.getTopics(otherType).isEmpty());
 		
-		assertTrue(index.getTopics((Topic)null).size() == 6);
+		int cnt = 3;
+		if ( hasFeatureISA){
+			cnt += 3;
+		}
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		assertTrue(index.getTopics((Topic)null).contains(type));
 		assertTrue(index.getTopics((Topic)null).contains(supertype));
 		assertTrue(index.getTopics((Topic)null).contains(otherType));
 
 		topic.addType(otherType);
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		assertTrue(index.getTopics(type).size() == 1);
 		assertTrue(index.getTopics(type).contains(topic));
 		assertTrue(index.getTopics(supertype).isEmpty());
 		assertTrue(index.getTopics(otherType).size() == 1);
 		assertTrue(index.getTopics(otherType).contains(topic));
-		type.addSupertype(supertype);
+		type.addSupertype(supertype);		
+		if ( hasFeatureAKO){
+			cnt += 3;
+		}
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		assertTrue(index.getTopics(type).size() == 1);
 		assertTrue(index.getTopics(type).contains(topic));
 		assertTrue(index.getTopics(supertype).size() == 1);
@@ -1495,8 +1507,13 @@ public class TestTransitiveTypeInstanceIndex extends MaJorToMTestCase {
 		assertTrue(index.getTopics(otherType).size() == 1);
 		assertTrue(index.getTopics(otherType).contains(topic));
 		topic2.removeType(type);
+		cnt++;
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		topic2.addType(supertype);
+		cnt--;
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		type.removeSupertype(supertype);
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		assertTrue(index.getTopics(type).size() == 1);
 		assertTrue(index.getTopics(type).contains(topic));
 		assertFalse(index.getTopics(type).contains(topic2));
@@ -1505,10 +1522,12 @@ public class TestTransitiveTypeInstanceIndex extends MaJorToMTestCase {
 		assertTrue(index.getTopics(supertype).contains(topic2));
 		assertTrue(index.getTopics(otherType).size() == 1);
 		assertTrue(index.getTopics(otherType).contains(topic));
-
+		
 		topic.removeType(type);
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		topic.removeType(otherType);
-		assertEquals(10,index.getTopics((Topic)null).size());
+		cnt++;
+		assertEquals(cnt, index.getTopics((Topic)null).size() );
 		assertTrue(index.getTopics((Topic)null).contains(type));
 		assertTrue(index.getTopics((Topic)null).contains(supertype));
 		assertTrue(index.getTopics((Topic)null).contains(otherType));

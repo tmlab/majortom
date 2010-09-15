@@ -77,5 +77,10 @@ public enum TopicMapEventType {
 	 /**
 	  * two constructs merged
 	  */
-	 MERGE
+	 MERGE,
+	 
+	 /**
+	  * the internal id of a construct was modified
+	  */
+	 ID_MODIFIED
 }

@@ -16,7 +16,6 @@
 package de.topicmapslab.majortom.store;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -74,12 +73,10 @@ public class MergeUtils {
 	 *            a set of themes
 	 * @return the merging candidate-name combination or <code>null</code>
 	 */
-	public static Map<ITopic, IName> detectMergeByNameCandidate(TopicMapStoreImpl store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
+	public static NameMergeCandidate detectMergeByNameCandidate(TopicMapStoreImpl store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
 		IName duplette = getDuplette(store, topic, nameType, value, themes);
 		if (duplette != null) {
-			Map<ITopic, IName> candidate = HashUtil.getHashMap();
-			candidate.put(duplette.getParent(), duplette);
-			return candidate;
+			return new NameMergeCandidate(topic, duplette);
 		}
 		return null;
 	}
@@ -187,8 +184,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IVariant getDuplette(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static IVariant getDuplette(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -224,8 +220,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IOccurrence getDuplette(TopicMapStoreImpl store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static IOccurrence getDuplette(TopicMapStoreImpl store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -508,8 +503,8 @@ public class MergeUtils {
 			/*
 			 * check if occurrence already contained by the other topic
 			 */
-			IOccurrence duplette = getDuplette(store, topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(),
-					((IOccurrence) occurrence).getScopeObject().getThemes());
+			IOccurrence duplette = getDuplette(store, topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(), ((IOccurrence) occurrence).getScopeObject()
+					.getThemes());
 			/*
 			 * duplicated occurrence found
 			 */
@@ -530,8 +525,7 @@ public class MergeUtils {
 			 * no duplicated occurrence found
 			 */
 			else {
-				IOccurrence newOccurrence = (IOccurrence) topic.createOccurrence((ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence
-						.getDatatype(), occurrence.getScope());
+				IOccurrence newOccurrence = (IOccurrence) topic.createOccurrence((ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(), occurrence.getScope());
 				/*
 				 * copy all item identifiers
 				 */
@@ -882,8 +876,7 @@ public class MergeUtils {
 				ILocator datatype = (ILocator) store.getTopicMap().createLocator(occ.getDatatype().getReference());
 				IOccurrence occurrence = getDuplette(store, duplette, type, occ.getValue(), datatype, scope.getThemes());
 				if (occurrence == null) {
-					occurrence = (IOccurrence) duplette.createOccurrence(type, occ.getValue(), datatype, getCorrespondingScope(store, occ.getScope())
-							.getThemes().toArray(new Topic[0]));
+					occurrence = (IOccurrence) duplette.createOccurrence(type, occ.getValue(), datatype, getCorrespondingScope(store, occ.getScope()).getThemes().toArray(new Topic[0]));
 				}
 				/*
 				 * copy item-identifiers of the occurrence
@@ -970,8 +963,7 @@ public class MergeUtils {
 			}
 
 			ITopic type = getDuplette(store, ass.getType());
-			IAssociation association = (IAssociation) topicMap.createAssociation(type, getCorrespondingScope(store, ass.getScope()).getThemes().toArray(
-					new Topic[0]));
+			IAssociation association = (IAssociation) topicMap.createAssociation(type, getCorrespondingScope(store, ass.getScope()).getThemes().toArray(new Topic[0]));
 
 			/*
 			 * copy item-identifiers of the association
@@ -1047,8 +1039,7 @@ public class MergeUtils {
 	 *         <code>false</code> otherwise.
 	 * @throws TopicMapStoreException
 	 */
-	private static boolean checkTmdmAssociation(TopicMapStoreImpl store, Association association, ITopicMap topicMap, TopicMap other)
-			throws TopicMapStoreException {
+	private static boolean checkTmdmAssociation(TopicMapStoreImpl store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
 		Locator typeInstanceLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		Locator supertypeSubtypeLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 
@@ -1158,8 +1149,7 @@ public class MergeUtils {
 					 * names are equal if the value, the type and scope property
 					 * are equal
 					 */
-					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue())
-							&& ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
+					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue()) && ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
 						/*
 						 * copy item-identifier
 						 */
@@ -1171,8 +1161,7 @@ public class MergeUtils {
 						 * copy variants
 						 */
 						for (Variant v : duplicate.getVariants()) {
-							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
-									.getThemes());
+							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes());
 							if (copy == null) {
 								copy = name.createVariant(v.getValue(), v.getDatatype(), v.getScope());
 							}
@@ -1243,12 +1232,11 @@ public class MergeUtils {
 						continue;
 					}
 					/*
-					 * occurrences are equal if the value, datatype, the type and scope property
-					 * are equal
+					 * occurrences are equal if the value, datatype, the type
+					 * and scope property are equal
 					 */
 					if (duplicate.getType().equals(duplicate.getType()) && duplicate.getValue().equals(duplicate.getValue())
-							&& ((IOccurrence) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
-							&& occurrence.getDatatype().equals(duplicate.getDatatype())) {
+							&& ((IOccurrence) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject()) && occurrence.getDatatype().equals(duplicate.getDatatype())) {
 						/*
 						 * copy item-identifier
 						 */
@@ -1483,8 +1471,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static Set<IVariant> getDuplettes(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static Set<IVariant> getDuplettes(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IVariant> variants = HashUtil.getHashSet();
 		/*
 		 * get scope as filter
