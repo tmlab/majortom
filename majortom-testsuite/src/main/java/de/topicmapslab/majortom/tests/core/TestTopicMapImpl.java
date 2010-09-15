@@ -511,7 +511,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			association.createRole(otherTopicMap.createTopic(), t);
 
 			if (factory
-					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
@@ -520,13 +520,13 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			topicMap.mergeIn(otherTopicMap);
 
 			if (factory
-					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
 			}
 			if (factory
-					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(12, topicMap.getTopics().size());
 			} else {
 				assertEquals(9, topicMap.getTopics().size());
@@ -540,7 +540,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			assertEquals(1, t.getOccurrences().size());
 			assertEquals(1, topic.getOccurrences().size());
 			if (factory
-					.hasFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(2, t.getAssociationsPlayed().size());
 				assertEquals(3, topic.getAssociationsPlayed().size());
 				assertEquals(2, t.getRolesPlayed().size());

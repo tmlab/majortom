@@ -98,6 +98,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -118,6 +121,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Association> getAssociations(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -140,6 +146,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -161,6 +173,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -181,6 +196,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Association> getAssociations(Collection<? extends Topic> types, int offset, int limit, Comparator<Association> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -224,6 +245,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -244,6 +268,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<ICharacteristics> getCharacteristics(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -266,6 +293,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -287,6 +320,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -307,6 +343,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -350,6 +392,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -370,6 +415,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Name> getNames(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -392,6 +440,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -413,6 +467,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -433,6 +490,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Name> getNames(Collection<? extends Topic> types, int offset, int limit, Comparator<Name> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -476,6 +539,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -496,6 +562,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Occurrence> getOccurrences(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -518,6 +587,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -539,6 +614,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -559,6 +637,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit, Comparator<Occurrence> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -602,6 +686,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -622,6 +709,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Role> getRoles(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -644,6 +734,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -665,6 +761,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -685,6 +784,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Role> getRoles(Collection<? extends Topic> types, int offset, int limit, Comparator<Role> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -728,6 +833,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -770,6 +878,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -791,6 +902,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getTopics(types, false, offset, limit);
 	}
 
@@ -801,6 +915,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getTopics(types, false, offset, limit, comparator);
 	}
 
@@ -810,6 +930,9 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -831,6 +954,12 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	public List<Topic> getTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

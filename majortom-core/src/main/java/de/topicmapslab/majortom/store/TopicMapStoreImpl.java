@@ -790,7 +790,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 			break;
 		case TYPE: {
 			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				doModifyType((ITopic) context, (ITopic) params[0]);
+				doModifyTopicType((ITopic) context, (ITopic) params[0]);
 			} else if (context instanceof ITypeable && params.length == 1 && params[0] instanceof ITopic) {
 				doModifyType((ITypeable) context, (ITopic) params[0]);
 			} else {
@@ -1175,7 +1175,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract void doModifyType(ITopic t, ITopic type) throws TopicMapStoreException;
+	protected abstract void doModifyTopicType(ITopic t, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value of the given name.
@@ -2316,6 +2316,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
+		super.removeDuplicates();
 		MergeUtils.removeDuplicates(this, getTopicMap());
 	}
 
@@ -2323,6 +2324,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void clear() {
+		super.clear();
 		doModifyReifier(getTopicMap(), null);
 		for (ILocator ii : doReadItemIdentifiers(getTopicMap())) {
 			doRemoveItemIdentifier(getTopicMap(), ii);

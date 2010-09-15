@@ -10,6 +10,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
@@ -47,7 +48,8 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		index.close();
 	}
 
-	public void testGetSubtypesTopic() {
+	public void testGetSubtypesTopic() throws Exception{
+		boolean hasFeature = factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ISupertypeSubtypeIndex index = topicMap.getIndex(ISupertypeSubtypeIndex.class);
 		index.open();
 		Assert.assertNotNull(index);
@@ -61,7 +63,11 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		/*
 		 * the tmdm types for supertype-subtype assoc and roles will created
 		 */
-		Assert.assertTrue(index.getSubtypes((Topic) null).size() == 6);
+		int cnt = 3;
+		if ( hasFeature ){
+			cnt += 3;
+		}
+		Assert.assertEquals(cnt, index.getSubtypes((Topic) null).size());		
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(type));
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(supertypeB));
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(supertypeC));
@@ -69,7 +75,8 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertEquals(1,index.getSubtypes(supertypeA).size());
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(type));
 		supertypeC.addSupertype(supertypeB);
-		Assert.assertTrue(index.getSubtypes((Topic) null).size() == 5);
+		cnt--;
+		Assert.assertEquals(cnt, index.getSubtypes((Topic) null).size());	
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(type));
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(supertypeC));
 		Assert.assertTrue(index.getSubtypes(supertypeB).size() == 1);
@@ -79,7 +86,7 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(type));
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(supertypeB));
 		Assert.assertTrue(index.getSubtypes(supertypeA).contains(supertypeC));
-		Assert.assertEquals(5, index.getSubtypes((Topic) null).size());
+		Assert.assertEquals(cnt, index.getSubtypes((Topic) null).size());	
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(type));
 		Assert.assertTrue(index.getSubtypes((Topic) null).contains(supertypeC));
 	}
@@ -187,7 +194,8 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertTrue(index.getSubtypes(set, true).contains(type));
 	}
 
-	public void testGetSupertypes() {
+	public void testGetSupertypes() throws Exception{
+		boolean hasFeature = factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ISupertypeSubtypeIndex index = topicMap.getIndex(ISupertypeSubtypeIndex.class);
 		index.open();
 		Assert.assertNotNull(index);
@@ -195,29 +203,31 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		ITopic type = createTopic();
 		ITopic supertypeA = createTopic();
 		type.addSupertype(supertypeA);
-		assertFalse(topicMap.getAssociations().isEmpty());
-		assertEquals(1, type.getAssociationsPlayed(topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION))).size());
-		assertEquals(1, type.getRolesPlayed(topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE))).size());
+		assertEquals(!hasFeature, topicMap.getAssociations().isEmpty());
+		if ( hasFeature){
+			assertEquals(1, type.getAssociationsPlayed(topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION))).size());
+			assertEquals(1, type.getRolesPlayed(topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE))).size());
+		}
 		Assert.assertFalse(index.getSupertypes().isEmpty());
 		Assert.assertTrue(index.getSupertypes().size() == 1);
 		Assert.assertTrue(index.getSupertypes().contains(supertypeA));
 		ITopic supertypeB = createTopic();
 		supertypeA.addSupertype(supertypeB);
-		assertFalse(topicMap.getAssociations().isEmpty());
+		assertEquals(!hasFeature, topicMap.getAssociations().isEmpty());
 		Assert.assertFalse(index.getSupertypes().isEmpty());
 		Assert.assertTrue(index.getSupertypes().size() == 2);
 		Assert.assertTrue(index.getSupertypes().contains(supertypeA));
 		Assert.assertTrue(index.getSupertypes().contains(supertypeB));
 		ITopic supertypeC = createTopic();
 		type.addSupertype(supertypeC);
-		assertFalse(topicMap.getAssociations().isEmpty());
+		assertEquals(!hasFeature, topicMap.getAssociations().isEmpty());
 		Assert.assertFalse(index.getSupertypes().isEmpty());
 		Assert.assertTrue(index.getSupertypes().size() == 3);
 		Assert.assertTrue(index.getSupertypes().contains(supertypeB));
 		Assert.assertTrue(index.getSupertypes().contains(supertypeA));
 		Assert.assertTrue(index.getSupertypes().contains(supertypeC));
 		supertypeB.addSupertype(supertypeC);
-		assertFalse(topicMap.getAssociations().isEmpty());
+		assertEquals(!hasFeature, topicMap.getAssociations().isEmpty());
 		Assert.assertFalse(index.getSupertypes().isEmpty());
 		Assert.assertTrue(index.getSupertypes().size() == 3);
 		Assert.assertTrue(index.getSupertypes().contains(supertypeC));
@@ -226,7 +236,8 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		index.close();
 	}
 
-	public void testGetSupertypesTopic() {
+	public void testGetSupertypesTopic() throws Exception{
+		boolean hasFeature = factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		ISupertypeSubtypeIndex index = topicMap.getIndex(ISupertypeSubtypeIndex.class);
 		index.open();
 		Assert.assertNotNull(index);
@@ -238,10 +249,15 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertTrue(index.getSupertypes(type).size() == 1);
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeA));
 		// TMDM Type-Hierarchy Topic Types created
-		Assert.assertTrue(index.getSupertypes((Topic) null).size() == 4);
+		int cnt = 1;
+		if ( hasFeature){
+			cnt += 3;
+		}
+		Assert.assertEquals(cnt,index.getSupertypes((Topic) null).size());
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeA));
 		ITopic supertypeB = createTopic();
-		Assert.assertTrue(index.getSupertypes((Topic) null).size() == 5);
+		cnt++;
+		Assert.assertEquals(cnt,index.getSupertypes((Topic) null).size());
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeA));
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeB));
 		supertypeA.addSupertype(supertypeB);
@@ -252,25 +268,26 @@ public class TestSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Assert.assertTrue(index.getSupertypes(type).size() == 2);
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeA));
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeB));
-		ITopic supertypeC = createTopic();
-		Assert.assertTrue(index.getSupertypes((Topic) null).size() == 5);
+		ITopic supertypeC = createTopic();		
+		Assert.assertEquals(cnt, index.getSupertypes((Topic) null).size());
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeC));
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeB));
 		type.addSupertype(supertypeC);
 		Assert.assertFalse(index.getSupertypes().isEmpty());
 		Assert.assertTrue(index.getSupertypes().size() == 3);
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeC));
-		Assert.assertEquals(5,index.getSupertypes((Topic) null).size());
+		Assert.assertEquals(cnt,index.getSupertypes((Topic) null).size());
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeC));
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeB));
 		supertypeB.addSupertype(supertypeC);
+		cnt--;
 		Assert.assertFalse(index.getSupertypes().isEmpty());
-		Assert.assertTrue(index.getSupertypes().size() == 3);
+		Assert.assertEquals(3,index.getSupertypes().size() );
 		Assert.assertTrue(index.getSupertypes(supertypeB).contains(supertypeC));
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeA));
 		Assert.assertTrue(index.getSupertypes(type).contains(supertypeC));
 		Assert.assertTrue(index.getSupertypes(supertypeA).contains(supertypeB));
-		Assert.assertTrue(index.getSupertypes((Topic) null).size() == 4);
+		Assert.assertEquals(cnt,index.getSupertypes((Topic) null).size());
 		Assert.assertTrue(index.getSupertypes((Topic) null).contains(supertypeC));
 		index.close();
 	}

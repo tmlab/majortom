@@ -61,14 +61,23 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	}
 
 	/**
-	 * Returns the connection of the connection provider
+	 * Returns the connection of the connection provider to modify database
 	 * 
 	 * @return the connection
 	 */
-	protected Connection getConnection() {
-		return getProcessor().getConnection();
+	protected Connection getWriterConnection() {
+		return getProcessor().getWriterConnection();
 	}
 
+	/**
+	 * Returns the connection of the connection provider to read from database
+	 * 
+	 * @return the connection
+	 */
+	protected Connection getReaderConnection() {
+		return getProcessor().getReaderConnection();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,7 +121,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateAssociation() throws SQLException {
 		if (this.preparedStatementCreateAssociation == null) {
-			this.preparedStatementCreateAssociation = getConnection()
+			this.preparedStatementCreateAssociation = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_ASSOCIATION,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -125,7 +134,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryCreateAssociationWithScope()
 			throws SQLException {
 		if (this.preparedStatementCreateAssociationWithScope == null) {
-			this.preparedStatementCreateAssociationWithScope = getConnection()
+			this.preparedStatementCreateAssociationWithScope = getWriterConnection()
 					.prepareStatement(
 							IInsertQueries.QUERY_CREATE_ASSOCIATION_WITH_SCOPE,
 							Statement.RETURN_GENERATED_KEYS);
@@ -138,7 +147,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateLocator() throws SQLException {
 		if (this.preparedStatementCreateLocator == null) {
-			this.preparedStatementCreateLocator = getConnection()
+			this.preparedStatementCreateLocator = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_LOCATOR,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -150,7 +159,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateNameWithScope() throws SQLException {
 		if (this.preparedStatementCreateNameWithScope == null) {
-			this.preparedStatementCreateNameWithScope = getConnection()
+			this.preparedStatementCreateNameWithScope = getWriterConnection()
 					.prepareStatement(
 							IInsertQueries.QUERY_CREATE_NAME_WITH_SCOPE,
 							Statement.RETURN_GENERATED_KEYS);
@@ -163,7 +172,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateName() throws SQLException {
 		if (this.preparedStatementCreateName == null) {
-			this.preparedStatementCreateName = getConnection()
+			this.preparedStatementCreateName = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_NAME,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -175,7 +184,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateOccurrence() throws SQLException {
 		if (this.preparedStatementCreateOccurrence == null) {
-			this.preparedStatementCreateOccurrence = getConnection()
+			this.preparedStatementCreateOccurrence = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_OCCURRENCE,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -188,7 +197,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryCreateOccurrenceWithScope()
 			throws SQLException {
 		if (this.preparedStatementCreateOccurrenceWithScope == null) {
-			this.preparedStatementCreateOccurrenceWithScope = getConnection()
+			this.preparedStatementCreateOccurrenceWithScope = getWriterConnection()
 					.prepareStatement(
 							IInsertQueries.QUERY_CREATE_OCCURRENCE_WITH_SCOPE,
 							Statement.RETURN_GENERATED_KEYS);
@@ -201,7 +210,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateRole() throws SQLException {
 		if (this.preparedStatementCreateRole == null) {
-			this.preparedStatementCreateRole = getConnection()
+			this.preparedStatementCreateRole = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_ROLE,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -213,7 +222,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateScope() throws SQLException {
 		if (this.preparedStatementCreateScope == null) {
-			this.preparedStatementCreateScope = getConnection()
+			this.preparedStatementCreateScope = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_SCOPE,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -225,7 +234,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateTopicMap() throws SQLException {
 		if (this.preparedStatementCreateTopicMap == null) {
-			this.preparedStatementCreateTopicMap = getConnection()
+			this.preparedStatementCreateTopicMap = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_TOPICMAP,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -237,7 +246,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateTopic() throws SQLException {
 		if (this.preparedStatementCreateTopic == null) {
-			this.preparedStatementCreateTopic = getConnection()
+			this.preparedStatementCreateTopic = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_TOPIC,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -249,7 +258,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateVariant() throws SQLException {
 		if (this.preparedStatementCreateVariant == null) {
-			this.preparedStatementCreateVariant = getConnection()
+			this.preparedStatementCreateVariant = getWriterConnection()
 					.prepareStatement(IInsertQueries.QUERY_CREATE_VARIANT,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -334,7 +343,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadAssociation() throws SQLException {
 		if (this.preparedStatementReadAssociation == null) {
-			this.preparedStatementReadAssociation = getConnection()
+			this.preparedStatementReadAssociation = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS);
 		}
@@ -347,7 +356,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadAssociationWithScope()
 			throws SQLException {
 		if (this.preparedStatementReadAssociationWithScope == null) {
-			this.preparedStatementReadAssociationWithScope = getConnection()
+			this.preparedStatementReadAssociationWithScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS_WITH_SCOPE);
 		}
@@ -360,7 +369,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadAssociationWithType()
 			throws SQLException {
 		if (this.preparedStatementReadAssociationWithType == null) {
-			this.preparedStatementReadAssociationWithType = getConnection()
+			this.preparedStatementReadAssociationWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS_WITH_TYPE);
 		}
@@ -373,7 +382,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadAssociationWithTypeAndScope()
 			throws SQLException {
 		if (this.preparedStatementReadAssociationWithTypeAndScope == null) {
-			this.preparedStatementReadAssociationWithTypeAndScope = getConnection()
+			this.preparedStatementReadAssociationWithTypeAndScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATIONS_WITH_TYPE_AND_SCOPE);
 		}
@@ -385,7 +394,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadConstructById() throws SQLException {
 		if (this.preparedStatementReadConstructById == null) {
-			this.preparedStatementReadConstructById = getConnection()
+			this.preparedStatementReadConstructById = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT);
 		}
@@ -398,7 +407,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadConstructByItemIdentifier()
 			throws SQLException {
 		if (this.preparedStatementReadConstructByItemIdentifier == null) {
-			this.preparedStatementReadConstructByItemIdentifier = getConnection()
+			this.preparedStatementReadConstructByItemIdentifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER);
 		}
@@ -418,7 +427,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadOccurrenceDataType()
 			throws SQLException {
 		if (this.preparedStatementReadOccurrenceDataType == null) {
-			this.preparedStatementReadOccurrenceDataType = getConnection()
+			this.preparedStatementReadOccurrenceDataType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCE_DATATYPE);
 		}
@@ -430,7 +439,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadVariantDataType() throws SQLException {
 		if (this.preparedStatementReadVariantDataType == null) {
-			this.preparedStatementReadVariantDataType = getConnection()
+			this.preparedStatementReadVariantDataType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANT_DATATYPE);
 		}
@@ -442,7 +451,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadItemIdentifiers() throws SQLException {
 		if (this.preparedStatementReadItemIdentifiers == null) {
-			this.preparedStatementReadItemIdentifiers = getConnection()
+			this.preparedStatementReadItemIdentifiers = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ITEM_IDENTIFIERS);
 		}
@@ -456,13 +465,13 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadNamesPaged == null) {
-				this.preparedStatementReadNamesPaged = getConnection()
+				this.preparedStatementReadNamesPaged = getReaderConnection()
 						.prepareStatement(ISelectQueries.Paged.QUERY_READ_NAMES);
 			}
 			return this.preparedStatementReadNamesPaged;
 		}
 		if (this.preparedStatementReadNames == null) {
-			this.preparedStatementReadNames = getConnection().prepareStatement(
+			this.preparedStatementReadNames = getReaderConnection().prepareStatement(
 					ISelectQueries.NonPaged.QUERY_READ_NAMES);
 		}
 		return this.preparedStatementReadNames;
@@ -473,7 +482,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNamesWithScope() throws SQLException {
 		if (this.preparedStatementReadNamesWithScope == null) {
-			this.preparedStatementReadNamesWithScope = getConnection()
+			this.preparedStatementReadNamesWithScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAMES_WITH_SCOPE);
 		}
@@ -485,7 +494,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNamesWithType() throws SQLException {
 		if (this.preparedStatementReadNamesWithType == null) {
-			this.preparedStatementReadNamesWithType = getConnection()
+			this.preparedStatementReadNamesWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAMES_WITH_TYPE);
 		}
@@ -498,7 +507,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadNamesWithTypeAndScope()
 			throws SQLException {
 		if (this.preparedStatementReadNamesWithTypeAndScope == null) {
-			this.preparedStatementReadNamesWithTypeAndScope = getConnection()
+			this.preparedStatementReadNamesWithTypeAndScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAMES_WITH_TYPE_AND_SCOPE);
 		}
@@ -512,14 +521,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadOccurrencesPaged == null) {
-				this.preparedStatementReadOccurrencesPaged = getConnection()
+				this.preparedStatementReadOccurrencesPaged = getReaderConnection()
 						.prepareStatement(
 								ISelectQueries.Paged.QUERY_READ_OCCURRENCES);
 			}
 			return this.preparedStatementReadOccurrencesPaged;
 		}
 		if (this.preparedStatementReadOccurrences == null) {
-			this.preparedStatementReadOccurrences = getConnection()
+			this.preparedStatementReadOccurrences = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCES);
 		}
@@ -532,7 +541,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadOccurrencesWithScope()
 			throws SQLException {
 		if (this.preparedStatementReadOccurrencesWithScope == null) {
-			this.preparedStatementReadOccurrencesWithScope = getConnection()
+			this.preparedStatementReadOccurrencesWithScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCES_WITH_SCOPE);
 		}
@@ -545,7 +554,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadOccurrencesWithType()
 			throws SQLException {
 		if (this.preparedStatementReadOccurrencesWithType == null) {
-			this.preparedStatementReadOccurrencesWithType = getConnection()
+			this.preparedStatementReadOccurrencesWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCES_WITH_TYPE);
 		}
@@ -558,7 +567,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadOccurrencesWithTypeAndScope()
 			throws SQLException {
 		if (this.preparedStatementReadOccurrencesWithTypeAndScope == null) {
-			this.preparedStatementReadOccurrencesWithTypeAndScope = getConnection()
+			this.preparedStatementReadOccurrencesWithTypeAndScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCES_WITH_TYPE_AND_SCOPE);
 		}
@@ -572,14 +581,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadPlayedAssociationPaged == null) {
-				this.preparedStatementReadPlayedAssociationPaged = getConnection()
+				this.preparedStatementReadPlayedAssociationPaged = getReaderConnection()
 						.prepareStatement(
 								ISelectQueries.Paged.QUERY_READ_PLAYED_ASSOCIATIONS);
 			}
 			return this.preparedStatementReadPlayedAssociationPaged;
 		}
 		if (this.preparedStatementReadPlayedAssociation == null) {
-			this.preparedStatementReadPlayedAssociation = getConnection()
+			this.preparedStatementReadPlayedAssociation = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ASSOCIATIONS);
 		}
@@ -592,7 +601,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadPlayedAssociationWithScope()
 			throws SQLException {
 		if (this.preparedStatementReadPlayedAssociationWithScope == null) {
-			this.preparedStatementReadPlayedAssociationWithScope = getConnection()
+			this.preparedStatementReadPlayedAssociationWithScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ASSOCIATIONS_WITH_SCOPE);
 		}
@@ -605,7 +614,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadPlayedAssociationWithType()
 			throws SQLException {
 		if (this.preparedStatementReadPlayedAssociationWithType == null) {
-			this.preparedStatementReadPlayedAssociationWithType = getConnection()
+			this.preparedStatementReadPlayedAssociationWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE);
 		}
@@ -618,7 +627,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadPlayedAssociationWithTypeAndScope()
 			throws SQLException {
 		if (this.preparedStatementReadPlayedAssociationWithTypeAndScope == null) {
-			this.preparedStatementReadPlayedAssociationWithTypeAndScope = getConnection()
+			this.preparedStatementReadPlayedAssociationWithTypeAndScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ASSOCIATIONS_WITH_TYPE_AND_SCOPE);
 		}
@@ -632,14 +641,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadPlayedRolesPaged == null) {
-				this.preparedStatementReadPlayedRolesPaged = getConnection()
+				this.preparedStatementReadPlayedRolesPaged = getReaderConnection()
 						.prepareStatement(
 								ISelectQueries.Paged.QUERY_READ_PLAYED_ROLES);
 			}
 			return this.preparedStatementReadPlayedRolesPaged;
 		}
 		if (this.preparedStatementReadPlayedRoles == null) {
-			this.preparedStatementReadPlayedRoles = getConnection()
+			this.preparedStatementReadPlayedRoles = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ROLES);
 		}
@@ -648,7 +657,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadLocator() throws SQLException {
 		if (this.preparedStatementReadLocator == null) {
-			this.preparedStatementReadLocator = getConnection()
+			this.preparedStatementReadLocator = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_LOCATOR);
 		}
@@ -661,7 +670,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadPlayedRolesWithType()
 			throws SQLException {
 		if (this.preparedStatementReadPlayedRolesWithType == null) {
-			this.preparedStatementReadPlayedRolesWithType = getConnection()
+			this.preparedStatementReadPlayedRolesWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ROLES_WITH_TYPE);
 		}
@@ -674,7 +683,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadPlayedRolesWithTypeAndAssociationType()
 			throws SQLException {
 		if (this.preparedStatementReadPlayedRolesWithTypeAndAssociationType == null) {
-			this.preparedStatementReadPlayedRolesWithTypeAndAssociationType = getConnection()
+			this.preparedStatementReadPlayedRolesWithTypeAndAssociationType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_PLAYED_ROLES_WITH_TYPE_AND_ASSOTYPE);
 		}
@@ -686,7 +695,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadPlayer() throws SQLException {
 		if (this.preparedStatementReadPlayer == null) {
-			this.preparedStatementReadPlayer = getConnection()
+			this.preparedStatementReadPlayer = getReaderConnection()
 					.prepareStatement(ISelectQueries.NonPaged.QUERY_READ_PLAYER);
 		}
 		return this.preparedStatementReadPlayer;
@@ -697,7 +706,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadReified() throws SQLException {
 		if (this.preparedStatementReadReified == null) {
-			this.preparedStatementReadReified = getConnection()
+			this.preparedStatementReadReified = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_REIFIED);
 		}
@@ -716,7 +725,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNameReifier() throws SQLException {
 		if (this.preparedStatementReadNameReifier == null) {
-			this.preparedStatementReadNameReifier = getConnection()
+			this.preparedStatementReadNameReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAME_REIFIER);
 		}
@@ -729,7 +738,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadOccurrenceReifier()
 			throws SQLException {
 		if (this.preparedStatementReadOccurrenceReifier == null) {
-			this.preparedStatementReadOccurrenceReifier = getConnection()
+			this.preparedStatementReadOccurrenceReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCE_REIFIER);
 		}
@@ -741,7 +750,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadVariantReifier() throws SQLException {
 		if (this.preparedStatementReadVariantReifier == null) {
-			this.preparedStatementReadVariantReifier = getConnection()
+			this.preparedStatementReadVariantReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANT_REIFIER);
 		}
@@ -753,7 +762,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRoleReifier() throws SQLException {
 		if (this.preparedStatementReadRoleReifier == null) {
-			this.preparedStatementReadRoleReifier = getConnection()
+			this.preparedStatementReadRoleReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ROLE_REIFIER);
 		}
@@ -766,7 +775,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadAssociationReifier()
 			throws SQLException {
 		if (this.preparedStatementReadAssociationReifier == null) {
-			this.preparedStatementReadAssociationReifier = getConnection()
+			this.preparedStatementReadAssociationReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATION_REIFIER);
 		}
@@ -778,7 +787,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadTopicMapReifier() throws SQLException {
 		if (this.preparedStatementReadTopicMapReifier == null) {
-			this.preparedStatementReadTopicMapReifier = getConnection()
+			this.preparedStatementReadTopicMapReifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_TOPICMAP_REIFIER);
 		}
@@ -790,7 +799,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRoleTypes() throws SQLException {
 		if (this.preparedStatementReadRoleTypes == null) {
-			this.preparedStatementReadRoleTypes = getConnection()
+			this.preparedStatementReadRoleTypes = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ROLESTYPES);
 		}
@@ -804,13 +813,13 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadRolesPaged == null) {
-				this.preparedStatementReadRolesPaged = getConnection()
+				this.preparedStatementReadRolesPaged = getReaderConnection()
 						.prepareStatement(ISelectQueries.Paged.QUERY_READ_ROLES);
 			}
 			return this.preparedStatementReadRolesPaged;
 		}
 		if (this.preparedStatementReadRoles == null) {
-			this.preparedStatementReadRoles = getConnection().prepareStatement(
+			this.preparedStatementReadRoles = getReaderConnection().prepareStatement(
 					ISelectQueries.NonPaged.QUERY_READ_ROLES);
 		}
 		return this.preparedStatementReadRoles;
@@ -821,7 +830,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRolesWithType() throws SQLException {
 		if (this.preparedStatementReadRolesWithType == null) {
-			this.preparedStatementReadRolesWithType = getConnection()
+			this.preparedStatementReadRolesWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ROLES_WITH_TYPE);
 		}
@@ -837,7 +846,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadNameScope() throws SQLException {
 		if (this.preparedStatementReadNameScope == null) {
-			this.preparedStatementReadNameScope = getConnection()
+			this.preparedStatementReadNameScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAME_SCOPE);
 		}
@@ -846,7 +855,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadVariantScope() throws SQLException {
 		if (this.preparedStatementReadVariantScope == null) {
-			this.preparedStatementReadVariantScope = getConnection()
+			this.preparedStatementReadVariantScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANT_SCOPE);
 		}
@@ -855,7 +864,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadOccurrenceScope() throws SQLException {
 		if (this.preparedStatementReadOccurrenceScope == null) {
-			this.preparedStatementReadOccurrenceScope = getConnection()
+			this.preparedStatementReadOccurrenceScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCE_SCOPE);
 		}
@@ -864,7 +873,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadAssociationScope() throws SQLException {
 		if (this.preparedStatementReadAssociationScope == null) {
-			this.preparedStatementReadAssociationScope = getConnection()
+			this.preparedStatementReadAssociationScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATION_SCOPE);
 		}
@@ -876,7 +885,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
 		if (preparedStatementReadScopeByThemes == null) {
-			this.preparedStatementReadScopeByThemes = getConnection()
+			this.preparedStatementReadScopeByThemes = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEME);
 		}
@@ -885,7 +894,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryReadEmptyScope() throws SQLException {
 		if (this.preparedStatementReadEmptyScope == null) {
-			this.preparedStatementReadEmptyScope = getConnection()
+			this.preparedStatementReadEmptyScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_EMPTY_SCOPE);
 		}
@@ -898,7 +907,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadSubjectIdentifiers()
 			throws SQLException {
 		if (this.preparedStatementReadSubjectIdentifiers == null) {
-			this.preparedStatementReadSubjectIdentifiers = getConnection()
+			this.preparedStatementReadSubjectIdentifiers = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_SUBJECT_IDENTIFIERS);
 		}
@@ -910,7 +919,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadSubjectLocators() throws SQLException {
 		if (this.preparedStatementReadSubjectLocators == null) {
-			this.preparedStatementReadSubjectLocators = getConnection()
+			this.preparedStatementReadSubjectLocators = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_SUBJECT_LOCATORS);
 		}
@@ -922,7 +931,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadSupertypes() throws SQLException {
 		if (this.preparedStatementReadSupertypes == null) {
-			this.preparedStatementReadSupertypes = getConnection()
+			this.preparedStatementReadSupertypes = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_SUPERTYPES);
 		}
@@ -934,7 +943,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadThemes() throws SQLException {
 		if (this.preparedStatementReadThemes == null) {
-			this.preparedStatementReadThemes = getConnection()
+			this.preparedStatementReadThemes = getReaderConnection()
 					.prepareStatement(ISelectQueries.NonPaged.QUERY_READ_THEMES);
 		}
 		return this.preparedStatementReadThemes;
@@ -946,7 +955,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadTopicBySubjectIdentifier()
 			throws SQLException {
 		if (this.preparedStatementReadTopicBySubjectIdentifier == null) {
-			this.preparedStatementReadTopicBySubjectIdentifier = getConnection()
+			this.preparedStatementReadTopicBySubjectIdentifier = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_TOPIC_BY_SUBJECT_IDENTIFIER);
 		}
@@ -959,7 +968,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadTopicBySubjectLocator()
 			throws SQLException {
 		if (this.preparedStatementReadTopicBySubjectLocator == null) {
-			this.preparedStatementReadTopicBySubjectLocator = getConnection()
+			this.preparedStatementReadTopicBySubjectLocator = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_TOPIC_BY_SUBJECT_LOCATOR);
 		}
@@ -971,7 +980,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadTopicMap() throws SQLException {
 		if (this.preparedStatementReadTopicMap == null) {
-			this.preparedStatementReadTopicMap = getConnection()
+			this.preparedStatementReadTopicMap = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_TOPICMAP);
 		}
@@ -983,7 +992,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadTopics() throws SQLException {
 		if (this.preparedStatementReadTopics == null) {
-			this.preparedStatementReadTopics = getConnection()
+			this.preparedStatementReadTopics = getReaderConnection()
 					.prepareStatement(ISelectQueries.NonPaged.QUERY_READ_TOPICS);
 		}
 		return this.preparedStatementReadTopics;
@@ -994,7 +1003,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadTopicsWithType() throws SQLException {
 		if (this.preparedStatementReadTopicsWithType == null) {
-			this.preparedStatementReadTopicsWithType = getConnection()
+			this.preparedStatementReadTopicsWithType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_TOPICS_WITH_TYPE);
 		}
@@ -1013,7 +1022,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNameType() throws SQLException {
 		if (this.preparedStatementReadNameType == null) {
-			this.preparedStatementReadNameType = getConnection()
+			this.preparedStatementReadNameType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAME_TYPE);
 		}
@@ -1025,7 +1034,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadOccurrenceType() throws SQLException {
 		if (this.preparedStatementReadOccurrenceType == null) {
-			this.preparedStatementReadOccurrenceType = getConnection()
+			this.preparedStatementReadOccurrenceType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCE_TYPE);
 		}
@@ -1037,7 +1046,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRoleType() throws SQLException {
 		if (this.preparedStatementReadRoleType == null) {
-			this.preparedStatementReadRoleType = getConnection()
+			this.preparedStatementReadRoleType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ROLE_TYPE);
 		}
@@ -1049,7 +1058,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadAssociationType() throws SQLException {
 		if (this.preparedStatementReadAssociationType == null) {
-			this.preparedStatementReadAssociationType = getConnection()
+			this.preparedStatementReadAssociationType = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_ASSOCIATION_TYPE);
 		}
@@ -1063,13 +1072,13 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadTypesPaged == null) {
-				this.preparedStatementReadTypesPaged = getConnection()
+				this.preparedStatementReadTypesPaged = getReaderConnection()
 						.prepareStatement(ISelectQueries.Paged.QUERY_READ_TYPES);
 			}
 			return this.preparedStatementReadTypesPaged;
 		}
 		if (this.preparedStatementReadTypes == null) {
-			this.preparedStatementReadTypes = getConnection().prepareStatement(
+			this.preparedStatementReadTypes = getReaderConnection().prepareStatement(
 					ISelectQueries.NonPaged.QUERY_READ_TYPES);
 		}
 		return this.preparedStatementReadTypes;
@@ -1087,7 +1096,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNameValue() throws SQLException {
 		if (this.preparedStatementReadNameValue == null) {
-			this.preparedStatementReadNameValue = getConnection()
+			this.preparedStatementReadNameValue = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_NAME_VALUE);
 		}
@@ -1099,7 +1108,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadOccurrenceValue() throws SQLException {
 		if (this.preparedStatementReadOccurrenceValue == null) {
-			this.preparedStatementReadOccurrenceValue = getConnection()
+			this.preparedStatementReadOccurrenceValue = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_OCCURRENCE_VALUE);
 		}
@@ -1111,7 +1120,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadVariantValue() throws SQLException {
 		if (this.preparedStatementReadVariantValue == null) {
-			this.preparedStatementReadVariantValue = getConnection()
+			this.preparedStatementReadVariantValue = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANT_VALUE);
 		}
@@ -1125,14 +1134,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementReadVariantsPaged == null) {
-				this.preparedStatementReadVariantsPaged = getConnection()
+				this.preparedStatementReadVariantsPaged = getReaderConnection()
 						.prepareStatement(
 								ISelectQueries.Paged.QUERY_READ_VARIANTS);
 			}
 			return this.preparedStatementReadVariantsPaged;
 		}
 		if (this.preparedStatementReadVariants == null) {
-			this.preparedStatementReadVariants = getConnection()
+			this.preparedStatementReadVariants = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANTS);
 		}
@@ -1145,7 +1154,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadVariantsWithScope()
 			throws SQLException {
 		if (this.preparedStatementReadVariantsWithScope == null) {
-			this.preparedStatementReadVariantsWithScope = getConnection()
+			this.preparedStatementReadVariantsWithScope = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.NonPaged.QUERY_READ_VARIANTS_WITH_SCOPE);
 		}
@@ -1184,7 +1193,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryAddItemIdentifier() throws SQLException {
 		if (this.preparedStatementAddItemIdentifier == null) {
-			this.preparedStatementAddItemIdentifier = getConnection()
+			this.preparedStatementAddItemIdentifier = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_ADD_ITEM_IDENTIFIER);
 		}
 		return this.preparedStatementAddItemIdentifier;
@@ -1195,7 +1204,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryAddSubjectIdentifier() throws SQLException {
 		if (this.preparedStatementAddSubjectIdentifier == null) {
-			this.preparedStatementAddSubjectIdentifier = getConnection()
+			this.preparedStatementAddSubjectIdentifier = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_ADD_SUBJECT_IDENTIFIER);
 		}
@@ -1207,7 +1216,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryAddSubjectLocator() throws SQLException {
 		if (this.preparedStatementAddSubjectLocator == null) {
-			this.preparedStatementAddSubjectLocator = getConnection()
+			this.preparedStatementAddSubjectLocator = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_ADD_SUBJECT_LOCATOR);
 		}
 		return this.preparedStatementAddSubjectLocator;
@@ -1218,7 +1227,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryAddThemes(long themeNumber)
 			throws SQLException {
-		return getConnection().prepareStatement(IUpdateQueries.QUERY_ADD_THEME);
+		return getWriterConnection().prepareStatement(IUpdateQueries.QUERY_ADD_THEME);
 	}
 
 	/**
@@ -1233,7 +1242,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyNameType() throws SQLException {
 		if (this.preparedStatementModifyNameType == null) {
-			this.preparedStatementModifyNameType = getConnection()
+			this.preparedStatementModifyNameType = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_NAME_TYPE);
 		}
 		return this.preparedStatementModifyNameType;
@@ -1244,7 +1253,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyOccurrenceType() throws SQLException {
 		if (this.preparedStatementModifyOccurrenceType == null) {
-			this.preparedStatementModifyOccurrenceType = getConnection()
+			this.preparedStatementModifyOccurrenceType = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_OCCURRENCE_TYPE);
 		}
@@ -1256,7 +1265,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyRoleType() throws SQLException {
 		if (this.preparedStatementModifyRoleType == null) {
-			this.preparedStatementModifyRoleType = getConnection()
+			this.preparedStatementModifyRoleType = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_ROLE_TYPE);
 		}
 		return this.preparedStatementModifyRoleType;
@@ -1268,7 +1277,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyAssociationType()
 			throws SQLException {
 		if (this.preparedStatementModifyAssociationType == null) {
-			this.preparedStatementModifyAssociationType = getConnection()
+			this.preparedStatementModifyAssociationType = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_ASSOCIATION_TYPE);
 		}
@@ -1280,7 +1289,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyTypes() throws SQLException {
 		if (this.preparedStatementModifyTypes == null) {
-			this.preparedStatementModifyTypes = getConnection()
+			this.preparedStatementModifyTypes = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_TYPES);
 		}
 		return this.preparedStatementModifyTypes;
@@ -1291,7 +1300,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyPlayer() throws SQLException {
 		if (this.preparedStatementModifyPlayer == null) {
-			this.preparedStatementModifyPlayer = getConnection()
+			this.preparedStatementModifyPlayer = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_PLAYER);
 		}
 		return this.preparedStatementModifyPlayer;
@@ -1309,7 +1318,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyNameReifier() throws SQLException {
 		if (this.preparedStatementModifyNameReifier == null) {
-			this.preparedStatementModifyNameReifier = getConnection()
+			this.preparedStatementModifyNameReifier = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_NAME_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -1322,7 +1331,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyOccurrenceReifier()
 			throws SQLException {
 		if (this.preparedStatementModifyOccurrenceReifier == null) {
-			this.preparedStatementModifyOccurrenceReifier = getConnection()
+			this.preparedStatementModifyOccurrenceReifier = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_OCCURRENCE_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
@@ -1335,7 +1344,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyVariantReifier() throws SQLException {
 		if (this.preparedStatementModifyVariantReifier == null) {
-			this.preparedStatementModifyVariantReifier = getConnection()
+			this.preparedStatementModifyVariantReifier = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_VARIANT_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
@@ -1348,7 +1357,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyRoleReifier() throws SQLException {
 		if (this.preparedStatementModifyRoleReifier == null) {
-			this.preparedStatementModifyRoleReifier = getConnection()
+			this.preparedStatementModifyRoleReifier = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_ROLE_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -1361,7 +1370,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyAssociationReifier()
 			throws SQLException {
 		if (this.preparedStatementModifyAssociationReifier == null) {
-			this.preparedStatementModifyAssociationReifier = getConnection()
+			this.preparedStatementModifyAssociationReifier = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_ASSOCIATION_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
@@ -1375,7 +1384,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyTopicMapReifier()
 			throws SQLException {
 		if (this.preparedStatementModifyTopicMapReifier == null) {
-			this.preparedStatementModifyTopicMapReifier = getConnection()
+			this.preparedStatementModifyTopicMapReifier = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_TOPICMAP_REIFIER,
 							Statement.RETURN_GENERATED_KEYS);
@@ -1392,7 +1401,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryModifyNameScope() throws SQLException {
 		if (this.preparedStatementModifyNameScope == null) {
-			this.preparedStatementModifyNameScope = getConnection()
+			this.preparedStatementModifyNameScope = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_NAME_SCOPE);
 		}
 		return this.preparedStatementModifyNameScope;
@@ -1401,7 +1410,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyOccurrenceScope()
 			throws SQLException {
 		if (this.preparedStatementModifyOccurrenceScope == null) {
-			this.preparedStatementModifyOccurrenceScope = getConnection()
+			this.preparedStatementModifyOccurrenceScope = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_OCCURRENCE_SCOPE);
 		}
@@ -1410,7 +1419,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryModifyVariantScope() throws SQLException {
 		if (this.preparedStatementModifyVariantScope == null) {
-			this.preparedStatementModifyVariantScope = getConnection()
+			this.preparedStatementModifyVariantScope = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_VARIANT_SCOPE);
 		}
 		return this.preparedStatementModifyVariantScope;
@@ -1419,7 +1428,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyAssociationScope()
 			throws SQLException {
 		if (this.preparedStatementModifyAssociationScope == null) {
-			this.preparedStatementModifyAssociationScope = getConnection()
+			this.preparedStatementModifyAssociationScope = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_ASSOCIATION_SCOPE);
 		}
@@ -1431,7 +1440,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifySupertypes() throws SQLException {
 		if (this.preparedStatementModifySupertypes == null) {
-			this.preparedStatementModifySupertypes = getConnection()
+			this.preparedStatementModifySupertypes = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_SUPERTYPES);
 		}
 		return this.preparedStatementModifySupertypes;
@@ -1442,7 +1451,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyValue() throws SQLException {
 		if (this.preparedStatementModifyValue == null) {
-			this.preparedStatementModifyValue = getConnection()
+			this.preparedStatementModifyValue = getWriterConnection()
 					.prepareStatement(IUpdateQueries.QUERY_MODIFY_VALUE);
 		}
 		return this.preparedStatementModifyValue;
@@ -1454,7 +1463,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryModifyValueWithDatatype()
 			throws SQLException {
 		if (this.preparedStatementModifyValueWithDatatype == null) {
-			this.preparedStatementModifyValueWithDatatype = getConnection()
+			this.preparedStatementModifyValueWithDatatype = getWriterConnection()
 					.prepareStatement(
 							IUpdateQueries.QUERY_MODIFY_VALUE_WITH_DATATYPE);
 		}
@@ -1491,7 +1500,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteTopicMap() throws SQLException {
 		if (this.preparedStatementDeleteTopicMap == null) {
-			this.preparedStatementDeleteTopicMap = getConnection()
+			this.preparedStatementDeleteTopicMap = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_TOPICMAP);
 		}
 		return this.preparedStatementDeleteTopicMap;
@@ -1502,7 +1511,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteAssociation() throws SQLException {
 		if (this.preparedStatementDeleteAssociation == null) {
-			this.preparedStatementDeleteAssociation = getConnection()
+			this.preparedStatementDeleteAssociation = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ASSOCIATION);
 		}
 		return this.preparedStatementDeleteAssociation;
@@ -1513,7 +1522,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteItemIdentifier() throws SQLException {
 		if (this.preparedStatementDeleteItemIdentifier == null) {
-			this.preparedStatementDeleteItemIdentifier = getConnection()
+			this.preparedStatementDeleteItemIdentifier = getWriterConnection()
 					.prepareStatement(
 							IDeleteQueries.QUERY_DELETE_ITEM_IDENTIFIER);
 		}
@@ -1525,7 +1534,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteName() throws SQLException {
 		if (this.preparedStatementDeleteName == null) {
-			this.preparedStatementDeleteName = getConnection()
+			this.preparedStatementDeleteName = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_NAME);
 		}
 		return this.preparedStatementDeleteName;
@@ -1536,7 +1545,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteOccurrence() throws SQLException {
 		if (this.preparedStatementDeleteOccurrence == null) {
-			this.preparedStatementDeleteOccurrence = getConnection()
+			this.preparedStatementDeleteOccurrence = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_OCCURRENCE);
 		}
 		return this.preparedStatementDeleteOccurrence;
@@ -1547,7 +1556,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteRole() throws SQLException {
 		if (this.preparedStatementDeleteRole == null) {
-			this.preparedStatementDeleteRole = getConnection()
+			this.preparedStatementDeleteRole = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ROLE);
 		}
 		return this.preparedStatementDeleteRole;
@@ -1559,7 +1568,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryDeleteSubjectIdentifier()
 			throws SQLException {
 		if (this.preparedStatementDeleteSubjectIdentifier == null) {
-			this.preparedStatementDeleteSubjectIdentifier = getConnection()
+			this.preparedStatementDeleteSubjectIdentifier = getWriterConnection()
 					.prepareStatement(
 							IDeleteQueries.QUERY_DELETE_SUBJECT_IDENTIFIER);
 		}
@@ -1571,7 +1580,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteSubjectLocator() throws SQLException {
 		if (this.preparedStatementDeleteSubjectLocator == null) {
-			this.preparedStatementDeleteSubjectLocator = getConnection()
+			this.preparedStatementDeleteSubjectLocator = getWriterConnection()
 					.prepareStatement(
 							IDeleteQueries.QUERY_DELETE_SUBJECT_LOCATOR);
 		}
@@ -1583,7 +1592,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteSupertype() throws SQLException {
 		if (this.preparedStatementDeleteSupertype == null) {
-			this.preparedStatementDeleteSupertype = getConnection()
+			this.preparedStatementDeleteSupertype = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_SUPERTYPE);
 		}
 		return this.preparedStatementDeleteSupertype;
@@ -1594,7 +1603,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteTopic() throws SQLException {
 		if (this.preparedStatementDeleteTopic == null) {
-			this.preparedStatementDeleteTopic = getConnection()
+			this.preparedStatementDeleteTopic = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_TOPIC);
 		}
 		return this.preparedStatementDeleteTopic;
@@ -1605,7 +1614,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteType() throws SQLException {
 		if (this.preparedStatementDeleteType == null) {
-			this.preparedStatementDeleteType = getConnection()
+			this.preparedStatementDeleteType = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_TYPE);
 		}
 		return this.preparedStatementDeleteType;
@@ -1616,7 +1625,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteVariant() throws SQLException {
 		if (this.preparedStatementDeleteVariant == null) {
-			this.preparedStatementDeleteVariant = getConnection()
+			this.preparedStatementDeleteVariant = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_VARIANT);
 		}
 		return this.preparedStatementDeleteVariant;
@@ -1627,7 +1636,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryClearTopicMap() throws SQLException {
 		if (this.preparedStatementClearTopicMap == null) {
-			this.preparedStatementClearTopicMap = getConnection()
+			this.preparedStatementClearTopicMap = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_CLEAR_TOPICMAP);
 		}
 		return this.preparedStatementClearTopicMap;
@@ -1638,7 +1647,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteScope() throws SQLException {
 		if (this.preparedStatementDeleteScope == null) {
-			this.preparedStatementDeleteScope = getConnection()
+			this.preparedStatementDeleteScope = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_SCOPE);
 		}
 		return this.preparedStatementDeleteScope;
@@ -1649,7 +1658,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteThemesOfScope() throws SQLException {
 		if (this.preparedStatementDeleteThemesOfScope == null) {
-			this.preparedStatementDeleteThemesOfScope = getConnection()
+			this.preparedStatementDeleteThemesOfScope = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_THEMES_OF_SCOPE);
 		}
 		return this.preparedStatementDeleteThemesOfScope;
@@ -1660,7 +1669,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteAllThemes() throws SQLException {
 		if (this.preparedStatementDeleteAllThemes == null) {
-			this.preparedStatementDeleteAllThemes = getConnection()
+			this.preparedStatementDeleteAllThemes = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ALL_THEMES);
 		}
 		return this.preparedStatementDeleteAllThemes;
@@ -1671,7 +1680,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteAllScopes() throws SQLException {
 		if (this.preparedStatementDeleteAllScopes == null) {
-			this.preparedStatementDeleteAllScopes = getConnection()
+			this.preparedStatementDeleteAllScopes = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ALL_SCOPE);
 		}
 		return this.preparedStatementDeleteAllScopes;
@@ -1682,7 +1691,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteAllHistoryEntries() throws SQLException {
 		if (this.preparedStatementDeleteAllHistoryEntries == null) {
-			this.preparedStatementDeleteAllHistoryEntries = getConnection()
+			this.preparedStatementDeleteAllHistoryEntries = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ALL_HISTORYENTRIES);
 		}
 		return this.preparedStatementDeleteAllHistoryEntries;
@@ -1693,7 +1702,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryDeleteAllRevisions() throws SQLException {
 		if (this.preparedStatementDeleteAllRevisions == null) {
-			this.preparedStatementDeleteAllRevisions = getConnection()
+			this.preparedStatementDeleteAllRevisions = getWriterConnection()
 					.prepareStatement(IDeleteQueries.QUERY_DELETE_ALL_REVISIONS);
 		}
 		return this.preparedStatementDeleteAllRevisions;
@@ -1720,7 +1729,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadNumberOfAssociationsPlayed()
 			throws SQLException {
 		if (this.preparedStatementNumberOfAssociationsPlayed == null) {
-			this.preparedStatementNumberOfAssociationsPlayed = getConnection()
+			this.preparedStatementNumberOfAssociationsPlayed = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_PLAYED_ASSOCIATIONS);
 		}
@@ -1732,7 +1741,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNumberOfNames() throws SQLException {
 		if (this.preparedStatementNumberOfNames == null) {
-			this.preparedStatementNumberOfNames = getConnection()
+			this.preparedStatementNumberOfNames = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_NAMES);
 		}
@@ -1745,7 +1754,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadNumberOfOccurrences()
 			throws SQLException {
 		if (this.preparedStatementNumberOfOccurrences == null) {
-			this.preparedStatementNumberOfOccurrences = getConnection()
+			this.preparedStatementNumberOfOccurrences = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_OCCURRENCES);
 		}
@@ -1757,7 +1766,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNumberOfRoles() throws SQLException {
 		if (this.preparedStatementNumberOfRoles == null) {
-			this.preparedStatementNumberOfRoles = getConnection()
+			this.preparedStatementNumberOfRoles = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_ROLES);
 		}
@@ -1770,7 +1779,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadNumberOfRolesPlayed()
 			throws SQLException {
 		if (this.preparedStatementNumberOfRolesPlayed == null) {
-			this.preparedStatementNumberOfRolesPlayed = getConnection()
+			this.preparedStatementNumberOfRolesPlayed = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_PLAYED_ROLES);
 		}
@@ -1783,7 +1792,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadNumberOfTopicsWithoutSupertypes()
 			throws SQLException {
 		if (this.preparedStatementNumberOfSupertypes == null) {
-			this.preparedStatementNumberOfSupertypes = getConnection()
+			this.preparedStatementNumberOfSupertypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES);
 		}
@@ -1795,7 +1804,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNumberOfTypes() throws SQLException {
 		if (this.preparedStatementNumberOfTypes == null) {
-			this.preparedStatementNumberOfTypes = getConnection()
+			this.preparedStatementNumberOfTypes = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_TYPES);
 		}
@@ -1807,7 +1816,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadNumberOfVariants() throws SQLException {
 		if (this.preparedStatementNumberOfVariants == null) {
-			this.preparedStatementNumberOfVariants = getConnection()
+			this.preparedStatementNumberOfVariants = getReaderConnection()
 					.prepareStatement(
 							ISelectQueries.Paged.QUERY_READ_NUMBER_OF_VARIANTS);
 		}
@@ -1861,14 +1870,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexAssociationTypesWithLimit == null) {
-				this.preparedStatementIndexAssociationTypesWithLimit = getConnection()
+				this.preparedStatementIndexAssociationTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONTYPES);
 			}
 			return this.preparedStatementIndexAssociationTypesWithLimit;
 		}
 		if (this.preparedStatementIndexAssociationTypes == null) {
-			this.preparedStatementIndexAssociationTypes = getConnection()
+			this.preparedStatementIndexAssociationTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONTYPES);
 		}
@@ -1882,14 +1891,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexNameTypesWithLimit == null) {
-				this.preparedStatementIndexNameTypesWithLimit = getConnection()
+				this.preparedStatementIndexNameTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_NAMETYPES);
 			}
 			return this.preparedStatementIndexNameTypesWithLimit;
 		}
 		if (this.preparedStatementIndexNameTypes == null) {
-			this.preparedStatementIndexNameTypes = getConnection()
+			this.preparedStatementIndexNameTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMETYPES);
 		}
@@ -1903,14 +1912,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexOccurrenceTypesWithLimit == null) {
-				this.preparedStatementIndexOccurrenceTypesWithLimit = getConnection()
+				this.preparedStatementIndexOccurrenceTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCETYPES);
 			}
 			return this.preparedStatementIndexOccurrenceTypesWithLimit;
 		}
 		if (this.preparedStatementIndexOccurrenceTypes == null) {
-			this.preparedStatementIndexOccurrenceTypes = getConnection()
+			this.preparedStatementIndexOccurrenceTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCETYPES);
 		}
@@ -1921,14 +1930,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexCharacteristicTypesWithLimit == null) {
-				this.preparedStatementIndexCharacteristicTypesWithLimit = getConnection()
+				this.preparedStatementIndexCharacteristicTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_CHARACTERISTICTYPES);
 			}
 			return this.preparedStatementIndexCharacteristicTypesWithLimit;
 		}
 		if (this.preparedStatementIndexCharacteristicTypes == null) {
-			this.preparedStatementIndexCharacteristicTypes = getConnection()
+			this.preparedStatementIndexCharacteristicTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_CHARACTERISTICTYPES);
 		}
@@ -1939,14 +1948,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexRoleTypesWithLimit == null) {
-				this.preparedStatementIndexRoleTypesWithLimit = getConnection()
+				this.preparedStatementIndexRoleTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ROLETYPES);
 			}
 			return this.preparedStatementIndexRoleTypesWithLimit;
 		}
 		if (this.preparedStatementIndexRoleTypes == null) {
-			this.preparedStatementIndexRoleTypes = getConnection()
+			this.preparedStatementIndexRoleTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLETYPES);
 		}
@@ -1960,14 +1969,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexTopicTypesWithLimit == null) {
-				this.preparedStatementIndexTopicTypesWithLimit = getConnection()
+				this.preparedStatementIndexTopicTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPICTYPES);
 			}
 			return this.preparedStatementIndexTopicTypesWithLimit;
 		}
 		if (this.preparedStatementIndexTopicTypes == null) {
-			this.preparedStatementIndexTopicTypes = getConnection()
+			this.preparedStatementIndexTopicTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPICTYPES);
 		}
@@ -1981,14 +1990,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexAssociationsByTypeWithLimit == null) {
-				this.preparedStatementIndexAssociationsByTypeWithLimit = getConnection()
+				this.preparedStatementIndexAssociationsByTypeWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
 			}
 			return this.preparedStatementIndexAssociationsByTypeWithLimit;
 		}
 		if (this.preparedStatementIndexAssociationsByType == null) {
-			this.preparedStatementIndexAssociationsByType = getConnection()
+			this.preparedStatementIndexAssociationsByType = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
 		}
@@ -2002,14 +2011,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexAssociationsByTypesWithLimit == null) {
-				this.preparedStatementIndexAssociationsByTypesWithLimit = getConnection()
+				this.preparedStatementIndexAssociationsByTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_TYPES);
 			}
 			return this.preparedStatementIndexAssociationsByTypesWithLimit;
 		}
 		if (this.preparedStatementIndexAssociationsByTypes == null) {
-			this.preparedStatementIndexAssociationsByTypes = getConnection()
+			this.preparedStatementIndexAssociationsByTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_TYPES);
 		}
@@ -2023,14 +2032,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexCharacteristicsByTypeWithLimit == null) {
-				this.preparedStatementIndexCharacteristicsByTypeWithLimit = getConnection()
+				this.preparedStatementIndexCharacteristicsByTypeWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_TYPE);
 			}
 			return this.preparedStatementIndexCharacteristicsByTypeWithLimit;
 		}
 		if (this.preparedStatementIndexCharacteristicsByType == null) {
-			this.preparedStatementIndexCharacteristicsByType = getConnection()
+			this.preparedStatementIndexCharacteristicsByType = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_TYPE);
 		}
@@ -2044,14 +2053,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexCharacteristicsByTypesWithLimit == null) {
-				this.preparedStatementIndexCharacteristicsByTypesWithLimit = getConnection()
+				this.preparedStatementIndexCharacteristicsByTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_TYPES);
 			}
 			return this.preparedStatementIndexCharacteristicsByTypesWithLimit;
 		}
 		if (this.preparedStatementIndexCharacteristicsByTypes == null) {
-			this.preparedStatementIndexCharacteristicsByTypes = getConnection()
+			this.preparedStatementIndexCharacteristicsByTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_TYPES);
 		}
@@ -2065,14 +2074,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexRolesByTypeWithLimit == null) {
-				this.preparedStatementIndexRolesByTypeWithLimit = getConnection()
+				this.preparedStatementIndexRolesByTypeWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ROLES_BY_TYPE);
 			}
 			return this.preparedStatementIndexRolesByTypeWithLimit;
 		}
 		if (this.preparedStatementIndexRolesByType == null) {
-			this.preparedStatementIndexRolesByType = getConnection()
+			this.preparedStatementIndexRolesByType = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLES_BY_TYPE);
 		}
@@ -2086,14 +2095,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexRolesByTypesWithLimit == null) {
-				this.preparedStatementIndexRolesByTypesWithLimit = getConnection()
+				this.preparedStatementIndexRolesByTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_ROLES_BY_TYPES);
 			}
 			return this.preparedStatementIndexRolesByTypesWithLimit;
 		}
 		if (this.preparedStatementIndexRolesByTypes == null) {
-			this.preparedStatementIndexRolesByTypes = getConnection()
+			this.preparedStatementIndexRolesByTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLES_BY_TYPES);
 		}
@@ -2107,14 +2116,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexNamesByTypeWithLimit == null) {
-				this.preparedStatementIndexNamesByTypeWithLimit = getConnection()
+				this.preparedStatementIndexNamesByTypeWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_NAMES_BY_TYPE);
 			}
 			return this.preparedStatementIndexNamesByTypeWithLimit;
 		}
 		if (this.preparedStatementIndexNamesByType == null) {
-			this.preparedStatementIndexNamesByType = getConnection()
+			this.preparedStatementIndexNamesByType = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMES_BY_TYPE);
 		}
@@ -2128,14 +2137,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexNamesByTypesWithLimit == null) {
-				this.preparedStatementIndexNamesByTypesWithLimit = getConnection()
+				this.preparedStatementIndexNamesByTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_NAMES_BY_TYPES);
 			}
 			return this.preparedStatementIndexNamesByTypesWithLimit;
 		}
 		if (this.preparedStatementIndexNamesByTypes == null) {
-			this.preparedStatementIndexNamesByTypes = getConnection()
+			this.preparedStatementIndexNamesByTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMES_BY_TYPES);
 		}
@@ -2149,14 +2158,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexOccurrencesByTypeWithLimit == null) {
-				this.preparedStatementIndexOccurrencesByTypeWithLimit = getConnection()
+				this.preparedStatementIndexOccurrencesByTypeWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
 			}
 			return this.preparedStatementIndexOccurrencesByTypeWithLimit;
 		}
 		if (this.preparedStatementIndexOccurrencesByType == null) {
-			this.preparedStatementIndexOccurrencesByType = getConnection()
+			this.preparedStatementIndexOccurrencesByType = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
 		}
@@ -2170,14 +2179,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexOccurrencesByTypesWithLimit == null) {
-				this.preparedStatementIndexOccurrencesByTypesWithLimit = getConnection()
+				this.preparedStatementIndexOccurrencesByTypesWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_TYPES);
 			}
 			return this.preparedStatementIndexOccurrencesByTypesWithLimit;
 		}
 		if (this.preparedStatementIndexOccurrencesByTypes == null) {
-			this.preparedStatementIndexOccurrencesByTypes = getConnection()
+			this.preparedStatementIndexOccurrencesByTypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_TYPES);
 		}
@@ -2195,14 +2204,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		if (typeCount == 0) {
 			if (withLimit) {
 				if (this.preparedStatementIndexTopicsWithoutTypeWithLimit == null) {
-					this.preparedStatementIndexTopicsWithoutTypeWithLimit = getConnection()
+					this.preparedStatementIndexTopicsWithoutTypeWithLimit = getReaderConnection()
 							.prepareStatement(
 									IIndexQueries.QueryTypeInstanceIndex.Paged.QUERY_SELECT_TOPIC_WITHOUT_TYPE);
 				}
 				return this.preparedStatementIndexTopicsWithoutTypeWithLimit;
 			}
 			if (this.preparedStatementIndexTopicsWithoutType == null) {
-				this.preparedStatementIndexTopicsWithoutType = getConnection()
+				this.preparedStatementIndexTopicsWithoutType = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPIC_WITHOUT_TYPE);
 			}
@@ -2373,7 +2382,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryScopesByThemesUsed() throws SQLException {
 		if (this.preparedStatementIndexScopesByThemesUsed == null) {
-			preparedStatementIndexScopesByThemesUsed = getConnection()
+			preparedStatementIndexScopesByThemesUsed = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_SCOPES_BY_THEMES_USED);
 		}
@@ -2387,14 +2396,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexAssociationsByScopePaged == null) {
-				this.preparedStatementIndexAssociationsByScopePaged = getConnection()
+				this.preparedStatementIndexAssociationsByScopePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_SCOPE);
 			}
 			return this.preparedStatementIndexAssociationsByScopePaged;
 		}
 		if (this.preparedStatementIndexAssociationsByScope == null) {
-			this.preparedStatementIndexAssociationsByScope = getConnection()
+			this.preparedStatementIndexAssociationsByScope = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_SCOPE);
 		}
@@ -2408,14 +2417,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexAssociationsByScopesPaged == null) {
-				this.preparedStatementIndexAssociationsByScopesPaged = getConnection()
+				this.preparedStatementIndexAssociationsByScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_SCOPES);
 			}
 			return this.preparedStatementIndexAssociationsByScopesPaged;
 		}
 		if (this.preparedStatementIndexAssociationsByScopes == null) {
-			this.preparedStatementIndexAssociationsByScopes = getConnection()
+			this.preparedStatementIndexAssociationsByScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_SCOPES);
 		}
@@ -2429,14 +2438,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexAssociationsByThemePaged == null) {
-				this.preparedStatementIndexAssociationsByThemePaged = getConnection()
+				this.preparedStatementIndexAssociationsByThemePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_THEME);
 			}
 			return this.preparedStatementIndexAssociationsByThemePaged;
 		}
 		if (this.preparedStatementIndexAssociationsByTheme == null) {
-			this.preparedStatementIndexAssociationsByTheme = getConnection()
+			this.preparedStatementIndexAssociationsByTheme = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_THEME);
 		}
@@ -2454,14 +2463,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		if (all) {
 			if (paged) {
 				if (this.preparedStatementIndexAssociationsByThemesMatchingAllPaged == null) {
-					this.preparedStatementIndexAssociationsByThemesMatchingAllPaged = getConnection()
+					this.preparedStatementIndexAssociationsByThemesMatchingAllPaged = getReaderConnection()
 							.prepareStatement(
 									IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_THEMES_MATCH_ALL);
 				}
 				return this.preparedStatementIndexAssociationsByThemesMatchingAllPaged;
 			}
 			if (this.preparedStatementIndexAssociationsByThemesMatchingAll == null) {
-				this.preparedStatementIndexAssociationsByThemesMatchingAll = getConnection()
+				this.preparedStatementIndexAssociationsByThemesMatchingAll = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_THEMES_MATCH_ALL);
 			}
@@ -2469,14 +2478,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexAssociationsByThemesPaged == null) {
-				this.preparedStatementIndexAssociationsByThemesPaged = getConnection()
+				this.preparedStatementIndexAssociationsByThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_THEMES);
 			}
 			return this.preparedStatementIndexAssociationsByThemesPaged;
 		}
 		if (this.preparedStatementIndexAssociationsByThemes == null) {
-			this.preparedStatementIndexAssociationsByThemes = getConnection()
+			this.preparedStatementIndexAssociationsByThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_THEMES);
 		}
@@ -2490,14 +2499,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexAssociationScopesPaged == null) {
-				this.preparedStatementIndexAssociationScopesPaged = getConnection()
+				this.preparedStatementIndexAssociationScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATION_SCOPES);
 			}
 			return this.preparedStatementIndexAssociationScopesPaged;
 		}
 		if (this.preparedStatementIndexAssociationScopes == null) {
-			this.preparedStatementIndexAssociationScopes = getConnection()
+			this.preparedStatementIndexAssociationScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATION_SCOPES);
 		}
@@ -2511,14 +2520,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexAssociationThemesPaged == null) {
-				this.preparedStatementIndexAssociationThemesPaged = getConnection()
+				this.preparedStatementIndexAssociationThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_ASSOCIATION_THEMES);
 			}
 			return this.preparedStatementIndexAssociationThemesPaged;
 		}
 		if (this.preparedStatementIndexAssociationThemes == null) {
-			this.preparedStatementIndexAssociationThemes = getConnection()
+			this.preparedStatementIndexAssociationThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_ASSOCIATION_THEMES);
 		}
@@ -2532,14 +2541,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsByScopePaged == null) {
-				this.preparedStatementIndexCharacteristicsByScopePaged = getConnection()
+				this.preparedStatementIndexCharacteristicsByScopePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_SCOPE);
 			}
 			return this.preparedStatementIndexCharacteristicsByScopePaged;
 		}
 		if (this.preparedStatementIndexCharacteristicsByScope == null) {
-			this.preparedStatementIndexCharacteristicsByScope = getConnection()
+			this.preparedStatementIndexCharacteristicsByScope = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_SCOPE);
 		}
@@ -2553,14 +2562,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNamesByScopePaged == null) {
-				this.preparedStatementIndexNamesByScopePaged = getConnection()
+				this.preparedStatementIndexNamesByScopePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAMES_BY_SCOPE);
 			}
 			return this.preparedStatementIndexNamesByScopePaged;
 		}
 		if (this.preparedStatementIndexNamesByScope == null) {
-			this.preparedStatementIndexNamesByScope = getConnection()
+			this.preparedStatementIndexNamesByScope = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAMES_BY_SCOPE);
 		}
@@ -2574,14 +2583,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNamesByScopesPaged == null) {
-				this.preparedStatementIndexNamesByScopesPaged = getConnection()
+				this.preparedStatementIndexNamesByScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAMES_BY_SCOPES);
 			}
 			return this.preparedStatementIndexNamesByScopesPaged;
 		}
 		if (this.preparedStatementIndexNamesByScopes == null) {
-			this.preparedStatementIndexNamesByScopes = getConnection()
+			this.preparedStatementIndexNamesByScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAMES_BY_SCOPES);
 		}
@@ -2595,14 +2604,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNamesByThemePaged == null) {
-				this.preparedStatementIndexNamesByThemePaged = getConnection()
+				this.preparedStatementIndexNamesByThemePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAMES_BY_THEME);
 			}
 			return this.preparedStatementIndexNamesByThemePaged;
 		}
 		if (this.preparedStatementIndexNamesByTheme == null) {
-			this.preparedStatementIndexNamesByTheme = getConnection()
+			this.preparedStatementIndexNamesByTheme = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAMES_BY_THEME);
 		}
@@ -2620,14 +2629,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		if (all) {
 			if (paged) {
 				if (this.preparedStatementIndexNamesByThemesMatchingAllPaged == null) {
-					this.preparedStatementIndexNamesByThemesMatchingAllPaged = getConnection()
+					this.preparedStatementIndexNamesByThemesMatchingAllPaged = getReaderConnection()
 							.prepareStatement(
 									IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAMES_BY_THEMES_MATCH_ALL);
 				}
 				return this.preparedStatementIndexNamesByThemesMatchingAllPaged;
 			}
 			if (this.preparedStatementIndexNamesByThemesMatchingAll == null) {
-				this.preparedStatementIndexNamesByThemesMatchingAll = getConnection()
+				this.preparedStatementIndexNamesByThemesMatchingAll = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAMES_BY_THEMES_MATCH_ALL);
 			}
@@ -2635,14 +2644,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexNamesByThemesPaged == null) {
-				this.preparedStatementIndexNamesByThemesPaged = getConnection()
+				this.preparedStatementIndexNamesByThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAMES_BY_THEMES);
 			}
 			return this.preparedStatementIndexNamesByThemesPaged;
 		}
 		if (this.preparedStatementIndexNamesByThemes == null) {
-			this.preparedStatementIndexNamesByThemes = getConnection()
+			this.preparedStatementIndexNamesByThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAMES_BY_THEMES);
 		}
@@ -2656,14 +2665,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNameScopesPaged == null) {
-				this.preparedStatementIndexNameScopesPaged = getConnection()
+				this.preparedStatementIndexNameScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAME_SCOPES);
 			}
 			return this.preparedStatementIndexNameScopesPaged;
 		}
 		if (this.preparedStatementIndexNameScopes == null) {
-			this.preparedStatementIndexNameScopes = getConnection()
+			this.preparedStatementIndexNameScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAME_SCOPES);
 		}
@@ -2677,14 +2686,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNameThemesPaged == null) {
-				this.preparedStatementIndexNameThemesPaged = getConnection()
+				this.preparedStatementIndexNameThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_NAME_THEMES);
 			}
 			return this.preparedStatementIndexNameThemesPaged;
 		}
 		if (this.preparedStatementIndexNameThemes == null) {
-			this.preparedStatementIndexNameThemes = getConnection()
+			this.preparedStatementIndexNameThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_NAME_THEMES);
 		}
@@ -2698,14 +2707,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByScopePaged == null) {
-				this.preparedStatementIndexOccurrencesByScopePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByScopePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_SCOPE);
 			}
 			return this.preparedStatementIndexOccurrencesByScopePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByScope == null) {
-			this.preparedStatementIndexOccurrencesByScope = getConnection()
+			this.preparedStatementIndexOccurrencesByScope = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_SCOPE);
 		}
@@ -2719,14 +2728,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByScopesPaged == null) {
-				this.preparedStatementIndexOccurrencesByScopesPaged = getConnection()
+				this.preparedStatementIndexOccurrencesByScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_SCOPES);
 			}
 			return this.preparedStatementIndexOccurrencesByScopesPaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByScopes == null) {
-			this.preparedStatementIndexOccurrencesByScopes = getConnection()
+			this.preparedStatementIndexOccurrencesByScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_SCOPES);
 		}
@@ -2740,14 +2749,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByThemePaged == null) {
-				this.preparedStatementIndexOccurrencesByThemePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByThemePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_THEME);
 			}
 			return this.preparedStatementIndexOccurrencesByThemePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByTheme == null) {
-			this.preparedStatementIndexOccurrencesByTheme = getConnection()
+			this.preparedStatementIndexOccurrencesByTheme = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_THEME);
 		}
@@ -2765,14 +2774,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		if (all) {
 			if (paged) {
 				if (this.preparedStatementIndexOccurrencesByThemesMatchingAllPaged == null) {
-					this.preparedStatementIndexOccurrencesByThemesMatchingAllPaged = getConnection()
+					this.preparedStatementIndexOccurrencesByThemesMatchingAllPaged = getReaderConnection()
 							.prepareStatement(
 									IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_THEMES_MATCH_ALL);
 				}
 				return this.preparedStatementIndexOccurrencesByThemesMatchingAllPaged;
 			}
 			if (this.preparedStatementIndexOccurrencesByThemesMatchingAll == null) {
-				this.preparedStatementIndexOccurrencesByThemesMatchingAll = getConnection()
+				this.preparedStatementIndexOccurrencesByThemesMatchingAll = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_THEMES_MATCH_ALL);
 			}
@@ -2780,14 +2789,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByThemesPaged == null) {
-				this.preparedStatementIndexOccurrencesByThemesPaged = getConnection()
+				this.preparedStatementIndexOccurrencesByThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_THEMES);
 			}
 			return this.preparedStatementIndexOccurrencesByThemesPaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByThemes == null) {
-			this.preparedStatementIndexOccurrencesByThemes = getConnection()
+			this.preparedStatementIndexOccurrencesByThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_THEMES);
 		}
@@ -2801,14 +2810,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrenceScopesPaged == null) {
-				this.preparedStatementIndexOccurrenceScopesPaged = getConnection()
+				this.preparedStatementIndexOccurrenceScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCE_SCOPES);
 			}
 			return this.preparedStatementIndexOccurrenceScopesPaged;
 		}
 		if (this.preparedStatementIndexOccurrenceScopes == null) {
-			this.preparedStatementIndexOccurrenceScopes = getConnection()
+			this.preparedStatementIndexOccurrenceScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCE_SCOPES);
 		}
@@ -2822,14 +2831,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrenceThemesPaged == null) {
-				this.preparedStatementIndexOccurrenceThemesPaged = getConnection()
+				this.preparedStatementIndexOccurrenceThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_OCCURRENCE_THEMES);
 			}
 			return this.preparedStatementIndexOccurrenceThemesPaged;
 		}
 		if (this.preparedStatementIndexOccurrenceThemes == null) {
-			this.preparedStatementIndexOccurrenceThemes = getConnection()
+			this.preparedStatementIndexOccurrenceThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_OCCURRENCE_THEMES);
 		}
@@ -2843,14 +2852,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexScopablesPaged == null) {
-				this.preparedStatementIndexScopablesPaged = getConnection()
+				this.preparedStatementIndexScopablesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_SCOPABLES);
 			}
 			return this.preparedStatementIndexScopablesPaged;
 		}
 		if (this.preparedStatementIndexScopables == null) {
-			this.preparedStatementIndexScopables = getConnection()
+			this.preparedStatementIndexScopables = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_SCOPABLES);
 		}
@@ -2864,14 +2873,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantsByScopePaged == null) {
-				this.preparedStatementIndexVariantsByScopePaged = getConnection()
+				this.preparedStatementIndexVariantsByScopePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANTS_BY_SCOPE);
 			}
 			return this.preparedStatementIndexVariantsByScopePaged;
 		}
 		if (this.preparedStatementIndexVariantsByScope == null) {
-			this.preparedStatementIndexVariantsByScope = getConnection()
+			this.preparedStatementIndexVariantsByScope = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_SCOPE);
 		}
@@ -2885,14 +2894,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantsByScopesPaged == null) {
-				this.preparedStatementIndexVariantsByScopesPaged = getConnection()
+				this.preparedStatementIndexVariantsByScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANTS_BY_SCOPES);
 			}
 			return this.preparedStatementIndexVariantsByScopesPaged;
 		}
 		if (this.preparedStatementIndexVariantsByScopes == null) {
-			this.preparedStatementIndexVariantsByScopes = getConnection()
+			this.preparedStatementIndexVariantsByScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_SCOPES);
 		}
@@ -2906,14 +2915,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantsByThemePaged == null) {
-				this.preparedStatementIndexVariantsByThemePaged = getConnection()
+				this.preparedStatementIndexVariantsByThemePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANTS_BY_THEME);
 			}
 			return this.preparedStatementIndexVariantsByThemePaged;
 		}
 		if (this.preparedStatementIndexVariantsByTheme == null) {
-			this.preparedStatementIndexVariantsByTheme = getConnection()
+			this.preparedStatementIndexVariantsByTheme = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_THEME);
 		}
@@ -2931,14 +2940,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		if (all) {
 			if (paged) {
 				if (this.preparedStatementIndexVariantsByThemesMatchingAllPaged == null) {
-					this.preparedStatementIndexVariantsByThemesMatchingAllPaged = getConnection()
+					this.preparedStatementIndexVariantsByThemesMatchingAllPaged = getReaderConnection()
 							.prepareStatement(
 									IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANTS_BY_THEMES_MATCH_ALL);
 				}
 				return this.preparedStatementIndexVariantsByThemesMatchingAllPaged;
 			}
 			if (this.preparedStatementIndexVariantsByThemesMatchingAll == null) {
-				this.preparedStatementIndexVariantsByThemesMatchingAll = getConnection()
+				this.preparedStatementIndexVariantsByThemesMatchingAll = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_THEMES_MATCH_ALL);
 			}
@@ -2946,14 +2955,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexVariantsByThemesPaged == null) {
-				this.preparedStatementIndexVariantsByThemesPaged = getConnection()
+				this.preparedStatementIndexVariantsByThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANTS_BY_THEMES);
 			}
 			return this.preparedStatementIndexVariantsByThemesPaged;
 		}
 		if (this.preparedStatementIndexVariantsByThemes == null) {
-			this.preparedStatementIndexVariantsByThemes = getConnection()
+			this.preparedStatementIndexVariantsByThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_THEMES);
 		}
@@ -2967,14 +2976,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantScopesPaged == null) {
-				this.preparedStatementIndexVariantScopesPaged = getConnection()
+				this.preparedStatementIndexVariantScopesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANT_SCOPES);
 			}
 			return this.preparedStatementIndexVariantScopesPaged;
 		}
 		if (this.preparedStatementIndexVariantScopes == null) {
-			this.preparedStatementIndexVariantScopes = getConnection()
+			this.preparedStatementIndexVariantScopes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANT_SCOPES);
 		}
@@ -2988,14 +2997,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantThemesPaged == null) {
-				this.preparedStatementIndexVariantThemesPaged = getConnection()
+				this.preparedStatementIndexVariantThemesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryScopeIndex.Paged.QUERY_SELECT_VARIANT_THEMES);
 			}
 			return this.preparedStatementIndexVariantThemesPaged;
 		}
 		if (this.preparedStatementIndexVariantThemes == null) {
-			this.preparedStatementIndexVariantThemes = getConnection()
+			this.preparedStatementIndexVariantThemes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryScopeIndex.NonPaged.QUERY_SELECT_VARIANT_THEMES);
 		}
@@ -3048,14 +3057,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsPaged == null) {
-				this.preparedStatementIndexCharacteristicsPaged = getConnection()
+				this.preparedStatementIndexCharacteristicsPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_CHARACTERISTICS);
 			}
 			return this.preparedStatementIndexCharacteristicsPaged;
 		}
 		if (this.preparedStatementIndexCharacteristics == null) {
-			this.preparedStatementIndexCharacteristics = getConnection()
+			this.preparedStatementIndexCharacteristics = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS);
 		}
@@ -3069,14 +3078,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsByValuePaged == null) {
-				this.preparedStatementIndexCharacteristicsByValuePaged = getConnection()
+				this.preparedStatementIndexCharacteristicsByValuePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_VALUE);
 			}
 			return this.preparedStatementIndexCharacteristicsByValuePaged;
 		}
 		if (this.preparedStatementIndexCharacteristicsByValue == null) {
-			this.preparedStatementIndexCharacteristicsByValue = getConnection()
+			this.preparedStatementIndexCharacteristicsByValue = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_VALUE);
 		}
@@ -3090,14 +3099,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean paged) throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsByDatatypePaged == null) {
-				this.preparedStatementIndexCharacteristicsByDatatypePaged = getConnection()
+				this.preparedStatementIndexCharacteristicsByDatatypePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_DATATYPE);
 			}
 			return this.preparedStatementIndexCharacteristicsByDatatypePaged;
 		}
 		if (this.preparedStatementIndexCharacteristicsByDatatype == null) {
-			this.preparedStatementIndexCharacteristicsByDatatype = getConnection()
+			this.preparedStatementIndexCharacteristicsByDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_DATATYPE);
 		}
@@ -3111,14 +3120,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean paged) throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsByPatternPaged == null) {
-				this.preparedStatementIndexCharacteristicsByPatternPaged = getConnection()
+				this.preparedStatementIndexCharacteristicsByPatternPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_REGEXP);
 			}
 			return this.preparedStatementIndexCharacteristicsByPatternPaged;
 		}
 		if (this.preparedStatementIndexCharacteristicsByPattern == null) {
-			this.preparedStatementIndexCharacteristicsByPattern = getConnection()
+			this.preparedStatementIndexCharacteristicsByPattern = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_REGEXP);
 		}
@@ -3132,14 +3141,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean paged) throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexCharacteristicsByPatternAndDatatypePaged == null) {
-				this.preparedStatementIndexCharacteristicsByPatternAndDatatypePaged = getConnection()
+				this.preparedStatementIndexCharacteristicsByPatternAndDatatypePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_CHARACTERISTICS_BY_REGEXP_AND_DATATYPE);
 			}
 			return this.preparedStatementIndexCharacteristicsByPatternAndDatatypePaged;
 		}
 		if (this.preparedStatementIndexCharacteristicsByPatternAndDatatype == null) {
-			this.preparedStatementIndexCharacteristicsByPatternAndDatatype = getConnection()
+			this.preparedStatementIndexCharacteristicsByPatternAndDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_CHARACTERISTICS_BY_REGEXP_AND_DATATYPE);
 		}
@@ -3153,14 +3162,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean paged) throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexDatatypeAwaresByDatatypePaged == null) {
-				this.preparedStatementIndexDatatypeAwaresByDatatypePaged = getConnection()
+				this.preparedStatementIndexDatatypeAwaresByDatatypePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE);
 			}
 			return this.preparedStatementIndexDatatypeAwaresByDatatypePaged;
 		}
 		if (this.preparedStatementIndexDatatypeAwaresByDatatype == null) {
-			this.preparedStatementIndexDatatypeAwaresByDatatype = getConnection()
+			this.preparedStatementIndexDatatypeAwaresByDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE);
 		}
@@ -3174,14 +3183,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexNamesPaged == null) {
-				this.preparedStatementIndexNamesPaged = getConnection()
+				this.preparedStatementIndexNamesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_NAMES);
 			}
 			return this.preparedStatementIndexNamesPaged;
 		}
 		if (this.preparedStatementIndexNames == null) {
-			this.preparedStatementIndexNames = getConnection()
+			this.preparedStatementIndexNames = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_NAMES);
 		}
@@ -3193,7 +3202,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQuerySelectNamesByValue() throws SQLException {
 		if (this.preparedStatementIndexNamesByValue == null) {
-			this.preparedStatementIndexNamesByValue = getConnection()
+			this.preparedStatementIndexNamesByValue = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_NAMES_BY_VALUE);
 		}
@@ -3205,7 +3214,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQuerySelectNamesByPattern() throws SQLException {
 		if (this.preparedStatementIndexNamesByPattern == null) {
-			this.preparedStatementIndexNamesByPattern = getConnection()
+			this.preparedStatementIndexNamesByPattern = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_NAMES_BY_REGEXP);
 		}
@@ -3219,14 +3228,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesPaged == null) {
-				this.preparedStatementIndexOccurrencesPaged = getConnection()
+				this.preparedStatementIndexOccurrencesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_OCCURRENCES);
 			}
 			return this.preparedStatementIndexOccurrencesPaged;
 		}
 		if (this.preparedStatementIndexOccurrences == null) {
-			this.preparedStatementIndexOccurrences = getConnection()
+			this.preparedStatementIndexOccurrences = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES);
 		}
@@ -3240,14 +3249,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByDatatypePaged == null) {
-				this.preparedStatementIndexOccurrencesByDatatypePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByDatatypePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_DATATYPE);
 			}
 			return this.preparedStatementIndexOccurrencesByDatatypePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByDatatype == null) {
-			this.preparedStatementIndexOccurrencesByDatatype = getConnection()
+			this.preparedStatementIndexOccurrencesByDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_DATATYPE);
 		}
@@ -3261,14 +3270,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByDateRangePaged == null) {
-				this.preparedStatementIndexOccurrencesByDateRangePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByDateRangePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_DATERANGE);
 			}
 			return this.preparedStatementIndexOccurrencesByDateRangePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByDateRange == null) {
-			this.preparedStatementIndexOccurrencesByDateRange = getConnection()
+			this.preparedStatementIndexOccurrencesByDateRange = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_DATERANGE);
 		}
@@ -3282,14 +3291,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByRangePaged == null) {
-				this.preparedStatementIndexOccurrencesByRangePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByRangePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_RANGE);
 			}
 			return this.preparedStatementIndexOccurrencesByRangePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByRange == null) {
-			this.preparedStatementIndexOccurrencesByRange = getConnection()
+			this.preparedStatementIndexOccurrencesByRange = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_RANGE);
 		}
@@ -3302,7 +3311,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByValue()
 			throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByValue == null) {
-			this.preparedStatementIndexOccurrencesByValue = getConnection()
+			this.preparedStatementIndexOccurrencesByValue = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_VALUE);
 		}
@@ -3316,14 +3325,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean paged) throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByValueAndDatatypePaged == null) {
-				this.preparedStatementIndexOccurrencesByValueAndDatatypePaged = getConnection()
+				this.preparedStatementIndexOccurrencesByValueAndDatatypePaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE);
 			}
 			return this.preparedStatementIndexOccurrencesByValueAndDatatypePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByValueAndDatatype == null) {
-			this.preparedStatementIndexOccurrencesByValueAndDatatype = getConnection()
+			this.preparedStatementIndexOccurrencesByValueAndDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE);
 		}
@@ -3336,7 +3345,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByPattern()
 			throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByPattern == null) {
-			this.preparedStatementIndexOccurrencesByPattern = getConnection()
+			this.preparedStatementIndexOccurrencesByPattern = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_REGEXP);
 		}
@@ -3349,7 +3358,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectOccurrencesByPatternAndDatatype()
 			throws SQLException {
 		if (this.preparedStatementIndexOccurrencesByPatternAndDatatype == null) {
-			this.preparedStatementIndexOccurrencesByPatternAndDatatype = getConnection()
+			this.preparedStatementIndexOccurrencesByPatternAndDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_REGEXP_AND_DATATYPE);
 		}
@@ -3363,14 +3372,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexVariantsPaged == null) {
-				this.preparedStatementIndexVariantsPaged = getConnection()
+				this.preparedStatementIndexVariantsPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryLiteralIndex.Paged.QUERY_SELECT_VARIANTS);
 			}
 			return this.preparedStatementIndexVariantsPaged;
 		}
 		if (this.preparedStatementIndexVariants == null) {
-			this.preparedStatementIndexVariants = getConnection()
+			this.preparedStatementIndexVariants = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS);
 		}
@@ -3383,7 +3392,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByDatatype()
 			throws SQLException {
 		if (this.preparedStatementIndexVariantsByDatatype == null) {
-			this.preparedStatementIndexVariantsByDatatype = getConnection()
+			this.preparedStatementIndexVariantsByDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_DATATYPE);
 		}
@@ -3396,7 +3405,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByValue()
 			throws SQLException {
 		if (this.preparedStatementIndexVariantsByValue == null) {
-			this.preparedStatementIndexVariantsByValue = getConnection()
+			this.preparedStatementIndexVariantsByValue = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_VALUE);
 		}
@@ -3409,7 +3418,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByValueAndDatatype()
 			throws SQLException {
 		if (this.preparedStatementIndexVariantsByValueAndDatatype == null) {
-			this.preparedStatementIndexVariantsByValueAndDatatype = getConnection()
+			this.preparedStatementIndexVariantsByValueAndDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_VALUE_AND_DATATYPE);
 		}
@@ -3422,7 +3431,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByPattern()
 			throws SQLException {
 		if (this.preparedStatementIndexVariantsByPattern == null) {
-			this.preparedStatementIndexVariantsByPattern = getConnection()
+			this.preparedStatementIndexVariantsByPattern = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_REGEXP);
 		}
@@ -3435,7 +3444,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectVariantsByPatternAndDatatype()
 			throws SQLException {
 		if (this.preparedStatementIndexVariantsByPatternAndDatatype == null) {
-			this.preparedStatementIndexVariantsByPatternAndDatatype = getConnection()
+			this.preparedStatementIndexVariantsByPatternAndDatatype = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryLiteralIndex.NonPaged.QUERY_SELECT_VARIANTS_BY_REGEXP_AND_DATATYPE);
 		}
@@ -3467,14 +3476,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexItemIdentifiersWithLimit == null) {
-				this.preparedStatementIndexItemIdentifiersWithLimit = getConnection()
+				this.preparedStatementIndexItemIdentifiersWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_ITEM_IDENTIFIERS);
 			}
 			return this.preparedStatementIndexItemIdentifiersWithLimit;
 		}
 		if (this.preparedStatementIndexItemIdentifiers == null) {
-			this.preparedStatementIndexItemIdentifiers = getConnection()
+			this.preparedStatementIndexItemIdentifiers = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_ITEM_IDENTIFIERS);
 		}
@@ -3488,14 +3497,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexSubjectIdentifiersWithLimit == null) {
-				this.preparedStatementIndexSubjectIdentifiersWithLimit = getConnection()
+				this.preparedStatementIndexSubjectIdentifiersWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_SUBJECT_IDENTIFIERS);
 			}
 			return this.preparedStatementIndexSubjectIdentifiersWithLimit;
 		}
 		if (this.preparedStatementIndexSubjectIdentifiers == null) {
-			this.preparedStatementIndexSubjectIdentifiers = getConnection()
+			this.preparedStatementIndexSubjectIdentifiers = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_IDENTIFIERS);
 		}
@@ -3506,14 +3515,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexSubjectLocatorsWithLimit == null) {
-				this.preparedStatementIndexSubjectLocatorsWithLimit = getConnection()
+				this.preparedStatementIndexSubjectLocatorsWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_SUBJECT_LOCATORS);
 			}
 			return this.preparedStatementIndexSubjectLocatorsWithLimit;
 		}
 		if (this.preparedStatementIndexSubjectLocators == null) {
-			this.preparedStatementIndexSubjectLocators = getConnection()
+			this.preparedStatementIndexSubjectLocators = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_SUBJECT_LOCATORS);
 		}
@@ -3527,14 +3536,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexConstructsByIdentifierWithLimit == null) {
-				this.preparedStatementIndexConstructsByIdentifierWithLimit = getConnection()
+				this.preparedStatementIndexConstructsByIdentifierWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN);
 			}
 			return this.preparedStatementIndexConstructsByIdentifierWithLimit;
 		}
 		if (this.preparedStatementIndexConstructsByIdentifier == null) {
-			this.preparedStatementIndexConstructsByIdentifier = getConnection()
+			this.preparedStatementIndexConstructsByIdentifier = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_CONSTRUCTS_BY_IDENTIFIER_PATTERN);
 		}
@@ -3548,14 +3557,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexConstructsByItemIdentifierWithLimit == null) {
-				this.preparedStatementIndexConstructsByItemIdentifierWithLimit = getConnection()
+				this.preparedStatementIndexConstructsByItemIdentifierWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN);
 			}
 			return this.preparedStatementIndexConstructsByItemIdentifierWithLimit;
 		}
 		if (this.preparedStatementIndexConstructsByItemIdentifier == null) {
-			this.preparedStatementIndexConstructsByItemIdentifier = getConnection()
+			this.preparedStatementIndexConstructsByItemIdentifier = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_CONSTRUCTS_BY_ITEM_IDENTIFIER_PATTERN);
 		}
@@ -3569,14 +3578,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexTopicsBySubjectIdentifierWithLimit == null) {
-				this.preparedStatementIndexTopicsBySubjectIdentifierWithLimit = getConnection()
+				this.preparedStatementIndexTopicsBySubjectIdentifierWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN);
 			}
 			return this.preparedStatementIndexTopicsBySubjectIdentifierWithLimit;
 		}
 		if (this.preparedStatementIndexTopicsBySubjectIdentifier == null) {
-			this.preparedStatementIndexTopicsBySubjectIdentifier = getConnection()
+			this.preparedStatementIndexTopicsBySubjectIdentifier = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_TOPICS_BY_SUBJECT_IDENTIFIER_PATTERN);
 		}
@@ -3590,14 +3599,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			boolean withLimit) throws SQLException {
 		if (withLimit) {
 			if (this.preparedStatementIndexTopicsBySubjectLocatorWithLimit == null) {
-				this.preparedStatementIndexTopicsBySubjectLocatorWithLimit = getConnection()
+				this.preparedStatementIndexTopicsBySubjectLocatorWithLimit = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QueryIdentityIndex.Paged.QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN);
 			}
 			return this.preparedStatementIndexTopicsBySubjectLocatorWithLimit;
 		}
 		if (this.preparedStatementIndexTopicsBySubjectLocator == null) {
-			this.preparedStatementIndexTopicsBySubjectLocator = getConnection()
+			this.preparedStatementIndexTopicsBySubjectLocator = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QueryIdentityIndex.NonPaged.QUERY_SELECT_TOPICS_BY_SUBJECT_LOCATOR_PATTERN);
 		}
@@ -3628,14 +3637,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexDirectSubtypesPaged == null) {
-				this.preparedStatementIndexDirectSubtypesPaged = getConnection()
+				this.preparedStatementIndexDirectSubtypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_DIRECT_SUBTYPES);
 			}
 			return this.preparedStatementIndexDirectSubtypesPaged;
 		}
 		if (this.preparedStatementIndexDirectSubtypes == null) {
-			this.preparedStatementIndexDirectSubtypes = getConnection()
+			this.preparedStatementIndexDirectSubtypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_DIRECT_SUBTYPES);
 		}
@@ -3649,14 +3658,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexDirectSupertypesPaged == null) {
-				this.preparedStatementIndexDirectSupertypesPaged = getConnection()
+				this.preparedStatementIndexDirectSupertypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_DIRECT_SUPERTYPES);
 			}
 			return this.preparedStatementIndexDirectSupertypesPaged;
 		}
 		if (this.preparedStatementIndexDirectSupertypes == null) {
-			this.preparedStatementIndexDirectSupertypes = getConnection()
+			this.preparedStatementIndexDirectSupertypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_DIRECT_SUPERTYPES);
 		}
@@ -3670,14 +3679,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexSubtypesPaged == null) {
-				this.preparedStatementIndexSubtypesPaged = getConnection()
+				this.preparedStatementIndexSubtypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUBTYPES);
 			}
 			return this.preparedStatementIndexSubtypesPaged;
 		}
 		if (this.preparedStatementIndexSubtypes == null) {
-			this.preparedStatementIndexSubtypes = getConnection()
+			this.preparedStatementIndexSubtypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES);
 		}
@@ -3691,14 +3700,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexSupertypesPaged == null) {
-				this.preparedStatementIndexSupertypesPaged = getConnection()
+				this.preparedStatementIndexSupertypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUPERTYPES);
 			}
 			return this.preparedStatementIndexSupertypesPaged;
 		}
 		if (this.preparedStatementIndexSupertypes == null) {
-			this.preparedStatementIndexSupertypes = getConnection()
+			this.preparedStatementIndexSupertypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUPERTYPES);
 		}
@@ -3711,7 +3720,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectSubtypesOfTopic(boolean paged)
 			throws SQLException {
 		if (this.preparedStatementIndexSubtypesOfTopic == null) {
-			this.preparedStatementIndexSubtypesOfTopic = getConnection()
+			this.preparedStatementIndexSubtypesOfTopic = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES_OF_TOPIC);
 		}
@@ -3733,7 +3742,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQuerySelectSupertypesOfTopic(boolean paged)
 			throws SQLException {
 		if (this.preparedStatementIndexSupertypesOfTopic == null) {
-			this.preparedStatementIndexSupertypesOfTopic = getConnection()
+			this.preparedStatementIndexSupertypesOfTopic = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUPERTYPES_OF_TOPIC);
 		}
@@ -3756,14 +3765,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexTopicsWithoutSubtypesPaged == null) {
-				this.preparedStatementIndexTopicsWithoutSubtypesPaged = getConnection()
+				this.preparedStatementIndexTopicsWithoutSubtypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES);
 			}
 			return this.preparedStatementIndexTopicsWithoutSubtypesPaged;
 		}
 		if (this.preparedStatementIndexTopicsWithoutSubtypes == null) {
-			this.preparedStatementIndexTopicsWithoutSubtypes = getConnection()
+			this.preparedStatementIndexTopicsWithoutSubtypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_TOPICS_WITHOUT_SUBTYPES);
 		}
@@ -3777,14 +3786,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			throws SQLException {
 		if (paged) {
 			if (this.preparedStatementIndexTopicsWithoutSupertypesPaged == null) {
-				this.preparedStatementIndexTopicsWithoutSupertypesPaged = getConnection()
+				this.preparedStatementIndexTopicsWithoutSupertypesPaged = getReaderConnection()
 						.prepareStatement(
 								IIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES);
 			}
 			return this.preparedStatementIndexTopicsWithoutSupertypesPaged;
 		}
 		if (this.preparedStatementIndexTopicsWithoutSupertypes == null) {
-			this.preparedStatementIndexTopicsWithoutSupertypes = getConnection()
+			this.preparedStatementIndexTopicsWithoutSupertypes = getReaderConnection()
 					.prepareStatement(
 							IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_TOPICS_WITHOUT_SUPERTYPES);
 		}
@@ -3826,7 +3835,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			subquery += subquery.isEmpty() ? "" : delimer;
 			subquery += placeholder;
 		}
-		return getConnection().prepareStatement(
+		return getReaderConnection().prepareStatement(
 				query.replaceAll(replacer, subquery));
 	}
 
@@ -3841,7 +3850,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getPerformMergeTopics() throws SQLException {
 		if (preparedStatementPerformMergeTopics == null) {
-			preparedStatementPerformMergeTopics = getConnection()
+			preparedStatementPerformMergeTopics = getReaderConnection()
 					.prepareStatement(
 							IUpdateQueries.QueryMerge.QUERY_MERGE_TOPIC);
 		}
@@ -3862,7 +3871,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryDuplicateName() throws SQLException {
 		if (this.preparedStatementDuplicateName == null) {
-			this.preparedStatementDuplicateName = getConnection()
+			this.preparedStatementDuplicateName = getReaderConnection()
 					.prepareStatement(IConstraintsQueries.QUERY_DUPLICATE_NAME);
 		}
 		return preparedStatementDuplicateName;
@@ -3870,7 +3879,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryMoveVariants() throws SQLException {
 		if (this.preparedStatementMoveVariants == null) {
-			this.preparedStatementMoveVariants = getConnection()
+			this.preparedStatementMoveVariants = getReaderConnection()
 					.prepareStatement(IConstraintsQueries.QUERY_MOVE_VARIANTS);
 		}
 		return preparedStatementMoveVariants;
@@ -3878,7 +3887,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryMoveItemIdentifiers() throws SQLException {
 		if (this.preparedStatementMoveItemIdentifiers == null) {
-			this.preparedStatementMoveItemIdentifiers = getConnection()
+			this.preparedStatementMoveItemIdentifiers = getReaderConnection()
 					.prepareStatement(
 							IConstraintsQueries.QUERY_MOVE_ITEM_IDENTIFIERS);
 		}
@@ -3887,7 +3896,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryDuplicateOccurrence() throws SQLException {
 		if (this.preparedStatementDuplicateOccurrence == null) {
-			this.preparedStatementDuplicateOccurrence = getConnection()
+			this.preparedStatementDuplicateOccurrence = getReaderConnection()
 					.prepareStatement(
 							IConstraintsQueries.QUERY_DUPLICATE_OCCURRENCE);
 		}
@@ -3896,7 +3905,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryDuplicateVariant() throws SQLException {
 		if (this.preparedStatementDuplicateVariant == null) {
-			this.preparedStatementDuplicateVariant = getConnection()
+			this.preparedStatementDuplicateVariant = getReaderConnection()
 					.prepareStatement(
 							IConstraintsQueries.QUERY_DUPLICATE_VARIANTS);
 		}
@@ -3906,7 +3915,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryDuplicateAssociations()
 			throws SQLException {
 		if (this.preparedStatementDuplicateAssociations == null) {
-			this.preparedStatementDuplicateAssociations = getConnection()
+			this.preparedStatementDuplicateAssociations = getReaderConnection()
 					.prepareStatement(
 							IConstraintsQueries.QUERY_DUPLICATE_ASSOCIATIONS);
 		}
@@ -3915,7 +3924,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryDuplicateRoles() throws SQLException {
 		if (this.preparedStatementDuplicateRoles == null) {
-			this.preparedStatementDuplicateRoles = getConnection()
+			this.preparedStatementDuplicateRoles = getReaderConnection()
 					.prepareStatement(IConstraintsQueries.QUERY_DUPLICATE_ROLES);
 		}
 		return preparedStatementDuplicateRoles;
@@ -3962,7 +3971,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateRevision() throws SQLException {
 		if (preparedStatementQueryCreateRevision == null) {
-			preparedStatementQueryCreateRevision = getConnection()
+			preparedStatementQueryCreateRevision = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_CREATE_REVISION,
 							Statement.RETURN_GENERATED_KEYS);
 		}
@@ -3974,7 +3983,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateChangeset() throws SQLException {
 		if (preparedStatementQueryCreateChangeset == null) {
-			preparedStatementQueryCreateChangeset = getConnection()
+			preparedStatementQueryCreateChangeset = getWriterConnection()
 					.prepareStatement(IRevisionQueries.QUERY_CREATE_CHANGESET);
 		}
 		return preparedStatementQueryCreateChangeset;
@@ -3985,7 +3994,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateTag() throws SQLException {
 		if (preparedStatementQueryCreateTag == null) {
-			preparedStatementQueryCreateTag = getConnection().prepareStatement(
+			preparedStatementQueryCreateTag = getWriterConnection().prepareStatement(
 					IRevisionQueries.QUERY_CREATE_TAG);
 		}
 		return preparedStatementQueryCreateTag;
@@ -3996,7 +4005,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryCreateMetadata() throws SQLException {
 		if (preparedStatementQueryCreateMetadata == null) {
-			preparedStatementQueryCreateMetadata = getConnection()
+			preparedStatementQueryCreateMetadata = getWriterConnection()
 					.prepareStatement(IRevisionQueries.QUERY_CREATE_METADATA);
 		}
 		return preparedStatementQueryCreateMetadata;
@@ -4007,7 +4016,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyTag() throws SQLException {
 		if (preparedStatementQueryModifyTag == null) {
-			preparedStatementQueryModifyTag = getConnection().prepareStatement(
+			preparedStatementQueryModifyTag = getWriterConnection().prepareStatement(
 					IRevisionQueries.QUERY_MODIFY_TAG);
 		}
 		return preparedStatementQueryModifyTag;
@@ -4018,7 +4027,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryModifyMetadata() throws SQLException {
 		if (preparedStatementQueryModifyMetadata == null) {
-			preparedStatementQueryModifyMetadata = getConnection()
+			preparedStatementQueryModifyMetadata = getWriterConnection()
 					.prepareStatement(IRevisionQueries.QUERY_MODIFY_METADATA);
 		}
 		return preparedStatementQueryModifyMetadata;
@@ -4029,7 +4038,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadFirstRevision() throws SQLException {
 		if (preparedStatementQueryReadFirstRevision == null) {
-			preparedStatementQueryReadFirstRevision = getConnection()
+			preparedStatementQueryReadFirstRevision = getWriterConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_FIRST_REVISION);
 		}
@@ -4041,7 +4050,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadLastRevision() throws SQLException {
 		if (preparedStatementQueryReadLastRevision == null) {
-			preparedStatementQueryReadLastRevision = getConnection()
+			preparedStatementQueryReadLastRevision = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_LAST_REVISION);
 		}
 		return preparedStatementQueryReadLastRevision;
@@ -4052,7 +4061,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadPastRevision() throws SQLException {
 		if (preparedStatementQueryReadPastRevision == null) {
-			preparedStatementQueryReadPastRevision = getConnection()
+			preparedStatementQueryReadPastRevision = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_PAST_REVISION);
 		}
 		return preparedStatementQueryReadPastRevision;
@@ -4063,7 +4072,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadFutureRevision() throws SQLException {
 		if (preparedStatementQueryReadFutureRevision == null) {
-			preparedStatementQueryReadFutureRevision = getConnection()
+			preparedStatementQueryReadFutureRevision = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_FUTURE_REVISION);
 		}
@@ -4075,7 +4084,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadChangesets() throws SQLException {
 		if (preparedStatementQueryReadChangesets == null) {
-			preparedStatementQueryReadChangesets = getConnection()
+			preparedStatementQueryReadChangesets = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_CHANGESET);
 		}
 		return preparedStatementQueryReadChangesets;
@@ -4086,7 +4095,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadTimestamp() throws SQLException {
 		if (preparedStatementQueryReadTimestamp == null) {
-			preparedStatementQueryReadTimestamp = getConnection()
+			preparedStatementQueryReadTimestamp = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_TIMESTAMP);
 		}
 		return preparedStatementQueryReadTimestamp;
@@ -4097,7 +4106,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRevisionsByTopic() throws SQLException {
 		if (preparedStatementQueryReadRevisionsByTopic == null) {
-			preparedStatementQueryReadRevisionsByTopic = getConnection()
+			preparedStatementQueryReadRevisionsByTopic = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_REVISIONS_BY_TOPIC);
 		}
@@ -4110,7 +4119,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadRevisionsByAssociationType()
 			throws SQLException {
 		if (preparedStatementQueryReadRevisionsByAssociationType == null) {
-			preparedStatementQueryReadRevisionsByAssociationType = getConnection()
+			preparedStatementQueryReadRevisionsByAssociationType = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_REVISIONS_BY_ASSOCIATIONTYPE);
 		}
@@ -4123,7 +4132,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadChangesetsByTopic()
 			throws SQLException {
 		if (preparedStatementQueryReadChangesetsByTopic == null) {
-			preparedStatementQueryReadChangesetsByTopic = getConnection()
+			preparedStatementQueryReadChangesetsByTopic = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_CHANGESETS_BY_TOPIC);
 		}
@@ -4136,7 +4145,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadChangesetsByAssociationType()
 			throws SQLException {
 		if (preparedStatementQueryReadChangesetsByAssociationType == null) {
-			preparedStatementQueryReadChangesetsByAssociationType = getConnection()
+			preparedStatementQueryReadChangesetsByAssociationType = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_CHANGESETS_BY_ASSOCIATIONTYPE);
 		}
@@ -4148,7 +4157,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadLastModification() throws SQLException {
 		if (preparedStatementQueryReadLastModification == null) {
-			preparedStatementQueryReadLastModification = getConnection()
+			preparedStatementQueryReadLastModification = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_LAST_MODIFICATION);
 		}
@@ -4161,7 +4170,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadLastModificationOfTopic()
 			throws SQLException {
 		if (preparedStatementQueryReadLastModificationOfTopic == null) {
-			preparedStatementQueryReadLastModificationOfTopic = getConnection()
+			preparedStatementQueryReadLastModificationOfTopic = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_LAST_MODIFICATION_OF_TOPIC);
 		}
@@ -4173,7 +4182,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadRevisionByTag() throws SQLException {
 		if (preparedStatementQueryReadRevisionByTag == null) {
-			preparedStatementQueryReadRevisionByTag = getConnection()
+			preparedStatementQueryReadRevisionByTag = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_REVISION_BY_TAG);
 		}
@@ -4186,7 +4195,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	public PreparedStatement getQueryReadRevisionByTimestamp()
 			throws SQLException {
 		if (preparedStatementQueryReadRevisionByTimestamp == null) {
-			preparedStatementQueryReadRevisionByTimestamp = getConnection()
+			preparedStatementQueryReadRevisionByTimestamp = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_REVISION_BY_TIMESTAMP);
 		}
@@ -4198,7 +4207,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadMetadata() throws SQLException {
 		if (preparedStatementQueryReadMetadata == null) {
-			preparedStatementQueryReadMetadata = getConnection()
+			preparedStatementQueryReadMetadata = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_METADATA);
 		}
 		return preparedStatementQueryReadMetadata;
@@ -4209,7 +4218,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadMetadataByKey() throws SQLException {
 		if (preparedStatementQueryReadMetadataByKey == null) {
-			preparedStatementQueryReadMetadataByKey = getConnection()
+			preparedStatementQueryReadMetadataByKey = getReaderConnection()
 					.prepareStatement(
 							IRevisionQueries.QUERY_READ_METADATA_BY_KEY);
 		}
@@ -4218,7 +4227,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryRoleDump() throws SQLException {
 		if (preparedStatementQueryRoleDump == null) {
-			preparedStatementQueryRoleDump = getConnection().prepareStatement(
+			preparedStatementQueryRoleDump = getWriterConnection().prepareStatement(
 					IDumpQueries.QUERY_DUMP_ROLE);
 		}
 		return preparedStatementQueryRoleDump;
@@ -4226,7 +4235,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryAssociationDump() throws SQLException {
 		if (preparedStatementQueryAssociationDump == null) {
-			preparedStatementQueryAssociationDump = getConnection()
+			preparedStatementQueryAssociationDump = getWriterConnection()
 					.prepareStatement(IDumpQueries.QUERY_DUMP_ASSOCIATION);
 		}
 		return preparedStatementQueryAssociationDump;
@@ -4234,7 +4243,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryVariantDump() throws SQLException {
 		if (preparedStatementQueryVariantDump == null) {
-			preparedStatementQueryVariantDump = getConnection()
+			preparedStatementQueryVariantDump = getWriterConnection()
 					.prepareStatement(IDumpQueries.QUERY_DUMP_VARIANT);
 		}
 		return preparedStatementQueryVariantDump;
@@ -4242,7 +4251,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryNameDump() throws SQLException {
 		if (preparedStatementQueryNameDump == null) {
-			preparedStatementQueryNameDump = getConnection().prepareStatement(
+			preparedStatementQueryNameDump = getWriterConnection().prepareStatement(
 					IDumpQueries.QUERY_DUMP_NAME);
 		}
 		return preparedStatementQueryNameDump;
@@ -4250,7 +4259,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryOccurrenceDump() throws SQLException {
 		if (preparedStatementQueryOccurrenceDump == null) {
-			preparedStatementQueryOccurrenceDump = getConnection()
+			preparedStatementQueryOccurrenceDump = getWriterConnection()
 					.prepareStatement(IDumpQueries.QUERY_DUMP_OCCURRENCE);
 		}
 		return preparedStatementQueryOccurrenceDump;
@@ -4258,7 +4267,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 
 	public PreparedStatement getQueryTopicDump() throws SQLException {
 		if (preparedStatementQueryTopicDump == null) {
-			preparedStatementQueryTopicDump = getConnection().prepareStatement(
+			preparedStatementQueryTopicDump = getWriterConnection().prepareStatement(
 					IDumpQueries.QUERY_DUMP_TOPIC);
 		}
 		return preparedStatementQueryTopicDump;
@@ -4269,7 +4278,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQueryReadHistory() throws SQLException {
 		if (preparedStatementQueryReadHistory == null) {
-			preparedStatementQueryReadHistory = getConnection()
+			preparedStatementQueryReadHistory = getReaderConnection()
 					.prepareStatement(IRevisionQueries.QUERY_READ_HISTORY);
 		}
 		return preparedStatementQueryReadHistory;

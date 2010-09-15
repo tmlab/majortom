@@ -86,7 +86,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 			return super.getQueryReadScopeByThemes();
 		}
 		if (preparedStatementReadScopeByThemes == null) {
-			this.preparedStatementReadScopeByThemes = getConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_SCOPES_BY_THEMES);
+			this.preparedStatementReadScopeByThemes = getWriterConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_SCOPES_BY_THEMES);
 		}
 		return preparedStatementReadScopeByThemes;
 	}
@@ -102,7 +102,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 			return super.getQueryReadSupertypes();
 		}
 		if (this.preparedStatementReadSupertypes == null) {
-			this.preparedStatementReadSupertypes = getConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_SUPERTYPES);
+			this.preparedStatementReadSupertypes = getWriterConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_SUPERTYPES);
 		}
 		return this.preparedStatementReadSupertypes;
 	}
@@ -112,7 +112,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	 */
 	public PreparedStatement getQueryReadBestLabel() throws SQLException{
 		if (this.preparedStatementReadBestLabel == null) {
-			this.preparedStatementReadBestLabel = getConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_BEST_LABEL);
+			this.preparedStatementReadBestLabel = getWriterConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_BEST_LABEL);
 		}
 		return this.preparedStatementReadBestLabel;
 	}
@@ -144,13 +144,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexAssociationsByTypeTransitivePaged == null) {
-				this.preparedStatementIndexAssociationsByTypeTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexAssociationsByTypeTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
 			}
 			return this.preparedStatementIndexAssociationsByTypeTransitivePaged;
 		}
 		if (this.preparedStatementIndexAssociationsByTypeTransitive == null) {
-			this.preparedStatementIndexAssociationsByTypeTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexAssociationsByTypeTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_ASSOCIATIONS_BY_TYPE);
 		}
 		return this.preparedStatementIndexAssociationsByTypeTransitive;
@@ -169,13 +169,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexRolesByTypeTransitivePaged == null) {
-				this.preparedStatementIndexRolesByTypeTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexRolesByTypeTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_ROLES_BY_TYPE);
 			}
 			return this.preparedStatementIndexRolesByTypeTransitivePaged;
 		}
 		if (this.preparedStatementIndexRolesByTypeTransitive == null) {
-			this.preparedStatementIndexRolesByTypeTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexRolesByTypeTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_ROLES_BY_TYPE);
 		}
 		return this.preparedStatementIndexRolesByTypeTransitive;
@@ -194,13 +194,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexNamesByTypeTransitivePaged == null) {
-				this.preparedStatementIndexNamesByTypeTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexNamesByTypeTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_NAMES_BY_TYPE);
 			}
 			return this.preparedStatementIndexNamesByTypeTransitivePaged;
 		}
 		if (this.preparedStatementIndexNamesByTypeTransitive == null) {
-			this.preparedStatementIndexNamesByTypeTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexNamesByTypeTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_NAMES_BY_TYPE);
 		}
 		return this.preparedStatementIndexNamesByTypeTransitive;
@@ -219,13 +219,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexOccurrencesByTypeTransitivePaged == null) {
-				this.preparedStatementIndexOccurrencesByTypeTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexOccurrencesByTypeTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
 			}
 			return this.preparedStatementIndexOccurrencesByTypeTransitivePaged;
 		}
 		if (this.preparedStatementIndexOccurrencesByTypeTransitive == null) {
-			this.preparedStatementIndexOccurrencesByTypeTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexOccurrencesByTypeTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_OCCURRENCES_BY_TYPE);
 		}
 		return this.preparedStatementIndexOccurrencesByTypeTransitive;
@@ -243,13 +243,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexTopicsByTypeTransitivePaged == null) {
-				this.preparedStatementIndexTopicsByTypeTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexTopicsByTypeTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_TOPICS_BY_TYPE);
 			}
 			return this.preparedStatementIndexTopicsByTypeTransitivePaged;
 		}
 		if (this.preparedStatementIndexTopicsByTypeTransitive == null) {
-			this.preparedStatementIndexTopicsByTypeTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexTopicsByTypeTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPICS_BY_TYPE);
 		}
 		return this.preparedStatementIndexTopicsByTypeTransitive;
@@ -267,13 +267,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexTopicsByTypesTransitivePaged == null) {
-				this.preparedStatementIndexTopicsByTypesTransitivePaged = getConnection().prepareStatement(
+				this.preparedStatementIndexTopicsByTypesTransitivePaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.Paged.QUERY_SELECT_TOPICS_BY_TYPES);
 			}
 			return this.preparedStatementIndexTopicsByTypesTransitivePaged;
 		}
 		if (this.preparedStatementIndexTopicsByTypesTransitive == null) {
-			this.preparedStatementIndexTopicsByTypesTransitive = getConnection().prepareStatement(
+			this.preparedStatementIndexTopicsByTypesTransitive = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryTransitiveTypeInstanceIndex.NonPaged.QUERY_SELECT_TOPICS_BY_TYPES);
 		}
 		return this.preparedStatementIndexTopicsByTypesTransitive;
@@ -293,7 +293,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 			return super.getQueryScopesByThemesUsed();
 		}
 		if (this.preparedStatementIndexScopesByThemesUsed == null) {
-			preparedStatementIndexScopesByThemesUsed = getConnection().prepareStatement(
+			preparedStatementIndexScopesByThemesUsed = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QueryScopeIndex.QUERY_SELECT_SCOPES_BY_THEMES_USED);
 		}
 		return preparedStatementIndexScopesByThemesUsed;
@@ -322,13 +322,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexSubtypesOfTopicPaged == null) {
-				this.preparedStatementIndexSubtypesOfTopicPaged = getConnection().prepareStatement(
+				this.preparedStatementIndexSubtypesOfTopicPaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUBTYPES_OF_TOPIC);
 			}
 			return this.preparedStatementIndexSubtypesOfTopicPaged;
 		}
 		if (this.preparedStatementIndexSubtypesOfTopic == null) {
-			this.preparedStatementIndexSubtypesOfTopic = getConnection().prepareStatement(
+			this.preparedStatementIndexSubtypesOfTopic = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES_OF_TOPIC);
 		}
 		return this.preparedStatementIndexSubtypesOfTopic;
@@ -346,13 +346,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexSubtypesOfTopicsPaged == null) {
-				this.preparedStatementIndexSubtypesOfTopicsPaged = getConnection().prepareStatement(
+				this.preparedStatementIndexSubtypesOfTopicsPaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUBTYPES_OF_TOPICS);
 			}
 			return this.preparedStatementIndexSubtypesOfTopicsPaged;
 		}
 		if (this.preparedStatementIndexSubtypesOfTopics == null) {
-			this.preparedStatementIndexSubtypesOfTopics = getConnection().prepareStatement(
+			this.preparedStatementIndexSubtypesOfTopics = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES_OF_TOPICS);
 		}
 		return this.preparedStatementIndexSubtypesOfTopics;
@@ -370,13 +370,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexSupertypesOfTopicPaged == null) {
-				this.preparedStatementIndexSupertypesOfTopicPaged = getConnection().prepareStatement(
+				this.preparedStatementIndexSupertypesOfTopicPaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUPERTYPES_OF_TOPIC);
 			}
 			return this.preparedStatementIndexSupertypesOfTopicPaged;
 		}
 		if (this.preparedStatementIndexSupertypesOfTopic == null) {
-			this.preparedStatementIndexSupertypesOfTopic = getConnection().prepareStatement(
+			this.preparedStatementIndexSupertypesOfTopic = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUPERTYPES_OF_TOPIC);
 		}
 		return this.preparedStatementIndexSupertypesOfTopic;
@@ -394,13 +394,13 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 		}
 		if (paged) {
 			if (this.preparedStatementIndexSupertypesOfTopicsPaged == null) {
-				this.preparedStatementIndexSupertypesOfTopicsPaged = getConnection().prepareStatement(
+				this.preparedStatementIndexSupertypesOfTopicsPaged = getWriterConnection().prepareStatement(
 						IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.Paged.QUERY_SELECT_SUPERTYPES_OF_TOPICS);
 			}
 			return this.preparedStatementIndexSupertypesOfTopicsPaged;
 		}
 		if (this.preparedStatementIndexSupertypesOfTopics == null) {
-			this.preparedStatementIndexSupertypesOfTopics = getConnection().prepareStatement(
+			this.preparedStatementIndexSupertypesOfTopics = getWriterConnection().prepareStatement(
 					IPostGreSqlIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUPERTYPES_OF_TOPICS);
 		}
 		return this.preparedStatementIndexSupertypesOfTopics;

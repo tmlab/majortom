@@ -101,6 +101,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -143,6 +146,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( type == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -163,6 +169,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<ICharacteristics> getCharacteristics(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -206,6 +215,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( type == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -226,6 +238,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Name> getNames(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -269,6 +284,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( type == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -289,6 +307,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Occurrence> getOccurrences(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -332,6 +353,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( type == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -352,6 +376,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Role> getRoles(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -425,6 +452,9 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	public Collection<Topic> getTopics(Collection<Topic> types, boolean all) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
