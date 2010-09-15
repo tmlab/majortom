@@ -1,0 +1,63 @@
+== Topic Map Stores ==
+
+The MaJorToM Topic Maps engine comes with a set of different topic map stores based on different data paradigms, like memory-based or databases. The following section explain the usage and benefits of the supported topic map stores.
+
+=== In-Memory Topic Map Store ===
+
+The In-Memory topic map store is a powerful and fast store to access information as fast as possible. All information are stored in the memory during the runtime and will be destroyed after shuting down the upper application. This means the In-Memory topic map store does not persist any information, this has to be realized by the upper application.
+
+The current version of this topic map store supports all features of a MaJorToM engine, like transaction support and revision management.
+
+==== Usage ====
+
+To use the in-memory topic map store, the majortom-inMemory.jar should be located in the class path. If the Maven dependecy management is used, the following line should be added to the POM file.
+
+------------------------------------
+<dependencies>
+      <dependency>
+          <groupId>de.topicmapslab.majortom</groupId>
+          <artifactId>majortom-inMemory</artifactId>
+          <version>1.1.1</version>
+      </dependency>
+  </dependencies>
+------------------------------------
+
+=== (O)RDBMS Topic Map Store ===
+
+MaJorToM provides a generic JDBC topic map store to support different databases by one topic map store implementation, as shown in the following table.
+
+|==========================================
+|*Name*|*Supported*|*Optimized*|*Property*|
+|MySQL|yes (since version 1.1.2)|no|MYSQL|
+|PostGreSQL|yes|yes|POSTGRESQL|
+|==========================================
+
+*Please note:* To optimize the communication with the databases, MaJorToM implements a set of optimized SQL processors using stored procedures or trigger-based modifications. If the store procedures are provided by the database, the query processor will use them to speed up the performance.
+
+As additional propteries the (O)RDBMS topic map store requires the connection properties to establish the connection to the used database. The following table contains the set of required properties of the (O)RDBMS topic map store. If at least one of the properties is missing an error occurred.
+
+[cols="1,1"]
+|==========================================
+|*Property*|*Description*
+|de.topicmapslab.majortom.jdbc.host|The host name or IP address of the database server
+|de.topicmapslab.majortom.jdbc.database|The database name which should be used
+|de.topicmapslab.majortom.jdbc.user|The user name to access the database
+|de.topicmapslab.majortom.jdbc.password|The password to access the database
+|de.topicmapslab.majortom.jdbc.dialect|The used database system type btw. the SQL dialect
+|==========================================
+
+==== Usage ====
+
+To use the (O)RDBMS topic map store, the majortom-db.jar should be located in the class path. If the Maven dependecy management is used, the following line should be added to the POM file.
+
+------------------------------------
+<dependencies>
+      <dependency>
+          <groupId>de.topicmapslab.majortom</groupId>
+          <artifactId>majortom-db</artifactId>
+          <version>1.1.1</version>
+      </dependency>
+  </dependencies>
+------------------------------------
+
+After starting the application the (O)RDBMS topic map store checks if the database exists and the contained schema is valid for usage with MaJorToM. If the database is empty the schema will automatically created by MaJorToM.

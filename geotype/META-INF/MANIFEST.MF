@@ -1,0 +1,6 @@
+Bundle-SymbolicName: de.topicmapslab.geotype;singleton=true
+Bundle-Version: 1.1.1
+Bundle-Name: geotype
+Provide-Package: de.topicmapslab.geotype.mercator,
+ de.topicmapslab.geotype.model,
+ de.topicmapslab.geotype.wgs84

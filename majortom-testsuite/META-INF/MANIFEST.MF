@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-Name: MajorToM Testsuite
+Bundle-SymbolicName: de.topicmapslab.majortom.testsuite;singleton=true
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 1.1.1.SNAPSHOT
+Provide-Package: de.topicmapslab.majortom.tests
+Export-Package: de.topicmapslab.majortom.inmemory,
+ de.topicmapslab.majortom.inmemory.index,
+ de.topicmapslab.majortom.inmemory.index.paged,
+ de.topicmapslab.majortom.inmemory.store,
+ de.topicmapslab.majortom.inmemory.store.executable,
+ de.topicmapslab.majortom.inmemory.store.internal,
+ de.topicmapslab.majortom.inmemory.store.model,
+ de.topicmapslab.majortom.inmemory.store.revision,
+ de.topicmapslab.majortom.inmemory.store.revision.readonly,
+ de.topicmapslab.majortom.inmemory.transaction,
+ de.topicmapslab.majortom.inmemory.transaction.internal
+Bundle-Activator: de.topicmapslab.majortom.inmemory.osgi.InMemoryActivator
+Bundle-ActivationPolicy: lazy

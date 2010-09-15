@@ -1,0 +1,301 @@
+== Features of MaJorToM and Their Usage ==
+
+The following section describe some of the additional features of the MaJorToM topic maps engine. Please note, that some of the features not supported by all topic map stores.
+
+=== Temporal and Spatial Domains ===
+
+In the context of the modelled domain, an occurrence can represent a temporal or spatial characteristics of a topic, e.g. the geographical coordinate of a topic representing a city or the birthdate of a topic representing a person. The MaJorToM API comes with a special occurrence interface to support geographical and temporal meanings of occurrence values like the described one. 
+
+To set a temporal value, the application has to use the datatype xsd:date or xsd:dateTime. Or use the special modification method of an existing occurrence item.
+
+--------------------------------------
+Topic person = topicMap.createTopic();
+Topic typeDateOfBirth = topicMap.createTopic();
+Locator datatype = topicMap.createLocator(XmlSchemeDatatypes.XSD_DATE);
+// create an occurrence with temporal value
+IOccurrence dateOfBirth = (IOccurrence)person.createOccurrence(typeDateOfBirth,	"1810-10-10", datatype);
+		
+// modify the value as temporal value
+dateOfBirth.setValue(new GregorianCalendar(1810, 10, 10));
+--------------------------------------		
+
+To set a spatial value, the application has to use the datatype xsd:geoCoordinate. Or use the special modification method of an existing occurrence item.
+
+---------------------------------------
+Topic city = topicMap.createTopic();
+Topic typeLocation = topicMap.createTopic();
+Locator datatype = topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE);
+// create an occurrence with geographical value
+IOccurrence location = (IOccurrence)city.createOccurrence(typeLocation,	"[51.0N;10.0E]", datatype);
+
+// modify the value as geographical value
+Wgs84Degree longitude = new Wgs84Degree(51.0, Orientation.N);
+Wgs84Degree latitude = new Wgs84Degree(10.0, Orientation.E);
+location.setValue(new Wgs84Coordinate(longitude, latitude));
+---------------------------------------
+
+=== Paging ===
+
+Since version 1.1.0 the MaJorToM engine supports a paging mechanism which can be used by applications instead of the "unpaged" methods of MaJorToM API. The paged methods can be used by a set of special index classes or a set of paged construct classes.
+
+==== Using Paged Indexes ====
+
+As an extension of the base indexes, the new MaJorToM version includes a set of special indexes supporting a paging mechanism. Each method exists in two versions expecting two or three arguments. The optional third argument has to be an instance of java.util.Comparator which should be used to sort the returned list. If the comparator is missing, the list will be sort by default rules.
+ 
+  * IPagedScopeIndex
+  * PagedTypeInstanceIndex
+  * IPagedTransitiveTypeInstanceIndex
+  * IPagedSupertypeSubtypeIndex
+  * IPagedLiteralIndex
+  * IPagedIdentityIndex
+  * IPagedConstructIndex
+
+---------------------------------------
+IPagedLiteralIndex index = topicMap.getIndex(IPagedLiteralIndex.class);
+/*
+ * open the index if it is closed
+ */
+if ( !index.isOpen()){
+	index.open();
+}
+/*
+ * get the first 10 names
+ */
+List<IName> names = index.getNames(0, 10);
+---------------------------------------
+
+=======================================
+Each paged index can be accessed by the topic map instance using the class object as parameter of the getIndex() method. At first each application should check if the returned index is already open and should open it before first usage to avoid an error.
+=======================================
+
+
+==== Using Paged Constructs ====
+
+As an alternative for the paged indexes is the usage of paged constructs.
+
+  * IPagedTopic
+    ** getTypes
+	** getSupertypes
+	** getAssociationsPlayed
+	** getRolesPlayed
+	** getNames
+	** getOccurrences
+  * IPagedName
+	** getVariants
+  * IPagedAssociation
+	** getRoles
+
+---------------------------------------
+Topic topic = topicMap.createTopic();
+IPagedTopic pagedTopic = (IPagedTopic) topic;
+/*
+ * get number of names
+ */
+int number = pagedTopic.getNumberOfNames();
+/*
+ * get the first 10 names
+ */
+List<Name> names = pagedTopic.getNames(0, 10);
+/*
+ * get the first 10 names sort by their value
+ */		
+List<Name> sortedNames = pagedTopic.getNames(0, 10, NameByValueComparator.getInstance(true));
+---------------------------------------
+
+The MaJorToM core comes with a set of useful comparator instances which can be used as third argument of the paged index and paged constructs methods. The following table contains a set of provided comparators and a short description of their behaviour. The comparators are located in the package 'de.topicmapslab.majortom.comparator'.
+
+[cols="2,10"]
+|==========================================
+|*Comparator Name*|*Description*
+|AssociationComparator|An association a1 is smaller than a2 if the type of a1 is smaller or if both have the same type the number of roles of a1 is smaller than of a2.
+|ConstructByItemIdentifierComparator|As construct c1 is smaller than c2 if the first of the sorted item-identifiers of c1 is lexicographically smaller than of c2 or if c1 has no item-identifier. 
+|LocatorByReferenceComparator|A locator l1 is smaller than l2 if its reference is lexicographically smaller than the reference of l2.
+|NameByValueComparator|A name n1 is smaller than n2 if the value of n1 is lexicographically smaller than the value of n2.
+|OccurrenceByValueComparator|An occurrence o1 is smaller than o2 if the value of o1 is lexicographically smaller than the value of o2.
+|RoleComparator|A role r1 is smaller than r2 if the type of r1 is smaller than the type of r2. If both roles have the same type, the players are compared. If the players also equal, the parent associations are compared.
+|TopicByIdentityComparator|A topic t1 is smaller than t2 if the first of the compared subject-identifiers of t1 is smaller than of t2. If both have no subject-identifiers the subject-locators of both compared and after that the item-identifiers.
+|TopicByNameComparator|A topic t1 is smaller than t2 if the first of the sorted names of t1 is smaller than the sorted names of t2.
+|VariantByValueComparator|A variant v1 is smaller than v2 if the value of v1 is lexicographically smaller than the value of v2.
+|==========================================
+
+=== Event Traging ===
+
+The MaJorToM engine provides an event management mechanism which enables the possibility of listening to each event or even special events of the topic map.
+
+Applications which wants to listen to an event of the topic map has to implement the ITopicMapListener interface of the MaJorToM API.
+
+---------------------------------------
+public class MyListener implements ITopicMapListener{
+
+  @Override
+  public void topicMapChanged(String id, TopicMapEventType event, Construct notifier,      
+                                                      Object newValue, Object oldValue) {
+     ...
+  }
+
+}
+---------------------------------------
+
+Addionally each listener has to registered at the topic map, it wants to listen to.
+
+---------------------------------------
+MyListener listener = new MyListener();
+topicMap.addTopicMapListener(listener );
+---------------------------------------
+
+If an application wants to stp listening the listener can be unregistered, too.
+
+---------------------------------------
+topicMap.removeTopicMapListener(listener );
+---------------------------------------
+
+The MaJorToM event manager notifies each event to all registered listeners. Therefore the method *topicMapChanged* will be called with the following attributes.
+
+[cols="1,10"]
+|==========================================
+|*Param*|*Description*
+|id|the internal id of this event
+|event|an enumeration value representing the kind of modification
+|notifier|the context of modification (e.g. the topic which get a new name)
+|newValue|the new value if a construct was created or its value was modified (can be null)
+|oldValue|the old value if a construct was removed or its value was modified (can be null)
+|==========================================
+
+=== History ===
+
+If the feature is enabled and supported by the topic map store, MaJorToM stores each modification of the underlying topic map in a revision management system. Each revision represents one atomic call of the MaJorToM API and contains at least one change. If the case of merging two topics, e.g. caused by adding a subject-identifier, the revision contains each atomic change caused by the merging process. The next example tries to clarify the meaning of that.
+
+---------------------------------------------
+#szenario definition
+ITopic topic = createTopic();
+topic.createName("Name");
+topic.createName("Other").setReifier(createTopic());
+topic.addSubjectIdentifier("si");
+
+ITopic other = createTopic();
+other.createName("Other");
+other.addSubjectLocator("sl");
+
+other.addSubjectIdentifier("si");
+
+#change set of the merge revision
+1. TOPIC CREATED #a new topic as subject for the merging ones
+2. SUBJECTIDENTIFIER REMOVED si #the subject identifier was removed from topic, to avoid cycle merging
+3. SUBJECTIDENTIFIER ADDED si #the subject identifier will be added to the new topic
+4. SUBJECTLOCATOR REMOVE sl #the subject locator was removed from other, to avoid cycle merging
+5. SUBJECTLOCATOR ADDED sl #the subject locator was added to the new topic
+6. NAME CREATED #create the name with value "Name"
+7. NAME CREATED #create the name with value "Other"
+8. SET REIFIER null #Remove reification of the second name of topic
+9. SET REIFIER #set reification to the name of the new topic
+10.REMOVE TOPIC #remove topic
+11.REMOVE TOPIC #remove other
+---------------------------------------------
+
+==== Accessing the history ====
+
+The history can be accessed by a special index implementation called IRevisionIndex. The index instance is provided by the topic map instance using the getIndex() method.
+
+---------------------------------------------
+IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+---------------------------------------------
+
+*Please note:* If the topic map store does not supports the reivision management feature, this method will throw an execption by calling it.
+
+There are different possibilities to get the revision the application wants. Because the history is designed as a linked list of revisions in temporal order, each revision provides a 'getPast()' and 'getFuture()' method to navigate over the chain of temporal changes. If there is no revision before or last the current one the method will return 'null'. The first and last revision can be accessed by the index methods 'getFirstRevision()' and 'getLastRevision()'.
+
+-------------------------------------------
+IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+// open index before first usage
+if ( !index.isOpen()){
+	index.open();
+}
+
+IRevision firstRevision = index.getFirstRevision();
+IRevision lastRevision = index.getLastRevision();
+-------------------------------------------
+
+*Please note:* If the topic map wasn't changed before, the methods will return 'null'.
+
+The history supports a set of methods to filter the revisions by different criterias, as the following table shows.
+
+[cols="1,1,10"]
+|==========================================
+|*Method*|*Arguments*|*Description*
+|getLastModification||Returning the timestamp of the last modification of the whole topic map
+|getLastModification|Topic|Returning the timestamp of the last change of the given topic	
+|getRevisions|Topic|Returning the revisions in temporal order containing at least one change of the given topic
+|getChangeset|Topic|Returning a virtual changeset contains only the changes of the given topic in temporal order
+|getAssociationRevisions|Topic|Returning the revisions in temporal order containing at least one change of an association of the given type
+|getAssociationChangeset|Topic|Returning a virtual changeset contains only the changes of an association of the given type in temporal order
+|getRevision|Calendar|Returns the last revision created before the given timestamp
+|getRevision|String|Returns the last revision created before the timestamp represenent by the given tag
+|getRevision|long|Returns the revision with the given id
+|==========================================
+
+==== Working With a Revision ====
+
+The revision object represents a change of the topic map and can contain more than one change. The changes of a revision are represented as a changeset object containing all changes in temporal order. The changeset can be accessed by the 'getChangeSet' method.
+
+Each contained change store the information of an atomic change as a tuple containing the following information
+
+[cols="1,10"]
+|==========================================
+|*Param*|*Description*
+|revision|the parent revision
+|type|an enumeration value representing the kind of modification
+|context|the context of modification (e.g. the topic which get a new name)
+|newValue|the new value if a construct was created or its value was modified (can be null)
+|oldValue|the old value if a construct was removed or its value was modified (can be null)
+|==========================================
+
+A revision object also store the timestamp representing the time the modification takes place. This information can be accessed by the 'getTimestamp' method.
+
+=== Transaction ===
+
+MaJorToM in-memory store provides an embedded transaction mechanism which can be used to modify any constructs of the topic map without direct effects to the underlying topic map.
+Creating a Transaction
+
+To open a new transaction context the additonal ITopicMap interface of the MaJorToM API has to be used like the following once. Therefor the TopicMap? interface of TMAPI has to be cast to ITopicMap.
+
+---------------------------------------
+ITransaction transaction = topicMap.createTransaction();
+---------------------------------------
+
+The transaction context behaves like a topic map, which enables a normaly usage.
+
+==== Transaction Context ==== 
+
+Each construct which should be used in the transaction has to be in the transaction context, which means, that the internal "topic map" has to be the transaction itselfs. Please note, that construct outside the transaction context modify the topic map directly.
+
+To move a construct created outside the transaction context inside, the method moveToTransactionContext can be used.
+
+---------------------------------------
+/*
+ * outside the context
+ */
+ITopic type = topicMap.createTopic();
+/*
+ * inside the context
+ */
+Topic type_ = transaction.moveToTransactionContext(type);
+---------------------------------------
+
+*Please note:* Each construct created within the transaction context are already inside the context!
+
+==== Commit and Roll-back ==== 
+
+To commit all changes of the transaction the method commit has to be used.
+---------------------------------------
+transaction.commit();
+---------------------------------------
+
+To remove all changes of the transaction the method rollback can be used.
+
+---------------------------------------
+transaction.rollback();
+---------------------------------------
+
+*Please note:* Please note, that the transaction context is invalid after the successful execution of commit or rollback. 
+
+
