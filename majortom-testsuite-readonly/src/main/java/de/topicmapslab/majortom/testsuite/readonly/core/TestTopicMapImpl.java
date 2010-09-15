@@ -591,7 +591,7 @@ public class TestTopicMapImpl extends AbstractTest {
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#removeDuplicates()}.
 	 */
-	@Test(expected=UnmodifyableStoreException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void testRemoveDuplicates() {
 
 		assertNotNull(map);
@@ -601,7 +601,7 @@ public class TestTopicMapImpl extends AbstractTest {
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#clear()}.
 	 */
-	@Test(expected=UnmodifyableStoreException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void testClear() {
 
 		assertNotNull(map);
