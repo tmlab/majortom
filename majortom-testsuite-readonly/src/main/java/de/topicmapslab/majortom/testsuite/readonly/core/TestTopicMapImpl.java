@@ -1,9 +1,9 @@
+/**
+ * 
+ */
 package de.topicmapslab.majortom.testsuite.readonly.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -22,15 +22,28 @@ import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.testsuite.readonly.AbstractTest;
 
 
+/**
+ * @author ch
+ *
+ */
 public class TestTopicMapImpl extends AbstractTest {
 
-	/*
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicMap()}.
+	 */
+	@Test
+	public void testGetTopicMap() {
+
+		assertNotNull(map);
+		assertEquals(map, map.getTopicMap());
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getId()}.
 	 */
 	@Test
 	public void testGetId() {
@@ -39,8 +52,26 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertNotNull(map.getId());
 	}
 
-	/* void addTag(String name)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#remove(boolean)}.
+	 */
+	@Test
+	public void testRemoveBoolean() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#TopicMapImpl(de.topicmapslab.majortom.model.core.ITopicMapSystem, org.tmapi.core.Locator)}.
+	 */
+	@Test
+	public void testTopicMapImpl() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testAddTagString() {
@@ -48,8 +79,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		map.addTag("TAG");
 	}
 
-	/* void addTag(String name, Calendar timestamp)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String, java.util.Calendar)}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testAddTagStringCalendar() {
@@ -57,12 +88,22 @@ public class TestTopicMapImpl extends AbstractTest {
 		map.addTag("TAG",Calendar.getInstance());
 	}
 
-	/* <T extends Association> Collection<T> getAssociations(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#addTopicMapListener(de.topicmapslab.majortom.model.event.ITopicMapListener)}.
+	 */
+	@Test
+	public void testAddTopicMapListener() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic Map has 2 associations of type (http://TestTopicMapImpl/testGetAssociationsTopic/asstype)
 	 */
 	@Test
 	public void testGetAssociationsTopic() {
-		
 		assertNotNull(map);
 		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicMapImpl/testGetAssociationsTopic/asstype"));
 		assertNotNull(type);
@@ -70,14 +111,16 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(2, ass.size());
 	}
 
-	/* <T extends Association> Collection<T> getAssociations(IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations(de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic Map has 1 associations of type (http://TestTopicMapImpl/testGetAssociationsIScope/asstype/1)
 	 * and 1 associations of type (http://TestTopicMapImpl/testGetAssociationsIScope/asstype/2)
 	 * both with single theme scope (http://TestTopicMapImpl/testGetAssociationsIScope/theme)
 	 */
 	@Test
 	public void testGetAssociationsIScope() {
-
+		
 		assertNotNull(map);
 		ITopic theme = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicMapImpl/testGetAssociationsIScope/theme"));
 		assertNotNull(theme);
@@ -87,11 +130,11 @@ public class TestTopicMapImpl extends AbstractTest {
 		
 		Collection<Association> ass = map.getAssociations(scope);
 		assertEquals(2, ass.size());
-		
-		
 	}
 
-	/* <T extends Association> Collection<T> getAssociations(Topic type, IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations(org.tmapi.core.Topic, de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic Map has 1 associations of type (http://TestTopicMapImpl/testGetAssociationsTopicIScope/asstype/1)
 	 * and 2 associations of type (http://TestTopicMapImpl/testGetAssociationsTopicIScope/asstype/2)
 	 * all with single theme scope (http://TestTopicMapImpl/testGetAssociationsTopicIScope/theme)
@@ -122,7 +165,27 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(2, ass.size());
 	}
 
-	/* <T extends Topic> Collection<T> getTopics(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getStore()}.
+	 */
+	@Test
+	public void testGetStore() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#setStore(de.topicmapslab.majortom.model.store.ITopicMapStore)}.
+	 */
+	@Test
+	public void testSetStore() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopics(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic map has 2 topics of type (http://TestTopicMapImpl/testGetTopicsTopic/type)
 	 */
 	@Test
@@ -135,26 +198,37 @@ public class TestTopicMapImpl extends AbstractTest {
 		
 		Collection<Topic> topics = map.getTopics(type);
 		assertEquals(2, topics.size());
-	
 	}
 
-	/* void close()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#removeTopicMapListener(de.topicmapslab.majortom.model.event.ITopicMapListener)}.
 	 */
-	@Test(expected=TopicMapStoreException.class)
+	@Test
+	public void testRemoveTopicMapListener() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#close()}.
+	 */
+	@Test
 	public void testClose() {
+
 		assertNotNull(map);
 		map.close();
 		map.createLocator("http://TestTopicMapImpl/testClose");
 	}
 
-	/* Association createAssociation(Topic type, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createAssociation(org.tmapi.core.Topic, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic Map hast Topics (http://TestTopicMapImpl/testCreateAssociationTopicTopicArray/type)
 	 * and (http://TestTopicMapImpl/testCreateAssociationTopicTopicArray/theme)
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateAssociationTopicTopicArray() {
-
+		
 		assertNotNull(map);
 		ITopic type = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicMapImpl/testCreateAssociationTopicTopicArray/type"));
 		assertNotNull(type);
@@ -165,7 +239,9 @@ public class TestTopicMapImpl extends AbstractTest {
 		map.createAssociation(type, theme);
 	}
 
-	/* Association createAssociation(Topic type, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createAssociation(org.tmapi.core.Topic, java.util.Collection)}.
+	 * 
 	 * Topic Map hast Topics (http://TestTopicMapImpl/testCreateAssociationTopicCollectionOfTopic/type)
 	 * and (http://TestTopicMapImpl/testCreateAssociationTopicCollectionOfTopic/theme)
 	 */
@@ -185,8 +261,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		map.createAssociation(type, themes);
 	}
 
-	/* Locator createLocator(String ref)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createLocator(java.lang.String)}.
 	 */
 	@Test
 	public void testCreateLocator() {
@@ -200,51 +276,55 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(l, l2);
 	}
 
-	/* Topic createTopic()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopic()}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateTopic() {
+
 		assertNotNull(map);
 		map.createTopic();
 	}
 
-	/* Topic createTopicByItemIdentifier(Locator identifier)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopicByItemIdentifier(org.tmapi.core.Locator)}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateTopicByItemIdentifier() {
+
 		assertNotNull(map);
 		Locator l = map.createLocator("http://TestTopicMapImpl/testCreateTopicByItemIdentifier");
 		assertNotNull(l);
 		map.createTopicByItemIdentifier(l);
 	}
 
-	/* Topic createTopicBySubjectIdentifier(Locator identifier)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopicBySubjectIdentifier(org.tmapi.core.Locator)}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateTopicBySubjectIdentifier() {
+
 		assertNotNull(map);
 		Locator l = map.createLocator("http://TestTopicMapImpl/testCreateTopicBySubjectIdentifier");
 		assertNotNull(l);
 		map.createTopicBySubjectIdentifier(l);
 	}
-	
 
-	/* Topic createTopicBySubjectLocator(Locator locator)
-	 *  
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopicBySubjectLocator(org.tmapi.core.Locator)}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateTopicBySubjectLocator() {
+
 		assertNotNull(map);
 		Locator l = map.createLocator("http://TestTopicMapImpl/testCreateTopicBySubjectLocator");
 		assertNotNull(l);
 		map.createTopicBySubjectLocator(l);
 	}
-	
 
-	/* Set<Association> getAssociations()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations()}.
+	 * 
 	 * TopicMap hast exactly two associations
 	 */
 	@Test
@@ -255,7 +335,9 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(2, ass.size());
 	}
 
-	/* Construct getConstructById(String id)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructById(java.lang.String)}.
+	 * 
 	 * TopicMap has
 	 * 1 Topic of type (http://TestTopicMapImpl/testGetConstructById/topictype) with
 	 * 1 Name of type (http://TestTopicMapImpl/testGetConstructById/nametype)
@@ -308,8 +390,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(role, map.getConstructById(id));
 	}
 
-	/* Construct getConstructByItemIdentifier(Locator identifier)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructByItemIdentifier(org.tmapi.core.Locator)}.
 	 */
 	@Test
 	public void testGetConstructByItemIdentifier() {
@@ -318,8 +400,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* <I extends Index> I getIndex(Class<I> clazz)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getIndex(java.lang.Class)}.
 	 */
 	@Test
 	public void testGetIndex() {
@@ -360,7 +442,9 @@ public class TestTopicMapImpl extends AbstractTest {
 		}
 	}
 
-	/* Locator getLocator()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getLocator()}.
+	 * 
 	 * TopicMap has base locator (http://TestTopicMapImpl/)
 	 */
 	@Test
@@ -372,7 +456,9 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(l.getReference(), "http://TestTopicMapImpl/");
 	}
 
-	/* Topic getTopicBySubjectIdentifier(Locator identifier)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicBySubjectIdentifier(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic (http://TestTopicMapImpl/testGetTopicBySubjectIdentifier/topic/1)
 	 */
 	@Test
@@ -385,7 +471,9 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertNotNull(topic);
 	}
 
-	/* Topic getTopicBySubjectLocator(Locator locator)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicBySubjectLocator(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic with subject locator (http://TestTopicMapImpl/testGetTopicBySubjectLocator/topic/1)
 	 */
 	@Test
@@ -398,8 +486,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertNotNull(topic);
 	}
 
-	/* Set<Topic> getTopics()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopics()}.
 	 */
 	@Test
 	public void testGetTopics() {
@@ -408,8 +496,8 @@ public class TestTopicMapImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* void mergeIn(TopicMap topicMap)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#mergeIn(org.tmapi.core.TopicMap)}.
 	 */
 	@Test
 	public void testMergeIn() {
@@ -418,19 +506,18 @@ public class TestTopicMapImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/*  ITransaction createTransaction()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTransaction()}.
 	 */
 	@Test(expected=UnsupportedOperationException.class)
 	public void testCreateTransaction() {
 
 		assertNotNull(map);
 		map.createTransaction();
-		
 	}
 
-	/*  ITopicMapSystem getTopicMapSystem()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicMapSystem()}.
 	 */
 	@Test
 	public void testGetTopicMapSystem() {
@@ -439,14 +526,16 @@ public class TestTopicMapImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/*  IScope createScope(Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createScope(java.util.Collection)}.
+	 * 
 	 * TopicMap has topics:
 	 * (http://TestTopicMapImpl/testCreateScopeCollectionOfTopic/theme1)
 	 * (http://TestTopicMapImpl/testCreateScopeCollectionOfTopic/theme2)
 	 */
 	@Test
 	public void testCreateScopeCollectionOfTopic() {
-		
+
 		assertNotNull(map);
 		
 		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicMapImpl/testCreateScopeCollectionOfTopic/theme1"));
@@ -464,10 +553,11 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(2, scope.getThemes().size());
 		assertTrue(scope.containsTheme(theme1));
 		assertTrue(scope.containsTheme(theme2));
-		
 	}
 
-	/*  IScope createScope(Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createScope(org.tmapi.core.Topic[])}.
+	 * 
 	 * TopicMap has topics:
 	 * (http://TestTopicMapImpl/testCreateScopeTopicArray/theme1)
 	 * (http://TestTopicMapImpl/testCreateScopeTopicArray/theme2)
@@ -490,25 +580,131 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertTrue(scope.containsTheme(theme2));
 	}
 
-	/* void removeDuplicates()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#removeDuplicates()}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveDuplicates() {
+
 		assertNotNull(map);
 		map.removeDuplicates();
 	}
 
-	/* void clear()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#clear()}.
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
 	public void testClear() {
-		// TODO implement: what does this method?
+
+		assertNotNull(map);
+		map.clear();
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ReifiableImpl#getReifier()}.
+	 */
+	@Test
+	public void testGetReifier() {
+
 		fail("Not yet implemented");
 	}
-	
-	
 
-	
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ReifiableImpl#setReifier(org.tmapi.core.Topic)}.
+	 */
+	@Test
+	public void testSetReifier() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#addItemIdentifier(org.tmapi.core.Locator)}.
+	 */
+	@Test
+	public void testAddItemIdentifier() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getItemIdentifiers()}.
+	 */
+	@Test
+	public void testGetItemIdentifiers() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#remove()}.
+	 */
+	@Test
+	public void testRemove() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#removeItemIdentifier(org.tmapi.core.Locator)}.
+	 */
+	@Test
+	public void testRemoveItemIdentifier() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getParent()}.
+	 */
+	@Test
+	public void testGetParent() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getIdentity()}.
+	 */
+	@Test
+	public void testGetIdentity() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#compareTo(de.topicmapslab.majortom.model.core.IConstruct)}.
+	 */
+	@Test
+	public void testCompareTo() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#equals(java.lang.Object)}.
+	 */
+	@Test
+	public void testEqualsObject() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#isRemoved()}.
+	 */
+	@Test
+	public void testIsRemoved() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#setRemoved(boolean)}.
+	 */
+	@Test
+	public void testSetRemoved() {
+
+		fail("Not yet implemented");
+	}
 }

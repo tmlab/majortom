@@ -1,9 +1,9 @@
+/**
+ * 
+ */
 package de.topicmapslab.majortom.testsuite.readonly.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,13 +12,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.tmapi.core.Association;
 import org.tmapi.core.Locator;
-import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Reifiable;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
-import org.tmapi.core.TopicMapExistsException;
 
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IName;
@@ -29,62 +27,21 @@ import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.testsuite.readonly.AbstractTest;
 
 
-public class TestTopicImpl extends AbstractTest {
+/**
+ * @author ch
+ *
+ */
+public class TestTopicImpl extends AbstractTest{
 
-	/* String doReadBestLabel(ITopic topic)
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/1) has only the item identifier (http://TestTopicImpl/testGetBestLable/topic/1)
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/2) has one ii and the sl (http://TestTopicImpl/testGetBestLable/topic/2)
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/3) has one ii, one sl and the si (http://TestTopicImpl/testGetBestLable/topic/3)
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/4) has the sis (http://TestTopicImpl/testGetBestLable/topic/4) and (http://TestTopicImpl/testGetBestLable/topic/44)
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/5) has default names "aa" and "bb" and typed name "a"
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/6) has typed names "aa" and "bb" and scoped name "a"
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/7) has one theme names "aa" and "bb" and two theme name "a"
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/8) has two theme names "aa" and "bb"
-	 * Topic(http://TestTopicImpl/testGetBestLable/topic/9) has scoped default name "aa" and unscoped but typed name "a"
-	 */
-	@Test
-	public void testGetBestLable() throws TopicMapExistsException {
-	
-		assertNotNull(map);
-		
-		ITopic topic1 = (ITopic)map.getConstructByItemIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/1"));
-		assertEquals("http://TestTopicImpl/testGetBestLable/topic/1", topic1.getBestLabel());
-		
-		ITopic topic2 = (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/2"));
-		assertEquals("http://TestTopicImpl/testGetBestLable/topic/2", topic2.getBestLabel());
-		
-		ITopic topic3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/3"));
-		assertEquals("http://TestTopicImpl/testGetBestLable/topic/3", topic3.getBestLabel());
-		
-		ITopic topic4 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/44"));
-		assertEquals("http://TestTopicImpl/testGetBestLable/topic/4", topic4.getBestLabel());
-		
-		ITopic topic5 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/5"));
-		assertEquals("aa", topic5.getBestLabel());
-		
-		ITopic topic6 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/6"));
-		assertEquals("aa", topic6.getBestLabel());
-		
-		ITopic topic7 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/7"));
-		assertEquals("aa", topic7.getBestLabel());
-		
-		ITopic topic8 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/8"));
-		assertEquals("aa", topic8.getBestLabel());
-		
-		ITopic topic9 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/9"));
-		assertEquals("aa", topic9.getBestLabel());
-
-	}
-
-	/* Collection<Association> getAssociationsPlayed()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed()}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayed/topic/1) has not associations
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayed/topic/2) has exactly one association
-	 * @throws TopicMapExistsException 
-	 * @throws MalformedIRIException 
 	 */
 	@Test
-	public void testGetAssociationsPlayed() throws MalformedIRIException, TopicMapExistsException {
-	
+	public void testGetAssociationsPlayed() {
+
 		assertNotNull(map);
 
 		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetAssociationsPlayed/topic/1"));
@@ -98,11 +55,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Collection<Association> ass2 = topic2.getAssociationsPlayed();
 		assertEquals(1,ass2.size());
-
 	}
-	
 
-	/* Collection<Association> getAssociationsPlayed(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayedTopic/topic/1) has
 	 * 1 association of type(http://TestTopicImpl/testGetAssociationsPlayedTopic/ass/1)
 	 * 0 associations of type(http://TestTopicImpl/testGetAssociationsPlayedTopic/ass/2)
@@ -125,11 +82,11 @@ public class TestTopicImpl extends AbstractTest {
 				
 		assertEquals(1,ass1.size());
 		assertEquals(0,ass2.size());
-	
-		
 	}
 
-	/* Collection<Association> getAssociationsPlayed(IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayedIScope/topic/1) has
 	 * 1 association of type(http://TestTopicImpl/testGetAssociationsPlayedIScope/ass/1) and
 	 * 1 association of type(http://TestTopicImpl/testGetAssociationsPlayedIScope/ass/2) with single theme scope(http://TestTopicImpl/testGetAssociationsPlayedIScope/theme/1)
@@ -152,15 +109,16 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Collection<Association> ass = topic.getAssociationsPlayed(scope);
 		assertEquals(1,ass.size());
-		
 	}
 
-	/* Collection<Association> getAssociationsPlayed(Topic type, IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(org.tmapi.core.Topic, de.topicmapslab.majortom.model.core.IScope)}.
+	 *	
 	 * Topic(http://TestTopicImpl/testGetAssociationsPlayedTopicIScope/topic/1) has
 	 * 1 association of type(http://TestTopicImpl/testGetAssociationsPlayedTopicIScope/ass/1) 
 	 * with single theme scope(http://TestTopicImpl/testGetAssociationsPlayedIScope/theme/1) and
 	 * 1 association of type(http://TestTopicImpl/testGetAssociationsPlayedTopicIScope/ass/2) 
-	 * with single theme scope(http://TestTopicImpl/testGetAssociationsPlayedIScope/theme/1)
+	 * with single theme scope(http://TestTopicImpl/testGetAssociationsPlayedIScope/theme/1) 
 	 */
 	@Test
 	public void testGetAssociationsPlayedTopicIScope() {
@@ -185,7 +143,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1,ass.size());
 	}
 
-	/* Collection<ICharacteristics> getCharacteristics()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getCharacteristics()}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetCharacteristics/topic/1) has
 	 * exactly 1 Name and 1 Occurrence
 	 */
@@ -204,10 +164,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		assertTrue((charsArray[0] instanceof IName && charsArray[1] instanceof IOccurrence) || (charsArray[0] instanceof IOccurrence && charsArray[1] instanceof IName));
 		
-		
 	}
 
-	/* Collection<ICharacteristics> getCharacteristics(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getCharacteristics(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetCharacteristicsTopic/topic/1) has
 	 * 1 Name of type(http://TestTopicImpl/testGetCharacteristicsTopic/name) and
 	 * 2 Occurrences of type(http://TestTopicImpl/testGetCharacteristicsTopic/occurrence)
@@ -232,10 +193,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1,names.size());
 		Collection<ICharacteristics> occurrences = topic.getCharacteristics(occurrenceType);
 		assertEquals(2,occurrences.size());
-		
 	}
 
-	/* Collection<ICharacteristics> getCharacteristics(IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getCharacteristics(de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetCharacteristicsIScope/topic/1) has
 	 * 1 name with single theme scope (http://TestTopicImpl/testGetCharacteristicsIScope/theme),
 	 * 1 occurrnece with single theme scope (http://TestTopicImpl/testGetCharacteristicsIScope/theme) and
@@ -265,7 +227,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertTrue((scopedArray[0] instanceof IName && scopedArray[1] instanceof IOccurrence) || (scopedArray[0] instanceof IOccurrence && scopedArray[1] instanceof IName));
 	}
 
-	/* Collection<ICharacteristics> getCharacteristics(Topic type, IScope scope) 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getCharacteristics(org.tmapi.core.Topic, de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetCharacteristicsTopicIScope/topic/1) has
 	 * 1 name of type(http://TestTopicImpl/testGetCharacteristicsTopicIScope/name) 
 	 * with single theme scope (http://TestTopicImpl/testGetCharacteristicsTopicIScope/theme),
@@ -302,10 +266,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Collection<ICharacteristics> scopedOccurrences = topic.getCharacteristics(occurrenceType, scope);
 		assertEquals(1,scopedOccurrences.size());
-		
 	}
 
-	/* Collection<Name> getNames(Topic type, IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames(org.tmapi.core.Topic, de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetNamesTopicIScope/topic/1) has
 	 * 1 default name with single theme scope (http://TestTopicImpl/testGetNamesTopicIScope/theme)
 	 * 1 name of type (http://TestTopicImpl/testGetNamesTopicIScope/name) 
@@ -341,7 +306,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1,typedScoped.size());
 	}
 
-	/* Collection<Name> getNames(IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames(de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetNamesIScope/topic/1) has
 	 * 1 name with single theme scope (http://TestTopicImpl/testGetNamesIScope/theme) and
 	 * 1 name without scope 
@@ -366,7 +333,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1,scoped.size());
 	}
 
-	/* Collection<Occurrence> getOccurrences(Topic type, IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences(org.tmapi.core.Topic, de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetOccurrencesTopicIScope/topic/1) has
 	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrencesTopicIScope/occ/1) without scope
 	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrencesTopicIScope/occ/1)
@@ -398,10 +367,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Collection<Occurrence> typedScopedOccs = topic.getOccurrences(occurrenceType1, scope);
 		assertEquals(1, typedScopedOccs.size());
-		
 	}
 
-	/* Collection<Occurrence> getOccurrences(IScope scope)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences(de.topicmapslab.majortom.model.core.IScope)}.
+	 * 
 	 * Topic(http://TestTopicImpl/testGetOccurrencesIScope/topic/1) has
 	 * 1 occurrence with single theme scope (http://TestTopicImpl/testGetOccurrencesIScope/theme) and
 	 * 1 occurrence without scope
@@ -424,11 +394,10 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Collection<Occurrence> scopedOccs = topic.getOccurrences(scope);
 		assertEquals(1, scopedOccs.size());
-		
 	}
 
-	/* Collection<Topic> getSupertypes()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getSupertypes()}.
 	 */
 	@Test
 	public void testGetSupertypes() {
@@ -437,7 +406,9 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* void addSupertype(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#addSupertype(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testAddSupertype/topic/1)
 	 * Topic (http://TestTopicImpl/testAddSupertype/topic/2)
 	 */
@@ -455,17 +426,19 @@ public class TestTopicImpl extends AbstractTest {
 		topic1.addSupertype(topic2);
 	}
 
-	/* void removeSupertype(Topic type)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#removeSupertype(org.tmapi.core.Topic)}.
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveSupertype() {
 
 		/// TODO implement testRemoveSupertype()
 		fail("Not yet implemented");
 	}
 
-	/* void addSubjectIdentifier(Locator identifier)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#addSubjectIdentifier(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testAddSubjectIdentifier/topic/1)
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
@@ -478,10 +451,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		Locator l = map.createLocator("http://TestTopicImpl/testAddSubjectIdentifier/topic/2");
 		topic.addSubjectIdentifier(l);
-		
 	}
 
-	/* void addSubjectLocator(Locator locator)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#addSubjectLocator(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testAddSubjectLocator/topic/1)
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
@@ -496,7 +470,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.addSubjectLocator(l);
 	}
 
-	/* Name createName(String value, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createName(java.lang.String, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateNameStringTopicArray/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringTopicArray/theme/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringTopicArray/theme/2)
@@ -515,10 +491,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertNotNull(theme2);
 		
 		topic.createName("Name", theme1, theme2);
-		
 	}
 
-	/* Name createName(String value, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createName(java.lang.String, java.util.Collection)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/theme/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/theme/2)
@@ -543,7 +520,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createName("Name", themes);
 	}
 
-	/* Name createName(Topic type, String value, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createName(org.tmapi.core.Topic, java.lang.String, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/type/1)
 	 * Topic (http://TestTopicImpl/testCreateNameStringCollectionOfTopic/theme/1)
@@ -568,7 +547,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createName(type, "Name", theme1, theme2);
 	}
 
-	/* Name createName(Topic type, String value, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createName(org.tmapi.core.Topic, java.lang.String, java.util.Collection)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateNameTopicStringCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateNameTopicStringCollectionOfTopic/type/1)
 	 * Topic (http://TestTopicImpl/testCreateNameTopicStringCollectionOfTopic/theme/1)
@@ -597,7 +578,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createName(type, "name", themes);
 	}
 
-	/* Occurrence createOccurrence(Topic type, String value, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, java.lang.String, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringTopicArray/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringTopicArray/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringTopicArray/theme/1)
@@ -622,7 +605,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, "Occurrence", theme1, theme2);
 	}
 
-	/* Occurrence createOccurrence(Topic type, String value, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, java.lang.String, java.util.Collection)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringCollectionOfTopic/theme/1)
@@ -651,7 +636,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, "Occurrence", themes);
 	}
 
-	/* Occurrence createOccurrence(Topic type, Locator value, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, org.tmapi.core.Locator, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorTopicArray/theme/1)
@@ -676,7 +663,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, map.createLocator("http://occurrence/value"), theme1, theme2);
 	}
 
-	/* Occurrence createOccurrence(Topic type, Locator value, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, org.tmapi.core.Locator, java.util.Collection)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicLocatorCollectionOfTopic/theme/1)
@@ -705,7 +694,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, map.createLocator("http://occurrence/value"), themes);
 	}
 
-	/* Occurrence createOccurrence(Topic type, String value, Locator datatype, Topic... themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, java.lang.String, org.tmapi.core.Locator, org.tmapi.core.Topic[])}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorTopicArray/theme/1)
@@ -730,7 +721,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, "value",map.createLocator("xsd:string"), theme1, theme2);
 	}
 
-	/* Occurrence createOccurrence(Topic type, String value, Locator datatype, Collection<Topic> themes)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#createOccurrence(org.tmapi.core.Topic, java.lang.String, org.tmapi.core.Locator, java.util.Collection)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/topic/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/type/1)
 	 * Topic (http://TestTopicImpl/testCreateOccurrenceTopicStringLocatorCollectionOfTopic/theme/1)
@@ -759,7 +752,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic.createOccurrence(type, "value", map.createLocator("xsd:string"), themes);
 	}
 
-	/* Set<Name> getNames()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetNames/topic/1) has
 	 * 1 default name and
 	 * 2 name of type(http://TestTopicImpl/testGetNames/name)
@@ -775,7 +770,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(3, topic.getNames().size());
 	}
 
-	/* Set<Name> getNames(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetNamesTopic/topic/1) has
 	 * 1 default name and
 	 * 2 name of type(http://TestTopicImpl/testGetNamesTopic/name)
@@ -794,10 +791,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertNotNull(type);
 		
 		assertEquals(2, topic.getNames(type).size());
-		
 	}
 
-	/* Set<Occurrence> getOccurrences()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetOccurrences/topic/1) has
 	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrences/occ/1)
 	 * 2 occurrences of type(http://TestTopicImpl/testGetOccurrences/occ/2)
@@ -813,7 +811,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(3, topic.getOccurrences().size());
 	}
 
-	/* Set<Occurrence> getOccurrences(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetOccurrencesTopic/topic/1) has
 	 * 1 occurrence of type(http://TestTopicImpl/testGetOccurrencesTopic/occ/1)
 	 * 2 occurrences of type(http://TestTopicImpl/testGetOccurrencesTopic/occ/2)
@@ -838,7 +838,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(2, topic.getOccurrences(type2).size());
 	}
 
-	/* ITopicMap getParent()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getParent()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetParent/topic/1)
 	 */
 	@Test
@@ -850,10 +852,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertNotNull(topic);
 		assertNotNull(topic.getParent());
 		assertEquals(map, topic.getParent());
-		
 	}
 
-	/* Reifiable getReified()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getReified()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetReified/topic/1) playes in exactly one association
 	 * which has an reifier
 	 */
@@ -878,10 +881,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertNotNull(r);
 		assertEquals(r, a);
 		
-		
 	}
 
-	/* Set<Role> getRolesPlayed()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getRolesPlayed()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetRolesPlayed/topic/1) plays
 	 * exactly 2 roles of type(http://TestTopicImpl/testGetRolesPlayed/roletype)
 	 */
@@ -903,7 +907,9 @@ public class TestTopicImpl extends AbstractTest {
 			assertEquals(type, r.getType());
 	}
 
-	/* Set<Role> getRolesPlayed(Topic roleType)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getRolesPlayed(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetRolesPlayedTopic/topic/1) plays
 	 * exactly 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopic/roletype1)
 	 * and 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopic/roletype2)
@@ -926,7 +932,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(1, typedRoles.size());
 	}
 
-	/* Set<Role> getRolesPlayed(Topic roleType, Topic associtaionType)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getRolesPlayed(org.tmapi.core.Topic, org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetRolesPlayedTopicTopic/topic/1) plays
 	 * exactly 1 role of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/roletype1)
 	 * in association of type(http://TestTopicImpl/testGetRolesPlayedTopicTopic/associationtype1)
@@ -967,9 +975,12 @@ public class TestTopicImpl extends AbstractTest {
 		roles = topic.getRolesPlayed(roletype1, asstype1);
 		assertEquals(1, roles.size());
 	}
+	
 
-	/* Set<Locator> getSubjectIdentifiers()
-	 *  Topic  has subject identifier 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getSubjectIdentifiers()}.
+	 * 
+	 * Topic  has subject identifier 
 	 *  http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si1
 	 *  http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2
 	 */
@@ -984,7 +995,9 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(topic, (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2")));
 	}
 
-	/* Set<Locator> getSubjectLocators()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getSubjectLocators()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetSubjectLocators/topic/1) has
 	 * 2 subjectLocator (http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1) and
 	 * (http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2)
@@ -999,10 +1012,11 @@ public class TestTopicImpl extends AbstractTest {
 		assertEquals(2, topic.getSubjectLocators().size());
 		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1")));
 		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2")));
-
 	}
 
-	/* Set<Topic> getTypes()
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getTypes()}.
+	 * 
 	 * Topic (http://TestTopicImpl/testGetTypes/topic/1) has
 	 * type (http://TestTopicImpl/testGetTypes/type1)
 	 * and type (http://TestTopicImpl/testGetTypes/type2)
@@ -1025,10 +1039,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		assertTrue(((Topic)ta[1]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type1") 
 				|| ((Topic)ta[1]).getSubjectIdentifiers().iterator().next().getReference().equals("http://TestTopicImpl/testGetTypes/type2"));
-		
 	}
 
-	/* void addType(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#addType(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testAddType/topic/1)
 	 * Topic (http://TestTopicImpl/testAddType/topic/2)
 	 */
@@ -1045,7 +1060,9 @@ public class TestTopicImpl extends AbstractTest {
 		topic1.addType(topic2);
 	}
 
-	/* void removeType(Topic type)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#removeType(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testRemoveType/topic/1)
 	 * has type (http://TestTopicImpl/testRemoveType/type)
 	 */
@@ -1063,8 +1080,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		topic.removeType(type);
 	}
+	
 
-	/* void mergeIn(Topic topic)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#mergeIn(org.tmapi.core.Topic)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testMergeIn/topic/1)
 	 * Topic (http://TestTopicImpl/testMergeIn/topic/2)
 	 */
@@ -1079,8 +1099,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		topic1.mergeIn(topic2);
 	}
+	
 
-	/* void removeSubjectIdentifier(Locator identifier)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#removeSubjectIdentifier(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testRemoveSubjectIdentifier/topic/1)
 	 */
 	@Test(expected=UnmodifyableStoreException.class)
@@ -1094,8 +1117,11 @@ public class TestTopicImpl extends AbstractTest {
 		
 		topic.removeSubjectIdentifier(si);
 	}
+	
 
-	/* void removeSubjectLocator(Locator locator)
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#removeSubjectLocator(org.tmapi.core.Locator)}.
+	 * 
 	 * Topic (http://TestTopicImpl/testRemoveSubjectLocator/topic/1)
 	 * has one subject locator
 	 */
@@ -1111,17 +1137,10 @@ public class TestTopicImpl extends AbstractTest {
 		topic.removeSubjectLocator(sl);
 	}
 
-	/* String toString()
-	 * 
-	 */
-	@Test
-	public void testToString() {
 
-		/// TODO is this one needed?
-	}
 
-	/* List<Association> getAssociationsPlayed(int offset, int limit)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(int, int)}.
 	 */
 	@Test
 	public void testGetAssociationsPlayedIntInt() {
@@ -1130,8 +1149,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Association> getAssociationsPlayed(int offset, int limit, Comparator<Association> comparator)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetAssociationsPlayedIntIntComparatorOfAssociation() {
@@ -1140,8 +1159,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Name> getNames(int offset, int limit)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames(int, int)}.
 	 */
 	@Test
 	public void testGetNamesIntInt() {
@@ -1150,8 +1169,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Name> getNames(int offset, int limit, Comparator<Name> comparator)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNames(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetNamesIntIntComparatorOfName() {
@@ -1160,8 +1179,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Occurrence> getOccurrences(int offset, int limit)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences(int, int)}.
 	 */
 	@Test
 	public void testGetOccurrencesIntInt() {
@@ -1170,8 +1189,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Occurrence> getOccurrences(int offset, int limit, Comparator<Occurrence> comparator)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getOccurrences(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetOccurrencesIntIntComparatorOfOccurrence() {
@@ -1180,8 +1199,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Role> getRolesPlayed(int offset, int limit)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getRolesPlayed(int, int)}.
 	 */
 	@Test
 	public void testGetRolesPlayedIntInt() {
@@ -1189,9 +1208,9 @@ public class TestTopicImpl extends AbstractTest {
 		/// TODO implement
 		fail("Not yet implemented");
 	}
- 
-	/* List<Role> getRolesPlayed(int offset, int limit, Comparator<Role> comparator)
-	 * 
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getRolesPlayed(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetRolesPlayedIntIntComparatorOfRole() {
@@ -1200,8 +1219,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Topic> getSupertypes(int offset, int limit) 
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getSupertypes(int, int)}.
 	 */
 	@Test
 	public void testGetSupertypesIntInt() {
@@ -1210,8 +1229,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getSupertypes(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetSupertypesIntIntComparatorOfTopic() {
@@ -1220,8 +1239,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Topic> getTypes(int offset, int limit)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getTypes(int, int)}.
 	 */
 	@Test
 	public void testGetTypesIntInt() {
@@ -1230,8 +1249,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* List<Topic> getTypes(int offset, int limit, Comparator<Topic> comparator)
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getTypes(int, int, java.util.Comparator)}.
 	 */
 	@Test
 	public void testGetTypesIntIntComparatorOfTopic() {
@@ -1240,20 +1259,18 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* long getNumberOfAssociationsPlayed()
-	 * Topic (http://TestTopicImpl/testGetNumberOfAssociationsPlayed/topic/1)
-	 * playes in 2 different associations
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfAssociationsPlayed()}.
 	 */
 	@Test
 	public void testGetNumberOfAssociationsPlayed() {
 
 		/// TODO implement
 		fail("Not yet implemented");
-		
 	}
 
-	/* long getNumberOfNames()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfNames()}.
 	 */
 	@Test
 	public void testGetNumberOfNames() {
@@ -1262,8 +1279,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* long getNumberOfOccurrences()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfOccurrences()}.
 	 */
 	@Test
 	public void testGetNumberOfOccurrences() {
@@ -1272,8 +1289,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* long getNumberOfRolesPlayed()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfRolesPlayed()}.
 	 */
 	@Test
 	public void testGetNumberOfRolesPlayed() {
@@ -1282,8 +1299,8 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/*  long getNumberOfSupertypes()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfSupertypes()}.
 	 */
 	@Test
 	public void testGetNumberOfSupertypes() {
@@ -1292,13 +1309,178 @@ public class TestTopicImpl extends AbstractTest {
 		fail("Not yet implemented");
 	}
 
-	/* long getNumberOfTypes()
-	 * 
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getNumberOfTypes()}.
 	 */
 	@Test
 	public void testGetNumberOfTypes() {
 
 		/// TODO implement
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getBestLabel()}.
+	 * 
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/1) has only the item identifier (http://TestTopicImpl/testGetBestLable/topic/1)
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/2) has one ii and the sl (http://TestTopicImpl/testGetBestLable/topic/2)
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/3) has one ii, one sl and the si (http://TestTopicImpl/testGetBestLable/topic/3)
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/4) has the sis (http://TestTopicImpl/testGetBestLable/topic/4) and (http://TestTopicImpl/testGetBestLable/topic/44)
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/5) has default names "aa" and "bb" and typed name "a"
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/6) has typed names "aa" and "bb" and scoped name "a"
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/7) has one theme names "aa" and "bb" and two theme name "a"
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/8) has two theme names "aa" and "bb"
+	 * Topic(http://TestTopicImpl/testGetBestLable/topic/9) has scoped default name "aa" and unscoped but typed name "a"
+	 * 
+	 */
+	@Test
+	public void testGetBestLabel() {
+
+		assertNotNull(map);
+		
+		ITopic topic1 = (ITopic)map.getConstructByItemIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/1"));
+		assertEquals("http://TestTopicImpl/testGetBestLable/topic/1", topic1.getBestLabel());
+		
+		ITopic topic2 = (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/2"));
+		assertEquals("http://TestTopicImpl/testGetBestLable/topic/2", topic2.getBestLabel());
+		
+		ITopic topic3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/3"));
+		assertEquals("http://TestTopicImpl/testGetBestLable/topic/3", topic3.getBestLabel());
+		
+		ITopic topic4 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/44"));
+		assertEquals("http://TestTopicImpl/testGetBestLable/topic/4", topic4.getBestLabel());
+		
+		ITopic topic5 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/5"));
+		assertEquals("aa", topic5.getBestLabel());
+		
+		ITopic topic6 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/6"));
+		assertEquals("aa", topic6.getBestLabel());
+		
+		ITopic topic7 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/7"));
+		assertEquals("aa", topic7.getBestLabel());
+		
+		ITopic topic8 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/8"));
+		assertEquals("aa", topic8.getBestLabel());
+		
+		ITopic topic9 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLable/topic/9"));
+		assertEquals("aa", topic9.getBestLabel());
+
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getTopicMap()}.
+	 */
+	@Test
+	public void testGetTopicMap() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#addItemIdentifier(org.tmapi.core.Locator)}.
+	 */
+	@Test
+	public void testAddItemIdentifier() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getId()}.
+	 */
+	@Test
+	public void testGetId() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getItemIdentifiers()}.
+	 */
+	@Test
+	public void testGetItemIdentifiers() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#remove()}.
+	 */
+	@Test
+	public void testRemove() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#remove(boolean)}.
+	 */
+	@Test
+	public void testRemoveBoolean() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#removeItemIdentifier(org.tmapi.core.Locator)}.
+	 */
+	@Test
+	public void testRemoveItemIdentifier() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getParent()}.
+	 */
+	@Test
+	public void testGetParent1() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getIdentity()}.
+	 */
+	@Test
+	public void testGetIdentity() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#compareTo(de.topicmapslab.majortom.model.core.IConstruct)}.
+	 */
+	@Test
+	public void testCompareTo() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#equals(java.lang.Object)}.
+	 */
+	@Test
+	public void testEqualsObject() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#isRemoved()}.
+	 */
+	@Test
+	public void testIsRemoved() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#setRemoved(boolean)}.
+	 */
+	@Test
+	public void testSetRemoved() {
+
 		fail("Not yet implemented");
 	}
 }
