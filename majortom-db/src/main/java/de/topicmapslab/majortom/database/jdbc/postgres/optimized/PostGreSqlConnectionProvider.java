@@ -56,6 +56,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public PostGreSqlQueryProcessor getProcessor()
 			throws TopicMapStoreException {
 		return (PostGreSqlQueryProcessor) super.getProcessor();
@@ -65,8 +66,10 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	protected PostGreSqlQueryProcessor createProcessor(
-			IConnectionProvider provider, Connection connection) {
-		return new PostGreSqlQueryProcessor(this, connection);
+			IConnectionProvider provider, Connection readerConnection,
+			Connection writerConnetion) {
+		return new PostGreSqlQueryProcessor(this, readerConnection,
+				writerConnetion);
 	}
 
 	/**
@@ -89,9 +92,9 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void openConnection(String host, String database, String user,
+	public void openConnections(String host, String database, String user,
 			String password) throws SQLException, TopicMapStoreException {
-		super.openConnection(host, database, user, password);
+		super.openConnections(host, database, user, password);
 		/*
 		 * Check if procedure 'scope_by_themes' exists
 		 */

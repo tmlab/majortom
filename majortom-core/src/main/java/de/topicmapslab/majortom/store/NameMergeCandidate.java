@@ -13,30 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests.index;
+package de.topicmapslab.majortom.store;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.index.paged.PagedIndexTestSuite;
+import de.topicmapslab.majortom.model.core.IName;
+import de.topicmapslab.majortom.model.core.ITopic;
 
 /**
+ * Class represents a duplicate name candidate
+ * 
  * @author Sven Krosse
  * 
  */
-public class IndexTestSuite {
+public class NameMergeCandidate {
+	private ITopic topic;
+	private IName name;
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for de.topicmapslab.engine.tests.index");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(TestIdentityIndex.class);
-		suite.addTestSuite(TestLiteralIndex.class);
-		suite.addTestSuite(TestSupertypeSubtypeIndex.class);
-		suite.addTestSuite(TestTransitiveTypeInstanceIndex.class);
-		suite.addTestSuite(TestScopeIndex.class);
-		suite.addTest(PagedIndexTestSuite.suite());
-		// $JUnit-END$
-		return suite;
+	/**
+	 * @param topic
+	 *            the parent topic
+	 * @param name
+	 *            the duplicate name
+	 */
+	public NameMergeCandidate(ITopic topic, IName name) {
+		this.topic = topic;
+		this.name = name;
+	}
+
+	/**
+	 * Return the duplicated name
+	 * 
+	 * @return the name
+	 */
+	public IName getName() {
+		return name;
+	}
+
+	/**
+	 * Return the duplicated topic
+	 * 
+	 * @return the topic
+	 */
+	public ITopic getTopic() {
+		return topic;
 	}
 
 }

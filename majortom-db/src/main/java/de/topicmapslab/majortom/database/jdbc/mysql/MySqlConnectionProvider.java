@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
@@ -31,24 +31,35 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  * @author Sven Krosse
  * 
  */
-public class MySqlConnectionProvider extends BaseMySqlConnectionProvider {
+public class MySqlConnectionProvider extends RDBMSConnectionProvider {
 
 	/**
-	 * constructor
+	 * {@inheritDoc}
 	 */
-	public MySqlConnectionProvider() {
+	protected String getDriverClassName() {
+		return "com.mysql.jdbc.Driver";
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected MySqlQueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
-		return new MySqlQueryProcessor(this, connection);
+	protected String getRdbmsName() {
+		return "mysql";
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	protected MySqlQueryProcessor createProcessor(
+			RDBMSConnectionProvider provider, Connection readerConnection,
+			Connection writerConnetion) {
+		return new MySqlQueryProcessor(this, readerConnection, writerConnetion);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
 	public MySqlQueryProcessor getProcessor() throws TopicMapStoreException {
 		return (MySqlQueryProcessor) super.getProcessor();
 	}

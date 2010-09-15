@@ -37,11 +37,11 @@ public class HashUtil {
 	/**
 	 * the found class used as {@link Set} implementation
 	 */
-	private static Class<?> setClass = null;
+	private static Class<?> setClass = HashSet.class;
 	/**
 	 * the found class used as {@link Map} implementation
 	 */
-	private static Class<?> mapClass = null;
+	private static Class<?> mapClass = HashMap.class;
 
 	/**
 	 * hidden constructor

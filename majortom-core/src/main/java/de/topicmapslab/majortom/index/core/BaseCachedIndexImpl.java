@@ -136,7 +136,7 @@ public abstract class BaseCachedIndexImpl<T extends ITopicMapStore> extends Inde
 	 *         <code>false</code> otherwise
 	 */
 	protected boolean isOnTransactionContext(Construct c) {
-		return c instanceof ITransaction || c.getTopicMap() instanceof ITransaction;
+		return c != null && ( c instanceof ITransaction || c.getTopicMap() instanceof ITransaction ) ;
 	}
 
 	/**

@@ -52,6 +52,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getConstructsByIdentifier(Pattern.compile(regExp));
 	}
 
@@ -61,6 +64,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Construct> getConstructsByIdentifier(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -83,6 +89,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getConstructsByItemIdentifier(Pattern.compile(regExp));
 	}
 
@@ -92,6 +101,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Construct> getConstructsByItemIdentifier(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -177,6 +189,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getTopicsBySubjectIdentifier(Pattern.compile(regExp));
 	}
 
@@ -193,6 +208,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if ( !getStore().isCachingEnabled()){
 			return doGetTopicsBySubjectIdentifier(regExp);
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, regExp);
 		if (topics == null) {
 			topics = doGetTopicsBySubjectIdentifier(regExp);
@@ -208,6 +226,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getTopicsBySubjectLocator(Pattern.compile(regExp));
 	}
 
@@ -217,6 +238,9 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 	public Collection<Topic> getTopicsBySubjectLocator(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
