@@ -50,12 +50,16 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * constructor
 	 * 
-	 * @param connection
-	 *            the JDBC connection
+	 * @param provider
+	 *            the connection provider
+	 * @param readerConnection
+	 *            the JDBC connection to read database
+	 * @param writerConnection
+	 *            the JDBC connection to modify database
 	 */
 	public PostGreSqlQueryProcessor(PostGreSqlConnectionProvider provider,
-			Connection connection) {
-		super(provider, connection);
+			Connection readerConnection, Connection writerConnection) {
+		super(provider, readerConnection, writerConnection);
 	}
 
 	/**
@@ -122,7 +126,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		Collections.sort(ids);
 		stmt.setArray(
 				1,
-				getConnection().createArrayOf("bigint",
+				getWriterConnection().createArrayOf("bigint",
 						ids.toArray(new Long[0])));
 		stmt.setBoolean(2, true);
 		stmt.setBoolean(3, true);
@@ -203,7 +207,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
 			stmt.setLong(3, limit);
@@ -254,7 +258,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
 			stmt.setLong(3, limit);
@@ -305,7 +309,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
 			stmt.setLong(3, limit);
@@ -356,7 +360,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
 			stmt.setLong(3, limit);
@@ -407,7 +411,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, all);
 		if (offset != -1) {
 			stmt.setLong(3, offset);
@@ -481,7 +485,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, matchAll);
 		if (offset != -1) {
 			stmt.setLong(3, offset);
@@ -554,7 +558,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(1, getConnection().createArrayOf("bigint", ids));
+		stmt.setArray(1, getWriterConnection().createArrayOf("bigint", ids));
 		stmt.setBoolean(2, matchAll);
 		if (offset != -1) {
 			stmt.setLong(3, offset);
@@ -585,11 +589,27 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		Collections.sort(ids);
 		stmt.setArray(
 				1,
-				getConnection().createArrayOf("bigint",
+				getWriterConnection().createArrayOf("bigint",
 						ids.toArray(new Long[0])));
 		stmt.setBoolean(2, all);
 		stmt.setBoolean(3, false);
 		stmt.setLong(4, Long.parseLong(topicMap.getId()));
 		return Jdbc2Construct.toScopes(topicMap, stmt.executeQuery());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
+		PreparedStatement stmt = getQueryBuilder().getPerformMergeTopics();
+		long idContext = Long.parseLong(context.getId());
+		long idOther = Long.parseLong(other.getId());
+		int max = 12;
+		for (int n = 0; n < max; n++) {
+			stmt.setLong(n * 2 + 1, idContext);
+			stmt.setLong(n * 2 + 2, idOther);
+		}
+		stmt.setLong(max * 2 + 1, idOther);
+		stmt.execute();
 	}
 }

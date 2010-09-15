@@ -66,6 +66,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -86,6 +89,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -108,6 +117,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -128,6 +140,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -171,6 +189,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -191,6 +212,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSubtypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -213,6 +237,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -234,6 +264,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getSubtypes(types, false, offset, limit);
 	}
 
@@ -244,6 +277,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getSubtypes(types, false, offset, limit, comparator);
 	}
 
@@ -253,6 +292,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -274,6 +316,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -317,6 +365,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -337,6 +388,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSupertypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -359,6 +413,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -380,6 +440,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getSupertypes(types, false, offset, limit);
 	}
 
@@ -390,6 +453,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getSupertypes(types, false, offset, limit, comparator);
 	}
 
@@ -399,6 +468,9 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -420,6 +492,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

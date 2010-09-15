@@ -1150,14 +1150,18 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
-		throw new UnsupportedOperationException("Read-only store does not support deletion of construct!");
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("Read-only store does not support deletion of construct!");
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void clear() {
-		throw new UnsupportedOperationException("Read-only store does not support deletion of construct!");
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("Read-only store does not support deletion of construct!");
+		}
 	}
 
 	/**

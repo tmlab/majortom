@@ -163,24 +163,27 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params));
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params);		
 		super.doModify(context, paramType, params);
+		commands.add(command);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params));
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params);		
 		super.doRemove(context, paramType, params);
+		commands.add(command);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
-		commands.add(new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade));
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade);
 		super.doRemove(context, cascade);
+		commands.add(command);
 	}
 
 	/**

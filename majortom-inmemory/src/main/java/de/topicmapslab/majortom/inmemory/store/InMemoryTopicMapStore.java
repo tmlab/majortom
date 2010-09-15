@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -83,6 +82,7 @@ import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.store.NameMergeCandidate;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -204,14 +204,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getScopeStore().setScope(a, getScopeStore().getEmptyScope());
 		/*
+		 * store revision
+		 */
+		IRevision rev = createRevision();
+		storeRevision(rev, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a,
+				null);
+		storeRevision(rev, TopicMapEventType.TYPE_SET, a, type, null);
+		storeRevision(rev, TopicMapEventType.SCOPE_MODIFIED, a, getScopeStore()
+				.getEmptyScope(), null);
+		/*
 		 * notify listeners
 		 */
 		notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
-		/*
-		 * store revision
-		 */
-		storeRevision(createRevision(), TopicMapEventType.ASSOCIATION_ADDED,
-				topicMap, a, null);
 		return a;
 	}
 
@@ -250,14 +254,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		getScopeStore().setScope(a, scope);
 		/*
+		 * store revision
+		 */
+		IRevision rev = createRevision();
+		storeRevision(rev, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a,
+				null);
+		storeRevision(rev, TopicMapEventType.TYPE_SET, a, type, null);
+		storeRevision(rev, TopicMapEventType.SCOPE_MODIFIED, a, getScopeStore()
+				.getScope(themes), null);
+		/*
 		 * notify listeners
 		 */
 		notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
-		/*
-		 * store revision
-		 */
-		storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, topicMap,
-				a, null);
 		return a;
 	}
 
@@ -332,7 +340,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	 *            the revision
 	 * @return the created name
 	 * @throws TopicMapStoreException
-	 *             thrown if opteration fails
+	 *             thrown if operation fails
 	 */
 	IName createName(ITopic topic, ITopic type, String value,
 			Collection<ITopic> themes, IRevision revision)
@@ -341,18 +349,17 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * check if topics should merge because of same name
 		 */
 		if (doMergingByTopicName()) {
-			Map<ITopic, IName> candidate = InMemoryMergeUtils
+			NameMergeCandidate candidate = InMemoryMergeUtils
 					.detectMergeByNameCandidate(this, topic, type, value,
 							themes);
 			if (candidate != null) {
-				Entry<ITopic, IName> c = candidate.entrySet().iterator().next();
 				if (!doAutomaticMerging()) {
 					throw new ModelConstraintException(
-							c.getValue(),
+							candidate.getName(),
 							"A topic with the same name already exists and the merge-by-name feature is set, but auto-merge is disabled.");
 				}
-				mergeTopics(topic, c.getKey(), revision);
-				return c.getValue();
+				mergeTopics(topic, candidate.getTopic(), revision);
+				return candidate.getName();
 			}
 		}
 		/*
@@ -386,6 +393,11 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * store revision
 		 */
 		storeRevision(revision, TopicMapEventType.NAME_ADDED, topic, name, null);
+		storeRevision(revision, TopicMapEventType.TYPE_SET, name, type, null);
+		storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, name, value,
+				null);
+		storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, name,
+				getScopeStore().getScope(themes), null);
 		/*
 		 * notify listener
 		 */
@@ -517,6 +529,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		storeRevision(revision, TopicMapEventType.OCCURRENCE_ADDED, topic,
 				occurrence, null);
+		storeRevision(revision, TopicMapEventType.TYPE_SET, occurrence, type,
+				null);
+		storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, occurrence,
+				value, null);
+		storeRevision(revision, TopicMapEventType.DATATYPE_SET, occurrence,
+				datatype, null);
+		storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, occurrence,
+				getScopeStore().getScope(themes), null);
 		/*
 		 * notify listener
 		 */
@@ -565,6 +585,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		storeRevision(revision, TopicMapEventType.ROLE_ADDED, association,
 				role, null);
+		storeRevision(revision, TopicMapEventType.TYPE_SET, role, type, null);
+		storeRevision(revision, TopicMapEventType.PLAYER_MODIFIED, role,
+				player, null);
 		/*
 		 * notify listeners
 		 */
@@ -658,6 +681,30 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 */
 			storeRevision(revision, TopicMapEventType.TOPIC_ADDED, topicMap, t,
 					null);
+			/*
+			 * add subject identifier
+			 */
+			if (subjectIdentifier != null) {
+				storeRevision(revision,
+						TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t,
+						subjectIdentifier, null);
+			}
+			/*
+			 * add subject locator
+			 */
+			if (subjectLocator != null) {
+				storeRevision(revision,
+						TopicMapEventType.SUBJECT_LOCATOR_ADDED, t,
+						subjectLocator, null);
+			}
+			/*
+			 * add item identifier
+			 */
+			if (itemIdentifier != null) {
+				storeRevision(revision,
+						TopicMapEventType.ITEM_IDENTIFIER_ADDED, t,
+						itemIdentifier, null);
+			}
 		}
 		/*
 		 * notify listeners
@@ -781,6 +828,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		storeRevision(revision, TopicMapEventType.VARIANT_ADDED, name, variant,
 				null);
+		storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, variant,
+				value, null);
+		storeRevision(revision, TopicMapEventType.DATATYPE_SET, variant,
+				datatype, null);
+		storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, variant,
+				scope, null);
 		/*
 		 * notify listeners
 		 */
@@ -825,10 +878,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 */
 			ITopic newTopic = createTopic(getTopicMap(), revision);
 			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
-			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
+			String oldId = context.getId();
 			((InMemoryIdentity) ((TopicImpl) context).getIdentity())
 					.setId(newTopic.getId());
 			((ConstructImpl) context).setRemoved(false);
+			/*
+			 * notify listeners
+			 */
+			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
+					context);
+			notifyListeners(TopicMapEventType.ID_MODIFIED, context,
+					newTopic.getId(), oldId);
+
+			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
+			oldId = other.getId();
 			((InMemoryIdentity) ((TopicImpl) other).getIdentity())
 					.setId(newTopic.getId());
 			((ConstructImpl) other).setRemoved(false);
@@ -837,6 +900,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 */
 			notifyListeners(TopicMapEventType.MERGE, getTopicMap(), newTopic,
 					other);
+			notifyListeners(TopicMapEventType.ID_MODIFIED, other,
+					newTopic.getId(), oldId);
 		}
 	}
 
@@ -1226,7 +1291,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void doModifyType(ITopic t, ITopic type)
+	protected void doModifyTopicType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		modifyTopicType(t, type, createRevision());
 	}
@@ -1481,8 +1546,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Changeset doReadChangeSet(IRevision r)
-			throws TopicMapStoreException {
+	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
 		return getRevisionStore().getChangeset(r);
 	}
 
@@ -1518,8 +1582,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t,
-			ITopic type, IScope scope) throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type,
+			IScope scope) throws TopicMapStoreException {
 		/*
 		 * get all characteristics
 		 */
@@ -1798,16 +1862,14 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IReifiable doReadReification(ITopic t)
-			throws TopicMapStoreException {
+	public IReifiable doReadReification(ITopic t) throws TopicMapStoreException {
 		return getReificationStore().getReified(t);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic doReadReification(IReifiable r)
-			throws TopicMapStoreException {
+	public ITopic doReadReification(IReifiable r) throws TopicMapStoreException {
 		return getReificationStore().getReifier(r);
 	}
 
@@ -1994,8 +2056,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTopics(ITopicMap t)
-			throws TopicMapStoreException {
+	public Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException {
 		Set<ITopic> set = HashUtil.getHashSet(getIdentityStore().getTopics());
 		if (set.isEmpty()) {
 			return Collections.emptySet();
@@ -2038,8 +2099,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doReadValue(IDatatypeAware c)
-			throws TopicMapStoreException {
+	public Object doReadValue(IDatatypeAware c) throws TopicMapStoreException {
 		return getCharacteristicsStore().getValueAsString(c);
 	}
 
@@ -2068,8 +2128,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IVariant> doReadVariants(IName n)
-			throws TopicMapStoreException {
+	public Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException {
 		Set<IVariant> set = HashUtil.getHashSet(getCharacteristicsStore()
 				.getVariants(n));
 		if (set.isEmpty()) {
@@ -2114,8 +2173,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic)
-			throws TopicMapStoreException {
+	public String doReadBestLabel(ITopic topic) throws TopicMapStoreException {
 		/*
 		 * get all names of the topic
 		 */
@@ -2125,15 +2183,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		}
 		return readBestIdentifier(topic);
 	}
-	
+
 	/**
 	 * Internal best label method only check name attributes.
-	 * @param topic the topic
-	 * @param set the non-empty set of names
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param set
+	 *            the non-empty set of names
 	 * @return the best name
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
-	private String readBestName(ITopic topic, Set<IName> names) throws TopicMapStoreException{
+	private String readBestName(ITopic topic, Set<IName> names)
+			throws TopicMapStoreException {
 		/*
 		 * check if default name type exists
 		 */
@@ -2159,12 +2222,12 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 */
 		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
 		scopes.add(getScopeStore().getEmptyScope());
-		if ( !scopes.isEmpty()){
+		if (!scopes.isEmpty()) {
 			/*
 			 * sort scopes by number of themes
 			 */
 			Collections.sort(scopes, ScopeComparator.getInstance(true));
-			for ( IScope s : scopes){
+			for (IScope s : scopes) {
 				/*
 				 * get names of the scope and topic
 				 */
@@ -2179,7 +2242,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				/*
 				 * more than one name
 				 */
-				else if ( tmp.size() > 1 ){
+				else if (tmp.size() > 1) {
 					names = tmp;
 					break;
 				}
@@ -2192,26 +2255,30 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		Collections.sort(list, NameByValueComparator.getInstance(true));
 		return list.get(0).getValue();
 	}
-	
+
 	/**
 	 * Internal best label method only check identifier attribute.
-	 * @param topic the topic	
+	 * 
+	 * @param topic
+	 *            the topic
 	 * @return the best identifier
-	 * @throws TopicMapStoreException thrown if operation fails
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
 	 */
-	private String readBestIdentifier(ITopic topic) throws TopicMapStoreException{
+	private String readBestIdentifier(ITopic topic)
+			throws TopicMapStoreException {
 		Set<ILocator> set = getIdentityStore().getSubjectIdentifiers(topic);
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			set = getIdentityStore().getSubjectLocators(topic);
-			if ( set.isEmpty()){
-				set = getIdentityStore().getItemIdentifiers(topic);			
-				if ( set.isEmpty()){
+			if (set.isEmpty()) {
+				set = getIdentityStore().getItemIdentifiers(topic);
+				if (set.isEmpty()) {
 					return topic.getId();
 				}
 			}
 		}
 		List<ILocator> list = HashUtil.getList(set);
-		Collections.sort(list,LocatorByReferenceComparator.getInstance(true));
+		Collections.sort(list, LocatorByReferenceComparator.getInstance(true));
 		return list.iterator().next().getReference();
 	}
 
@@ -3323,7 +3390,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		}
 		return topic;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -3392,7 +3459,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -3657,18 +3724,18 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		this.associationStore = createAssociationStore(this);
 		this.revisionStore = createRevisionStore(this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void enableCaching(boolean enable) {
 		// NOTHING TO DO
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isCachingEnabled() {		
+	public boolean isCachingEnabled() {
 		return false;
 	}
 }

@@ -90,6 +90,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -110,6 +113,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(String value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -132,6 +138,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -152,6 +164,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -174,6 +189,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -194,6 +215,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristics(String value, Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -216,6 +243,15 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -237,6 +273,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getCharacteristicsMatches(Pattern.compile(regExp), offset, limit);
 	}
 
@@ -246,6 +285,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristicsMatches(String regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getCharacteristicsMatches(Pattern.compile(regExp), offset, limit, comparator);
 	}
@@ -257,7 +302,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getCharacteristicsMatches(Pattern.compile(regExp), datatype, offset, limit);
 	}
 
@@ -268,6 +318,15 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		return getCharacteristicsMatches(Pattern.compile(regExp), datatype, offset, limit, comparator);
 	}
 
@@ -277,6 +336,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -299,6 +361,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -319,6 +387,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -341,6 +415,15 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (regExp == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (datatype == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -361,6 +444,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCoordinates(Wgs84Coordinate value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -383,6 +469,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -403,6 +495,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -425,6 +520,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -445,6 +546,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<IDatatypeAware> getDatatypeAwares(Locator dataType, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (dataType == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -467,6 +571,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (dataType == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -487,6 +597,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDateTime(Calendar value, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -509,6 +622,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -530,6 +649,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (deviance == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -550,6 +675,15 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDateTime(Calendar value, Calendar deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (deviance == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -593,6 +727,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -634,6 +771,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getDoubles(double value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -677,6 +817,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -718,6 +861,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getFloats(float value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -761,6 +907,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -802,6 +951,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getIntegers(int value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -845,6 +997,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -886,6 +1041,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getLongs(long value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -929,6 +1087,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -971,6 +1132,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -992,6 +1156,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -1012,6 +1179,12 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<ICharacteristics> getUris(URI value, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -1054,6 +1227,9 @@ public abstract class PagedLiteralIndexImpl<X extends ITopicMapStore> extends Ba
 	public List<Variant> getVariants(int offset, int limit, Comparator<Variant> comparator) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled

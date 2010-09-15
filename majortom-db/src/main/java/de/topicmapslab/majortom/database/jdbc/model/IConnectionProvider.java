@@ -66,7 +66,7 @@ public interface IConnectionProvider {
 	 * @throws TopicMapStoreException
 	 *             thrown if the driver class is unknown
 	 */
-	public void openConnection(String host, String database, String user, String password) throws SQLException, TopicMapStoreException;
+	public void openConnections(String host, String database, String user, String password) throws SQLException, TopicMapStoreException;
 
 	/**
 	 * Close an existing connection. If there is not an existing exception,
@@ -75,7 +75,7 @@ public interface IConnectionProvider {
 	 * @throws SQLException
 	 *             thrown if connection cannot be closed.
 	 */
-	public void closeConnection() throws SQLException;
+	public void closeConnections() throws SQLException;
 
 	/**
 	 * Returns the internal query processor instance, which should be used to

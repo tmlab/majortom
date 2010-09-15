@@ -49,6 +49,8 @@ public class MaJorToMTestCase extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		factory = TopicMapSystemFactory.newInstance();
+		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
+		factory.setFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
 		factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION,
 				false);

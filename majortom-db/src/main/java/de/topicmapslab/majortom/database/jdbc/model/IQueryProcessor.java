@@ -54,7 +54,9 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public interface IQueryProcessor {
 
-	public Connection getConnection();
+	public Connection getWriterConnection();
+	
+	public Connection getReaderConnection();
 	
 	public void close();
 

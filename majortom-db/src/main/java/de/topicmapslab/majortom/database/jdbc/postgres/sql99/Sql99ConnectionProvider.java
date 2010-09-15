@@ -43,8 +43,9 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected Sql99QueryProcessor createProcessor(IConnectionProvider provider, Connection connection) {
-		return new Sql99QueryProcessor(this, connection);
+	protected Sql99QueryProcessor createProcessor(IConnectionProvider provider,
+			Connection readerConnection, Connection writerConnetion) {
+		return new Sql99QueryProcessor(this, readerConnection, writerConnetion);
 	}
 
 	/**

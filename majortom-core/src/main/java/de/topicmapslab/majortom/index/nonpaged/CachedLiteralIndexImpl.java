@@ -76,6 +76,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -96,6 +99,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<ICharacteristics> getCharacteristics(Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -118,6 +124,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -139,6 +151,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getCharacteristicsMatches(Pattern.compile(regExp));
 	}
 
@@ -149,6 +164,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		return getCharacteristicsMatches(Pattern.compile(regExp), datatype);
 	}
 
@@ -158,6 +179,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -180,6 +204,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( regExp == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -200,6 +230,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -222,6 +255,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -242,6 +278,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<IDatatypeAware> getDatatypeAwares(Locator dataType) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( dataType == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -264,6 +303,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -284,6 +326,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<ICharacteristics> getDateTime(Calendar value, Calendar deviance) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( deviance == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -495,6 +543,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( literal == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -537,6 +588,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -557,6 +611,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<Occurrence> getOccurrences(final String value, Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -579,6 +639,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -599,6 +662,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<ICharacteristics> getUris(URI value) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
@@ -642,6 +708,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -663,6 +732,9 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
 		/*
 		 * redirect to real store if caching is disabled
 		 */
@@ -683,6 +755,12 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 	public Collection<Variant> getVariants(String value, Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( value == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		if ( datatype == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
 		 * redirect to real store if caching is disabled
