@@ -3,11 +3,14 @@
  */
 package de.topicmapslab.majortom.testsuite.readonly.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Test;
@@ -19,7 +22,6 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
-import de.topicmapslab.majortom.osgi.MajorToMActivator;
 import de.topicmapslab.majortom.testsuite.readonly.AbstractTest;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
