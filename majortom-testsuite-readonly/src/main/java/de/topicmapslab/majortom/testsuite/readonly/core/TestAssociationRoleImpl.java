@@ -7,12 +7,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import de.topicmapslab.majortom.testsuite.readonly.AbstractTest;
+
 
 /**
  * @author ch
  *
  */
-public class TestAssociationRoleImpl {
+public class TestAssociationRoleImpl extends AbstractTest {
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationRoleImpl#getParent()}.
