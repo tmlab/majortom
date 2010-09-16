@@ -50,6 +50,7 @@ public class LiteralUtils {
 	 * regular expression of dateTime
 	 */
 	private final static Pattern dateTimePattern = Pattern.compile(datePattern.pattern() + "T" + timePattern.pattern());
+	private final static Pattern alternativeDateTimePattern = Pattern.compile(datePattern.pattern() + " " + timePattern.pattern());
 	/**
 	 * regular expression of decimal
 	 */
@@ -116,7 +117,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as integer
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is an integer literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -128,7 +130,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as decimal
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a decimal literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -140,7 +143,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as date
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a date literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -152,7 +156,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as time
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a time literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -164,19 +169,21 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as dateTime
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a dateTime literal,
 	 *         <code>false</code> otherwise.
 	 */
 	public static final boolean isDateTime(final String literal) {
-		return dateTimePattern.matcher(literal).matches();
+		return dateTimePattern.matcher(literal).matches() || alternativeDateTimePattern.matcher(literal).matches();
 	}
 
 	/**
 	 * Method checks if the given string literal can be represented as quoted
 	 * string literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a quoted string literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -188,7 +195,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as triple
 	 * quoted string literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is a triple quoted string
 	 *         literal, <code>false</code> otherwise.
 	 */
@@ -200,7 +208,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as integer
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is an integer literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -212,7 +221,8 @@ public class LiteralUtils {
 	 * Method checks if the given string literal can be represented as IRI
 	 * literal.
 	 * 
-	 * @param literal the literal
+	 * @param literal
+	 *            the literal
 	 * @return <code>true</code> if the literal is an IRI literal,
 	 *         <code>false</code> otherwise.
 	 */
@@ -228,10 +238,11 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as integer literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the integer literal
-	 * @throws NumberFormatException thrown if literal cannot be format as
-	 *             number
+	 * @throws NumberFormatException
+	 *             thrown if literal cannot be format as number
 	 */
 	public static final BigInteger asInteger(final String literal) throws NumberFormatException {
 		return BigInteger.valueOf(Long.parseLong(literal));
@@ -240,10 +251,11 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as decimal literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the decimal literal
-	 * @throws NumberFormatException thrown if literal cannot be format as
-	 *             number
+	 * @throws NumberFormatException
+	 *             thrown if literal cannot be format as number
 	 */
 	public static final BigDecimal asDecimal(final String literal) throws NumberFormatException {
 		return BigDecimal.valueOf(Double.parseDouble(literal));
@@ -252,9 +264,11 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as date literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the date literal
-	 * @throws ParseException thrown if literal cannot be format as date
+	 * @throws ParseException
+	 *             thrown if literal cannot be format as date
 	 */
 	public static final Calendar asDate(final String literal) throws ParseException {
 		Date date = null;
@@ -276,9 +290,11 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as time literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the time literal
-	 * @throws ParseException thrown if literal cannot be format as time
+	 * @throws ParseException
+	 *             thrown if literal cannot be format as time
 	 */
 	public static final Calendar asTime(final String literal) throws ParseException {
 		Date date = null;
@@ -300,19 +316,27 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as dateTime literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the dateTime literal
-	 * @throws ParseException thrown if literal cannot be format as dateTime
+	 * @throws ParseException
+	 *             thrown if literal cannot be format as dateTime
 	 */
 	public static final Calendar asDateTime(final String literal) throws ParseException {
 		Date date = null;
 		for (String dp : datePatterns) {
-			for (String tp : timePatterns)
+			for (String tp : timePatterns) {
 				try {
 					date = new SimpleDateFormat(dp + "'T'" + tp).parse(literal);
 				} catch (ParseException e) {
 					// VOID
 				}
+				try {
+					date = new SimpleDateFormat(dp + "' '" + tp).parse(literal);
+				} catch (ParseException e) {
+					// VOID
+				}
+			}
 		}
 		if (date == null) {
 			throw new ParseException("Invalid dateTime pattern", -1);
@@ -325,7 +349,8 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as string literal.
 	 * 
-	 * @param literal the quoted string literal
+	 * @param literal
+	 *            the quoted string literal
 	 * @return the string literal without quotes
 	 */
 	public static final String asQuotedString(final String literal) {
@@ -335,7 +360,8 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as string literal.
 	 * 
-	 * @param literal the triple quoted string literal
+	 * @param literal
+	 *            the triple quoted string literal
 	 * @return the string literal without quotes
 	 */
 	public static final String asTripleQuotedString(final String literal) {
@@ -345,7 +371,8 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as string literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the string literal without quotes
 	 */
 	public static final String asString(final String literal) {
@@ -361,9 +388,11 @@ public class LiteralUtils {
 	/**
 	 * Method formats the given literal as IRI literal.
 	 * 
-	 * @param literal the string literal
+	 * @param literal
+	 *            the string literal
 	 * @return the string literal without quotes
-	 * @throws URISyntaxException thrown if given literal isn't a valid IRI
+	 * @throws URISyntaxException
+	 *             thrown if given literal isn't a valid IRI
 	 */
 	public static final URI asIri(final String literal) throws URISyntaxException {
 		return new URI(literal);
@@ -373,11 +402,14 @@ public class LiteralUtils {
 	 * Transform the given literal to a literal of the specified type given by
 	 * dataType IRI.
 	 * 
-	 * @param literal the literal value to convert
-	 * @param datatType the IRI of the data-type
+	 * @param literal
+	 *            the literal value to convert
+	 * @param datatType
+	 *            the IRI of the data-type
 	 * @return the transformed literal or a string literal if the value does not
 	 *         matches the regular expression of the given type.
-	 * @throws Exception thrown if transformation fails
+	 * @throws Exception
+	 *             thrown if transformation fails
 	 */
 	public static Object asLiteral(final String literal, final String datatType) throws Exception {
 		final String dataType_ = XmlSchemeDatatypes.toExternalForm(datatType);
@@ -428,8 +460,10 @@ public class LiteralUtils {
 	 * if the distance between the both calendars is smaller than the second
 	 * calendar represented time range.
 	 * 
-	 * @param relative the calendar
-	 * @param value the calendar to check
+	 * @param relative
+	 *            the calendar
+	 * @param value
+	 *            the calendar to check
 	 * @param double the range representation
 	 * @return <code>true</code> if the second calendar is in the range,
 	 *         <code>false</code> otherwise.
