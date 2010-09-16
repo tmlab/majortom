@@ -21,6 +21,7 @@ import java.util.Set;
 import org.junit.Test;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Occurrence;
+import org.tmapi.core.Topic;
 
 import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
@@ -912,20 +913,48 @@ public class TestOccurrenceImpl extends AbstractTest {
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ScopeableImpl#getScope()}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testGetScope/topic/1)
+	 * has exactly 1 occurrence with single theme scope (http://TestOccurrenceImpl/testGetScope/theme)
 	 */
 	@Test
 	public void testGetScope() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testGetScopeObject/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		Set<Topic> themes = o.getScope();
+		assertEquals(1, themes.size());
+		ITopic theme = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testGetScopeObject/theme"));
+		assertNotNull(theme);
+		assertTrue(themes.contains(theme));
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ScopeableImpl#removeTheme(org.tmapi.core.Topic)}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testRemoveTheme/topic/1)
+	 * has exactly 1 occurrence with single theme scope (http://TestOccurrenceImpl/testRemoveTheme/theme)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemoveTheme() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testRemoveTheme/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		Set<Topic> themes = o.getScope();
+		assertEquals(1, themes.size());
+		ITopic theme = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testRemoveTheme/theme"));
+		assertNotNull(theme);
+		assertTrue(themes.contains(theme));
+		
+		o.removeTheme(theme);
 	}
 
 	/**
@@ -934,43 +963,90 @@ public class TestOccurrenceImpl extends AbstractTest {
 	@Test
 	public void testGetReifier() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ReifiableImpl#setReifier(org.tmapi.core.Topic)}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testSetReifier/topic/1)
+	 * has exactly 1 occurrence
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testSetReifier/ref)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testSetReifier() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testSetReifier/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		ITopic ref = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testSetReifier/ref"));
+		assertNotNull(ref);
+		
+		o.setReifier(ref);
+
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getTopicMap()}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testGetTopicMap/topic/1)
+	 * has exactly 1 occurrence
 	 */
 	@Test
 	public void testGetTopicMap() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testSetReifier/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		assertEquals(map, o.getTopicMap());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#addItemIdentifier(org.tmapi.core.Locator)}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testAddItemIdentifier/topic/1)
+	 * has exactly 1 occurrence
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testAddItemIdentifier() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testAddItemIdentifier/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		Locator l = map.createLocator("http://TestOccurrenceImpl/testAddItemIdentifier/ii");
+		assertNotNull(l);
+		o.addItemIdentifier(l);
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getId()}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testGetId/topic/1)
+	 * has exactly 1 occurrence
 	 */
 	@Test
 	public void testGetId() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testGetId/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		String id = o.getId();
+		assertNotNull(id);
+		assertEquals(id, o.getId());
 	}
 
 	/**
@@ -979,25 +1055,56 @@ public class TestOccurrenceImpl extends AbstractTest {
 	@Test
 	public void testGetItemIdentifiers() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#remove()}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testRemove/topic/1)
+	 * has exactly 1 occurrence
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testRemove() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testRemove/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		o.remove();
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#remove(boolean)}.
+	 * 
+	 * Topic (http://TestOccurrenceImpl/testRemoveBoolean/topic/1)
+	 * has exactly 1 occurrence
 	 */
 	@Test
 	public void testRemoveBoolean() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testRemoveBoolean/topic/1"));
+		assertNotNull(topic);
+		assertEquals(1, topic.getOccurrences().size());
+		IOccurrence o = (IOccurrence)topic.getOccurrences().iterator().next();
+		
+		try{
+			o.remove(true);
+			fail("No exception thrown");
+		}catch (Exception e) {
+			assertTrue(e instanceof UnmodifyableStoreException);
+		}
+		
+		try{
+			o.remove(false);
+			fail("No exception thrown");
+		}catch (Exception e) {
+			assertTrue(e instanceof UnmodifyableStoreException);
+		}
 	}
 
 	/**
@@ -1006,60 +1113,53 @@ public class TestOccurrenceImpl extends AbstractTest {
 	@Test
 	public void testRemoveItemIdentifier() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getParent()}.
-	 */
-	@Test
-	public void testGetParent1() {
 
-		fail("Not yet implemented");
-	}
+//	/**
+//	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getIdentity()}.
+//	 */
+//	@Test
+//	public void testGetIdentity() {
+//
+//		fail("Not yet implemented");
+//	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#getIdentity()}.
-	 */
-	@Test
-	public void testGetIdentity() {
+//	/**
+//	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#compareTo(de.topicmapslab.majortom.model.core.IConstruct)}.
+//	 */
+//	@Test
+//	public void testCompareTo() {
+//
+//		fail("Not yet implemented");
+//	}
 
-		fail("Not yet implemented");
-	}
+//	/**
+//	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#equals(java.lang.Object)}.
+//	 */
+//	@Test
+//	public void testEqualsObject() {
+//
+//		fail("Not yet implemented");
+//	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#compareTo(de.topicmapslab.majortom.model.core.IConstruct)}.
-	 */
-	@Test
-	public void testCompareTo() {
+//	/**
+//	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#isRemoved()}.
+//	 */
+//	@Test
+//	public void testIsRemoved() {
+//
+//		fail("Not yet implemented");
+//	}
 
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#equals(java.lang.Object)}.
-	 */
-	@Test
-	public void testEqualsObject() {
-
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#isRemoved()}.
-	 */
-	@Test
-	public void testIsRemoved() {
-
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#setRemoved(boolean)}.
-	 */
-	@Test
-	public void testSetRemoved() {
-
-		fail("Not yet implemented");
-	}
+//	/**
+//	 * Test method for {@link de.topicmapslab.majortom.core.ConstructImpl#setRemoved(boolean)}.
+//	 */
+//	@Test
+//	public void testSetRemoved() {
+//
+//		fail("Not yet implemented");
+//	}
 }
