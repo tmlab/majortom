@@ -5,58 +5,136 @@ package de.topicmapslab.majortom.testsuite.readonly.core;
 
 import static org.junit.Assert.*;
 
+import java.util.Set;
+
 import org.junit.Test;
+import org.tmapi.core.Association;
+import org.tmapi.core.Role;
+
+import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
+import de.topicmapslab.majortom.testsuite.readonly.AbstractTest;
 
 
-/**
- * @author ch
- *
- */
-public class TestAssociationImpl {
+public class TestAssociationImpl extends AbstractTest {
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationImpl#createRole(org.tmapi.core.Topic, org.tmapi.core.Topic)}.
+	 * 
+	 * it exist exactly one association of type (http://TestAssociationImpl/testCreateRole/asstype)
+	 * 
+	 * Topic (http://TestAssociationImpl/testCreateRole/topic/1)
+	 * Topic (http://TestAssociationImpl/testCreateRole/roletype)
 	 */
-	@Test
+	@Test(expected=UnmodifyableStoreException.class)
 	public void testCreateRole() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic asstype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testCreateRole/asstype"));
+		assertNotNull(asstype);
+		
+		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testCreateRole/topic/1"));
+		assertNotNull(topic);
+		
+		ITopic roletype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testCreateRole/roletype"));
+		assertNotNull(roletype);
+		
+		assertEquals(1, map.getAssociations(asstype).size());
+		IAssociation ass = (IAssociation)map.getAssociations(asstype).iterator().next();
+		
+		ass.createRole(roletype, topic);
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationImpl#getParent()}.
+	 * 
+	 * it exist exactly one association of type (http://TestAssociationImpl/testGetParent/asstype)
 	 */
 	@Test
 	public void testGetParent() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic asstype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetParent/asstype"));
+		assertNotNull(asstype);
+		
+		assertEquals(1, map.getAssociations(asstype).size());
+		IAssociation ass = (IAssociation)map.getAssociations(asstype).iterator().next();
+		
+		assertEquals(map, ass.getParent());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationImpl#getRoleTypes()}.
+	 * 
+	 * it exist exactly one association of type (http://TestAssociationImpl/testGetRoleTypes/asstype)
+	 * which has two roles of type (http://TestAssociationImpl/testGetRoleTypes/roletype)
 	 */
 	@Test
 	public void testGetRoleTypes() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic asstype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetRoleTypes/asstype"));
+		assertNotNull(asstype);
+		
+		ITopic roletype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetRoleTypes/roletype"));
+		assertNotNull(roletype);
+		
+		assertEquals(1, map.getAssociations(asstype).size());
+		IAssociation ass = (IAssociation)map.getAssociations(asstype).iterator().next();
+		
+		assertEquals(2, ass.getRoles().size());
+		assertEquals(1, ass.getRoleTypes().size());
+		assertEquals(roletype, ass.getRoleTypes().iterator().next());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationImpl#getRoles()}.
+	 * 
+	 * it exist exactly one association of type (http://TestAssociationImpl/testGetRoles/asstype)
+	 * which has two roles
 	 */
 	@Test
 	public void testGetRoles() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic asstype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetRoles/asstype"));
+		assertNotNull(asstype);
+		
+		assertEquals(1, map.getAssociations(asstype).size());
+		IAssociation ass = (IAssociation)map.getAssociations(asstype).iterator().next();
+		
+		Set<Role> roles = ass.getRoles();
+		assertNotNull(roles);
+		assertEquals(2, roles.size());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.AssociationImpl#getRoles(org.tmapi.core.Topic)}.
+	 * 
+	 * it exist exactly one association of type (http://TestAssociationImpl/testGetRolesTopic/asstype)
+	 * which has two roles, one of type (http://TestAssociationImpl/testGetRolesTopic/roletype)
 	 */
 	@Test
 	public void testGetRolesTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		
+		ITopic asstype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetRolesTopic/asstype"));
+		assertNotNull(asstype);
+		
+		ITopic roletype = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestAssociationImpl/testGetRolesTopic/roletype"));
+		assertNotNull(roletype);
+		
+		assertEquals(1, map.getAssociations(asstype).size());
+		IAssociation ass = (IAssociation)map.getAssociations(asstype).iterator().next();
+		
+		assertEquals(2, ass.getRoles().size());
+		assertEquals(1, ass.getRoles(roletype).size());
 	}
 
 	/**
