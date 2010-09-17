@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
@@ -386,32 +387,35 @@ public class TestNameImpl extends AbstractTest {
 		assertEquals("value", name.getValue());
 	}
 
-//	/**
-//	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getVariants(int, int)}.
-//	 */
-//	@Test
-//	public void testGetVariantsIntInt() {
-//
-//		fail("Not yet implemented");
-//	}
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getVariants(int, int)}.
+	 */
+	@Ignore
+	@Test
+	public void testGetVariantsIntInt() {
 
-//	/**
-//	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getVariants(int, int, java.util.Comparator)}.
-//	 */
-//	@Test
-//	public void testGetVariantsIntIntComparatorOfVariant() {
-//
-//		fail("Not yet implemented");
-//	}
+		fail("Not yet implemented");
+	}
 
-//	/**
-//	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getNumberOfVariants()}.
-//	 */
-//	@Test
-//	public void testGetNumberOfVariants() {
-//
-//		fail("Not yet implemented");
-//	}
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getVariants(int, int, java.util.Comparator)}.
+	 */
+	@Ignore
+	@Test
+	public void testGetVariantsIntIntComparatorOfVariant() {
+
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.NameImpl#getNumberOfVariants()}.
+	 */
+	@Ignore
+	@Test
+	public void testGetNumberOfVariants() {
+
+		fail("Not yet implemented");
+	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.ScopeableImpl#getScopeObject()}.

@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Occurrence;
@@ -668,13 +669,14 @@ public class TestOccurrenceImpl extends AbstractTest {
 		}
 	}
 
-//	/**
-//	 * Test method for {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#surfaceValue()}.
-//	 */
-//	@Test
-//	public void testSurfaceValue() throws ParseException {
-//
-//	}
+	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#surfaceValue()}.
+	 */
+	@Ignore
+	@Test
+	public void testSurfaceValue() throws ParseException {
+
+	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.DataTypeAwareImpl#setValue(java.lang.String)}.
