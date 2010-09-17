@@ -1147,8 +1147,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetAssociationsPlayedIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1157,8 +1155,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetAssociationsPlayedIntIntComparatorOfAssociation() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1167,8 +1163,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNamesIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1177,8 +1171,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNamesIntIntComparatorOfName() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1187,8 +1179,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetOccurrencesIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1197,8 +1187,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetOccurrencesIntIntComparatorOfOccurrence() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1207,8 +1195,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetRolesPlayedIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1217,8 +1203,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetRolesPlayedIntIntComparatorOfRole() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1227,8 +1211,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetSupertypesIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1237,8 +1219,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetSupertypesIntIntComparatorOfTopic() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1247,8 +1227,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetTypesIntInt() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1257,8 +1235,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetTypesIntIntComparatorOfTopic() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1267,8 +1243,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfAssociationsPlayed() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1277,8 +1251,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfNames() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1287,8 +1259,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfOccurrences() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1297,8 +1267,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfRolesPlayed() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1307,8 +1275,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfSupertypes() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1317,8 +1283,6 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfTypes() {
-
-		fail("Not yet implemented");
 	}
 
 	/**
