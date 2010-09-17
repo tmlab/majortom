@@ -1139,8 +1139,6 @@ public class TestTopicImpl extends AbstractTest{
 		topic.removeSubjectLocator(sl);
 	}
 
-
-
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getAssociationsPlayed(int, int)}.
 	 */

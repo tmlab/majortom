@@ -15,5 +15,10 @@
   		<artifactId>majortom-core</artifactId>
   		<version>${project.parent.version}</version>
   	</dependency>
+  	<dependency>
+  		<groupId>de.topicmapslab.majortom</groupId>
+  		<artifactId>majortom-model</artifactId>
+  		<version>${project.parent.version}</version>
+  	</dependency>
   </dependencies>
 </project>
