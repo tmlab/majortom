@@ -3,7 +3,11 @@
  */
 package de.topicmapslab.majortom.testsuite.readonly.index;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,6 +17,7 @@ import org.tmapi.core.Association;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
+import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 import org.tmapi.index.TypeInstanceIndex;
 
@@ -599,66 +604,193 @@ public class TestTypeInstanceIndex extends AbstractTest {
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopics(java.util.Collection, boolean)}.
+	 * 
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopicBoolean/type/1)
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopicBoolean/type/2)
+	 * and 1 Topic which has both of those types
+	 * 
 	 */
 	@Test
 	public void testGetTopicsCollectionOfTopicBoolean() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopicBoolean/type/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopicBoolean/type/2"));
+		assertNotNull(type2);
+		
+		Collection<Topic> t1 = new HashSet<Topic>();
+		t1.add(type1);
+		Collection<Topic> t2 = new HashSet<Topic>();
+		t2.add(type2);
+		Collection<Topic> t12 = new HashSet<Topic>();
+		t12.add(type1);
+		t12.add(type2);
+		
+		assertEquals(2, index.getTopics(t1,true).size()); /// TODO discuss with krossi
+		assertEquals(2, index.getTopics(t2,true).size());
+		
+		assertEquals(1, index.getTopics(t12,true).size());
+		assertEquals(3, index.getTopics(t12,false).size());
+		
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopics(java.util.Collection)}.
+	 * 
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/1)
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/2)
+	 * and 1 Topic which has both of those types
 	 */
 	@Test
 	public void testGetTopicsCollectionOfTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/2"));
+		assertNotNull(type2);
+		
+		Collection<Topic> t1 = new HashSet<Topic>();
+		t1.add(type1);
+		Collection<Topic> t2 = new HashSet<Topic>();
+		t2.add(type2);
+		Collection<Topic> t12 = new HashSet<Topic>();
+		t12.add(type1);
+		t12.add(type2);
+		
+		assertEquals(2, index.getTopics(t1).size()); /// TODO dito
+		assertEquals(2, index.getTopics(t2).size());
+		
+		assertEquals(3, index.getTopics(t12).size());
+		
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopics(org.tmapi.core.Topic)}.
+	 * 
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/1)
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/2)
+	 * and 1 Topic which has the types
+	 * (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/3) and
+	 * (http://TestTypeInstanceIndex/testGetTopicsCollectionOfTopic/type/4)
 	 */
 	@Test
 	public void testGetTopicsTopic() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopic/type/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopic/type/2"));
+		assertNotNull(type2);
+		
+		ITopic type4 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopic/type/4"));
+		assertNotNull(type4);
+		
+		ITopic type3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopic/type/3"));
+		assertNotNull(type3);
+		
+		
+		
+		assertEquals(1, index.getTopics(type1).size());
+		assertEquals(1, index.getTopics(type2).size());
+		assertEquals(1, index.getTopics(type3).size());
+		assertEquals(1, index.getTopics(type4).size());
+		
+		assertEquals(index.getTopics(type3).iterator().next(), index.getTopics(type4).iterator().next());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopics(org.tmapi.core.Topic[])}.
+	 * 
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsTopicArray/type/1)
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsTopicArray/type/2)
+	 * and 1 Topic which has both of those types
 	 */
 	@Test
 	public void testGetTopicsTopicArray() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopicArray/type/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopicArray/type/2"));
+		assertNotNull(type2);
+		
+		assertEquals(2, index.getTopics(type1).size()); /// TODO dito
+		assertEquals(2, index.getTopics(type2).size());
+		
+		assertEquals(3, index.getTopics(type1, type2).size());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopics(org.tmapi.core.Topic[], boolean)}.
+	 * 
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsTopicArrayBoolean/type/1)
+	 * 1 Topic of type (http://TestTypeInstanceIndex/testGetTopicsTopicArrayBoolean/type/2)
+	 * and 1 Topic which has both of those types
 	 */
 	@Test
 	public void testGetTopicsTopicArrayBoolean() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		ITopic type1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopicArrayBoolean/type/1"));
+		assertNotNull(type1);
+		
+		ITopic type2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTypeInstanceIndex/testGetTopicsTopicArrayBoolean/type/2"));
+		assertNotNull(type2);
+		
+		Topic[] t1 = new Topic[] {type1};
+		Topic[] t2 = new Topic[] {type2};
+		Topic[] t12 = new Topic[] {type1,type2};
+		
+		assertEquals(2, index.getTopics(t1, true).size());
+		assertEquals(2, index.getTopics(t2,true).size());
+		
+		assertEquals(1, index.getTopics(t12,true).size());
+		assertEquals(3, index.getTopics(t12,false).size());
 	}
 
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#getTopicTypes()}.
+	 * 
+	 * 
 	 */
 	@Test
 	public void testGetTopicTypes() {
 
+		/// TODO implement
 		fail("Not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.majortom.model.index.ITypeInstanceIndex#clear()}.
-	 */
-	@Test
-	public void testClear() {
-
-		fail("Not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link  de.topicmapslab.majortom.model.index.ITypeInstanceIndex#open()}.
@@ -666,7 +798,12 @@ public class TestTypeInstanceIndex extends AbstractTest {
 	@Test
 	public void testOpen() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		assertFalse(index.isOpen());
+		index.open();
+		assertTrue(index.isOpen());
 	}
 
 	/**
@@ -675,33 +812,31 @@ public class TestTypeInstanceIndex extends AbstractTest {
 	@Test
 	public void testIsOpen() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		assertFalse(index.isOpen());
+		index.open();
+		assertTrue(index.isOpen());
 	}
 
 	/**
 	 * Test method for {@link  de.topicmapslab.majortom.model.index.ITypeInstanceIndex#close()}.
 	 */
-	@Test
+	@Test(expected=TMAPIRuntimeException.class)
 	public void testClose() {
 
-		fail("Not yet implemented");
+		assertNotNull(map);
+		ITypeInstanceIndex index = (ITypeInstanceIndex)map.getIndex(TypeInstanceIndex.class);
+		assertNotNull(index);
+		assertFalse(index.isOpen());
+		index.open();
+		assertTrue(index.isOpen());
+		
+		index.close();
+		assertFalse(index.isOpen());
+		
+		index.getAssociationTypes();
 	}
 
-	/**
-	 * Test method for {@link  de.topicmapslab.majortom.model.index.ITypeInstanceIndex#isAutoUpdated()}.
-	 */
-	@Test
-	public void testIsAutoUpdated() {
-
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link  de.topicmapslab.majortom.model.index.ITypeInstanceIndex#reindex()}.
-	 */
-	@Test
-	public void testReindex() {
-
-		fail("Not yet implemented");
-	}
 }
