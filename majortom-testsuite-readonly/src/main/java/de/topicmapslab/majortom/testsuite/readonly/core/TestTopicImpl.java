@@ -1284,6 +1284,54 @@ public class TestTopicImpl extends AbstractTest{
 	}
 
 	/**
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getBestLabel(Topic theme)}.
+	 * 
+	 * Topic(http://TestTopicImpl/testGetBestLabelTopic/topic/1) has names "a" without scope 
+	 * and names "aa" and "bb" with scope:
+	 * (http://TestTopicImpl/testGetBestLabelTopic/theme1)
+	 * 
+	 * Topic(http://TestTopicImpl/testGetBestLabelTopic/topic/2) has "a" with scope:
+	 * (http://TestTopicImpl/testGetBestLabelTopic/theme1)
+	 * (http://TestTopicImpl/testGetBestLabelTopic/theme2)
+	 * and names "aa" and "bb"
+	 * with scope
+	 * (http://TestTopicImpl/testGetBestLabelTopic/theme2)
+	 * 
+	 * Topic(http://TestTopicImpl/testGetBestLabelTopic/topic/3)
+	 * has names "abcdefg" without scope
+	 * and name "a" with scope:
+	 * (http://TestTopicImpl/testGetBestLabelTopic/theme1)
+	 * 
+	 * 
+	 * TODO improve test!
+	 */
+	@Test
+	public void testGetBestLabelTopic() {
+		
+		assertNotNull(map);
+		
+		ITopic theme1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/theme1"));
+		assertNotNull(theme1);
+		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/theme2"));
+		assertNotNull(theme2);
+		
+		
+		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/1"));
+		assertNotNull(topic1);
+		assertEquals("aa", topic1.getBestLabel(theme1));
+		
+		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/2"));
+		assertNotNull(topic2);
+		assertEquals("aa", topic2.getBestLabel(theme2));
+		assertEquals("a", topic2.getBestLabel(theme1));
+		
+		ITopic topic3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/3"));
+		assertNotNull(topic3);
+		assertEquals("abcdefg", topic3.getBestLabel(theme2)); // no name so use min scope, i.e. abcdefg
+		
+	}
+	
+	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getBestLabel()}.
 	 * 
 	 * Topic(http://TestTopicImpl/testGetBestLable/topic/1) has only the item identifier (http://TestTopicImpl/testGetBestLable/topic/1)
