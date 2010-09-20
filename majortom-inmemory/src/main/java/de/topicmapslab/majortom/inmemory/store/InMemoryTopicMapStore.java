@@ -256,11 +256,10 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * store revision
 		 */
-		IRevision rev = createRevision();
-		storeRevision(rev, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a,
+		storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a,
 				null);
-		storeRevision(rev, TopicMapEventType.TYPE_SET, a, type, null);
-		storeRevision(rev, TopicMapEventType.SCOPE_MODIFIED, a, getScopeStore()
+		storeRevision(revision, TopicMapEventType.TYPE_SET, a, type, null);
+		storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, a, getScopeStore()
 				.getScope(themes), null);
 		/*
 		 * notify listeners

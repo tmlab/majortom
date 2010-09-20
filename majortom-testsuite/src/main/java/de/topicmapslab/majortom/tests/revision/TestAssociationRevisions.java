@@ -60,5 +60,24 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		assertTrue(association.getRoles().contains(role));
 		assertTrue(association.getRoles().contains(other));
 	}
+	
+	public void testCreateAssociation() throws Exception {
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		assertNull(index.getFirstRevision());
+		
+		topicMap.getStore().enableRevisionManagement(false);
+		ITopic type = createTopic();
+		assertNull(index.getFirstRevision());
+		
+		topicMap.getStore().enableRevisionManagement(true);
+		assertNull(index.getFirstRevision());
+		
+		topicMap.createAssociation(type);
+		assertNotNull(index.getFirstRevision());
+		IRevision r = index.getFirstRevision();
+		assertEquals(3, r.getChangeset().size());
+		assertNull(r.getFuture());
+	}
 
 }
