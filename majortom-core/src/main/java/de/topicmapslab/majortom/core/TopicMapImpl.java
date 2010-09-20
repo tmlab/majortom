@@ -499,4 +499,5 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	public void clear() {
 		getStore().clear();
 	}
+	
 }

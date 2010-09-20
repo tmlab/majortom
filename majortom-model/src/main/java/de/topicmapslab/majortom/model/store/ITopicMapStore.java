@@ -23,7 +23,7 @@ public interface ITopicMapStore {
 	 * Initializing method of the topic map store.
 	 * 
 	 * @param topicMapBaseLocator
-	 *            TODO
+	 *           the base locator
 	 * 
 	 * @throws TopicMapStoreException
 	 *             thrown if initialization failed

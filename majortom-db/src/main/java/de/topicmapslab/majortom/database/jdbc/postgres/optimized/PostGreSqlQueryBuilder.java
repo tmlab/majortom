@@ -73,6 +73,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 
 	private PreparedStatement preparedStatementReadSupertypes;
 	private PreparedStatement preparedStatementReadBestLabel;
+	private PreparedStatement preparedStatementReadBestLabelWithTheme;
 	private PreparedStatement preparedStatementReadScopeByThemes;
 
 	/**
@@ -115,6 +116,16 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 			this.preparedStatementReadBestLabel = getWriterConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_BEST_LABEL);
 		}
 		return this.preparedStatementReadBestLabel;
+	}
+	
+	/**
+	 * @since 1.1.2
+	 */
+	public PreparedStatement getQueryReadBestLabelWithTheme() throws SQLException{
+		if (this.preparedStatementReadBestLabelWithTheme == null) {
+			this.preparedStatementReadBestLabelWithTheme = getWriterConnection().prepareStatement(IPostGreSqlSelectQueries.QUERY_READ_BEST_LABEL_WITH_THEME);
+		}
+		return this.preparedStatementReadBestLabelWithTheme;
 	}
 
 	// TransitiveTypeInstanceIndex

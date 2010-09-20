@@ -20,8 +20,11 @@ package de.topicmapslab.majortom.database.jdbc.postgres.optimized;
 
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
@@ -44,6 +47,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	private boolean procedureTransitiveSupertypesArray = false;
 	private boolean procedureTransitiveTypes = false;
 	private boolean procedureBestLabel = false;
+	private boolean procedureBestLabelWithTheme = false;
 	private boolean procedureTypesAndSubtypes = false;
 	private boolean procedureTypesAndSubtypesArray = false;
 
@@ -76,6 +80,27 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	protected String getSchemaQuery() {
+		/*
+		 * check if language extension already exists
+		 */
+		boolean plpgsqlExists = false;
+		try{
+			Statement stmt = getReaderConnection().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT lanname FROM pg_language;");
+			while ( rs.next()){
+				if ( "plpgsql".equalsIgnoreCase(rs.getString("lanname"))){
+					plpgsqlExists = true;
+					break;
+				}
+			}
+			rs.close();
+			stmt.close();
+		}catch(SQLException e){
+			throw new TopicMapStoreException("Cannot read registered languages from database.", e);
+		}
+		/*
+		 * read script file
+		 */
 		InputStream is = getClass().getResourceAsStream("script.sql");
 		if (is == null) {
 			throw new TopicMapStoreException("Cannot load database schema!");
@@ -86,6 +111,15 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 			buffer.append(scanner.nextLine() + "\r\n");
 		}
 		scanner.close();
+		/*
+		 * add language creation if language not exists 
+		 */
+		if ( !plpgsqlExists ){
+			return "CREATE PROCEDURAL LANGUAGE plpgsql;\r\n" + buffer.toString();
+		}
+		/*
+		 * language exists
+		 */
 		return buffer.toString();
 	}
 
@@ -162,8 +196,15 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedure 'best_label' exists
 		 */
-		rs = getDatabaseMetaData().getProcedures(null, null, "best_label");
-		procedureBestLabel = rs.next();
+		rs = getDatabaseMetaData().getProcedureColumns(null, null,
+				"best_label", "%");
+		while (rs.next()) {
+			String columnName = rs.getString("COLUMN_NAME");
+			if (columnName.equalsIgnoreCase("themeId")) {
+				procedureBestLabelWithTheme = true;
+			}
+			procedureBestLabel = true;
+		}
 		rs.close();
 	}
 
@@ -268,6 +309,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 */
 	protected boolean existsProcedureBestLabel() {
 		return procedureBestLabel;
+	}
+
+	/**
+	 * Method checks if the procedure 'best_label' exists.
+	 * 
+	 * @return <code>true</code> if the procedure exists, <code>false</code>
+	 *         otherwise.
+	 */
+	protected boolean existsProcedureBestLabelWithTheme() {
+		return procedureBestLabelWithTheme;
 	}
 
 }

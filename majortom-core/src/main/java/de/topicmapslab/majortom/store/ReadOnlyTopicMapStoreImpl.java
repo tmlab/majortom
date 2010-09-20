@@ -394,6 +394,8 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		case BEST_LABEL: {
 			if (context instanceof ITopic && params.length == 0) {
 				return doReadBestLabel((ITopic) context);
+			} else if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
+				return doReadBestLabel((ITopic) context, (ITopic) params[0]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -1131,6 +1133,51 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * @since 1.1.2
 	 */
 	public abstract String doReadBestLabel(ITopic topic) throws TopicMapStoreException;
+
+	/**
+	 * Returns the best label for the current topic instance. The best label
+	 * will be identified satisfying the following rules in the given order.
+	 * <p>
+	 * 1. Names of the default name type are weighted higher than names of other
+	 * types.
+	 * </p>
+	 * <p>
+	 * 2. Names with the unconstrained scope are weighted higher than other
+	 * scoped names.
+	 * </p>
+	 * <p>
+	 * 3. Names with a smaller number of scoping themes are weighted higher than
+	 * others.
+	 * </p>
+	 * <p>
+	 * 4. Names with a lexicographically smaller value are weighted higher than
+	 * others.
+	 * </p>
+	 * <p>
+	 * 5. If no names are existing, the subject-identifier with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 6. If no subject-identifiers are existing, the subject-locators with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 7. If no subject-locators are existing, the item-identifier with the
+	 * lexicographically smallest reference are returned.
+	 * </p>
+	 * <p>
+	 * 8. At least the ID of the topic will be returned.
+	 * </p>
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param theme
+	 *            the theme
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 * @since 1.1.2
+	 */
+	public abstract String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException;
 
 	/**
 	 * {@inheritDoc}

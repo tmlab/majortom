@@ -1818,6 +1818,65 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 		return readBestIdentifier(topic);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestLabel(ITopic topic, ITopic theme) throws SQLException {
+		/*
+		 * get all names of the topic
+		 */
+		Collection<IName> names = doReadNames(topic, -1, -1);
+		if (!names.isEmpty()) {
+			return readBestName(topic, theme, names);
+		}
+		return readBestIdentifier(topic);
+	}	
+
+	/**
+	 * Internal best label method only check name attributes.
+	 * 
+	 * @param topic
+	 *            the topic
+	 *            @param theme the theme
+	 * @param set
+	 *            the non-empty set of names
+	 * @return the best name
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	private String readBestName(ITopic topic, ITopic theme,  Collection<IName> names)
+			throws SQLException {
+		
+		Collection<ITopic> themes = HashUtil.getHashSet();
+		themes.add(theme);
+		List<IScope> scopes = HashUtil.getList(getScopesByThemes(theme.getTopicMap(), themes, false));
+		/*
+		 * sort scopes by number of themes
+		 */
+		Collections.sort(scopes, ScopeComparator.getInstance(true));
+		for (IScope s : scopes) {
+			/*
+			 * get names of the scope and topic
+			 */
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(doReadNames(topic, s));
+			/*
+			 * only one name of the current scope
+			 */
+			if (tmp.size() == 1) {
+				return tmp.iterator().next().getValue();
+			}
+			/*
+			 * more than one name
+			 */
+			else if (tmp.size() > 1) {
+				names = tmp;
+				break;
+			}
+		}		
+		return readBestName(topic, names);
+	}
 
 	/**
 	 * Internal best label method only check name attributes.

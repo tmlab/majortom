@@ -183,5 +183,12 @@ public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 	public String getBestLabel() {
 		return (String) doReadHistoryValue(TopicMapStoreParameterType.BEST_LABEL);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestLabel(Topic theme) {
+		throw new UnsupportedOperationException("Read only topic does not support best label with theme");
+	}
 
 }

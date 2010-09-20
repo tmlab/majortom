@@ -15,6 +15,8 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.model.core;
 
+import org.tmapi.core.FeatureNotRecognizedException;
+import org.tmapi.core.FeatureNotSupportedException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
@@ -56,5 +58,19 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 * @throws TopicMapExistsException
 	 *             thrown if the topic map cannot created
 	 */
-	public TopicMap createTopicMap(String ref, ITopicMapStore store) throws TopicMapExistsException;	
+	public TopicMap createTopicMap(String ref, ITopicMapStore store) throws TopicMapExistsException;
+	
+	/**
+	 * Internal method to set a feature, called from topic map store
+	 * 
+	 * @param key
+	 *            the feature keys
+	 * @param value
+	 *            the feature value
+	 * @throws FeatureNotSupportedException
+	 *             thrown if feature is unknown for MaJorToM
+	 * @throws FeatureNotRecognizedException
+	 *             thrown if feature is not supported by MaJorToM
+	 */
+	public void setFeature(String key, boolean value) throws FeatureNotSupportedException, FeatureNotRecognizedException;
 }

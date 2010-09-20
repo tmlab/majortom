@@ -2169,7 +2169,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			throws TopicMapStoreException {
 		return getRevisionStore().getMetaData(revision, key);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2184,6 +2184,63 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		return readBestIdentifier(topic);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException {
+		/*
+		 * get all names of the topic
+		 */
+		Set<IName> names = getCharacteristicsStore().getNames(topic);
+		if (!names.isEmpty()) {
+			return readBestName(topic, theme, names);
+		}
+		return readBestIdentifier(topic);
+	}	
+
+	/**
+	 * Internal best label method only check name attributes.
+	 * 
+	 * @param topic
+	 *            the topic
+	 *            @param theme the theme
+	 * @param set
+	 *            the non-empty set of names
+	 * @return the best name
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	private String readBestName(ITopic topic, ITopic theme,  Set<IName> names)
+			throws TopicMapStoreException {
+		
+		List<IScope> scopes = HashUtil.getList(getScopeStore().getScopes(theme));
+		/*
+		 * sort scopes by number of themes
+		 */
+		Collections.sort(scopes, ScopeComparator.getInstance(true));
+		for (IScope s : scopes) {
+			/*
+			 * get names of the scope and topic
+			 */
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(getScopeStore().getScopedNames(s));
+			/*
+			 * only one name of the current scope
+			 */
+			if (tmp.size() == 1) {
+				return tmp.iterator().next().getValue();
+			}
+			/*
+			 * more than one name
+			 */
+			else if (tmp.size() > 1) {
+				names = tmp;
+				break;
+			}
+		}		
+		return readBestName(topic, names);
+	}
+	
 	/**
 	 * Internal best label method only check name attributes.
 	 * 

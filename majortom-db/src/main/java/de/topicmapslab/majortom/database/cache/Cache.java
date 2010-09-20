@@ -286,7 +286,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public String doReadId(IConstruct c) throws TopicMapStoreException {
-		if ( c instanceof TopicMap ){
+		if (c instanceof TopicMap) {
 			return getParentStore().doReadId(c);
 		}
 		if (c instanceof ConstructImpl) {
@@ -830,7 +830,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 		}
 		return variants;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -871,9 +871,9 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public IRevision doReadFutureRevision(IRevision r)
 			throws TopicMapStoreException {
 		IRevision revision = cache.getRevisionCache().getFutureRevision(r);
-		if ( revision == null ){
+		if (revision == null) {
 			revision = getParentStore().doReadFutureRevision(r);
-			if ( revision != null ){
+			if (revision != null) {
 				cache.getRevisionCache().cacheFutureRevision(r, revision);
 			}
 		}
@@ -886,9 +886,9 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public IRevision doReadPastRevision(IRevision r)
 			throws TopicMapStoreException {
 		IRevision revision = cache.getRevisionCache().getPastRevision(r);
-		if ( revision == null ){
+		if (revision == null) {
 			revision = getParentStore().doReadPastRevision(r);
-			if ( revision != null ){
+			if (revision != null) {
 				cache.getRevisionCache().cachePastRevision(r, revision);
 			}
 		}
@@ -901,7 +901,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public Calendar doReadRevisionTimestamp(IRevision r)
 			throws TopicMapStoreException {
 		Calendar c = cache.getRevisionCache().getRevisionTimestamp(r);
-		if ( c == null ){
+		if (c == null) {
 			c = getParentStore().doReadRevisionTimestamp(r);
 			cache.getRevisionCache().cacheRevisionTimestamp(r, c);
 		}
@@ -913,7 +913,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
 		Changeset changeset = cache.getRevisionCache().getChangeset(r);
-		if ( changeset == null ){
+		if (changeset == null) {
 			changeset = getParentStore().doReadChangeSet(r);
 			cache.getRevisionCache().cacheChangeset(r, changeset);
 		}
@@ -925,8 +925,9 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public Map<String, String> doReadMetaData(IRevision revision)
 			throws TopicMapStoreException {
-		Map<String, String> metaData = cache.getRevisionCache().getMetaData(revision);
-		if ( metaData == null ){
+		Map<String, String> metaData = cache.getRevisionCache().getMetaData(
+				revision);
+		if (metaData == null) {
 			metaData = getParentStore().doReadMetaData(revision);
 			cache.getRevisionCache().cacheMetaData(revision, metaData);
 		}
@@ -937,7 +938,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public String doReadMetaData(IRevision revision, String key)
-			throws TopicMapStoreException {		
+			throws TopicMapStoreException {
 		Map<String, String> metaData = doReadMetaData(revision);
 		return metaData.get(key);
 	}
@@ -955,31 +956,44 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestLabel(ITopic topic, ITopic theme)
+			throws TopicMapStoreException {
+		String bestLabel = cache.getIdentityCache().getBestLabel(topic, theme);
+		if (bestLabel == null) {
+			bestLabel = getParentStore().doReadBestLabel(topic, theme);
+			cache.getIdentityCache().cacheBestLabel(topic, theme, bestLabel);
+		}
+		return bestLabel;
+	}
+
+	/**
 	 * @return the parentStore
 	 */
 	public ReadOnlyTopicMapStoreImpl getParentStore() {
 		return parentStore;
 	}
-	
+
 	/**
 	 * 
 	 * {@inheritDoc}
 	 */
-	public void clear(){
+	public void clear() {
 		cache.clear();
 	}
-		
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isCachingEnabled() {
 		return false;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void enableCaching(boolean enable) {
-		// NOTHING TO DO HERE		
+		// NOTHING TO DO HERE
 	}
 }

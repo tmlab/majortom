@@ -54,7 +54,7 @@ public class NameByValueComparator implements Comparator<Name> {
 		}
 		return instanceDesc;
 	}
-	
+
 	/**
 	 * constructor
 	 * 
@@ -69,7 +69,16 @@ public class NameByValueComparator implements Comparator<Name> {
 	 * {@inheritDoc}
 	 */
 	public int compare(Name o1, Name o2) {
-		int compare = o1.getValue().compareTo(o2.getValue());
+		/*
+		 * compare by value length
+		 */
+		int compare = o1.getValue().length() - o2.getValue().length();
+		if (compare == 0) {
+			/*
+			 * compare lexicographical
+			 */
+			compare = o1.getValue().compareTo(o2.getValue());
+		}
 		return ascending ? compare : compare * -1;
 	}
 }
