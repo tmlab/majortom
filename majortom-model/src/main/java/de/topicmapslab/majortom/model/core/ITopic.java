@@ -176,4 +176,20 @@ public interface ITopic extends Topic, IConstruct {
 	 * @since 1.1.2
 	 */
 	public String getBestLabel();
+	
+	/**
+	 * Returns the best label for the current topic instance. The best label will be identified satisfying the following rules in the given order.
+	 * <p> 1. Names of the default name type are weighted higher than names of other types.</p>
+	 * <p> 2. Names  with the the smallest scope containing the given theme.</p>
+	 * <p> 3. Names  with the unconstrained scope are weighted higher than other scoped names.</p>
+	 * <p> 4. Names with a smaller number of scoping themes are weighted higher than others.</p>
+	 * <p> 5. Names with a lexicographically smaller value are weighted higher than others.</p>
+	 * <p> 6. If no names are existing, the subject-identifier with the lexicographically smallest reference are returned. </p>
+	 * <p> 7. If no subject-identifiers are existing, the subject-locators with the lexicographically smallest reference are returned. </p>
+	 * <p> 8. If no subject-locators are existing, the item-identifier with the lexicographically smallest reference are returned. </p>
+	 * <p> 9. At least the ID of the topic will be returned.</p>
+	 * @param theme the theme
+	 * @since 1.1.2
+	 */
+	public String getBestLabel(Topic theme);
 }

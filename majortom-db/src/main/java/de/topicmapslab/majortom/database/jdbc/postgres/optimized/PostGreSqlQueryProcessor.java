@@ -158,6 +158,28 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		}
 		return super.doReadBestLabel(topic);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestLabel(ITopic topic, ITopic theme)
+			throws SQLException {
+		if (getConnectionProvider().existsProcedureBestLabelWithTheme()) {
+			PreparedStatement stmt = ((PostGreSqlQueryBuilder) getQueryBuilder())
+					.getQueryReadBestLabelWithTheme();
+			stmt.setLong(1, Long.parseLong(topic.getTopicMap().getId()));
+			stmt.setLong(2, Long.parseLong(topic.getId()));
+			stmt.setLong(3, Long.parseLong(theme.getId()));
+			ResultSet set = stmt.executeQuery();
+			if (set.next()) {
+				String s = set.getString(1);
+				set.close();
+				return s;
+			}
+			return "An error occurred";
+		}
+		return super.doReadBestLabel(topic);
+	}
 
 	// ****************
 	// * INDEX METHOD *

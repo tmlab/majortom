@@ -1731,6 +1731,17 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException {
+		try {
+			return provider.getProcessor().doReadBestLabel(topic, theme);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -2555,13 +2566,13 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			cache = new Cache(this);
 			cache.connect();
 			cache.initialize(baseLocator);
-			enableCaching = enable;
+			enableCaching = true;
 		}
 		/*
 		 * disable caching if does still running
 		 */
 		else if (!enable && isCachingEnabled()) {
-			enable = false;
+			enableCaching = false;
 			cache.close();
 			cache = null;
 		}

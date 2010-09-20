@@ -22,23 +22,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.tmapi.core.FeatureNotRecognizedException;
+import org.tmapi.core.FeatureNotSupportedException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
-import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
+import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -61,29 +62,35 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * the property file name
 	 */
 	private static final String propertyFile = "engine.properties";
-	
+
 	/**
 	 * the topic map system properties
 	 */
 	private Properties properties;
 
 	/**
+	 * the topic map factory features
+	 */
+	private Map<String, Object> features = null;
+
+	/**
 	 * the parent factory
 	 */
-	private final TopicMapSystemFactory factory;
+	private final TopicMapSystemFactoryImpl factory;
 
 	/**
 	 * constructor
 	 * 
-	 * @param factory the factory
+	 * @param factory
+	 *            the factory
 	 */
-	public TopicMapSystemImpl(TopicMapSystemFactory factory) {
+	public TopicMapSystemImpl(TopicMapSystemFactoryImpl factory) {
 		this.factory = factory;
 		properties = new Properties();
 		loadPropertiesFromFile();
-		properties.putAll(((TopicMapSystemFactoryImpl)factory).getProperties());
-		 
-		
+		properties.putAll(((TopicMapSystemFactoryImpl) factory).getProperties());
+		features = HashUtil.getHashMap(factory.getFeatures());
+
 	}
 
 	/**
@@ -167,7 +174,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * {@inheritDoc}
 	 */
 	public boolean getFeature(String arg0) throws FeatureNotRecognizedException {
-		return factory.getFeature(arg0);
+		return features.containsKey(arg0) ? Boolean.parseBoolean(features.get(arg0).toString()) : false;
 	}
 
 	/**
@@ -205,7 +212,8 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * Hidden method to load optional properties of the current topic map
 	 * system.
 	 * 
-	 * @throws TopicMapStoreException thrown if the properties can not load
+	 * @throws TopicMapStoreException
+	 *             thrown if the properties can not load
 	 */
 	private void loadPropertiesFromFile() throws TopicMapStoreException {
 		/*
@@ -254,6 +262,20 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		}
 		this.topicMaps.remove(locator);
 		return topicMap;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void setFeature(String key, boolean value) throws FeatureNotSupportedException, FeatureNotRecognizedException {
+		if (!FeatureStrings.FEATURES.contains(key)) {
+			throw new FeatureNotRecognizedException("Unknown feature string '" + key + "'!");
+		}
+		if (!factory.hasFeature(key)) {
+			throw new FeatureNotSupportedException("Feature not supported by the engine!");
+		}
+		features.put(key, value);
 	}
 
 }

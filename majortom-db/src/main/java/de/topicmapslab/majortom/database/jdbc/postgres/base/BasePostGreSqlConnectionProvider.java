@@ -397,4 +397,12 @@ public abstract class BasePostGreSqlConnectionProvider implements
 		}
 		return STATE_DATABASE_IS_VALID;
 	}
+	
+	/**
+	 * Returns the internal JDBC connection to read from database
+	 * @return the readerConnection
+	 */
+	protected Connection getReaderConnection() {
+		return readerConnection;
+	}
 }

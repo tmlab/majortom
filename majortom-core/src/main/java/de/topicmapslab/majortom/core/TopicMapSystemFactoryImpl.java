@@ -35,7 +35,7 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 
 	private Map<String, Object> features = null;
-	private final Properties properties = new Properties(); 
+	private final Properties properties = new Properties();
 
 	private static final Set<String> SUPPORTED_FEATURES = HashUtil.getHashSet();
 	static {
@@ -46,6 +46,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		SUPPORTED_FEATURES.add(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 		SUPPORTED_FEATURES.add(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
 		SUPPORTED_FEATURES.add(FeatureStrings.SUPPORT_HISTORY);
+		SUPPORTED_FEATURES.add(FeatureStrings.SUPPORT_TRANSACTION);
 	}
 
 	/**
@@ -58,7 +59,9 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		features.put(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME, false);
 		features.put(FeatureStrings.AUTOMATIC_MERGING, true);
 		features.put(FeatureStrings.SUPPORT_HISTORY, false);
+		features.put(FeatureStrings.SUPPORT_TRANSACTION, false);
 		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
+		features.put(FeatureStrings.READ_ONLY_SYSTEM, false);
 	}
 
 	/**
@@ -105,15 +108,26 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setProperty(String arg0, Object arg1) {		
+	public void setProperty(String arg0, Object arg1) {
 		properties.put(arg0, arg1);
 	}
-	
+
 	/**
+	 * Internal method to get all properties
+	 * 
 	 * @return the properties
 	 */
 	Properties getProperties() {
 		return properties;
+	}
+
+	/**
+	 * Internal method to get all features
+	 * 
+	 * @return the features
+	 */
+	Map<String, Object> getFeatures() {
+		return features;
 	}
 
 }

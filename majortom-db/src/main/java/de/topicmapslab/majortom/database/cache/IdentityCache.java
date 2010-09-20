@@ -27,6 +27,7 @@ import org.tmapi.core.Construct;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
+import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -99,7 +100,55 @@ class IdentityCache implements ITopicMapListener {
 	/**
 	 * map to store the best labels of a topic
 	 */
-	private Map<ITopic, String> bestLabels;
+	private Map<BestLabelKey, String> bestLabels;
+
+	/**
+	 * A Map containing all cache keys of the specified topic
+	 */
+	private Map<ITopic, Set<BestLabelKey>> bestLabelCacheKeys;
+
+	class BestLabelKey {
+		ITopic parent;
+		ITopic theme;
+
+		/**
+		 * constructor
+		 */
+		public BestLabelKey(ITopic parent) {
+			this.parent = parent;
+			this.theme = null;
+		}
+
+		/**
+		 * constructor
+		 */
+		public BestLabelKey(ITopic parent, ITopic theme) {
+			this.parent = parent;
+			this.theme = theme;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean equals(Object obj) {
+			if (obj instanceof BestLabelKey) {
+				boolean result = parent.equals(((BestLabelKey) obj).parent);
+				result &= theme == null ? ((BestLabelKey) obj).theme == null
+						: theme.equals(((BestLabelKey) obj).theme);
+				return result;
+			}
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public int hashCode() {
+			int hash = parent.hashCode();
+			hash |= theme == null ? 0 : theme.hashCode();
+			return hash;
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -131,6 +180,9 @@ class IdentityCache implements ITopicMapListener {
 		}
 		if (ids != null) {
 			ids.clear();
+		}
+		if (bestLabelCacheKeys != null) {
+			bestLabelCacheKeys.clear();
 		}
 	}
 
@@ -450,10 +502,10 @@ class IdentityCache implements ITopicMapListener {
 	 * @return the best label
 	 */
 	public String getBestLabel(ITopic t) {
-		if (bestLabels == null || !bestLabels.containsKey(t)) {
+		if (bestLabels == null) {
 			return null;
 		}
-		return bestLabels.get(t);
+		return bestLabels.get(new BestLabelKey(t));
 	}
 
 	/**
@@ -468,7 +520,93 @@ class IdentityCache implements ITopicMapListener {
 		if (bestLabels == null) {
 			bestLabels = HashUtil.getHashMap();
 		}
-		bestLabels.put(t, bestLabel);
+		bestLabels.put(generateKey(t, null), bestLabel);
+	}
+
+	/**
+	 * Returns the best label for the given topic
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param theme
+	 *            the theme
+	 * @return the best label
+	 */
+	public String getBestLabel(ITopic t, ITopic theme) {
+		if (bestLabels == null) {
+			return null;
+		}
+		return bestLabels.get(new BestLabelKey(t, theme));
+	}
+
+	/**
+	 * Cache the best label of the given topic to the internal store.
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param theme
+	 *            the theme
+	 * @param bestLabel
+	 *            the best label
+	 */
+	public void cacheBestLabel(ITopic t, ITopic theme, String bestLabel) {
+		if (bestLabels == null) {
+			bestLabels = HashUtil.getHashMap();
+		}
+		bestLabels.put(generateKey(t, theme), bestLabel);
+	}
+
+	/**
+	 * Generates a key for the given topic and theme
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param theme
+	 *            the theme
+	 * @return the generated key
+	 */
+	private BestLabelKey generateKey(ITopic topic, ITopic theme) {
+		if (bestLabelCacheKeys == null) {
+			bestLabelCacheKeys = HashUtil.getHashMap();
+		}
+		Set<BestLabelKey> set = bestLabelCacheKeys.get(topic);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+			bestLabelCacheKeys.put(topic, set);
+		}
+		BestLabelKey key = new BestLabelKey(topic, theme);
+		set.add(key);
+		return key;
+	}
+
+	/**
+	 * Removing all best-labels for the given topic and all themes
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param themes
+	 *            the themes
+	 */
+	private void removeBestLabels(ITopic topic, ITopic... themes) {
+		if (bestLabelCacheKeys == null
+				|| !bestLabelCacheKeys.containsKey(topic) || bestLabels == null) {
+			return;
+		}
+		Set<BestLabelKey> keys = bestLabelCacheKeys.get(topic);
+		/*
+		 * remove non-theme best label
+		 */
+		BestLabelKey key = new BestLabelKey(topic);
+		keys.remove(key);
+		bestLabels.remove(key);
+		/*
+		 * remove best-labels with theme
+		 */
+		for (ITopic theme : themes) {
+			key = new BestLabelKey(topic, theme);
+			keys.remove(key);
+			bestLabels.remove(key);
+		}
 	}
 
 	/**
@@ -508,9 +646,7 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).add(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(topic);
-			}
+			removeBestLabels(topic);
 		}
 		/*
 		 * subject-locator added
@@ -527,9 +663,7 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).add(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(topic);
-			}
+			removeBestLabels(topic);
 		}
 		/*
 		 * item-identifier added
@@ -546,8 +680,8 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).add(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(construct);
+			if (construct instanceof ITopic) {
+				removeBestLabels((ITopic) construct);
 			}
 		}
 		/*
@@ -567,9 +701,7 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).remove(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(topic);
-			}
+			removeBestLabels(topic);
 		}
 		/*
 		 * subject-locator removed
@@ -588,9 +720,7 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).remove(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(topic);
-			}
+			removeBestLabels(topic);
 		}
 		/*
 		 * item-identifier removed
@@ -609,25 +739,30 @@ class IdentityCache implements ITopicMapListener {
 					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).remove(locator);
 			}
-			if (bestLabels != null) {
-				bestLabels.remove(construct);
+			if (construct instanceof ITopic) {
+				removeBestLabels((ITopic) construct);
 			}
 		}
 		/*
 		 * name was added
 		 */
-		else if (event == TopicMapEventType.NAME_ADDED && bestLabels != null
-				&& bestLabels.containsKey(notifier)) {
-			bestLabels.remove(notifier);
+		else if (event == TopicMapEventType.NAME_ADDED) {
+			removeBestLabels((ITopic) notifier);
 		}
 		/*
 		 * type or scope of name was modified
 		 */
-		else if ((event == TopicMapEventType.TYPE_SET || event == TopicMapEventType.SCOPE_MODIFIED)
-				&& notifier instanceof IName
-				&& bestLabels != null
-				&& bestLabels.containsKey(notifier.getParent())) {
-			bestLabels.remove(notifier.getParent());
+		else if (event == TopicMapEventType.TYPE_SET
+				&& notifier instanceof IName) {
+			removeBestLabels((ITopic) notifier.getParent());
+		}
+		/*
+		 * scope modified
+		 */
+		else if (event == TopicMapEventType.SCOPE_MODIFIED
+				&& notifier instanceof IName) {
+			removeBestLabels((ITopic) notifier.getParent(), ((IScope) oldValue)
+					.getThemes().toArray(new ITopic[0]));
 		}
 		/*
 		 * topics are merging
@@ -635,6 +770,13 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.MERGE) {
 			removeTopicItemFromCache((ITopic) newValue, (IConstruct) notifier);
 			removeTopicItemFromCache((ITopic) oldValue, (IConstruct) notifier);
+		}
+		/*
+		 * value changed
+		 */
+		else if (event == TopicMapEventType.VALUE_MODIFIED
+				&& notifier instanceof IName) {
+			removeBestLabels((ITopic) notifier.getParent());
 		}
 
 	}
@@ -684,9 +826,7 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * remove best label
 		 */
-		if (bestLabels != null) {
-			bestLabels.remove(topic);
-		}
+		removeBestLabels(topic);
 		/*
 		 * clear identities
 		 */
@@ -738,7 +878,7 @@ class IdentityCache implements ITopicMapListener {
 		 */
 		if (construct instanceof IName && bestLabels != null
 				&& bestLabels.containsKey(notifier)) {
-			bestLabels.remove(notifier);
+			removeBestLabels((ITopic) notifier);
 		}
 	}
 }
