@@ -1,0 +1,6 @@
+== Introduction ==
+
+
+MaJorToM is more than just a Topic Maps engine, it's a kind of philosophy of designing an independent Topic Maps engine. The MaJorToM API extends the Topic Maps API 2.0 to provide a simple way for accessing the advanced features of next generation engines. Because of this downward compatibility, the engine can be used as drop-in replacement for any other Topic Maps engine based on the TMAPI without any modifications. The architecture of MaJorToM is designed for satisfying the goals of simplicity and flexibility and splits the information and application domain from each other. The application only uses a set of object stubs to communiate with the underlying store. The objects do not contain any knowledge about the subjects they represent. The knowledge is encapsulated by the underlying store, which offers a set of abstract methods to access this information. The store may not be a real topic map store which means it doesn't have to use the Topic Maps paradigm for data storage.
+
+This document tries to offer an overview about the advanced features of the MaJorToM engine and their usage. Additionaly the document describes the core architecture of MaJorToM to offer the possibility for integrate your own special domain specific features to your customized MaJorToM instance.

@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>majortom-parent</artifactId>
+		<groupId>de.topicmapslab.majortom</groupId>
+		<version>1.1.2-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+  <groupId>de.topicmapslab.majortom</groupId>
+  <artifactId>majortom-testsuite-readonly</artifactId>
+  <version>${project.parent.version}</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>de.topicmapslab.majortom</groupId>
+  		<artifactId>majortom-core</artifactId>
+  		<version>${project.parent.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.topicmapslab.majortom</groupId>
+  		<artifactId>majortom-model</artifactId>
+  		<version>${project.parent.version}</version>
+  	</dependency>
+  </dependencies>
+</project>

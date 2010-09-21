@@ -1,0 +1,121 @@
+== How to use the MaJorToM Topic Maps Engine ==
+
+Before you can use the MaJorToM Topic Maps engine, the corresponding jar has to be located in the classpath of the application. If you use the Maven Dependency Management, it would be necessary to add the following to the pom.xml.
+
+-------------------------------------
+ <repositories>
+      <repository>
+          <id>TMLab Public Repository</id>
+          <url>http://maven.topicmapslab.de/public/</url>
+      </repository>
+  </repositories>
+
+  <dependencies>
+      <dependency>
+          <groupId>de.topicmapslab.majortom</groupId>
+          <artifactId>majortom-model</artifactId>
+          <version>1.1.1</version>
+      </dependency>
+  </dependencies>
+------------------------------------
+
+====================================
+To add the MaJorToM API and the core implementation to your classpath.
+====================================
+
+-----------------------------------
+<repositories>
+      <repository>
+          <id>TMLab Public Repository</id>
+          <url>http://maven.topicmapslab.de/public/</url>
+      </repository>
+  </repositories>
+
+  <dependencies>
+      <dependency>
+          <groupId>de.topicmapslab.majortom</groupId>
+          <artifactId>majortom-inMemory</artifactId>
+          <version>1.1.1</version>
+      </dependency>
+  </dependencies>
+-----------------------------------
+
+==================================
+To add a specific topic map store to your classpath ( in this case the in-memory topic map store. )
+==================================
+
+The MaJorToM API is downward compatible with the Topic Maps API 2.0.2. Because of that creation of a new topic map is similiar to the usage of TMAPI except the used topic map store. 
+
+-------------------------------------
+TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
+TopicMapSystem topicMapSystem = factory.newTopicMapSystem();
+TopicMap topicMap = topicMapSystem.createTopicMap("http://psi.majortom.test");
+-------------------------------------
+
+=== Use a Specific Topic Map Store ===
+
+If the classpath contains more than one Topic Map store implementation of MaJorToM, it is necessary to specify the implementation class of the store to use. There are different possibilities to specify that.
+
+---------------------------------------
+final String propertyName = TopicMapStoreProperty.TOPICMAPSTORE_CLASS;
+final String className = "TheTopicMapStoreClassName";
+TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
+factory.setProperty(propertyName, className);
+---------------------------------------
+
+==================================
+Using the property to specify the topic map store to use.
+==================================
+
+-----------------------------------
+TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
+ITopicMapSystem topicMapSystem = (ITopicMapSystem) factory.newTopicMapSystem();
+InMemoryTopicMapStore store = new InMemoryTopicMapStore(topicMapSystem);
+TopicMap topicMap = topicMapSystem.createTopicMap("http://psi.example.org/majortom", store);
+-----------------------------------
+
+==================================
+Using the additional method of the topic map system interface of MaJorToM.
+==================================
+
+-----------------------------------
+#content of engine.properties
+de.topicmapslab.majortom.topicmapstore.class = de.topicmapslab.majortom.inMemory.store.InMemoryTopicMapStore
+-----------------------------------
+
+==================================
+Using a property file with the name 'engine.properties' to specify the topic map store to use.
+==================================
+
+*Please note:* If there are only one implementation located in the classpath, it is not necessary to specify it to use, because the store implementation will be registered automatically by the Java Services or OSGi Framework.
+
+*Please note:* Some topic map stores comes with the restriction to specify an additional set of properties to enable their usage. Please read the corresponding section to learn more about that.
+
+=== MaJorToM API Feature String ===
+
+The set of supported features of each topic map store implementation can be differ. The following table contains the name of all feature strings known by every topic map store. Some of them can be changed before the creation of a topic map system, to enable or disable the feature, if the store supports that.
+
+[cols="4,9,3,1"]
+|==========================================
+|*Feature String*| *Discription* | *Default (if supported)* | *Modifiable*
+|http://tmapi.org/features/automerge| If the feature is set, the topic maps engine merge topics and constructs if they are equal in meaning of the TMDM. If the feature is disabled and an application tries to create unique constructs, an error will occurre| enabled | yes
+|http://tmapi.org/features/merge/byTopicName|If the feature is set, two topics are detect as equal if the has the same topic-name (same value, same type and same scope)|disabled|yes
+|http://tmapi.org/features/type-instance-associations|If the feature is set, the topic maps engine creates an type-instance-association if the application calls the addType() method of a topic. The getTypes() method also includes all types specified by the type-instance-association if the feature is set|enabled|yes
+|http://tmapi.org/features/supertype-subtype-associations|If the feature is set, the topic maps engine creates an supertype-subtype-association if the application calls the addSupertype() method of a topic. The getSupertypes() method also includes all types specified by the supertype-subtypes-association if the feature is set|enabled|yes
+|http://tmapi.org/features/readOnly|If the feature is enabled, the topic map store does not support any write access.|depends on topic map store|no
+|de.topicmapslab.majortom.topicmapstore.history|If the feature is set, the topic map store save each modification of the topic map into the internal history.|enabled|yes
+|de.topicmapslab.majortom.topicmapstore.transaction|If the feature is set, the topic map store, provides a in-memory transaction access to modify the topic map without effecting changes outside the transaction before commit.|depends on the topic map store|no
+|de.topicmapslab.majortom.constraints.deletion.reification|If the feature is set, the topic map store remove the reified construct if the reifier was removed by the application.|disabled|yes
+|==========================================
+
+The feature string has to be set before the topic map system was created by the topic map system. To declare the feature string, MaJorToM comes with a static class containing all features strings, which can be set.
+
+----------------------------------------------
+TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
+// Enable automatic merging
+factory.setFeature(FeatureStrings.AUTOMATIC_MERGING, true);
+// Create topic map system and topic map
+TopicMapSystem system = factory.newTopicMapSystem();
+TopicMap topicMap = system.createTopicMap("http://psi.example.org/");
+----------------------------------------------
+
