@@ -3945,6 +3945,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryReadPastRevision;
 	private PreparedStatement preparedStatementQueryReadFutureRevision;
 	private PreparedStatement preparedStatementQueryReadChangesets;
+	private PreparedStatement preparedStatementQueryReadChangesetType;
 	private PreparedStatement preparedStatementQueryReadTimestamp;
 	private PreparedStatement preparedStatementQueryReadRevisionsByTopic;
 	private PreparedStatement preparedStatementQueryReadChangesetsByTopic;
@@ -4088,6 +4089,17 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 					.prepareStatement(IRevisionQueries.QUERY_READ_CHANGESET);
 		}
 		return preparedStatementQueryReadChangesets;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadChangesetType() throws SQLException {
+		if (preparedStatementQueryReadChangesetType == null) {
+			preparedStatementQueryReadChangesetType = getReaderConnection()
+					.prepareStatement(IRevisionQueries.QUERY_READ_CHANGESETTYPE);
+		}
+		return preparedStatementQueryReadChangesetType;
 	}
 
 	/**

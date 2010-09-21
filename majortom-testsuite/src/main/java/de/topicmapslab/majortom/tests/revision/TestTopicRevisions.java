@@ -18,6 +18,8 @@
  */
 package de.topicmapslab.majortom.tests.revision;
 
+import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
@@ -144,6 +146,23 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 				assertEquals("Number of types should be " + i,i, ((ITopic) change.getOldValue()).getTypes().size());
 			}
 		}
+	}
+	
+	public void testRoleRemoved() throws Exception {
+		topicMap.getStore().enableRevisionManagement(false);
+		IAssociation a = createAssociation(createTopic());
+		ITopic player = createTopic();
+		IAssociationRole role = (IAssociationRole)a.createRole(createTopic(), player);
+		topicMap.getStore().enableRevisionManagement(true);
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		assertNull(index.getFirstRevision());
+		assertEquals(0, index.getChangeset(player).size());
+		
+		role.remove();
+		assertEquals(1, index.getChangeset(player).size());
+		System.out.println(index.getChangeset(player));
+		
 	}
 
 }

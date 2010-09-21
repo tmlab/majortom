@@ -24,7 +24,7 @@ package de.topicmapslab.majortom.database.jdbc.postgres.sql99.query;
  */
 public interface ISql99RevisionQueries {
 	
-	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(time, id_topicmap) VALUES(now(),?)";
+	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(time, id_topicmap, type) VALUES(now(),?,?)";
 
 	public static final String QUERY_CREATE_CHANGESET = "INSERT INTO changesets(id_revision,type,id_notifier, newValue, oldValue,time) VALUES(?,?,?,?,?,now())";
 
@@ -52,6 +52,8 @@ public interface ISql99RevisionQueries {
 	public static final String QUERY_READ_CHANGESET = "SELECT type, id_notifier, newValue, oldValue FROM changesets WHERE id_revision = ?;";
 
 	public static final String QUERY_READ_TIMESTAMP = "SELECT time FROM revisions WHERE id = ?;";
+	
+	public static final String QUERY_READ_CHANGESETTYPE = "SELECT type FROM revisions WHERE id = ?;";
 
 	public static final String QUERY_READ_REVISIONS_BY_TOPIC = "SELECT id FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier = ? OR oldValue = ? OR newValue = ? ) ORDER BY id ASC ;";
 

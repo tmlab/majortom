@@ -162,7 +162,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme)
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict)
 			throws SQLException {
 		if (getConnectionProvider().existsProcedureBestLabelWithTheme()) {
 			PreparedStatement stmt = ((PostGreSqlQueryBuilder) getQueryBuilder())
@@ -170,13 +170,14 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			stmt.setLong(1, Long.parseLong(topic.getTopicMap().getId()));
 			stmt.setLong(2, Long.parseLong(topic.getId()));
 			stmt.setLong(3, Long.parseLong(theme.getId()));
+			stmt.setBoolean(4, strict);
 			ResultSet set = stmt.executeQuery();
 			if (set.next()) {
 				String s = set.getString(1);
 				set.close();
 				return s;
 			}
-			return "An error occurred";
+			return null;
 		}
 		return super.doReadBestLabel(topic);
 	}

@@ -1822,35 +1822,48 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme) throws SQLException {
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict)
+			throws SQLException {
 		/*
 		 * get all names of the topic
 		 */
 		Collection<IName> names = doReadNames(topic, -1, -1);
 		if (!names.isEmpty()) {
-			return readBestName(topic, theme, names);
+			return readBestName(topic, theme, names, strict);
+		}
+		/*
+		 * is strict mode
+		 */
+		if ( strict ){
+			return null;
 		}
 		return readBestIdentifier(topic);
-	}	
+	}
 
 	/**
 	 * Internal best label method only check name attributes.
 	 * 
 	 * @param topic
 	 *            the topic
-	 *            @param theme the theme
+	 * @param theme
+	 *            the theme
 	 * @param set
 	 *            the non-empty set of names
+	 * @param strict
+	 *            if there is no name with the given theme and strict is
+	 *            <code>true</code>, then <code>null</code> will be returned.
 	 * @return the best name
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private String readBestName(ITopic topic, ITopic theme,  Collection<IName> names)
-			throws SQLException {
-		
+	private String readBestName(ITopic topic, ITopic theme,
+			Collection<IName> names, boolean strict) throws SQLException {
+
 		Collection<ITopic> themes = HashUtil.getHashSet();
 		themes.add(theme);
-		List<IScope> scopes = HashUtil.getList(getScopesByThemes(theme.getTopicMap(), themes, false));
+		List<IScope> scopes = HashUtil.getList(getScopesByThemes(
+				theme.getTopicMap(), themes, false));
+		boolean atLeastOneName = false;
 		/*
 		 * sort scopes by number of themes
 		 */
@@ -1872,9 +1885,16 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			 */
 			else if (tmp.size() > 1) {
 				names = tmp;
+				atLeastOneName = true;
 				break;
 			}
-		}		
+		}
+		/*
+		 * mode is strict and no scoped-name was found
+		 */
+		if ( strict && !atLeastOneName){
+			return null;
+		}
 		return readBestName(topic, names);
 	}
 
@@ -1982,7 +2002,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade)
 			throws SQLException {
 		doRemoveAssociation(association, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -2055,7 +2075,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveName(IName name, boolean cascade)
 			throws SQLException {
 		doRemoveName(name, cascade, getConnectionProvider().getTopicMapStore()
-				.createRevision());
+				.createRevision(TopicMapEventType.NAME_REMOVED));
 		return true;
 	}
 
@@ -2123,7 +2143,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
 			throws SQLException {
 		doRemoveOccurrence(occurrence, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -2184,7 +2204,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveRole(IAssociationRole role, boolean cascade)
 			throws SQLException {
 		doRemoveRole(role, cascade, getConnectionProvider().getTopicMapStore()
-				.createRevision());
+				.createRevision(TopicMapEventType.ROLE_REMOVED));
 		return true;
 	}
 
@@ -2299,7 +2319,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveTopic(ITopic topic, boolean cascade)
 			throws SQLException {
 		doRemoveTopic(topic, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2505,9 +2525,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (ILocator loc : doReadItemIdentifiers(topicMap)) {
 			doRemoveItemIdentifier(topicMap, loc);
 		}
-		IRevision r = doCreateRevision(topicMap);
 		for (ITopic t : doReadTopics(topicMap)) {
-			doRemoveTopic(t, true, r);
+			doRemoveTopic(t, true, doCreateRevision(topicMap, TopicMapEventType.TOPIC_REMOVED));
 		}
 		long topicMapId = Long.parseLong(topicMap.getId());
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAllThemes();
@@ -2562,7 +2581,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public boolean doRemoveVariant(IVariant variant, boolean cascade)
 			throws SQLException {
 		doRemoveVariant(variant, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -5060,9 +5079,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doCreateRevision(ITopicMap topicMap) throws SQLException {
+	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryCreateRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, type.name());
 		stmt.execute();
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {
@@ -5175,6 +5195,18 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toChangeSet(this, topicMap, rs, revision);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMapEventType doReadChangesetType(ITopicMap topicMap, IRevision revision)
+			throws SQLException {
+		PreparedStatement stmt = queryBuilder.getQueryReadChangesetType();
+		stmt.setLong(1, revision.getId());
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+		return TopicMapEventType.valueOf(rs.getString("type"));
 	}
 
 	/**

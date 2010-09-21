@@ -180,7 +180,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.ASSOCIATION_ADDED);
 			storeRevision(r, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a,
 					null);
 			storeRevision(r, TopicMapEventType.TYPE_SET, a, type, null);
@@ -239,7 +239,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.NAME_ADDED);
 			storeRevision(r, TopicMapEventType.NAME_ADDED, topic, n, null);
 			storeRevision(r, TopicMapEventType.TYPE_SET, n,
 					getTmdmDefaultNameType(), null);
@@ -276,7 +276,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.NAME_ADDED);
 			storeRevision(r,TopicMapEventType.NAME_ADDED, topic, n, null);
 			storeRevision(r,TopicMapEventType.TYPE_SET, n, type, null);
 			storeRevision(r,TopicMapEventType.VALUE_MODIFIED, n, value, null);
@@ -364,7 +364,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.OCCURRENCE_ADDED);
 			storeRevision(r, TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
 			storeRevision(r,TopicMapEventType.TYPE_SET, o, type, null);
 			storeRevision(r,TopicMapEventType.VALUE_MODIFIED, o, value, null);
@@ -388,7 +388,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision rev = createRevision();
+			IRevision rev = createRevision(TopicMapEventType.ROLE_ADDED);
 			storeRevision(rev, TopicMapEventType.ROLE_ADDED, association, r,
 					null);
 			storeRevision(rev, TopicMapEventType.TYPE_SET, r, type, null);
@@ -449,7 +449,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.TOPIC_ADDED);
 			storeRevision(r, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 			storeRevision(r, TopicMapEventType.ITEM_IDENTIFIER_ADDED,t,itemIdentifier, null);
 			/*
@@ -474,7 +474,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.TOPIC_ADDED);
 			storeRevision(r, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 			storeRevision(r, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED,t,subjectIdentifier, null);
 			/*
@@ -498,7 +498,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.TOPIC_ADDED);
 			storeRevision(r, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 			storeRevision(r, TopicMapEventType.SUBJECT_LOCATOR_ADDED,t,subjectLocator, null);
 			/*
@@ -541,7 +541,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r =createRevision();
+			IRevision r =createRevision(TopicMapEventType.VARIANT_ADDED);
 			storeRevision(r, TopicMapEventType.VARIANT_ADDED, name, v, null);
 			storeRevision(r, TopicMapEventType.VALUE_MODIFIED, v, value, null);
 			storeRevision(r, TopicMapEventType.DATATYPE_SET, v, datatype, null);
@@ -575,7 +575,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history and notify listeners
 			 */
-			IRevision r =createRevision();
+			IRevision r =createRevision(TopicMapEventType.TOPIC_ADDED);
 			storeRevision(r,TopicMapEventType.TOPIC_ADDED, getTopicMap(),
 					newTopic, null);
 			notifyListeners(TopicMapEventType.TOPIC_ADDED, getTopicMap(),
@@ -760,7 +760,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.SUPERTYPE_ADDED);
 			storeRevision(r, TopicMapEventType.SUPERTYPE_ADDED, t, type, null);
 			/*
 			 * notify listener
@@ -832,7 +832,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.TYPE_ADDED);
 			storeRevision(r, TopicMapEventType.TYPE_ADDED, t, type, null);
 			/*
 			 * notify listener
@@ -891,7 +891,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.VALUE_MODIFIED);
 			storeRevision(r, TopicMapEventType.VALUE_MODIFIED, t, value,
 					oldValue);
 			storeRevision(r, TopicMapEventType.DATATYPE_SET, t, datatype,
@@ -959,6 +959,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throws TopicMapStoreException {
 		try {
 			provider.getProcessor().doCreateMetadata(revision, key, value);
+			if ( isCachingEnabled() ){
+				cache.clearMetaData(revision);
+			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1061,6 +1064,17 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
 		try {
 			return provider.getProcessor().doReadChangeset(getTopicMap(), r);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMapEventType doReadChangeSetType(IRevision r) throws TopicMapStoreException {
+		try {
+			return provider.getProcessor().doReadChangesetType(getTopicMap(), r);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1735,9 +1749,9 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException {
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws TopicMapStoreException {
 		try {
-			return provider.getProcessor().doReadBestLabel(topic, theme);
+			return provider.getProcessor().doReadBestLabel(topic, theme, strict);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -1756,7 +1770,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 */
 			if (!provider.getProcessor().doRemoveAssociation(association,
 					cascade)) {
-				IRevision revision = createRevision();
+				IRevision revision = createRevision(TopicMapEventType.ASSOCIATION_REMOVED);
 				for (IAssociationRole role : roles) {
 					/*
 					 * store history
@@ -1821,7 +1835,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * remove name and variants
 			 */
 			if (!provider.getProcessor().doRemoveName(name, cascade)) {
-				IRevision revision = createRevision();
+				IRevision revision = createRevision(TopicMapEventType.NAME_REMOVED);
 				/*
 				 * notify listener
 				 */
@@ -1878,7 +1892,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 */
 			if (!provider.getProcessor()
 					.doRemoveOccurrence(occurrence, cascade)) {
-				IRevision revision = createRevision();
+				IRevision revision = createRevision(TopicMapEventType.OCCURRENCE_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
@@ -1919,7 +1933,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * remove role
 			 */
 			if (!provider.getProcessor().doRemoveRole(role, cascade)) {
-				IRevision revision = createRevision();
+				IRevision revision = createRevision(TopicMapEventType.ROLE_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
@@ -2026,7 +2040,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.SUPERTYPE_REMOVED);
 			storeRevision(r, TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 			/*
 			 * notify listener
@@ -2078,7 +2092,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision();
+			IRevision r = createRevision(TopicMapEventType.TOPIC_REMOVED);
 			storeRevision(r, TopicMapEventType.TYPE_REMOVED, t, null, type);
 			/*
 			 * notify listener
@@ -2107,7 +2121,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			 * remove variant
 			 */
 			if (!provider.getProcessor().doRemoveVariant(variant, cascade)) {
-				IRevision revision = createRevision();
+				IRevision revision = createRevision(TopicMapEventType.VARIANT_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
@@ -2311,10 +2325,10 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision createRevision() {
+	public IRevision createRevision(TopicMapEventType type ) {
 		if (isRevisionManagementEnabled()) {
 			try {
-				return provider.getProcessor().doCreateRevision(getTopicMap());
+				return provider.getProcessor().doCreateRevision(getTopicMap(), type);
 			} catch (SQLException e) {
 				throw new TopicMapStoreException("Internal database error!", e);
 			}

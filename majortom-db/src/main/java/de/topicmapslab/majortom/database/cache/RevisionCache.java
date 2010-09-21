@@ -43,6 +43,7 @@ public class RevisionCache implements ITopicMapListener {
 	private static final String PAST = "pastRevision";
 	private static final String FUTURE = "futureRevisionRevision";
 	private static final String METADATA = "metaData";
+	private static final String TYPE = "type";
 
 	class CacheEntry {
 
@@ -57,6 +58,8 @@ public class RevisionCache implements ITopicMapListener {
 		public IRevision futureRevisionRevision;
 
 		public Map<String, String> metaData;
+		
+		public TopicMapEventType type;
 	}
 
 	private Map<ITopic, CacheEntry> topicDependent;
@@ -197,6 +200,17 @@ public class RevisionCache implements ITopicMapListener {
 	 */
 	public Changeset getChangeset(IRevision revision) {
 		return getCachedEntry(revisionDependents, revision, CHANGESET);
+	}
+	
+	/**
+	 * Returns the change set type of the given revision
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @return the change set type
+	 */
+	public TopicMapEventType getChangesetType(IRevision revision) {
+		return getCachedEntry(revisionDependents, revision, TYPE);
 	}
 
 	/**
@@ -466,6 +480,21 @@ public class RevisionCache implements ITopicMapListener {
 		}
 		cachedEntry(revisionDependents, revision, CHANGESET, changeset);
 	}
+	
+	/**
+	 * Add the change set type of the given revision to internal cache
+	 * 
+	 * @param revision
+	 *            the revision
+	 * @param type
+	 *            the change set type
+	 */
+	public void cacheChangesetType(IRevision revision, TopicMapEventType type) {
+		if (revisionDependents == null) {
+			revisionDependents = HashUtil.getHashMap();
+		}
+		cachedEntry(revisionDependents, revision, TYPE, type);
+	}
 
 	/**
 	 * Add the given revision as first revision to cache
@@ -587,5 +616,15 @@ public class RevisionCache implements ITopicMapListener {
 	public void topicMapChanged(String id, TopicMapEventType event,
 			Construct notifier, Object newValue, Object oldValue) {
 		clear();		
+	}
+	
+	/**
+	 * Remove the cache meta-data information of the revision
+	 * @param revision the revision
+	 */
+	public void clearMetaData(IRevision revision){
+		if ( revisionDependents != null && revisionDependents.containsKey(revision)){
+			revisionDependents.get(revision).metaData = null;
+		}
 	}
 }

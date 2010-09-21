@@ -110,21 +110,24 @@ class IdentityCache implements ITopicMapListener {
 	class BestLabelKey {
 		ITopic parent;
 		ITopic theme;
+		boolean strict;
 
 		/**
 		 * constructor
 		 */
 		public BestLabelKey(ITopic parent) {
 			this.parent = parent;
-			this.theme = null;
+			this.theme = null;			
+			this.strict = false;
 		}
 
 		/**
 		 * constructor
 		 */
-		public BestLabelKey(ITopic parent, ITopic theme) {
+		public BestLabelKey(ITopic parent, ITopic theme, boolean strict) {
 			this.parent = parent;
 			this.theme = theme;
+			this.strict = strict;
 		}
 
 		/**
@@ -135,6 +138,7 @@ class IdentityCache implements ITopicMapListener {
 				boolean result = parent.equals(((BestLabelKey) obj).parent);
 				result &= theme == null ? ((BestLabelKey) obj).theme == null
 						: theme.equals(((BestLabelKey) obj).theme);
+				result &= strict == ((BestLabelKey) obj).strict;
 				return result;
 			}
 			return false;
@@ -146,6 +150,7 @@ class IdentityCache implements ITopicMapListener {
 		public int hashCode() {
 			int hash = parent.hashCode();
 			hash |= theme == null ? 0 : theme.hashCode();
+			hash |= strict?1:0;
 			return hash;
 		}
 	}
@@ -520,7 +525,7 @@ class IdentityCache implements ITopicMapListener {
 		if (bestLabels == null) {
 			bestLabels = HashUtil.getHashMap();
 		}
-		bestLabels.put(generateKey(t, null), bestLabel);
+		bestLabels.put(generateKey(t, null, false), bestLabel);
 	}
 
 	/**
@@ -530,13 +535,14 @@ class IdentityCache implements ITopicMapListener {
 	 *            the topic
 	 * @param theme
 	 *            the theme
+	 *            @param strict the strict flag
 	 * @return the best label
 	 */
-	public String getBestLabel(ITopic t, ITopic theme) {
+	public String getBestLabel(ITopic t, ITopic theme, boolean strict) {
 		if (bestLabels == null) {
 			return null;
 		}
-		return bestLabels.get(new BestLabelKey(t, theme));
+		return bestLabels.get(new BestLabelKey(t, theme, strict));
 	}
 
 	/**
@@ -546,14 +552,15 @@ class IdentityCache implements ITopicMapListener {
 	 *            the topic
 	 * @param theme
 	 *            the theme
+	 *            @param strict the strict flag
 	 * @param bestLabel
 	 *            the best label
 	 */
-	public void cacheBestLabel(ITopic t, ITopic theme, String bestLabel) {
+	public void cacheBestLabel(ITopic t, ITopic theme, boolean strict, String bestLabel) {
 		if (bestLabels == null) {
 			bestLabels = HashUtil.getHashMap();
 		}
-		bestLabels.put(generateKey(t, theme), bestLabel);
+		bestLabels.put(generateKey(t, theme, strict), bestLabel);
 	}
 
 	/**
@@ -565,7 +572,7 @@ class IdentityCache implements ITopicMapListener {
 	 *            the theme
 	 * @return the generated key
 	 */
-	private BestLabelKey generateKey(ITopic topic, ITopic theme) {
+	private BestLabelKey generateKey(ITopic topic, ITopic theme, boolean strict) {
 		if (bestLabelCacheKeys == null) {
 			bestLabelCacheKeys = HashUtil.getHashMap();
 		}
@@ -574,7 +581,7 @@ class IdentityCache implements ITopicMapListener {
 			set = HashUtil.getHashSet();
 			bestLabelCacheKeys.put(topic, set);
 		}
-		BestLabelKey key = new BestLabelKey(topic, theme);
+		BestLabelKey key = new BestLabelKey(topic, theme, strict);
 		set.add(key);
 		return key;
 	}
@@ -603,7 +610,10 @@ class IdentityCache implements ITopicMapListener {
 		 * remove best-labels with theme
 		 */
 		for (ITopic theme : themes) {
-			key = new BestLabelKey(topic, theme);
+			key = new BestLabelKey(topic, theme, false);
+			keys.remove(key);
+			bestLabels.remove(key);
+			key = new BestLabelKey(topic, theme, true);
 			keys.remove(key);
 			bestLabels.remove(key);
 		}

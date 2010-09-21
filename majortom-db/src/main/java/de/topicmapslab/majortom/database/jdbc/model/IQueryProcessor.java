@@ -280,9 +280,10 @@ public interface IQueryProcessor {
 	 * <p> 6. If no subject-identifiers are existing, the subject-locators with the lexicographically smallest reference are returned. </p>
 	 * <p> 7. If no subject-locators are existing, the item-identifier with the lexicographically smallest reference are returned. </p>
 	 * <p> 8. At least the ID of the topic will be returned.</p>
+	 * @param strict if there is no name with the given theme and strict is <code>true</code>, then <code>null</code> will be returned.
 	 * @since 1.1.2
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme) throws SQLException;
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws SQLException;
 
 	public void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException;
 
@@ -566,7 +567,7 @@ public interface IQueryProcessor {
 	 * revision management
 	 */
 
-	public IRevision doCreateRevision(ITopicMap topicMap) throws SQLException;
+	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException;
 
 	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue, Object oldValue) throws SQLException;
 
@@ -583,6 +584,8 @@ public interface IQueryProcessor {
 	public IRevision doReadFutureRevision(ITopicMap topicMap, IRevision revision) throws SQLException;
 
 	public Changeset doReadChangeset(ITopicMap topicMap, IRevision revision) throws SQLException;
+	
+	public TopicMapEventType doReadChangesetType(ITopicMap topicMap, IRevision revision) throws SQLException;
 
 	public Calendar doReadLastModification(ITopicMap topicMap) throws SQLException;
 

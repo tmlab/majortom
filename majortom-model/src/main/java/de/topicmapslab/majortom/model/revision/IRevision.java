@@ -6,6 +6,8 @@ import java.util.Map;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
+
 /**
  * Interface definition of a construct which can be have revisions. An instance
  * of this interface representing one revision in the history of the topic map
@@ -96,4 +98,11 @@ public interface IRevision {
 	 * @return a map containing all meta data values
 	 */
 	public Map<String, String> getMetadata();
+
+	/**
+	 * Returns the changeset type specifies the meaning of internal changes.
+	 * 
+	 * @return the changeset type
+	 */
+	public TopicMapEventType getChangesetType();
 }

@@ -322,6 +322,8 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 				return doReadTypes((ITopic) context);
 			} else if (context instanceof ITypeable) {
 				return doReadType((ITypeable) context);
+			} else if (context == null && params.length == 1 && params[0] instanceof IRevision) {
+				return doReadChangeSetType((IRevision) params[0]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -394,8 +396,8 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		case BEST_LABEL: {
 			if (context instanceof ITopic && params.length == 0) {
 				return doReadBestLabel((ITopic) context);
-			} else if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				return doReadBestLabel((ITopic) context, (ITopic) params[0]);
+			} else if (context instanceof ITopic && params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Boolean) {
+				return doReadBestLabel((ITopic) context, (ITopic) params[0], (Boolean) params[1]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -984,6 +986,18 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	public abstract ITopic doReadType(ITypeable typed) throws TopicMapStoreException;
 
 	/**
+	 * Read the type of the given typed item.
+	 * 
+	 * @param typed
+	 *            the typed
+	 * @return the read information
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 * @since 1.1.2
+	 */
+	public abstract TopicMapEventType doReadChangeSetType(IRevision revision) throws TopicMapStoreException;
+
+	/**
 	 * Read all types of the given type.
 	 * 
 	 * @param t
@@ -1173,11 +1187,14 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 *            the topic
 	 * @param theme
 	 *            the theme
+	 * @param strict
+	 *            if there is no name with the given theme and strict is
+	 *            <code>true</code>, then <code>null</code> will be returned.
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 * @since 1.1.2
 	 */
-	public abstract String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException;
+	public abstract String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws TopicMapStoreException;
 
 	/**
 	 * {@inheritDoc}

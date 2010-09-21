@@ -82,5 +82,10 @@ public enum TopicMapEventType {
 	 /**
 	  * the internal id of a construct was modified
 	  */
-	 ID_MODIFIED
+	 ID_MODIFIED,
+	 
+	 /**
+	  * duplicates removed
+	  */
+	 REMOVE_DUPLICATES;
 }
