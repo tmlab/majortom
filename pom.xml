@@ -58,5 +58,6 @@
         <module>majortom-inmemory</module>
         <module>majortom-db</module>
         <module>majortom-testsuite</module>
+        <module>majortom-testsuite-readonly</module>
 	</modules>
 </project>

@@ -8,6 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.topicmapslab.majortom</groupId>
 	<artifactId>majortom-testsuite</artifactId>
+	<name>MaJorTom Testsuite</name>
 	<version>${project.parent.version}</version>
 	<build>
 		<plugins>
