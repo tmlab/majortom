@@ -87,5 +87,11 @@ public enum TopicMapEventType {
 	 /**
 	  * duplicates removed
 	  */
-	 REMOVE_DUPLICATES;
+	 REMOVE_DUPLICATES,
+	 
+	 /**
+	  *@XXX Remove this, if external dependencies are cleaned (Maiana Meta Map) 
+	  */	 
+	 UNKNOW;
+	 
 }
