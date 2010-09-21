@@ -20,8 +20,6 @@ package de.topicmapslab.majortom.database.jdbc.postgres.optimized;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -84,19 +82,21 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		 * check if language extension already exists
 		 */
 		boolean plpgsqlExists = false;
-		try{
+		try {
 			Statement stmt = getReaderConnection().createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT lanname FROM pg_language;");
-			while ( rs.next()){
-				if ( "plpgsql".equalsIgnoreCase(rs.getString("lanname"))){
+			ResultSet rs = stmt
+					.executeQuery("SELECT lanname FROM pg_language;");
+			while (rs.next()) {
+				if ("plpgsql".equalsIgnoreCase(rs.getString("lanname"))) {
 					plpgsqlExists = true;
 					break;
 				}
 			}
 			rs.close();
 			stmt.close();
-		}catch(SQLException e){
-			throw new TopicMapStoreException("Cannot read registered languages from database.", e);
+		} catch (SQLException e) {
+			throw new TopicMapStoreException(
+					"Cannot read registered languages from database.", e);
 		}
 		/*
 		 * read script file
@@ -112,10 +112,11 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		}
 		scanner.close();
 		/*
-		 * add language creation if language not exists 
+		 * add language creation if language not exists
 		 */
-		if ( !plpgsqlExists ){
-			return "CREATE PROCEDURAL LANGUAGE plpgsql;\r\n" + buffer.toString();
+		if (!plpgsqlExists) {
+			return "CREATE PROCEDURAL LANGUAGE plpgsql;\r\n"
+					+ buffer.toString();
 		}
 		/*
 		 * language exists

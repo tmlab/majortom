@@ -105,7 +105,7 @@ public abstract class BasePostGreSqlConnectionProvider implements
 		schemaInformation.put("rel_themes",
 				Arrays.asList(new String[] { "id_scope", "id_theme" }));
 		schemaInformation.put("revisions",
-				Arrays.asList(new String[] { "id", "time", "id_topicmap" }));
+				Arrays.asList(new String[] { "id", "time", "id_topicmap", "type" }));
 		schemaInformation.put(
 				"roles",
 				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",

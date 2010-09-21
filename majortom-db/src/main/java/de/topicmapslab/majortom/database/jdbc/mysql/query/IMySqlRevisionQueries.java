@@ -24,7 +24,7 @@ package de.topicmapslab.majortom.database.jdbc.mysql.query;
  */
 public interface IMySqlRevisionQueries {
 	
-	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(`time`, id_topicmap) VALUES(now(),?)";
+	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(`time`, id_topicmap, type) VALUES(now(),?, ?)";
 
 	public static final String QUERY_CREATE_CHANGESET = "INSERT INTO changesets(id_revision,type,id_notifier, newValue, oldValue,`time`) VALUES(?,?,?,?,?,now())";
 

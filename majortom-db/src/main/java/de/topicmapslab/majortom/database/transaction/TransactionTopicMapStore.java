@@ -242,7 +242,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type,
 			Collection<ITopic> themes) throws TopicMapStoreException {
-		return createAssociation(topicMap, type, themes, createRevision());
+		return createAssociation(topicMap, type, themes, null);
 	}
 
 	/**
@@ -261,7 +261,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * create revision
 		 */
-		IRevision revision = createRevision();
+		IRevision revision = null;
 		/*
 		 * create or read default name type
 		 */
@@ -306,7 +306,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * create revision
 		 */
-		IRevision revision = createRevision();
+		IRevision revision = null;
 		/*
 		 * create or read default name type
 		 */
@@ -439,7 +439,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected IName doCreateName(ITopic topic, ITopic type, String value,
 			Collection<ITopic> themes) throws TopicMapStoreException {
-		return createName(topic, type, value, themes, createRevision());
+		return createName(topic, type, value, themes, null);
 	}
 
 	/**
@@ -449,7 +449,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			String value) throws TopicMapStoreException {
 		return createOccurrence(topic, type, value,
 				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING),
-				createRevision());
+				null);
 	}
 
 	/**
@@ -460,7 +460,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			throws TopicMapStoreException {
 		return createOccurrence(topic, type, value,
 				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING),
-				themes, createRevision());
+				themes, null);
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			ILocator value) throws TopicMapStoreException {
 		return createOccurrence(topic, type, value.getReference(),
 				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI),
-				createRevision());
+				null);
 	}
 
 	/**
@@ -481,7 +481,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			throws TopicMapStoreException {
 		return createOccurrence(topic, type, value.getReference(),
 				doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI),
-				themes, createRevision());
+				themes, null);
 	}
 
 	/**
@@ -489,7 +489,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
 			String value, ILocator datatype) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, datatype, createRevision());
+		return createOccurrence(topic, type, value, datatype, null);
 	}
 
 	/**
@@ -499,7 +499,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
 		return createOccurrence(topic, type, value, datatype, themes,
-				createRevision());
+				null);
 	}
 
 	/**
@@ -661,7 +661,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected IAssociationRole doCreateRole(IAssociation association,
 			ITopic type, ITopic player) throws TopicMapStoreException {
-		return createRole(association, type, player, createRevision());
+		return createRole(association, type, player, null);
 	}
 
 	/**
@@ -901,7 +901,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	protected IVariant doCreateVariant(IName name, String value,
 			ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
-		return createVariant(name, value, datatype, themes, createRevision());
+		return createVariant(name, value, datatype, themes, null);
 	}
 
 	/**
@@ -962,7 +962,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doMergeTopics(ITopic context, ITopic other)
 			throws TopicMapStoreException {
-		mergeTopics(context, other, createRevision());
+		mergeTopics(context, other, null);
 	}
 
 	/**
@@ -1004,7 +1004,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * do modification
 		 */
-		modifyItemIdentifier(c, itemIdentifier, createRevision());
+		modifyItemIdentifier(c, itemIdentifier, null);
 	}
 
 	/**
@@ -1034,7 +1034,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyPlayer(IAssociationRole role, ITopic player)
 			throws TopicMapStoreException {
-		modifyPlayer(role, player, createRevision());
+		modifyPlayer(role, player, null);
 	}
 
 	/**
@@ -1066,7 +1066,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyReifier(IReifiable r, ITopic reifier)
 			throws TopicMapStoreException {
-		modifyReifier(r, reifier, createRevision());
+		modifyReifier(r, reifier, null);
 	}
 
 	/**
@@ -1131,7 +1131,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifySubjectIdentifier(ITopic t,
 			ILocator subjectIdentifier) throws TopicMapStoreException {
-		modifySubjectIdentifier(t, subjectIdentifier, createRevision());
+		modifySubjectIdentifier(t, subjectIdentifier, null);
 	}
 
 	/**
@@ -1171,7 +1171,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator)
 			throws TopicMapStoreException {
-		modifySubjectLocator(t, subjectLocator, createRevision());
+		modifySubjectLocator(t, subjectLocator, null);
 	}
 
 	/**
@@ -1203,7 +1203,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifySupertype(ITopic t, ITopic type)
 			throws TopicMapStoreException {
-		modifySupertype(t, type, createRevision());
+		modifySupertype(t, type, null);
 	}
 
 	/**
@@ -1257,7 +1257,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyType(ITypeable t, ITopic type)
 			throws TopicMapStoreException {
-		modifyType(t, type, createRevision());
+		modifyType(t, type, null);
 	}
 
 	/**
@@ -1293,7 +1293,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyTopicType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
-		modifyType(t, type, createRevision());
+		modifyType(t, type, null);
 	}
 
 	/**
@@ -1340,7 +1340,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			throws TopicMapStoreException {
 		ILocator datatype = getIdentityStore().createLocator(
 				XmlSchemeDatatypes.XSD_STRING);
-		modifyValue(c, value, datatype, createRevision());
+		modifyValue(c, value, datatype, null);
 	}
 
 	/**
@@ -1348,7 +1348,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyValue(IDatatypeAware c, String value,
 			ILocator datatype) throws TopicMapStoreException {
-		modifyValue(c, value, datatype, createRevision());
+		modifyValue(c, value, datatype, null);
 	}
 
 	/**
@@ -1358,7 +1358,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			throws TopicMapStoreException {
 		ILocator datatype = getIdentityStore().createLocator(
 				XmlSchemeDatatypes.javaToXsd(value.getClass()));
-		modifyValue(c, value, datatype, createRevision());
+		modifyValue(c, value, datatype, null);
 	}
 
 	/**
@@ -1392,7 +1392,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doModifyValue(IName n, String value)
 			throws TopicMapStoreException {
-		modifyValue(n, value, createRevision());
+		modifyValue(n, value, null);
 	}
 
 	/**
@@ -1600,6 +1600,14 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
+		throw new TopicMapStoreException("History management not supported!");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMapEventType doReadChangeSetType(IRevision revision)
+			throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
 
@@ -2298,37 +2306,50 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme) throws TopicMapStoreException {
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict)
+			throws TopicMapStoreException {
 		/*
 		 * get all names of the topic
 		 */
 		Set<IName> names = getCharacteristicsStore().getNames(topic);
 		if (!names.isEmpty()) {
-			return readBestName(topic, theme, names);
+			return readBestName(topic, theme, names, strict);
+		}
+		/*
+		 * is strict mode
+		 */
+		if ( strict ){
+			return null;
 		}
 		return readBestIdentifier(topic);
-	}	
+	}
 
 	/**
 	 * Internal best label method only check name attributes.
 	 * 
 	 * @param topic
 	 *            the topic
-	 *            @param theme the theme
+	 * @param theme
+	 *            the theme
 	 * @param set
 	 *            the non-empty set of names
+	 * @param strict
+	 *            if there is no name with the given theme and strict is
+	 *            <code>true</code>, then <code>null</code> will be returned.
 	 * @return the best name
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private String readBestName(ITopic topic, ITopic theme,  Set<IName> names)
-			throws TopicMapStoreException {
-		
-		List<IScope> scopes = HashUtil.getList(getScopeStore().getScopes(theme));
+	private String readBestName(ITopic topic, ITopic theme, Set<IName> names,
+			boolean strict) throws TopicMapStoreException {
+
+		List<IScope> scopes = HashUtil
+				.getList(getScopeStore().getScopes(theme));
 		/*
 		 * sort scopes by number of themes
 		 */
 		Collections.sort(scopes, ScopeComparator.getInstance(true));
+		boolean atLeastOneName = false;
 		for (IScope s : scopes) {
 			/*
 			 * get names of the scope and topic
@@ -2346,9 +2367,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			 */
 			else if (tmp.size() > 1) {
 				names = tmp;
+				atLeastOneName = true;
 				break;
 			}
-		}		
+		}
+		/*
+		 * is strict mode but no scoped name
+		 */
+		if ( strict && !atLeastOneName ){
+			return null;
+		}
 		return readBestName(topic, names);
 	}
 
@@ -2508,7 +2536,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade)
 			throws TopicMapStoreException {
-		removeAssocaition(association, cascade, createRevision());
+		removeAssocaition(association, cascade, null);
 	}
 
 	/**
@@ -2601,7 +2629,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveName(IName name, boolean cascade)
 			throws TopicMapStoreException {
-		removeName(name, cascade, createRevision());
+		removeName(name, cascade, null);
 	}
 
 	/**
@@ -2654,7 +2682,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
 			throws TopicMapStoreException {
-		removeOccurrence(occurrence, cascade, createRevision());
+		removeOccurrence(occurrence, cascade, null);
 	}
 
 	/**
@@ -2707,7 +2735,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveRole(IAssociationRole role, boolean cascade)
 			throws TopicMapStoreException {
-		removeRole(role, cascade, createRevision());
+		removeRole(role, cascade, null);
 	}
 
 	/**
@@ -2756,7 +2784,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveVariant(IVariant variant, boolean cascade)
 			throws TopicMapStoreException {
-		removeVariant(variant, cascade, createRevision());
+		removeVariant(variant, cascade, null);
 	}
 
 	/**
@@ -2910,7 +2938,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade)
 			throws TopicMapStoreException {
-		removeTopic(topic, cascade, createRevision());
+		removeTopic(topic, cascade, null);
 	}
 
 	/**
@@ -3012,7 +3040,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier)
 			throws TopicMapStoreException {
-		removeItemIdentifier(c, itemIdentifier, createRevision());
+		removeItemIdentifier(c, itemIdentifier, null);
 	}
 
 	/**
@@ -3071,7 +3099,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveSubjectIdentifier(ITopic t,
 			ILocator subjectIdentifier) throws TopicMapStoreException {
-		removeSubjectIdentifier(t, subjectIdentifier, createRevision());
+		removeSubjectIdentifier(t, subjectIdentifier, null);
 	}
 
 	/**
@@ -3098,7 +3126,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 */
 	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator)
 			throws TopicMapStoreException {
-		removeSubjectLocator(t, subjectLocator, createRevision());
+		removeSubjectLocator(t, subjectLocator, null);
 	}
 
 	/**
@@ -3107,11 +3135,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	protected void doRemoveSupertype(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getSupertypes(t).contains(type)) {
-			IRevision revision = createRevision();
 			getTopicTypeStore().removeSupertype(t, type);
 			if (recognizingSupertypeSubtypeAssociation()
 					&& existsTmdmSupertypeSubtypeAssociationType()) {
-				removeSupertypeSubtypeAssociation(t, type, revision);
+				removeSupertypeSubtypeAssociation(t, type, null);
 			}
 			notifyListeners(TopicMapEventType.SUPERTYPE_REMOVED, t, null, type);
 		}
@@ -3123,11 +3150,10 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	protected void doRemoveType(ITopic t, ITopic type)
 			throws TopicMapStoreException {
 		if (getTopicTypeStore().getTypes(t).contains(type)) {
-			IRevision revision = createRevision();
 			getTopicTypeStore().removeType(t, type);
 			if (recognizingTypeInstanceAssociation()
 					&& existsTmdmTypeInstanceAssociationType()) {
-				removeTypeInstanceAssociation(t, type, revision);
+				removeTypeInstanceAssociation(t, type, null);
 			}
 			notifyListeners(TopicMapEventType.TYPE_REMOVED, t, null, type);
 		}
@@ -3632,7 +3658,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	 * 
 	 * {@inheritDoc}
 	 */
-	protected synchronized IRevision createRevision() {
+	protected synchronized IRevision createRevision(TopicMapEventType type) {
 		return null;
 	}
 

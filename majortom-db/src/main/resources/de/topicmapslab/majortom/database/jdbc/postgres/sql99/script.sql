@@ -337,7 +337,8 @@ CREATE SEQUENCE seq_revision_id
 CREATE TABLE revisions (
     id bigint DEFAULT nextval('seq_revision_id'::regclass) NOT NULL,
     "time" timestamp with time zone NOT NULL,
-    id_topicmap bigint NOT NULL
+    id_topicmap bigint NOT NULL,
+   	type character varying(128) NOT NULL
 );
 
 

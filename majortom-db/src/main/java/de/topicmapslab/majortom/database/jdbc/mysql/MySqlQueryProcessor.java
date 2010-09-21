@@ -1910,7 +1910,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade)
 			throws SQLException {
 		doRemoveAssociation(association, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -1978,7 +1978,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveName(IName name, boolean cascade)
 			throws SQLException {
 		doRemoveName(name, cascade, getConnectionProvider().getTopicMapStore()
-				.createRevision());
+				.createRevision(TopicMapEventType.NAME_ADDED));
 		return true;
 	}
 
@@ -2040,7 +2040,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
 			throws SQLException {
 		doRemoveOccurrence(occurrence, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -2095,7 +2095,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveRole(IAssociationRole role, boolean cascade)
 			throws SQLException {
 		doRemoveRole(role, cascade, getConnectionProvider().getTopicMapStore()
-				.createRevision());
+				.createRevision(TopicMapEventType.ROLE_REMOVED));
 		return true;
 	}
 
@@ -2206,7 +2206,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveTopic(ITopic topic, boolean cascade)
 			throws SQLException {
 		doRemoveTopic(topic, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2408,7 +2408,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	public boolean doRemoveVariant(IVariant variant, boolean cascade)
 			throws SQLException {
 		doRemoveVariant(variant, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision());
+				.getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -4912,9 +4912,10 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doCreateRevision(ITopicMap topicMap) throws SQLException {
+	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setString(2, type.name());
 		stmt.execute();
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {

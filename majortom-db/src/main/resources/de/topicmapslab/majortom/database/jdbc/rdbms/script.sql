@@ -78,6 +78,7 @@ CREATE TABLE revisions
   id bigint NOT NULL AUTO_INCREMENT,
   `time` timestamp NOT NULL,
   id_topicmap bigint NOT NULL,
+  `type` character varying(128) NOT NULL,
   CONSTRAINT pk_revisions PRIMARY KEY (id),
   CONSTRAINT fk_revisions_topicmap FOREIGN KEY (id_topicmap)
       REFERENCES topicmaps (id)

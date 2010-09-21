@@ -23,6 +23,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -130,6 +131,13 @@ public abstract class RevisionImpl implements IRevision, Comparable<IRevision> {
 
 		revision.appendChild(getChangeset().toXml(doc));
 		return revision;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMapEventType getChangesetType() {
+		return (TopicMapEventType) store.doRead(null, TopicMapStoreParameterType.TYPE, this);
 	}
 
 }

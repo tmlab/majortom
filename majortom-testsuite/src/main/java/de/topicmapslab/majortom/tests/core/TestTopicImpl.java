@@ -289,6 +289,7 @@ public class TestTopicImpl extends MaJorToMTestCase {
 	}
 	
 	public void testBestLabelWithTheme(){
+		Topic theme = createTopic();
 		Locator si = createLocator("http://psi.example.org/si/topic");
 		Locator oSi = createLocator("http://psi.example.org/si/topic");
 		Locator sl = createLocator("http://psi.example.org/sl/topic");
@@ -301,32 +302,41 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertEquals("Best label should be the id",topic.getId(), topic.getBestLabel());
 		
 		topic.addItemIdentifier(ii);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the item-identifier", ii.getReference(), topic.getBestLabel());
 		topic.addItemIdentifier(oIi);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the lexicographically smallest item-identifier",ii.getReference(), topic.getBestLabel());
 				
 		topic.addSubjectLocator(sl);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the subject-locator",sl.getReference(), topic.getBestLabel());
 		topic.addSubjectLocator(oSl);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the lexicographically smallest subject-locator",sl.getReference(), topic.getBestLabel());
 		
 		topic.addSubjectIdentifier(si);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the subject-identifier",si.getReference(), topic.getBestLabel());
 		topic.addSubjectIdentifier(oSi);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the lexicographically smallest subject-identifier",si.getReference(), topic.getBestLabel());
 		
 		Topic type = createTopic();
-		Topic theme = createTopic();
 		Topic otherTheme = createTopic();
 		
 		Name name1 = topic.createName("Name");
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the name",name1.getValue(), topic.getBestLabel());
 		Name name2 = topic.createName("NameZZZ");
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the the lexicographically smallest name value",name1.getValue(), topic.getBestLabel());
 		
 		name1.setType(type);
 		assertEquals("Best label should be the default name",name2.getValue(), topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		name2.setType(type);
+		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
 		assertEquals("Best label should be the default name",name1.getValue(), topic.getBestLabel());
 		
 		name1.addTheme(theme);

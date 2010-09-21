@@ -2302,15 +2302,16 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 *            the old value before change
 	 */
 	public void storeRevision(TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
-		storeRevision(createRevision(), type, context, newValue, oldValue);
+		storeRevision(createRevision(type), type, context, newValue, oldValue);
 	}
 
 	/**
 	 * Creating a new revision object.
+	 * @param the event type for the internal change set
 	 * 
 	 * @return the new revision object
 	 */
-	protected abstract IRevision createRevision();
+	protected abstract IRevision createRevision(TopicMapEventType type);
 
 	/**
 	 * {@inheritDoc}

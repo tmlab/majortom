@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * Changes set representing a set of  changes.
+ * Changes set representing a set of changes.
  * 
  * @author Sven Krosse
  * 
@@ -33,17 +33,18 @@ public class Changeset extends LinkedList<IRevisionChange> {
 	/**
 	 * Exports the information of this history item as XML node.
 	 * 
-	 * @param doc the parent document
+	 * @param doc
+	 *            the parent document
 	 * @return the node
 	 */
-	public Node toXml(Document doc){
+	public Node toXml(Document doc) {
 		Node changeset = doc.createElement("changeset");
-		
-		for ( IRevisionChange revisionChange : this){
+
+		for (IRevisionChange revisionChange : this) {
 			changeset.appendChild(revisionChange.toXml(doc));
 		}
-		
+
 		return changeset;
 	}
-	
+
 }

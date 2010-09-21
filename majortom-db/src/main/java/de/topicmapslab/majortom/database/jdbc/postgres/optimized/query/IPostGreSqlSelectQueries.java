@@ -53,5 +53,5 @@ public interface IPostGreSqlSelectQueries {
 	/**
 	 * @since 1.1.2
 	 */
-	public static final String QUERY_READ_BEST_LABEL_WITH_THEME = "SELECT best_label(?,?,?);";
+	public static final String QUERY_READ_BEST_LABEL_WITH_THEME = "SELECT best_label(?,?,?,?);";
 }

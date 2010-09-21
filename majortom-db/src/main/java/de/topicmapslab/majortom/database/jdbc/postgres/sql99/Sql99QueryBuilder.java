@@ -3020,6 +3020,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryReadPastRevision;
 	private PreparedStatement preparedStatementQueryReadFutureRevision;
 	private PreparedStatement preparedStatementQueryReadChangesets;
+	private PreparedStatement preparedStatementQueryReadChangesetType;
 	private PreparedStatement preparedStatementQueryReadTimestamp;
 	private PreparedStatement preparedStatementQueryReadRevisionsByTopic;
 	private PreparedStatement preparedStatementQueryReadChangesetsByTopic;
@@ -3150,6 +3151,16 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			preparedStatementQueryReadChangesets = getReaderConnection().prepareStatement(ISql99RevisionQueries.QUERY_READ_CHANGESET);
 		}
 		return preparedStatementQueryReadChangesets;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadChangesetType() throws SQLException {
+		if (preparedStatementQueryReadChangesetType == null) {
+			preparedStatementQueryReadChangesetType = getReaderConnection().prepareStatement(ISql99RevisionQueries.QUERY_READ_CHANGESETTYPE);
+		}
+		return preparedStatementQueryReadChangesetType;
 	}
 
 	/**

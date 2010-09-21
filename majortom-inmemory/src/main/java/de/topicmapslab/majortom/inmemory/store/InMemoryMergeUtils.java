@@ -41,6 +41,7 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.store.MergeUtils;
@@ -778,7 +779,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * create revision
 		 */
-		IRevision revision = store.createRevision();
+		IRevision revision = store.createRevision(TopicMapEventType.MERGE);
 		/*
 		 * copy identifies
 		 */
@@ -1158,7 +1159,7 @@ public class InMemoryMergeUtils {
 	 */
 	public static void removeDuplicates(final InMemoryTopicMapStore store,
 			final ITopicMap topicMap) throws TopicMapStoreException {
-		final IRevision revision = store.createRevision();
+		final IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
 
 		for (final Topic topic : topicMap.getTopics()) {
 			Set<Construct> removed = HashUtil.getHashSet();

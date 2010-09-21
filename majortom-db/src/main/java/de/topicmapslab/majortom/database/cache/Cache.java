@@ -27,6 +27,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
@@ -923,6 +924,20 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	public TopicMapEventType doReadChangeSetType(IRevision revision)
+			throws TopicMapStoreException {
+		TopicMapEventType type = cache.getRevisionCache().getChangesetType(
+				revision);
+		if (type == null) {
+			type = getParentStore().doReadChangeSetType(revision);
+			cache.getRevisionCache().cacheChangesetType(revision, type);
+		}
+		return type;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Map<String, String> doReadMetaData(IRevision revision)
 			throws TopicMapStoreException {
 		Map<String, String> metaData = cache.getRevisionCache().getMetaData(
@@ -958,12 +973,14 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme)
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict)
 			throws TopicMapStoreException {
-		String bestLabel = cache.getIdentityCache().getBestLabel(topic, theme);
+		String bestLabel = cache.getIdentityCache().getBestLabel(topic, theme,
+				strict);
 		if (bestLabel == null) {
-			bestLabel = getParentStore().doReadBestLabel(topic, theme);
-			cache.getIdentityCache().cacheBestLabel(topic, theme, bestLabel);
+			bestLabel = getParentStore().doReadBestLabel(topic, theme, strict);
+			cache.getIdentityCache().cacheBestLabel(topic, theme, strict,
+					bestLabel);
 		}
 		return bestLabel;
 	}
@@ -981,6 +998,17 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public void clear() {
 		cache.clear();
+	}
+
+	/**
+	 * Clear the meta data information for the given revision from internal
+	 * cache
+	 * 
+	 * @param revision
+	 *            the revision
+	 */
+	public void clearMetaData(IRevision revision) {
+		cache.getRevisionCache().clearMetaData(revision);
 	}
 
 	/**

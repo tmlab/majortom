@@ -20,8 +20,11 @@ import java.util.GregorianCalendar;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Construct;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
+import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -304,6 +307,69 @@ public class TestRevisions extends MaJorToMTestCase {
 			assertEquals(
 					"Number of meta-data should be keep constants because of overwrite key",
 					99, revision.getMetadata().size());
+		}
+	}
+	
+	public void testChangesetType() throws Exception{
+		if ( factory.getFeature(FeatureStrings.SUPPORT_HISTORY)){
+			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+			index.open();
+			
+			Topic t = createTopic();
+			
+			IRevision r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.TOPIC_ADDED, r.getChangesetType());
+			
+			Name n = t.createName("Name");
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.NAME_ADDED, r.getChangesetType());
+			
+			Variant v = n.createVariant("Name", createTopic());
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.VARIANT_ADDED, r.getChangesetType());
+			
+			v.remove();
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.VARIANT_REMOVED, r.getChangesetType());
+			
+			n.remove();
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.NAME_REMOVED, r.getChangesetType());
+			
+			Occurrence o = t.createOccurrence(createTopic(), "Value");			
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.OCCURRENCE_ADDED, r.getChangesetType());
+			
+			o.remove();
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.OCCURRENCE_REMOVED, r.getChangesetType());
+			
+			Association a = createAssociation(createTopic());
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.ASSOCIATION_ADDED, r.getChangesetType());
+		
+			Role role = a.createRole(createTopic(), createTopic());
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.ROLE_ADDED, r.getChangesetType());
+			
+			role.remove();
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.ROLE_REMOVED, r.getChangesetType());
+			
+			a.remove();
+			r = index.getLastRevision();
+			assertNotNull(r);
+			assertEquals(TopicMapEventType.ASSOCIATION_REMOVED, r.getChangesetType());
 		}
 	}
 }

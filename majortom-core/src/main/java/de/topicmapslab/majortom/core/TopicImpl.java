@@ -40,6 +40,7 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.paged.IPagedTopic;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
@@ -946,7 +947,17 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme) {
-		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL, theme);
+		return getBestLabel(theme, false);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestLabel(Topic theme, boolean strict) {
+		if ( theme == null ){
+			throw new TopicMapStoreException("Theme cannot be null!");
+		}
+		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL, theme, strict);
 	}
 	
 }
