@@ -1284,7 +1284,7 @@ public class TestTopicImpl extends AbstractTest{
 	}
 
 	/**
-	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getBestLabel(Topic theme)}.
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicImpl#getBestLabel(Topic theme, boolean strict)}.
 	 * 
 	 * Topic(http://TestTopicImpl/testGetBestLabelTopic/topic/1) has names "a" without scope 
 	 * and names "aa" and "bb" with scope:
@@ -1306,7 +1306,7 @@ public class TestTopicImpl extends AbstractTest{
 	 * TODO improve test!
 	 */
 	@Test
-	public void testGetBestLabelTopic() {
+	public void testGetBestLabelTopicBoolean() {
 		
 		assertNotNull(map);
 		
@@ -1315,19 +1315,22 @@ public class TestTopicImpl extends AbstractTest{
 		ITopic theme2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/theme2"));
 		assertNotNull(theme2);
 		
+		assertEquals("http://TestTopicImpl/testGetBestLabelTopic/theme2", theme2.getBestLabel());
+		assertNull(theme2.getBestLabel(theme1,true));
 		
 		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/1"));
 		assertNotNull(topic1);
-		assertEquals("aa", topic1.getBestLabel(theme1));
+		assertEquals("aa", topic1.getBestLabel(theme1,false));
+		assertNull(topic1.getBestLabel(theme2,true));
 		
 		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/2"));
 		assertNotNull(topic2);
-		assertEquals("aa", topic2.getBestLabel(theme2));
-		assertEquals("a", topic2.getBestLabel(theme1));
+		assertEquals("aa", topic2.getBestLabel(theme2,false));
+		assertEquals("a", topic2.getBestLabel(theme1,false));
 		
 		ITopic topic3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/3"));
 		assertNotNull(topic3);
-		assertEquals("abcdefg", topic3.getBestLabel(theme2)); // no name so use min scope, i.e. abcdefg
+		assertEquals("abcdefg", topic3.getBestLabel(theme2,false)); // no name so use min scope, i.e. abcdefg
 		
 	}
 	
