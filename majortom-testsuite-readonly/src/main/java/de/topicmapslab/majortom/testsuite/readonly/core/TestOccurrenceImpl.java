@@ -674,8 +674,8 @@ public class TestOccurrenceImpl extends AbstractTest {
 	 */
 	@Ignore
 	@Test
-	public void testSurfaceValue() throws ParseException {
-
+	public void testSurfaceValue() {
+		// overridden and ignored
 	}
 
 	/**
