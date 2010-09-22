@@ -19,11 +19,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.tmapi.core.Construct;
-import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Reifiable;
@@ -32,20 +29,16 @@ import org.tmapi.core.Topic;
 import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 
-import de.topicmapslab.majortom.core.ConstructFactoryImpl;
 import de.topicmapslab.majortom.core.ConstructImpl;
-import de.topicmapslab.majortom.core.TopicMapSystemImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.IConstruct;
-import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IReifiable;
 import de.topicmapslab.majortom.model.core.IScopable;
-import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
@@ -61,7 +54,6 @@ import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
-import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
@@ -73,50 +65,6 @@ import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
  * 
  */
 public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
-
-	private boolean connected = false;
-	private ITopicMapSystem topicMapSystem;
-	private ITopicMap topicMap;
-	private ThreadPoolExecutor threadPool;
-	private IConstructFactory factory;
-
-	/**
-	 * feature {@link FeatureStrings#SUPPORT_HISTORY}
-	 */
-	private boolean featureRevisionManagement;
-	/**
-	 * feature {@link FeatureStrings#TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION}
-	 */
-	private boolean featureTypeInstanceAssociation;
-	/**
-	 * feature {@link FeatureStrings#TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION}
-	 */
-	private boolean featureSupertypeSubtypeAssociation;
-	/**
-	 * feature {@link FeatureStrings#READ_ONLY_SYSTEM}
-	 */
-	private boolean featureReadOnlyStore;
-	/**
-	 * feature {@link FeatureStrings#SUPPORT_TRANSACTION}
-	 */
-	private boolean featureSupportTransaction;
-	/**
-	 * feature {@link FeatureStrings#AUTOMATIC_MERGING}
-	 */
-	private boolean featureAutomaticMerging;
-	/**
-	 * feature {@link FeatureStrings#DELETION_CONSTRAINTS_REIFICATION}
-	 */
-	private boolean featureDeletionConstraintReification;
-	/**
-	 * feature {@link FeatureStrings#MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME}
-	 */
-	private boolean featureMergingByName;
-
-	/**
-	 * current state of revision management
-	 */
-	private boolean revisionManagementEnabled;
 
 	/**
 	 * constructor
@@ -131,7 +79,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 *            the parent system
 	 */
 	public TopicMapStoreImpl(final ITopicMapSystem topicMapSystem) {
-		setTopicMapSystem(topicMapSystem);
+		super(topicMapSystem);
 	}
 
 	/**
@@ -569,18 +517,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 */
 	protected abstract IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException;
 
-	/**
-	 * Create the internal scope object representing the collection of themes
-	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @param themes
-	 *            the themes collection
-	 * @return the scope object
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException;
+	
 
 	/**
 	 * Create a new topic item without any identifier.
@@ -632,18 +569,6 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 */
 	protected abstract ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException;
 
-	/**
-	 * Create a locator instance.
-	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @param reference
-	 *            the string reference
-	 * @return the created construct
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
@@ -1731,80 +1656,6 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 	 */
 	protected abstract void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void connect() throws TopicMapStoreException {
-		if (this.topicMapSystem == null) {
-			throw new TopicMapStoreException("Store is not bind to any topic map system instance!");
-		}
-		if (this.topicMap == null) {
-			throw new TopicMapStoreException("Store is not bind to any topic map instance!");
-		}
-		if (isConnected()) {
-			return;
-		}
-		connected = true;
-
-		Object maximum = topicMapSystem.getProperty(TopicMapStoreProperty.THREADPOOL_MAXIMUM);
-		int max = Runtime.getRuntime().availableProcessors() + 1;
-		if (maximum != null) {
-			try {
-				max = Integer.parseInt(maximum.toString());
-			} catch (NumberFormatException e) {
-				// NOTHING TO DO
-			}
-		}
-		this.threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(max);
-		this.factory = new ConstructFactoryImpl();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void close() throws TopicMapStoreException {
-		if (!isConnected()) {
-			return;
-		}
-		((TopicMapSystemImpl) topicMapSystem).removeTopicMap(((ITopicMap) topicMap).getLocator());
-		connected = false;
-		this.factory = null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isConnected() {
-		return connected;
-	}
-
-	/**
-	 * Returns the topic map
-	 * 
-	 * @return the topicMap
-	 */
-	public ITopicMap getTopicMap() {
-		return topicMap;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTopicMap(ITopicMap topicMap) throws TopicMapStoreException {
-		if (this.topicMap != null) {
-			throw new TopicMapStoreException("Store is already bind to an other topic map instance!");
-		}
-		this.topicMap = topicMap;
-	}
-
-	/**
-	 * Returns the parent topic map system
-	 * 
-	 * @return the topicMapSystem
-	 */
-	public ITopicMapSystem getTopicMapSystem() {
-		return topicMapSystem;
-	}
 
 	/**
 	 * Transform the given array to a set of the specific type.
@@ -1823,144 +1674,10 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		return target;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isReadOnly() {
-		return this.featureReadOnlyStore;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isRevisionManagementSupported() {
-		return this.featureRevisionManagement;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isRevisionManagementEnabled() {
-		return isRevisionManagementSupported() && this.revisionManagementEnabled;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
-		if (!isRevisionManagementSupported() && enabled) {
-			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
-		}
-		this.revisionManagementEnabled = enabled;
-	}
 
-	/**
-	 * Method checks if the feature 'http://tmapi.org/features/automerge/' for
-	 * automatic merging is set.
-	 * 
-	 * @return <code>true</code> if automatic merging is enabled,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean doAutomaticMerging() {
-		return this.featureAutomaticMerging;
-	}
-
-	/**
-	 * Method checks if the feature
-	 * 'http://tmapi.org/features/merge/byTopicName/' for merging topics by name
-	 * is set.
-	 * 
-	 * @return <code>true</code> if merging by name is enabled,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean doMergingByTopicName() {
-		return this.featureMergingByName;
-	}
-
-	/**
-	 * Method checks if the feature for supporting type-instance-associations as
-	 * a type relation is set.
-	 * 
-	 * @return <code>true</code> if the associations should recognized,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean recognizingTypeInstanceAssociation() {
-		return this.featureTypeInstanceAssociation;
-	}
-
-	/**
-	 * Method checks if the feature for supporting
-	 * supertype-subtype-associations as a supertype relation is set.
-	 * 
-	 * @return <code>true</code> if the associations should recognized,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean recognizingSupertypeSubtypeAssociation() {
-		return this.featureSupertypeSubtypeAssociation;
-	}
-
-	/**
-	 * Method returns checks if the deletion constraint contains the constraint,
-	 * that topics used as reifier cannot be removed until the reification was
-	 * destroyed.
-	 * 
-	 * @see TopicMapStoreProperty#DELETION_CONSTRAINTS_REIFICATION
-	 * 
-	 * @return <code>true</code> if a topic cannot be removed if it is used as
-	 *         reifier , <code>false</code> otherwise.
-	 */
-	public boolean isReificationDeletionRestricted() {
-		return this.featureDeletionConstraintReification;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isTransactable() {
-		return this.featureSupportTransaction;
-	}
-
-	/**
-	 * Adding the given task to the internal thread pool of the topic map store.
-	 * 
-	 * @param task
-	 *            the task to add
-	 */
-	protected void addTaskToThreadPool(Runnable task) {
-		getThreadPool().execute(task);
-	}
-
-	/**
-	 * Returns the internal thread pool instance
-	 * 
-	 * @return the threadPool
-	 */
-	protected final ThreadPoolExecutor getThreadPool() {
-		return threadPool;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTopicMapSystem(ITopicMapSystem topicMapSystem) {
-		if (isConnected()) {
-			throw new TopicMapStoreException("Store already connected, topic map system cannot changed!");
-		}
-		this.topicMapSystem = topicMapSystem;
-		try {
-			this.featureAutomaticMerging = topicMapSystem.getFeature(FeatureStrings.AUTOMATIC_MERGING);
-			this.featureDeletionConstraintReification = topicMapSystem.getFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
-			this.featureMergingByName = topicMapSystem.getFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME);
-			this.featureReadOnlyStore = topicMapSystem.getFeature(FeatureStrings.READ_ONLY_SYSTEM);
-			this.featureRevisionManagement = topicMapSystem.getFeature(FeatureStrings.SUPPORT_HISTORY);
-			this.featureSupertypeSubtypeAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
-			this.featureSupportTransaction = topicMapSystem.getFeature(FeatureStrings.SUPPORT_TRANSACTION);
-			this.featureTypeInstanceAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
-		} catch (FeatureNotRecognizedException e) {
-			throw new TopicMapStoreException("Feature is missing", e);
-		}
-		this.revisionManagementEnabled = featureRevisionManagement;
-	}
 
 	// *******************
 	// * Utility methods *
@@ -2341,10 +2058,5 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IConstructFactory getConstructFactory() {
-		return factory;
-	}
+
 }

@@ -57,10 +57,8 @@ public interface IScopedIndex extends ScopedIndex, IIndex {
 	public IScope getScope(Collection<? extends Topic> themes);
 
 	/**
-	 * Returns a collection of scope object containing one combination of the
-	 * given themes. The empty scope will never returned except the given array
-	 * is empty.
-	 * 
+	 * Returns a collection of all scopes where at least one of the given themes is persent.
+	 * @see {@link #getScopes(Topic[], boolean)} with boolean argument <code>false</code>
 	 * @param themes the themes
 	 * @return a collection of scope objects containing one combination of the
 	 *         given themes
@@ -68,9 +66,7 @@ public interface IScopedIndex extends ScopedIndex, IIndex {
 	public Collection<IScope> getScopes(Topic... themes);
 
 	/**
-	 * Returns a collection of scope object containing one combination of the
-	 * given themes. The empty scope will never returned except the given array
-	 * is empty.
+	 * Returns a collection of all scopes where at least one of the given themes is persent.
 	 * 
 	 * @param themes the themes
 	 * @param matchAll if value is <code>true</code> the scope object has to
@@ -81,9 +77,7 @@ public interface IScopedIndex extends ScopedIndex, IIndex {
 	public Collection<IScope> getScopes(Topic[] themes, boolean matchAll);
 
 	/**
-	 * Returns a collection of scope object containing one combination of the
-	 * given themes. The empty scope will never returned except the given
-	 * collection is empty.
+	 * Returns a collection of all scopes where at least one of the given themes is persent.
 	 * 
 	 * @param themes the themes
 	 * @param matchAll if value is <code>true</code> the scope object has to

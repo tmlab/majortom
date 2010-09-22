@@ -163,7 +163,7 @@ public class TopicMapStoreFactory {
 			ITopicMapStore newStore;
 			try {
 				newStore = store.getClass().getConstructor().newInstance();
-				((TopicMapStoreImpl) newStore).setTopicMapSystem(tmSystem);
+				((ReadOnlyTopicMapStoreImpl) newStore).setTopicMapSystem(tmSystem);
 				return newStore;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
