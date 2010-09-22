@@ -412,7 +412,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 	protected IName doCreateName(ITopic topic, ITopic type, String value,
 			Collection<ITopic> themes) throws TopicMapStoreException {
 		return createName(topic, type, value, themes,
-				createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+				createRevision(TopicMapEventType.NAME_ADDED));
 	}
 
 	/**
