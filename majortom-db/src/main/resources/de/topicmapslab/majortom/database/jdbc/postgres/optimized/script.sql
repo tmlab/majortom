@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Started on 2010-09-21 14:16:18
+-- Started on 2010-09-22 12:45:26
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -16,7 +16,7 @@ SET escape_string_warning = off;
 -- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
 --
 
-CREATE PROCEDURAL LANGUAGE plpgsql;
+--CREATE PROCEDURAL LANGUAGE plpgsql;
 
 
 ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
@@ -24,7 +24,7 @@ ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 49 (class 1255 OID 7315748)
+-- TOC entry 50 (class 1255 OID 7315748)
 -- Dependencies: 402 6
 -- Name: best_label(bigint, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
@@ -37,6 +37,8 @@ CREATE FUNCTION best_label("topicMapId" bigint, "topicId" bigint) RETURNS charac
 	label character varying;
 	ids bigint[];		
 	typeId bigint;
+	numberOfThemes bigint;
+	scopedNames bigint[];
 BEGIN
 
 	/*check if topic has more than one name*/
@@ -67,7 +69,7 @@ BEGIN
 			END IF;				
 		END IF;
 		/* get empty scope*/
-		SELECT ARRAY ( SELECT id FROM names WHERE id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a  INTO rec;
+		SELECT ARRAY ( SELECT id FROM names WHERE id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a  INTO rec;		
 		/* there is only one name with unconstrained scope*/			
 		IF array_upper(rec.a,1) = 1 THEN
 			/* get name values */
@@ -79,23 +81,35 @@ BEGIN
 			SELECT value, length(value) AS l FROM names WHERE id IN ( SELECT unnest(rec.a)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
 			RETURN rec2.value;
 		END IF;
-		/* No name item with unconstrained scope -> order name items by number of themes */
+		numberOfThemes := -1;
+		/* No name item with unconstrained scope -> order name items by number of themes */		
 		FOR rec IN SELECT n.id_scope, COUNT(id_theme) AS c FROM names AS n, rel_themes AS r WHERE r.id_scope = n.id_scope AND id_parent = $2 GROUP BY n.id_scope ORDER BY c LOOP
 			/*Get scoped names*/
-			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec2;
-			/* there is only one scope name*/			
-			IF array_upper(rec2.a,1) = 1 THEN
-				/* get name values */
-				SELECT value FROM names WHERE id IN ( SELECT unnest(rec2.a)) INTO rec2;
-				RETURN rec2.value;
-			/* there are more than one scope name*/
-			ELSEIF array_upper(rec2.a,1) > 1 THEN
-				/* get name values */
-				SELECT value, length(value) AS l  FROM names WHERE id IN ( SELECT unnest(rec2.a)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
-				RETURN rec2.value;
-			END IF;
+			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 ) AS a INTO rec2;
+			IF array_upper(rec2.a,1) > 0 THEN
+				/* set number of themes */
+				IF numberOfThemes < '0' THEN
+					numberOfThemes := rec.c;
+				END IF;					
+				/* more themes than expected */
+				IF numberOfThemes = rec.c THEN					
+					/* set scoped names */
+					scopedNames := scopedNames || rec2.a;
+				END IF;				
+			END IF;		
 		/*END LOOP of scoped names*/
 		END LOOP;
+		/* there is only one scope name*/			
+		IF array_upper(scopedNames,1) = 1 THEN
+			/* get name values */
+			SELECT value FROM names WHERE id IN ( SELECT unnest(scopedNames)) INTO rec2;
+			RETURN rec2.value;
+		/* there are more than one scope name*/
+		ELSEIF array_upper(scopedNames,1) > 1 THEN
+			/* get name values */
+			SELECT value, length(value) AS l  FROM names WHERE id IN ( SELECT unnest(scopedNames)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
+			RETURN rec2.value;
+		END IF;
 	/* topic has no names */
 	ELSE
 		/*check subject-identifier*/
@@ -122,8 +136,8 @@ END;$_$;
 ALTER FUNCTION public.best_label("topicMapId" bigint, "topicId" bigint) OWNER TO postgres;
 
 --
--- TOC entry 50 (class 1255 OID 10902900)
--- Dependencies: 402 6
+-- TOC entry 49 (class 1255 OID 10902900)
+-- Dependencies: 6 402
 -- Name: best_label(bigint, bigint, bigint, boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -136,104 +150,64 @@ CREATE FUNCTION best_label("topicMapId" bigint, "topicId" bigint, "themeId" bigi
 	ids bigint[];		
 	typeId bigint;
 	atLeastOneName boolean;
+	numberOfThemes bigint;
+	scopedNames bigint[];
 BEGIN
 	atLeastOneName := false;
 	/*check if topic has more than one name*/
 	FOR rec IN SELECT id FROM names WHERE id_parent = $2 LOOP
 		ids := ids || rec.id;
 	END LOOP;	
-	IF  array_upper(ids,1) > 1 THEN					
+	IF  array_upper(ids,1) > 1 THEN				
+		numberOfThemes := -1;		
 		/* get scopes with the given theme */
 		FOR rec IN SELECT n.id_scope, COUNT(id_theme) AS c FROM names AS n, rel_themes AS r WHERE r.id_scope = n.id_scope AND id_parent = $2 AND $3 IN ( SELECT id_theme FROM rel_themes WHERE id_scope = r.id_scope) GROUP BY n.id_scope ORDER BY c LOOP
 			/*Get scoped names*/
-			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec2;
-			/* there is only one scope name*/			
-			IF array_upper(rec2.a,1) = 1 THEN
-				/* get name values */
-				SELECT value FROM names WHERE id IN ( SELECT unnest(rec2.a)) INTO rec2;
-				RETURN rec2.value;
-			/* there are more than one scope name*/
-			ELSEIF array_upper(rec2.a,1) > 1 THEN
-				ids := rec.a;	
-				atLeastOneName := true;
-			END IF;
+			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 ) AS a INTO rec2;
+			IF array_upper(rec2.a,1) > 0 THEN
+				/* set number of themes */
+				IF numberOfThemes < '0' THEN
+					numberOfThemes := rec.c;
+				END IF;					
+				/* more themes than expected */
+				IF numberOfThemes = rec.c THEN					
+					/* set scoped names */
+					scopedNames := scopedNames || rec2.a;
+					atLeastOneName := true;
+				END IF;				
+			END IF;	
 		/*END LOOP of scoped names*/
 		END LOOP;
+		IF array_upper(scopedNames,1) = 1 THEN
+			/* get name values */
+			SELECT value FROM names WHERE id IN ( SELECT unnest(scopedNames)) INTO rec2;
+			RETURN rec2.value;
+		/* there are more than one scope name*/
+		ELSEIF array_upper(scopedNames,1) > 1 THEN
+			/* get name values */
+			SELECT value, length(value) AS l  FROM names WHERE id IN ( SELECT unnest(scopedNames)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
+			RETURN rec2.value;
+		END IF;
+		/* check scoped names */
+		IF array_upper(scopedNames,1) = 1 THEN
+			/* get name values */
+			SELECT value FROM names WHERE id IN ( SELECT unnest(scopedNames)) INTO rec2;
+			RETURN rec2.value;
+		/* there are more than one scope name*/
+		ELSEIF array_upper(scopedNames,1) > 1 THEN
+			/* get name values */
+			SELECT value, length(value) AS l  FROM names WHERE id IN ( SELECT unnest(rec2.a)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
+			RETURN rec2.value;
+		END IF;
+		
 		/* no name with the given theme in strict mode */
 		IF $4 AND NOT atLeastOneName THEN
 			RETURN NULL;
 		END IF;
-		/*get if default name type*/
-		SELECT t.id FROM topics AS t, locators AS l, rel_subject_identifiers AS r WHERE l.reference = 'http://psi.topicmaps.org/iso13250/model/topic-name' AND r.id_locator = l.id AND r.id_topic = t.id AND t.id_topicmap = $1 INTO rec;
-		/*TMDM default name type exists */
-		IF rec IS NOT NULL THEN
-			typeId = rec.id;
-			/* get names of the default name type */
-			SELECT ARRAY(SELECT id FROM names WHERE id_type = typeId AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec;
-			/* only one default default name */			
-			IF array_upper(rec.a,1) = 1 THEN
-				/* get name values */
-				SELECT value FROM names WHERE id IN ( SELECT unnest(rec.a)) INTO rec;
-				RETURN rec.value;
-			/*more than one default name */
-			ELSEIF array_upper(rec.a,1) > 1 THEN
-				ids := rec.a;			
-			END IF;				
-		END IF;
-		/* get empty scope*/
-		SELECT ARRAY ( SELECT id FROM names WHERE id_scope NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a  INTO rec;
-		/* there is only one name with unconstrained scope*/			
-		IF array_upper(rec.a,1) = 1 THEN
-			/* get name values */
-			SELECT value FROM names WHERE id IN ( SELECT unnest(rec.a)) INTO rec;
-			RETURN rec.value;
-		/* there are more than one name with unconstrained scope*/
-		ELSEIF array_upper(rec.a,1) > 1 THEN
-			/* get name values */
-			SELECT value, length(value) AS l FROM names WHERE id IN ( SELECT unnest(rec.a)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
-			RETURN rec2.value;
-		END IF;
-		/* No name item with unconstrained scope -> order name items by number of themes */
-		FOR rec IN SELECT n.id_scope, COUNT(id_theme) AS c FROM names AS n, rel_themes AS r WHERE r.id_scope = n.id_scope AND id_parent = $2 GROUP BY n.id_scope ORDER BY c LOOP
-			/*Get scoped names*/
-			SELECT ARRAY(SELECT id FROM names WHERE id_scope = rec.id_scope AND id_parent = $2 INTERSECT SELECT unnest(ids) AS id ) AS a INTO rec2;
-			/* there is only one scope name*/			
-			IF array_upper(rec2.a,1) = 1 THEN
-				/* get name values */
-				SELECT value FROM names WHERE id IN ( SELECT unnest(rec2.a)) INTO rec2;
-				RETURN rec2.value;
-			/* there are more than one scope name*/
-			ELSEIF array_upper(rec2.a,1) > 1 THEN
-				/* get name values */
-				SELECT value, length(value) AS l  FROM names WHERE id IN ( SELECT unnest(rec2.a)) ORDER BY l, value OFFSET 0 LIMIT 1 INTO rec2;
-				RETURN rec2.value;
-			END IF;
-		/*END LOOP of scoped names*/
-		END LOOP;
-	/* topic has no names */
-	ELSE
-		/* if mode is strict cancle, reading best label by identifier */		
-		IF $4 THEN
+	ELSEIF $4 AND NOT atLeastOneName THEN
 			RETURN NULL;
-		END IF;
-		/*check subject-identifier*/
-		SELECT reference FROM locators, rel_subject_identifiers WHERE id_topic = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
-		IF rec IS NOT NULL THEN
-			return rec.reference;
-		END IF;
-		/*check subject-locators*/
-		SELECT reference FROM locators, rel_subject_locators WHERE id_topic = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
-		IF rec IS NOT NULL THEN
-			return rec.reference;
-		END IF;
-		/*check item-identifiers*/
-		SELECT reference FROM locators, rel_item_identifiers WHERE id_construct = $2 AND id_locator = id ORDER BY reference OFFSET 0 LIMIT 1 INTO rec;
-		IF rec IS NOT NULL THEN
-			return rec.reference;
-		END IF;		
-		/*return the id*/		
-		RETURN $2;
 	END IF;
+	RETURN best_label($1,$2);
 END;$_$;
 
 
@@ -1239,7 +1213,7 @@ ALTER FUNCTION public.transitive_types("topicId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 47 (class 1255 OID 7315777)
--- Dependencies: 6 402
+-- Dependencies: 402 6
 -- Name: types_and_subtypes(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1262,7 +1236,7 @@ ALTER FUNCTION public.types_and_subtypes("typeId" bigint) OWNER TO postgres;
 
 --
 -- TOC entry 48 (class 1255 OID 7315778)
--- Dependencies: 6 402
+-- Dependencies: 402 6
 -- Name: types_and_subtypes(bigint[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2348,7 +2322,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2010-09-21 14:16:19
+-- Completed on 2010-09-22 12:45:26
 
 --
 -- PostgreSQL database dump complete

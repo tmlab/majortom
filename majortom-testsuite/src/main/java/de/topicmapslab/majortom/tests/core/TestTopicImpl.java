@@ -286,10 +286,16 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		
 		name1.removeTheme(otherTheme);
 		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		name2.removeTheme(theme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		name2.setValue("A");
+		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel());
 	}
 	
 	public void testBestLabelWithTheme(){
 		Topic theme = createTopic();
+		Topic otherTheme = createTopic();
+		Topic newTheme = createTopic();
 		Locator si = createLocator("http://psi.example.org/si/topic");
 		Locator oSi = createLocator("http://psi.example.org/si/topic");
 		Locator sl = createLocator("http://psi.example.org/sl/topic");
@@ -323,7 +329,6 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertEquals("Best label should be the lexicographically smallest subject-identifier",si.getReference(), topic.getBestLabel());
 		
 		Topic type = createTopic();
-		Topic otherTheme = createTopic();
 		
 		Name name1 = topic.createName("Name");
 		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
@@ -352,6 +357,14 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		
 		name1.removeTheme(otherTheme);
 		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		name2.removeTheme(theme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		name2.setValue("A");
+		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel());
+		
+		name1.addTheme(newTheme);
+		name2.addTheme(newTheme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel(newTheme));
 	}
 
 }

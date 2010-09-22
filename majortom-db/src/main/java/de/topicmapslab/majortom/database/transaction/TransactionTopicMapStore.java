@@ -2296,13 +2296,13 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = getCharacteristicsStore().getNames(topic);
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, names);
 		}
 		return readBestIdentifier(topic);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2311,7 +2311,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = getCharacteristicsStore().getNames(topic);
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, theme, names, strict);
 		}
@@ -2350,26 +2350,37 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		 */
 		Collections.sort(scopes, ScopeComparator.getInstance(true));
 		boolean atLeastOneName = false;
+		int numberOfThemes = -1;
+		Set<IName> tmp = HashUtil.getHashSet();
 		for (IScope s : scopes) {
-			/*
-			 * get names of the scope and topic
-			 */
-			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(getScopeStore().getScopedNames(s));
-			/*
-			 * only one name of the current scope
-			 */
-			if (tmp.size() == 1) {
-				return tmp.iterator().next().getValue();
+			Set<IName> scopedNames = getScopeStore().getScopedNames(s);
+			if ( scopedNames.isEmpty()){
+				continue;
 			}
 			/*
-			 * more than one name
+			 * set number of themes
 			 */
-			else if (tmp.size() > 1) {
-				names = tmp;
-				atLeastOneName = true;
+			if ( numberOfThemes == -1){
+				numberOfThemes = s.getThemes().size();
+			}
+			/*
+			 * current scope has more themes than expected
+			 */
+			if ( numberOfThemes < s.getThemes().size()){
 				break;
 			}
+			/*
+			 * get names of the scope and topic
+			 */			
+			tmp.addAll(scopedNames);		
+			atLeastOneName = true;
+		}
+		names.retainAll(tmp);
+		/*
+		 * only one name of the current scope
+		 */
+		if (names.size() == 1) {
+			return tmp.iterator().next().getValue();
 		}
 		/*
 		 * is strict mode but no scoped name
@@ -2415,7 +2426,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		}
 		/*
 		 * filter by scoping themes
-		 */
+		 */		
 		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
 		scopes.add(getScopeStore().getEmptyScope());
 		if (!scopes.isEmpty()) {
@@ -2423,26 +2434,38 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			 * sort scopes by number of themes
 			 */
 			Collections.sort(scopes, ScopeComparator.getInstance(true));
+			Set<IName> tmp = HashUtil.getHashSet();
+			int numberOfThemes = -1;
 			for (IScope s : scopes) {
-				/*
-				 * get names of the scope and topic
-				 */
-				Set<IName> tmp = HashUtil.getHashSet(names);
-				tmp.retainAll(getScopeStore().getScopedNames(s));
-				/*
-				 * only one name of the current scope
-				 */
-				if (tmp.size() == 1) {
-					return tmp.iterator().next().getValue();
+				Set<IName> scopedNames = getScopeStore().getScopedNames(s);
+				if ( scopedNames.isEmpty()){
+					continue;
 				}
 				/*
-				 * more than one name
+				 * set number of themes
 				 */
-				else if (tmp.size() > 1) {
-					names = tmp;
+				if ( numberOfThemes == -1){
+					numberOfThemes = s.getThemes().size();
+				}
+				/*
+				 * current scope has more themes than expected
+				 */
+				if ( numberOfThemes < s.getThemes().size()){
 					break;
 				}
+				/*
+				 * get names of the scope and topic
+				 */				
+				tmp.addAll(scopedNames);				
 			}
+			names.retainAll(tmp);
+			/*
+			 * only one name of the current scope
+			 */
+			if (names.size() == 1) {
+				return tmp.iterator().next().getValue();
+			}
+			
 		}
 		/*
 		 * sort by value
