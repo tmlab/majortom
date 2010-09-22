@@ -61,7 +61,7 @@ public class TopicMapStoreFactory {
 			ITopicMapStoreFactory storeFac = loadWithJavaServices();
 			factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, storeFac.getClassName());
 			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
-			((TopicMapStoreImpl) store).setTopicMapSystem(topicMapSystem);
+			store.setTopicMapSystem(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
 			return store;
 		}

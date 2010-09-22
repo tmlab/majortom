@@ -183,6 +183,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");

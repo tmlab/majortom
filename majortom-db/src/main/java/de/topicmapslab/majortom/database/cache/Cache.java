@@ -848,7 +848,6 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	public void close() throws TopicMapStoreException {
 		getParentStore().removeTopicMapListener(cache);
 		cache.clear();
-		super.close();
 	}
 
 	/**
@@ -1034,5 +1033,5 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public void enableCaching(boolean enable) {
 		// NOTHING TO DO HERE
-	}
+	}	
 }
