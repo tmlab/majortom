@@ -2258,7 +2258,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		int numberOfThemes = -1;
 		Set<IName> tmp = HashUtil.getHashSet();
 		for (IScope s : scopes) {
-			Set<IName> scopedNames = getScopeStore().getScopedNames(s);
+			Set<IName> scopedNames = doReadNames(topic, s);
 			if ( scopedNames.isEmpty()){
 				continue;
 			}
@@ -2280,18 +2280,20 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			tmp.addAll(scopedNames);		
 			atLeastOneName = true;
 		}
-		names.retainAll(tmp);
-		/*
-		 * only one name of the current scope
-		 */
-		if (names.size() == 1) {
-			return tmp.iterator().next().getValue();
-		}
 		/*
 		 * is strict mode but no scoped name
 		 */
 		if ( strict && !atLeastOneName ){
 			return null;
+		}
+		if ( !tmp.isEmpty()){
+			names.retainAll(tmp);			
+		}
+		/*
+		 * only one name of the current scope
+		 */
+		if (names.size() == 1) {
+			return tmp.iterator().next().getValue();
 		}
 		return readBestName(topic, names);
 	}
@@ -2342,7 +2344,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			Set<IName> tmp = HashUtil.getHashSet();
 			int numberOfThemes = -1;
 			for (IScope s : scopes) {
-				Set<IName> scopedNames = getScopeStore().getScopedNames(s);
+				Set<IName> scopedNames = doReadNames(topic, s);
 				if ( scopedNames.isEmpty()){
 					continue;
 				}
@@ -2363,7 +2365,9 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 				 */				
 				tmp.addAll(scopedNames);				
 			}
-			names.retainAll(tmp);
+			if ( !tmp.isEmpty()){
+				names.retainAll(tmp);
+			}
 			/*
 			 * only one name of the current scope
 			 */
