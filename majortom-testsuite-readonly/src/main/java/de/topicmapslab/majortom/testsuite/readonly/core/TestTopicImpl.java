@@ -994,7 +994,7 @@ public class TestTopicImpl extends AbstractTest{
 		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si1"));
 		assertNotNull(topic);
 		assertEquals(2, topic.getSubjectIdentifiers().size());
-		assertEquals(topic, (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2")));
+		assertEquals(topic, map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectIdentifiers/topic/1/si2")));
 	}
 
 	/**
@@ -1012,8 +1012,8 @@ public class TestTopicImpl extends AbstractTest{
 		ITopic topic = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1"));
 		assertNotNull(topic);
 		assertEquals(2, topic.getSubjectLocators().size());
-		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1")));
-		assertEquals(topic, (ITopic)map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2")));
+		assertEquals(topic, map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl1")));
+		assertEquals(topic, map.getTopicBySubjectLocator(map.createLocator("http://TestTopicImpl/testGetSubjectLocators/topic/1/sl2")));
 	}
 
 	/**
@@ -1145,6 +1145,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetAssociationsPlayedIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1153,6 +1154,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetAssociationsPlayedIntIntComparatorOfAssociation() {
+		// ignored
 	}
 
 	/**
@@ -1161,6 +1163,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNamesIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1169,6 +1172,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNamesIntIntComparatorOfName() {
+		// ignored
 	}
 
 	/**
@@ -1177,6 +1181,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetOccurrencesIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1185,6 +1190,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetOccurrencesIntIntComparatorOfOccurrence() {
+		// ignored
 	}
 
 	/**
@@ -1193,6 +1199,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetRolesPlayedIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1201,6 +1208,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetRolesPlayedIntIntComparatorOfRole() {
+		// ignored
 	}
 
 	/**
@@ -1209,6 +1217,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetSupertypesIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1217,6 +1226,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetSupertypesIntIntComparatorOfTopic() {
+		// ignored
 	}
 
 	/**
@@ -1225,6 +1235,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetTypesIntInt() {
+		// ignored
 	}
 
 	/**
@@ -1233,6 +1244,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetTypesIntIntComparatorOfTopic() {
+		// ignored
 	}
 
 	/**
@@ -1241,6 +1253,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfAssociationsPlayed() {
+		// ignored
 	}
 
 	/**
@@ -1249,6 +1262,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfNames() {
+		// ignored
 	}
 
 	/**
@@ -1257,6 +1271,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfOccurrences() {
+		// ignored
 	}
 
 	/**
@@ -1265,6 +1280,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfRolesPlayed() {
+		// ignored
 	}
 
 	/**
@@ -1273,6 +1289,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfSupertypes() {
+		// ignored
 	}
 
 	/**
@@ -1281,6 +1298,7 @@ public class TestTopicImpl extends AbstractTest{
 	@Ignore
 	@Test
 	public void testGetNumberOfTypes() {
+		// ignored
 	}
 
 	/**
