@@ -276,6 +276,15 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		
 		name1.addTheme(theme);
 		assertEquals("Best label should be the name with the unconstained scope",name2.getValue(), topic.getBestLabel());
+		name2.addTheme(otherTheme);
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());		
+		name2.setValue(name1.getValue());
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		
+		name2.setValue("NameZZZ");
+		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		
+		name2.removeTheme(otherTheme);
 		name2.addTheme(theme);
 		assertEquals("Best label should be the name with the unconstained scope",name1.getValue(), topic.getBestLabel());
 		

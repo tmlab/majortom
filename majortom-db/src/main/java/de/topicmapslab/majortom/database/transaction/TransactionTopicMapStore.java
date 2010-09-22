@@ -498,8 +498,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type,
 			String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, datatype, themes,
-				null);
+		return createOccurrence(topic, type, value, datatype, themes, null);
 	}
 
 	/**
@@ -1602,7 +1601,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
 		throw new TopicMapStoreException("History management not supported!");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2296,7 +2295,8 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, names);
 		}
@@ -2311,14 +2311,15 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, theme, names, strict);
 		}
 		/*
 		 * is strict mode
 		 */
-		if ( strict ){
+		if (strict) {
 			return null;
 		}
 		return readBestIdentifier(topic);
@@ -2353,40 +2354,42 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		int numberOfThemes = -1;
 		Set<IName> tmp = HashUtil.getHashSet();
 		for (IScope s : scopes) {
-			Set<IName> scopedNames = getScopeStore().getScopedNames(s);
-			if ( scopedNames.isEmpty()){
+			Set<IName> scopedNames = doReadNames(topic, s);
+			if (scopedNames.isEmpty()) {
 				continue;
 			}
 			/*
 			 * set number of themes
 			 */
-			if ( numberOfThemes == -1){
+			if (numberOfThemes == -1) {
 				numberOfThemes = s.getThemes().size();
 			}
 			/*
 			 * current scope has more themes than expected
 			 */
-			if ( numberOfThemes < s.getThemes().size()){
+			if (numberOfThemes < s.getThemes().size()) {
 				break;
 			}
 			/*
 			 * get names of the scope and topic
-			 */			
-			tmp.addAll(scopedNames);		
+			 */
+			tmp.addAll(scopedNames);
 			atLeastOneName = true;
 		}
-		names.retainAll(tmp);
+		/*
+		 * is strict mode but no scoped name
+		 */
+		if (strict && !atLeastOneName) {
+			return null;
+		}
+		if (!tmp.isEmpty()) {
+			names.retainAll(tmp);
+		}
 		/*
 		 * only one name of the current scope
 		 */
 		if (names.size() == 1) {
 			return tmp.iterator().next().getValue();
-		}
-		/*
-		 * is strict mode but no scoped name
-		 */
-		if ( strict && !atLeastOneName ){
-			return null;
 		}
 		return readBestName(topic, names);
 	}
@@ -2426,7 +2429,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		}
 		/*
 		 * filter by scoping themes
-		 */		
+		 */
 		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
 		scopes.add(getScopeStore().getEmptyScope());
 		if (!scopes.isEmpty()) {
@@ -2437,35 +2440,37 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			Set<IName> tmp = HashUtil.getHashSet();
 			int numberOfThemes = -1;
 			for (IScope s : scopes) {
-				Set<IName> scopedNames = getScopeStore().getScopedNames(s);
-				if ( scopedNames.isEmpty()){
+				Set<IName> scopedNames = doReadNames(topic, s);
+				if (scopedNames.isEmpty()) {
 					continue;
 				}
 				/*
 				 * set number of themes
 				 */
-				if ( numberOfThemes == -1){
+				if (numberOfThemes == -1) {
 					numberOfThemes = s.getThemes().size();
 				}
 				/*
 				 * current scope has more themes than expected
 				 */
-				if ( numberOfThemes < s.getThemes().size()){
+				if (numberOfThemes < s.getThemes().size()) {
 					break;
 				}
 				/*
 				 * get names of the scope and topic
-				 */				
-				tmp.addAll(scopedNames);				
+				 */
+				tmp.addAll(scopedNames);
 			}
-			names.retainAll(tmp);
+			if (!tmp.isEmpty()) {
+				names.retainAll(tmp);
+			}
 			/*
 			 * only one name of the current scope
 			 */
 			if (names.size() == 1) {
 				return tmp.iterator().next().getValue();
 			}
-			
+
 		}
 		/*
 		 * sort by value
@@ -3820,7 +3825,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			// TODO undo command
 			command.notify();
 		}
-		commited.clear();		
+		commited.clear();
 	}
 
 	/**
@@ -3869,24 +3874,25 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 
 	/**
 	 * Generates an identity for a constructs
+	 * 
 	 * @return the generate id
 	 */
 	public ITopicMapStoreIdentity generateIdentity() {
 		return new JdbcIdentity(Long.toString(Math.round(Math.random()
 				* Long.MAX_VALUE)));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isCachingEnabled() {
 		return false;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void enableCaching(boolean enable) {
-		// NOTHING TO DO HERE		
+		// NOTHING TO DO HERE
 	}
 }
