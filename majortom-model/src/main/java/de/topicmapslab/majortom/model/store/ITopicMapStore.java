@@ -7,6 +7,7 @@ import org.tmapi.index.Index;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -23,13 +24,21 @@ public interface ITopicMapStore {
 	 * Initializing method of the topic map store.
 	 * 
 	 * @param topicMapBaseLocator
-	 *           the base locator
+	 *            the base locator
 	 * 
 	 * @throws TopicMapStoreException
 	 *             thrown if initialization failed
 	 */
 	public void initialize(Locator topicMapBaseLocator)
 			throws TopicMapStoreException;
+
+	/**
+	 * Setting the topic map system to topic map store
+	 * 
+	 * @param topicMapSystem
+	 *            the topic map system
+	 */
+	public void setTopicMapSystem(ITopicMapSystem topicMapSystem);
 
 	/**
 	 * Open the connection to the topic map store.
@@ -277,12 +286,13 @@ public interface ITopicMapStore {
 	 * values are lost.
 	 * 
 	 * <p>
-	 * <b>Hint:</b> If the topic map store does not support caching, the method has no effect.
+	 * <b>Hint:</b> If the topic map store does not support caching, the method
+	 * has no effect.
 	 * </p>
 	 * 
 	 * @param enable
 	 *            <code>true</code> to enable the cache, <code>false</code> to
-	 *            disable it            
+	 *            disable it
 	 */
 	public void enableCaching(boolean enable);
 }

@@ -2283,10 +2283,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			throw new TopicMapStoreException(
 					"Cannot open connection to database!", e);
 		}
-		this.baseLocator = (ILocator) topicMapBaseLocator;
-		cache = new Cache(this);
-		cache.initialize(baseLocator);
-		cache.connect();
+		this.baseLocator = (ILocator) topicMapBaseLocator;		
 	}
 
 	/**
@@ -2303,6 +2300,18 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 		super.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void connect() throws TopicMapStoreException {		
+		super.connect();
+		cache = new Cache(this);
+		cache.setTopicMapSystem(getTopicMapSystem());
+		cache.setTopicMap(getTopicMap());		
+		cache.initialize(baseLocator);
+		cache.connect();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
