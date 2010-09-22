@@ -1347,6 +1347,8 @@ public class TestTopicImpl extends AbstractTest{
 	 * Topic(http://TestTopicImpl/testGetBestLable/topic/8) has two theme names "aa" and "bb"
 	 * Topic(http://TestTopicImpl/testGetBestLable/topic/9) has scoped default name "aa" and unscoped but typed name "a"
 	 * 
+	 * 
+	 * /// TODO improve
 	 */
 	@Test
 	public void testGetBestLabel() {

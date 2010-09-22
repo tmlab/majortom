@@ -923,7 +923,7 @@ public class TestScopeIndex extends AbstractTest {
 		
 		ITopic theme3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestScopeIndex/testGetScopesTopicArray/theme3"));
 		assertNotNull(theme3);
-
+	
 		assertEquals(1, index.getScopes(theme3).size());
 		assertEquals(2, index.getScopes(theme3, theme2).size());
 

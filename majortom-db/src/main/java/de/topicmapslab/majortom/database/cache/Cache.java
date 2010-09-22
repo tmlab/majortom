@@ -3,6 +3,7 @@ package de.topicmapslab.majortom.database.cache;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -985,6 +986,16 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 		return bestLabel;
 	}
 
+	@Override
+	protected ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
+		throw new UnsupportedOperationException("Do create locator not supported by cache");
+	}
+	
+	@Override
+	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+		throw new UnsupportedOperationException("Do create scope not supported by cache");
+	}
+	
 	/**
 	 * @return the parentStore
 	 */

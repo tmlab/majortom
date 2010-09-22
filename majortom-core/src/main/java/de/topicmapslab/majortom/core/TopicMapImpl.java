@@ -40,6 +40,7 @@ import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.store.ReadOnlyTopicMapStoreImpl;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -170,7 +171,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			this.store.close();
 		}
 		this.store = store;
-		((TopicMapStoreImpl)this.store).setTopicMap(this);
+		((ReadOnlyTopicMapStoreImpl)this.store).setTopicMap(this);
 		this.store.connect();
 	}
 
