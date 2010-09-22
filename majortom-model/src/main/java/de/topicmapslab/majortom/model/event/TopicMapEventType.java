@@ -92,6 +92,6 @@ public enum TopicMapEventType {
 	 /**
 	  *@XXX Remove this, if external dependencies are cleaned (Maiana Meta Map) 
 	  */	 
-	 UNKNOW;
+	 UNKNOWN;
 	 
 }

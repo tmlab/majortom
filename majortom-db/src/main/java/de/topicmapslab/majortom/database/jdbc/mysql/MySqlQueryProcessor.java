@@ -33,7 +33,6 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
@@ -43,9 +42,6 @@ import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.Variant;
 
-import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
-import de.topicmapslab.majortom.comparator.NameByValueComparator;
-import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSQueryProcessor;
@@ -1795,122 +1791,13 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic) throws SQLException {
-		/*
-		 * get all names of the topic
-		 */
-		Collection<IName> names = doReadNames(topic, -1, -1);
-		if (!names.isEmpty()) {
-			return readBestName(topic, names);
-		}
-		return readBestIdentifier(topic);
-	}
-
-	/**
-	 * Internal best label method only check name attributes.
-	 * 
-	 * @param topic
-	 *            the topic
-	 * @param set
-	 *            the non-empty set of names
-	 * @return the best name
-	 * @throws SQLException
-	 *             thrown if operation fails
-	 */
-	private String readBestName(ITopic topic, Collection<IName> names)
-			throws SQLException {
-		/*
-		 * check if default name type exists
-		 */
-		if (getConnectionProvider().getTopicMapStore()
-				.existsTmdmDefaultNameType()) {
-			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(doReadNames(topic, getConnectionProvider()
-					.getTopicMapStore().getTmdmDefaultNameType()));
-			/*
-			 * return the default name
-			 */
-			if (tmp.size() == 1) {
-				return tmp.iterator().next().getValue();
-			}
-			/*
-			 * more than one default name
-			 */
-			else if (tmp.size() > 1) {
-				names = tmp;
-			}
-		}
-		/*
-		 * filter by scoping themes
-		 */
-		List<IScope> scopes = HashUtil.getList(getNameScopes(
-				topic.getTopicMap(), -1, -1));
-		if (!scopes.isEmpty()) {
-			/*
-			 * sort scopes by number of themes
-			 */
-			Collections.sort(scopes, ScopeComparator.getInstance(true));
-			for (IScope s : scopes) {
-				/*
-				 * get names of the scope and topic
-				 */
-				Set<IName> tmp = HashUtil.getHashSet(names);
-				tmp.retainAll(doReadNames(topic, s));
-				/*
-				 * only one name of the current scope
-				 */
-				if (tmp.size() == 1) {
-					return tmp.iterator().next().getValue();
-				}
-				/*
-				 * more than one name
-				 */
-				else if (tmp.size() > 1) {
-					names = tmp;
-					break;
-				}
-			}
-		}
-		/*
-		 * sort by value
-		 */
-		List<IName> list = HashUtil.getList(names);
-		Collections.sort(list, NameByValueComparator.getInstance(true));
-		return list.get(0).getValue();
-	}
-
-	/**
-	 * Internal best label method only check identifier attribute.
-	 * 
-	 * @param topic
-	 *            the topic
-	 * @return the best identifier
-	 * @throws SQLException
-	 *             thrown if operation fails
-	 */
-	private String readBestIdentifier(ITopic topic) throws SQLException {
-		Collection<ILocator> set = doReadSubjectIdentifiers(topic);
-		if (set.isEmpty()) {
-			set = doReadSubjectLocators(topic);
-			if (set.isEmpty()) {
-				set = doReadItemIdentifiers(topic);
-				if (set.isEmpty()) {
-					return topic.getId();
-				}
-			}
-		}
-		List<ILocator> list = HashUtil.getList(set);
-		Collections.sort(list, LocatorByReferenceComparator.getInstance(true));
-		return list.iterator().next().getReference();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade)
 			throws SQLException {
-		doRemoveAssociation(association, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
+		doRemoveAssociation(
+				association,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -2039,8 +1926,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 */
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
 			throws SQLException {
-		doRemoveOccurrence(occurrence, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		doRemoveOccurrence(
+				occurrence,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -2205,8 +2095,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 */
 	public boolean doRemoveTopic(ITopic topic, boolean cascade)
 			throws SQLException {
-		doRemoveTopic(topic, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
+		doRemoveTopic(
+				topic,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2407,8 +2300,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 */
 	public boolean doRemoveVariant(IVariant variant, boolean cascade)
 			throws SQLException {
-		doRemoveVariant(variant, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
+		doRemoveVariant(
+				variant,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -4912,7 +4808,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException {
+	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type)
+			throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, type.name());
