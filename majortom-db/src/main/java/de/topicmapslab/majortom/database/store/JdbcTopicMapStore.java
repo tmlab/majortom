@@ -2092,7 +2092,7 @@ public class JdbcTopicMapStore extends TopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision(TopicMapEventType.TOPIC_REMOVED);
+			IRevision r = createRevision(TopicMapEventType.TYPE_REMOVED);
 			storeRevision(r, TopicMapEventType.TYPE_REMOVED, t, null, type);
 			/*
 			 * notify listener
