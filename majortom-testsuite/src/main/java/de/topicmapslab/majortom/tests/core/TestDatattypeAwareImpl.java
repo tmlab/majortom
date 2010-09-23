@@ -99,15 +99,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 	 */
 	public void testCoordinateValue() throws Exception {
 		Topic topic = createTopic();
-		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
-		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Degree lng = new Wgs84Degree(12.263102);
+		Wgs84Degree lat = new Wgs84Degree(50.430539);
 		Wgs84Coordinate coord = new Wgs84Coordinate(lng, lat);
 		final String ref = coord.toString();
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
 		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
 		assertTrue(occurrence.coordinateValue().equals(coord));
 
 		try {
@@ -121,14 +121,14 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
 		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
 		assertTrue(occurrence.coordinateValue().equals(coord));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(ref, createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(coord));
 		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
 		assertTrue(variant.coordinateValue().equals(coord));
 
 		try {
@@ -142,7 +142,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(coord));
 		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOCOORDINATE)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
 		assertTrue(variant.coordinateValue().equals(coord));
 	}
 
@@ -634,8 +634,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 	 */
 	public void testSurfaceValue() throws Exception {
 		Topic topic = createTopic();
-		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
-		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Degree lng = new Wgs84Degree(12.263102);
+		Wgs84Degree lat = new Wgs84Degree(50.430539);
 		Wgs84Coordinate coord = new Wgs84Coordinate(lng, lat);
 		Wgs84Circuit circuit = new Wgs84Circuit(coord, 1000D);
 		final String ref = circuit.toString();

@@ -22,7 +22,6 @@ import java.util.Calendar;
 
 import org.tmapi.core.Locator;
 
-import de.topicmapslab.geotype.model.IGeoCoordinate;
 import de.topicmapslab.geotype.model.IGeoSurface;
 import de.topicmapslab.geotype.wgs84.Wgs84Circuit;
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
@@ -234,9 +233,10 @@ public class XmlSchemeDatatypes {
 	/**
 	 * XML Scheme Definition data-types of geographical coordinates<br />
 	 * <br />
-	 * <code>http://www.w3.org/2001/XMLSchema#geoCoordinate</code>
+	 * <code>http://#geoCoordinate</code>
 	 */
-	public static final String XSD_GEOCOORDINATE = XSD_BASE + "geoCoordinate";
+	// TODO move to other class
+	public static final String WGS84_COORDINATE = "http://de.wikipedia.org/wiki/World_Geodetic_System_1984";
 
 	/**
 	 * QNamed XML Scheme Definition data-types of geographical coordinates<br />
@@ -313,8 +313,8 @@ public class XmlSchemeDatatypes {
 			return XSD_DECIMAL;
 		} else if (Double.class.isAssignableFrom(clazz)) {
 			return XSD_DOUBLE;
-		} else if (IGeoCoordinate.class.isAssignableFrom(clazz)) {
-			return XSD_GEOCOORDINATE;
+		} else if (Wgs84Coordinate.class.isAssignableFrom(clazz)) {
+			return WGS84_COORDINATE;
 		} else if (IGeoSurface.class.isAssignableFrom(clazz)) {
 			return XSD_GEOSURFACE;
 		} else if (URI.class.isAssignableFrom(clazz) || Locator.class.isAssignableFrom(clazz)) {
@@ -352,7 +352,7 @@ public class XmlSchemeDatatypes {
 			return BigDecimal.class;
 		} else if (XSD_DOUBLE.equals(loc.getReference())) {
 			return Double.class;
-		} else if (XSD_GEOCOORDINATE.equals(loc.getReference())) {
+		} else if (WGS84_COORDINATE.equals(loc.getReference())) {
 			return Wgs84Coordinate.class;
 		} else if (XSD_GEOSURFACE.equals(loc.getReference())) {
 			return Wgs84Circuit.class;

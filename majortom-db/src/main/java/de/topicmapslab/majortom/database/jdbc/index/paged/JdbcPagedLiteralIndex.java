@@ -247,7 +247,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCoordinates(Wgs84Coordinate value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_GEOCOORDINATE, offset,
+			list.addAll(getStore().getProcessor().getOccurrences(getStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.WGS84_COORDINATE, offset,
 					limit));
 			return list;
 		} catch (SQLException e) {

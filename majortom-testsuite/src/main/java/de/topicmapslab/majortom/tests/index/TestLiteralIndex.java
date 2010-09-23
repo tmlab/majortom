@@ -375,13 +375,16 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
 		IOccurrence otherOccurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
 
-		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
-		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
-		Wgs84Coordinate coordinate = new Wgs84Coordinate(lng, lat);
 
-		lng = new Wgs84Degree(22.12, Wgs84Degree.Orientation.E);
-		lat = new Wgs84Degree(52.22, Wgs84Degree.Orientation.N);
-		Wgs84Coordinate other = new Wgs84Coordinate(lng, lat);
+		Wgs84Degree lat = new Wgs84Degree(38.692668);
+		Wgs84Degree lng = new Wgs84Degree(-9.177944);
+		// Lissabon Tejo Brücke
+		Wgs84Coordinate coordinate = new Wgs84Coordinate(lat, lng);
+
+		lat = new Wgs84Degree(52.5164);
+		lng = new Wgs84Degree(13.3777);
+		// Berlin Brandenburger Tor
+		Wgs84Coordinate other = new Wgs84Coordinate(lat, lng);
 
 		assertEquals(0, index.getCoordinates(coordinate).size());
 		assertEquals(0, index.getCoordinates(other).size());
@@ -414,6 +417,21 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 
 		occurrence.setValue(0D);
 		assertEquals(0, index.getCoordinates(other).size());
+		occurrence.remove();
+		
+		occurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
+		otherOccurrence = (IOccurrence) createTopic().createOccurrence(createTopic(), "Occ", new Topic[0]);
+		occurrence.setValue(coordinate);
+		otherOccurrence.setValue(other);
+		double distance = coordinate.getDistance(other);
+		
+		
+		assertEquals(2, index.getCoordinates(other, distance+1).size());
+		assertTrue(index.getCoordinates(other, distance+1).contains(occurrence));
+		assertTrue(index.getCoordinates(other, distance+1).contains(otherOccurrence));
+		System.out.println(distance);
+//		System.out.println(coordinate.print());
+//		System.out.println(other.print());
 	}
 
 	/**

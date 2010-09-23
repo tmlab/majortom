@@ -20,6 +20,7 @@ package de.topicmapslab.majortom.database.jdbc.index;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -35,6 +36,7 @@ import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.nonpaged.CachedLiteralIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
+import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -352,7 +354,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			col.addAll(getStore().getProcessor().getOccurrences(
 					getStore().getTopicMap(), value.toString(),
-					XmlSchemeDatatypes.XSD_GEOCOORDINATE, -1, -1));
+					XmlSchemeDatatypes.WGS84_COORDINATE, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -373,8 +375,18 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		if (value == null) {
 			throw new IllegalArgumentException("Value cannot be null");
 		}
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		try {
+			Collection<ICharacteristics> col = HashUtil.getHashSet();
+			for (ICharacteristics coordinate : doGetCoordinates(value)) {
+				IOccurrence occ = (IOccurrence) coordinate;
+				if (occ.coordinateValue().getDistance(value) <= deviance) {
+					col.add(occ);
+				}
+			}
+			return col;
+		} catch (ParseException e) {
+			throw new TopicMapStoreException("Internal engine error!", e);
+		}
 	}
 
 	/**
