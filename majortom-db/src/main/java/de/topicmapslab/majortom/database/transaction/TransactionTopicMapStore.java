@@ -2389,7 +2389,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		 * only one name of the current scope
 		 */
 		if (names.size() == 1) {
-			return tmp.iterator().next().getValue();
+			return names.iterator().next().getValue();
 		}
 		return readBestName(topic, names);
 	}
@@ -2468,7 +2468,7 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 			 * only one name of the current scope
 			 */
 			if (names.size() == 1) {
-				return tmp.iterator().next().getValue();
+				return names.iterator().next().getValue();
 			}
 
 		}

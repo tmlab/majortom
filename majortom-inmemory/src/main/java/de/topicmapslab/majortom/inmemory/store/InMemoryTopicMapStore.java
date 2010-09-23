@@ -2293,7 +2293,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		 * only one name of the current scope
 		 */
 		if (names.size() == 1) {
-			return tmp.iterator().next().getValue();
+			return names.iterator().next().getValue();
 		}
 		return readBestName(topic, names);
 	}
@@ -2372,7 +2372,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			 * only one name of the current scope
 			 */
 			if (names.size() == 1) {
-				return tmp.iterator().next().getValue();
+				return names.iterator().next().getValue();
 			}
 			
 		}

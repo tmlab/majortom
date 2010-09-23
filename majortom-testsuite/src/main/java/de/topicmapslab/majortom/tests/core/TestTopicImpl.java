@@ -64,7 +64,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 
 		ITopic theme = createTopic();
 
-		IAssociation scopedAsso = (IAssociation) topicMap.createAssociation(type, theme);
+		IAssociation scopedAsso = (IAssociation) topicMap.createAssociation(
+				type, theme);
 		scopedAsso.createRole(createTopic(), topic);
 
 		assertEquals(3, topic.getAssociationsPlayed().size());
@@ -76,11 +77,16 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertTrue(topic.getAssociationsPlayed(type).contains(typedAsso));
 		assertTrue(topic.getAssociationsPlayed(type).contains(scopedAsso));
 
-		assertEquals(1, topic.getAssociationsPlayed(scopedAsso.getScopeObject()).size());
-		assertTrue(topic.getAssociationsPlayed(scopedAsso.getScopeObject()).contains(scopedAsso));
+		assertEquals(1, topic
+				.getAssociationsPlayed(scopedAsso.getScopeObject()).size());
+		assertTrue(topic.getAssociationsPlayed(scopedAsso.getScopeObject())
+				.contains(scopedAsso));
 
-		assertEquals(1, topic.getAssociationsPlayed(type, scopedAsso.getScopeObject()).size());
-		assertTrue(topic.getAssociationsPlayed(type, scopedAsso.getScopeObject()).contains(scopedAsso));
+		assertEquals(1,
+				topic.getAssociationsPlayed(type, scopedAsso.getScopeObject())
+						.size());
+		assertTrue(topic.getAssociationsPlayed(type,
+				scopedAsso.getScopeObject()).contains(scopedAsso));
 	}
 
 	/**
@@ -94,7 +100,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 
 		ITopic topic = createTopicBySI("http://psi.example.org/topic");
 		Name n = topic.createName(type, "Name", new Topic[0]);
-		Occurrence o = topic.createOccurrence(otherType, "Occurrence", new Topic[0]);
+		Occurrence o = topic.createOccurrence(otherType, "Occurrence",
+				new Topic[0]);
 
 		assertEquals(1, topic.getCharacteristics(type).size());
 		assertTrue(topic.getCharacteristics(type).contains(n));
@@ -132,12 +139,17 @@ public class TestTopicImpl extends MaJorToMTestCase {
 	public void testSupertypes() throws Exception {
 		int cnt = 0;
 		ITopic t = createTopic();
-		if ( factory.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION)){
+		if (factory
+				.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION)) {
 			Association a = createAssociation(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION));
-			a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE), t);
-			a.createRole(createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE), createTopic());
+			a.createRole(
+					createTopicBySI(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE),
+					t);
+			a.createRole(
+					createTopicBySI(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE),
+					createTopic());
 			cnt++;
-		}		
+		}
 		assertEquals(cnt, t.getSupertypes().size());
 
 		t.addSupertype(createTopic());
@@ -181,7 +193,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertEquals(cnt - 1, topicMap.getTopics().size());
 
 		assertEquals(topic.getId(), topic2.getId());
-		assertEquals(topic.getSubjectIdentifiers(), topic2.getSubjectIdentifiers());
+		assertEquals(topic.getSubjectIdentifiers(),
+				topic2.getSubjectIdentifiers());
 		assertEquals(1, topic.getSubjectIdentifiers().size());
 		assertEquals(topic.getSubjectLocators(), topic2.getSubjectLocators());
 		assertEquals(1, topic.getSubjectLocators().size());
@@ -232,8 +245,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 			fail("Topic is in use, but delete cascade!");
 		}
 	}
-	
-	public void testBestLabel(){
+
+	public void testBestLabel() {
 		Locator si = createLocator("http://psi.example.org/si/topic");
 		Locator oSi = createLocator("http://psi.example.org/si/topic");
 		Locator sl = createLocator("http://psi.example.org/sl/topic");
@@ -242,66 +255,101 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		Locator oIi = createLocator("http://psi.example.org/ii/topic");
 		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		topic.removeSubjectIdentifier(si);
-		
-		assertEquals("Best label should be the id",topic.getId(), topic.getBestLabel());
-		
+
+		assertEquals("Best label should be the id", topic.getId(),
+				topic.getBestLabel());
+
 		topic.addItemIdentifier(ii);
-		assertEquals("Best label should be the item-identifier", ii.getReference(), topic.getBestLabel());
+		assertEquals("Best label should be the item-identifier",
+				ii.getReference(), topic.getBestLabel());
 		topic.addItemIdentifier(oIi);
-		assertEquals("Best label should be the lexicographically smallest item-identifier",ii.getReference(), topic.getBestLabel());
-				
+		assertEquals(
+				"Best label should be the lexicographically smallest item-identifier",
+				ii.getReference(), topic.getBestLabel());
+
 		topic.addSubjectLocator(sl);
-		assertEquals("Best label should be the subject-locator",sl.getReference(), topic.getBestLabel());
+		assertEquals("Best label should be the subject-locator",
+				sl.getReference(), topic.getBestLabel());
 		topic.addSubjectLocator(oSl);
-		assertEquals("Best label should be the lexicographically smallest subject-locator",sl.getReference(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the lexicographically smallest subject-locator",
+				sl.getReference(), topic.getBestLabel());
+
 		topic.addSubjectIdentifier(si);
-		assertEquals("Best label should be the subject-identifier",si.getReference(), topic.getBestLabel());
+		assertEquals("Best label should be the subject-identifier",
+				si.getReference(), topic.getBestLabel());
 		topic.addSubjectIdentifier(oSi);
-		assertEquals("Best label should be the lexicographically smallest subject-identifier",si.getReference(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the lexicographically smallest subject-identifier",
+				si.getReference(), topic.getBestLabel());
+
 		Topic type = createTopic();
 		Topic theme = createTopic();
 		Topic otherTheme = createTopic();
-		
+
 		Name name1 = topic.createName("Name");
-		assertEquals("Best label should be the name",name1.getValue(), topic.getBestLabel());
+		assertEquals("Best label should be the name", name1.getValue(),
+				topic.getBestLabel());
 		Name name2 = topic.createName("NameZZZ");
-		assertEquals("Best label should be the the lexicographically smallest name value",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the the lexicographically smallest name value",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.setType(type);
-		assertEquals("Best label should be the default name",name2.getValue(), topic.getBestLabel());
+		assertEquals("Best label should be the default name", name2.getValue(),
+				topic.getBestLabel());
 		name2.setType(type);
-		assertEquals("Best label should be the default name",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals("Best label should be the default name", name1.getValue(),
+				topic.getBestLabel());
+
 		name1.addTheme(theme);
-		assertEquals("Best label should be the name with the unconstained scope",name2.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the unconstained scope",
+				name2.getValue(), topic.getBestLabel());
 		name2.addTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
 		name2.setValue(name1.getValue());
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
+
 		name2.setValue("NameZZZ");
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
+
 		name2.removeTheme(otherTheme);
 		name2.addTheme(theme);
-		assertEquals("Best label should be the name with the unconstained scope",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the unconstained scope",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.addTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name2.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name2.getValue(), topic.getBestLabel());
 		name2.addTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.removeTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
 		name2.removeTheme(theme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
 		name2.setValue("A");
-		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes and shortest value",
+				name2.getValue(), topic.getBestLabel());
 	}
-	
-	public void testBestLabelWithTheme(){
+
+	public void testBestLabelWithTheme() {
 		Topic theme = createTopic();
 		Topic otherTheme = createTopic();
 		Topic newTheme = createTopic();
@@ -313,67 +361,110 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		Locator oIi = createLocator("http://psi.example.org/ii/topic");
 		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		topic.removeSubjectIdentifier(si);
-		
-		assertEquals("Best label should be the id",topic.getId(), topic.getBestLabel());
-		
+
+		assertEquals("Best label should be the id", topic.getId(),
+				topic.getBestLabel());
+
 		topic.addItemIdentifier(ii);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the item-identifier", ii.getReference(), topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the item-identifier",
+				ii.getReference(), topic.getBestLabel());
 		topic.addItemIdentifier(oIi);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the lexicographically smallest item-identifier",ii.getReference(), topic.getBestLabel());
-				
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals(
+				"Best label should be the lexicographically smallest item-identifier",
+				ii.getReference(), topic.getBestLabel());
+
 		topic.addSubjectLocator(sl);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the subject-locator",sl.getReference(), topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the subject-locator",
+				sl.getReference(), topic.getBestLabel());
 		topic.addSubjectLocator(oSl);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the lexicographically smallest subject-locator",sl.getReference(), topic.getBestLabel());
-		
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals(
+				"Best label should be the lexicographically smallest subject-locator",
+				sl.getReference(), topic.getBestLabel());
+
 		topic.addSubjectIdentifier(si);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the subject-identifier",si.getReference(), topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the subject-identifier",
+				si.getReference(), topic.getBestLabel());
 		topic.addSubjectIdentifier(oSi);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the lexicographically smallest subject-identifier",si.getReference(), topic.getBestLabel());
-		
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals(
+				"Best label should be the lexicographically smallest subject-identifier",
+				si.getReference(), topic.getBestLabel());
+
 		Topic type = createTopic();
-		
+
 		Name name1 = topic.createName("Name");
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the name",name1.getValue(), topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the name", name1.getValue(),
+				topic.getBestLabel());
 		Name name2 = topic.createName("NameZZZ");
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the the lexicographically smallest name value",name1.getValue(), topic.getBestLabel());
-		
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals(
+				"Best label should be the the lexicographically smallest name value",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.setType(type);
-		assertEquals("Best label should be the default name",name2.getValue(), topic.getBestLabel());
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the default name", name2.getValue(),
+				topic.getBestLabel());
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
 		name2.setType(type);
-		assertNull("Strict mode for best label should return null.", topic.getBestLabel(theme, true));
-		assertEquals("Best label should be the default name",name1.getValue(), topic.getBestLabel());
-		
+		assertNull("Strict mode for best label should return null.",
+				topic.getBestLabel(theme, true));
+		assertEquals("Best label should be the default name", name1.getValue(),
+				topic.getBestLabel());
+
 		name1.addTheme(theme);
-		assertEquals("Best label should be the name with the unconstained scope",name2.getValue(), topic.getBestLabel());
-		assertEquals("Best label should be the name with the given theme scope",name1.getValue(), topic.getBestLabel(theme));
+		assertEquals(
+				"Best label should be the name with the unconstained scope",
+				name2.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the given theme scope",
+				name1.getValue(), topic.getBestLabel(theme));
 		name2.addTheme(theme);
-		assertEquals("Best label should be the name with the unconstained scope",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the unconstained scope",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.addTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name2.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name2.getValue(), topic.getBestLabel());
 		name2.addTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
+
 		name1.removeTheme(otherTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
 		name2.removeTheme(theme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes",name1.getValue(), topic.getBestLabel());
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes",
+				name1.getValue(), topic.getBestLabel());
 		name2.setValue("A");
-		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel());
-		
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes and shortest value",
+				name2.getValue(), topic.getBestLabel());
+
 		name1.addTheme(newTheme);
 		name2.addTheme(newTheme);
-		assertEquals("Best label should be the name with the scope with the smallest number of themes and shortest value",name2.getValue(), topic.getBestLabel(newTheme));
+		assertEquals(
+				"Best label should be the name with the scope with the smallest number of themes and shortest value",
+				name2.getValue(), topic.getBestLabel(newTheme));
 	}
 
 }

@@ -5122,7 +5122,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * is strict mode
 		 */
-		if ( strict ){
+		if (strict) {
 			return null;
 		}
 		return readBestIdentifier(topic);
@@ -5160,39 +5160,41 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		int numberOfThemes = -1;
 		for (IScope s : scopes) {
 			Collection<IName> scopedNames = doReadNames(topic, s);
-			if ( scopedNames.isEmpty()){
+			if (scopedNames.isEmpty()) {
 				continue;
 			}
 			/*
 			 * set number of themes
 			 */
-			if ( numberOfThemes == -1 ){
+			if (numberOfThemes == -1) {
 				numberOfThemes = s.getThemes().size();
 			}
 			/*
 			 * unexpected number of themes
 			 */
-			if ( numberOfThemes < s.getThemes().size()){
+			if (numberOfThemes < s.getThemes().size()) {
 				break;
 			}
 			/*
 			 * get names of the scope and topic
-			 */			
-			tmp.addAll(scopedNames);	
+			 */
+			tmp.addAll(scopedNames);
 			atLeastOneName = true;
-		}
-		names.retainAll(tmp);
-		/*
-		 * only one name of the current scope
-		 */
-		if (names.size() == 1) {
-			return tmp.iterator().next().getValue();
 		}
 		/*
 		 * mode is strict and no scoped-name was found
 		 */
-		if ( strict && !atLeastOneName){
+		if (strict && !atLeastOneName) {
 			return null;
+		}
+		if (!tmp.isEmpty()) {
+			names.retainAll(tmp);
+		}
+		/*
+		 * only one name of the current scope
+		 */
+		if (names.size() == 1) {
+			return names.iterator().next().getValue();
 		}
 		return readBestName(topic, names);
 	}
@@ -5245,34 +5247,36 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			int numberOfThemes = -1;
 			for (IScope s : scopes) {
 				Collection<IName> scopedNames = doReadNames(topic, s);
-				if ( scopedNames.isEmpty()){
+				if (scopedNames.isEmpty()) {
 					continue;
 				}
 				/*
 				 * set number of themes
 				 */
-				if ( numberOfThemes == -1 ){
+				if (numberOfThemes == -1) {
 					numberOfThemes = s.getThemes().size();
 				}
 				/*
 				 * unexpected number of themes
 				 */
-				if ( numberOfThemes < s.getThemes().size()){
+				if (numberOfThemes < s.getThemes().size()) {
 					break;
 				}
 				/*
 				 * get names of the scope and topic
-				 */				
+				 */
 				tmp.addAll(scopedNames);
 			}
-			names.retainAll(tmp);
+			if (!tmp.isEmpty()) {
+				names.retainAll(tmp);
+			}
 			/*
 			 * only one name of the current scope
 			 */
 			if (names.size() == 1) {
-				return tmp.iterator().next().getValue();
+				return names.iterator().next().getValue();
 			}
-		}		
+		}
 		/*
 		 * sort by value
 		 */
