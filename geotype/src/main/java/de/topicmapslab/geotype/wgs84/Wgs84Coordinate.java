@@ -43,10 +43,64 @@ public final class Wgs84Coordinate implements IGeoCoordinate<Wgs84Coordinate> {
 	 * @param altitude
 	 *            the altitude
 	 */
-	public Wgs84Coordinate(Wgs84Degree latitude, Wgs84Degree longitude, long altitude) {
+	public Wgs84Coordinate(Wgs84Degree latitude, Wgs84Degree longitude,
+			long altitude) {
 		this.longitude = longitude;
 		this.latitude = latitude;
 		this.altitude = altitude;
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param latitude
+	 *            the latitude in decimal degree
+	 * 
+	 * @param longitude
+	 *            the longitude in decimal degree
+	 */
+	public Wgs84Coordinate(double latitude, double longitude) {
+		this.latitude = new Wgs84Degree(latitude);
+		this.latitude.declareAsLatitude();
+		this.longitude = new Wgs84Degree(longitude);
+		this.longitude.declareAsLongitude();
+		this.altitude = null;
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param latitude
+	 *            the latitude in decimal degree
+	 * 
+	 * @param longitude
+	 *            the longitude in decimal degree
+	 * @param altitude
+	 *            the altitude
+	 */
+	public Wgs84Coordinate(double latitude, double longitude, long altitude) {
+		this.latitude = new Wgs84Degree(latitude);
+		this.latitude.declareAsLatitude();
+		this.longitude = new Wgs84Degree(longitude);
+		this.longitude.declareAsLongitude();
+		this.altitude = altitude;
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param latitude
+	 *            the latitude
+	 * 
+	 * @param longitude
+	 *            the longitude
+	 */
+	public Wgs84Coordinate(Wgs84Degree latitude, Wgs84Degree longitude) {		
+		this.latitude = latitude;
+		this.latitude.declareAsLatitude();
+		this.longitude = longitude;
+		this.longitude.declareAsLongitude();
+		this.altitude = null;
 	}
 
 	/**
@@ -57,32 +111,19 @@ public final class Wgs84Coordinate implements IGeoCoordinate<Wgs84Coordinate> {
 	 * @param latitude
 	 *            the latitude
 	 */
-	public Wgs84Coordinate(Wgs84Degree longitude, Wgs84Degree latitude) {
-		this.longitude = longitude;
-		this.latitude = latitude;
-		this.altitude = null;
-	}
-	
-	/**
-	 * constructor
-	 * 
-	 * @param longitude
-	 *            the longitude
-	 * @param latitude
-	 *            the latitude
-	 */
-	public Wgs84Coordinate(String value) throws ParseException{
-		String v = value.substring(1, value.length()-1);
-		StringTokenizer tokenizer = new StringTokenizer(v,";");
-		try{
+	public Wgs84Coordinate(String value) throws ParseException {
+		StringTokenizer tokenizer = new StringTokenizer(value, ";");
+		try {
 			this.latitude = new Wgs84Degree(tokenizer.nextToken());
+			this.latitude.declareAsLatitude();
 			this.longitude = new Wgs84Degree(tokenizer.nextToken());
-			if ( tokenizer.hasMoreTokens()){
+			this.longitude.declareAsLongitude();
+			if (tokenizer.hasMoreTokens()) {
 				this.altitude = Long.parseLong(tokenizer.nextToken());
-			}else{
+			} else {
 				this.altitude = null;
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new ParseException(value, 0);
 		}
 	}
@@ -112,7 +153,18 @@ public final class Wgs84Coordinate implements IGeoCoordinate<Wgs84Coordinate> {
 	 * {@inheritDoc}
 	 */
 	public double getDistance(Wgs84Coordinate coord) {
-		return 0;
+		double lat1 = getLatitude().getRadiantValue();
+		double lat2 = coord.getLatitude().getRadiantValue();
+		double lon1 = getLongitude().getRadiantValue();
+		double lon2 = coord.getLongitude().getRadiantValue();
+		/*
+		 * great circle distance d between two points with coordinates
+		 * {lat1,lon1} and {lat2,lon2}
+		 * 
+		 * d = acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon1-lon2))
+		 */
+		return 6378.388 * Math.acos(Math.sin(lat1) * Math.sin(lat2)
+				+ Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1));
 	}
 
 	/**
@@ -121,8 +173,10 @@ public final class Wgs84Coordinate implements IGeoCoordinate<Wgs84Coordinate> {
 	public boolean equals(Object arg0) {
 		if (arg0 instanceof Wgs84Coordinate) {
 			Wgs84Coordinate other = (Wgs84Coordinate) arg0;
-			boolean result = longitude.getValue() == other.longitude.getValue() && latitude.getValue() == other.latitude.getValue();
-			result &= (altitude == null) ? (other.altitude == null) : (altitude.equals(other.altitude));
+			boolean result = longitude.getValue() == other.longitude.getValue()
+					&& latitude.getValue() == other.latitude.getValue();
+			result &= (altitude == null) ? (other.altitude == null) : (altitude
+					.equals(other.altitude));
 			return result;
 		}
 		return false;
@@ -132,14 +186,39 @@ public final class Wgs84Coordinate implements IGeoCoordinate<Wgs84Coordinate> {
 	 * {@inheritDoc}
 	 */
 	public int hashCode() {
-		return latitude.hashCode() | longitude.hashCode() | (altitude == null ? 0 : altitude.hashCode());
+		return latitude.hashCode() | longitude.hashCode()
+				| (altitude == null ? 0 : altitude.hashCode());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		return "{" + latitude.toString() + ";" + longitude.toString() +";" + (altitude==null?"":altitude.toString())+"}";
+		StringBuilder builder = new StringBuilder();
+		builder.append(latitude);
+		builder.append(";");
+		builder.append(longitude);
+		if (altitude != null) {
+			builder.append(";");
+			builder.append(altitude);
+		}
+		return builder.toString();
+	}
+
+	/**
+	 * Returns the whole information about this WGS 84 coordinate
+	 * 
+	 * @return the WGS 84 coordinate information
+	 */
+	public String print() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Latitude:\r\n");
+		builder.append(latitude.print());
+		builder.append("\r\nLongitude:\r\n");
+		builder.append(longitude.print());
+		builder.append("\r\nAltitude:\r\n");
+		builder.append(altitude == null ? "0" : altitude);
+		return builder.toString();
 	}
 
 }

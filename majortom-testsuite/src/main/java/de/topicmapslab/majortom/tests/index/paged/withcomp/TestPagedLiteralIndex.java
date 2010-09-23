@@ -507,8 +507,8 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		Wgs84Degree lng = new Wgs84Degree(12.263102, Wgs84Degree.Orientation.E);
-		Wgs84Degree lat = new Wgs84Degree(50.430539, Wgs84Degree.Orientation.N);
+		Wgs84Degree lng = new Wgs84Degree(12.263102);
+		Wgs84Degree lat = new Wgs84Degree(50.430539);
 		Wgs84Coordinate value = new Wgs84Coordinate(lng, lat);
 		IOccurrence[] occurrences = new IOccurrence[101];
 		String base = "http://psi.example.org/";
