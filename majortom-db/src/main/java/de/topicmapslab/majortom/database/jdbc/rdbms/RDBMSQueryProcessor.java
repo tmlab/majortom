@@ -1818,7 +1818,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 		return readBestIdentifier(topic);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1834,7 +1834,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * is strict mode
 		 */
-		if ( strict ){
+		if (strict) {
 			return null;
 		}
 		return readBestIdentifier(topic);
@@ -1872,39 +1872,41 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		int numberOfThemes = -1;
 		for (IScope s : scopes) {
 			Collection<IName> scopedNames = doReadNames(topic, s);
-			if ( scopedNames.isEmpty()){
+			if (scopedNames.isEmpty()) {
 				continue;
 			}
 			/*
 			 * set number of themes
 			 */
-			if ( numberOfThemes == -1 ){
+			if (numberOfThemes == -1) {
 				numberOfThemes = s.getThemes().size();
 			}
 			/*
 			 * unexpected number of themes
 			 */
-			if ( numberOfThemes < s.getThemes().size()){
+			if (numberOfThemes < s.getThemes().size()) {
 				break;
 			}
 			/*
 			 * get names of the scope and topic
-			 */			
-			tmp.addAll(scopedNames);	
+			 */
+			tmp.addAll(scopedNames);
 			atLeastOneName = true;
-		}
-		names.retainAll(tmp);
-		/*
-		 * only one name of the current scope
-		 */
-		if (names.size() == 1) {
-			return tmp.iterator().next().getValue();
 		}
 		/*
 		 * mode is strict and no scoped-name was found
 		 */
-		if ( strict && !atLeastOneName){
+		if (strict && !atLeastOneName) {
 			return null;
+		}
+		if (!tmp.isEmpty()) {
+			names.retainAll(tmp);
+		}
+		/*
+		 * only one name of the current scope
+		 */
+		if (names.size() == 1) {
+			return names.iterator().next().getValue();
 		}
 		return readBestName(topic, names);
 	}
@@ -1957,34 +1959,36 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			int numberOfThemes = -1;
 			for (IScope s : scopes) {
 				Collection<IName> scopedNames = doReadNames(topic, s);
-				if ( scopedNames.isEmpty()){
+				if (scopedNames.isEmpty()) {
 					continue;
 				}
 				/*
 				 * set number of themes
 				 */
-				if ( numberOfThemes == -1 ){
+				if (numberOfThemes == -1) {
 					numberOfThemes = s.getThemes().size();
 				}
 				/*
 				 * unexpected number of themes
 				 */
-				if ( numberOfThemes < s.getThemes().size()){
+				if (numberOfThemes < s.getThemes().size()) {
 					break;
 				}
 				/*
 				 * get names of the scope and topic
-				 */				
+				 */
 				tmp.addAll(scopedNames);
 			}
-			names.retainAll(tmp);
+			if (!tmp.isEmpty()) {
+				names.retainAll(tmp);
+			}
 			/*
 			 * only one name of the current scope
 			 */
 			if (names.size() == 1) {
-				return tmp.iterator().next().getValue();
+				return names.iterator().next().getValue();
 			}
-		}		
+		}
 		/*
 		 * sort by value
 		 */
@@ -2023,8 +2027,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade)
 			throws SQLException {
-		doRemoveAssociation(association, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
+		doRemoveAssociation(
+				association,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -2164,8 +2171,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade)
 			throws SQLException {
-		doRemoveOccurrence(occurrence, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		doRemoveOccurrence(
+				occurrence,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -2340,8 +2350,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveTopic(ITopic topic, boolean cascade)
 			throws SQLException {
-		doRemoveTopic(topic, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
+		doRemoveTopic(
+				topic,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2548,7 +2561,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			doRemoveItemIdentifier(topicMap, loc);
 		}
 		for (ITopic t : doReadTopics(topicMap)) {
-			doRemoveTopic(t, true, doCreateRevision(topicMap, TopicMapEventType.TOPIC_REMOVED));
+			doRemoveTopic(t, true,
+					doCreateRevision(topicMap, TopicMapEventType.TOPIC_REMOVED));
 		}
 		long topicMapId = Long.parseLong(topicMap.getId());
 		PreparedStatement stmt = queryBuilder.getQueryDeleteAllThemes();
@@ -2602,8 +2616,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveVariant(IVariant variant, boolean cascade)
 			throws SQLException {
-		doRemoveVariant(variant, cascade, getConnectionProvider()
-				.getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
+		doRemoveVariant(
+				variant,
+				cascade,
+				getConnectionProvider().getTopicMapStore().createRevision(
+						TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -5101,7 +5118,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException {
+	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type)
+			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryCreateRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, type.name());
@@ -5218,12 +5236,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toChangeSet(this, topicMap, rs, revision);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public TopicMapEventType doReadChangesetType(ITopicMap topicMap, IRevision revision)
-			throws SQLException {
+	public TopicMapEventType doReadChangesetType(ITopicMap topicMap,
+			IRevision revision) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadChangesetType();
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
