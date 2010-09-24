@@ -378,7 +378,7 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 
 		Wgs84Degree lat = new Wgs84Degree(38.692668);
 		Wgs84Degree lng = new Wgs84Degree(-9.177944);
-		// Lissabon Tejo Brücke
+		// Lissabon Tejo Bruecke
 		Wgs84Coordinate coordinate = new Wgs84Coordinate(lat, lng);
 
 		lat = new Wgs84Degree(52.5164);
