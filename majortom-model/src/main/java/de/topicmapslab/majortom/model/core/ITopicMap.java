@@ -23,7 +23,7 @@ import de.topicmapslab.majortom.model.transaction.ITransaction;
  * @author Sven Krosse
  * 
  */
-public interface ITopicMap extends TopicMap, IConstruct, IReifiable {
+public interface ITopicMap extends TopicMap, IReifiable {
 
 	/**
 	 * Returns all topics being an instance of the given type.

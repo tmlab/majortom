@@ -9,7 +9,7 @@ import org.tmapi.core.Occurrence;
  * @author Sven Krosse
  * 
  */
-public interface IOccurrence extends Occurrence, IConstruct, ICharacteristics, IDatatypeAware, ITypeable, IReifiable, IScopable {
+public interface IOccurrence extends Occurrence, ICharacteristics, IDatatypeAware, IReifiable {
 	/**
 	 * {@inheritDoc}
 	 */

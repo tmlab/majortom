@@ -5129,6 +5129,38 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	}
 
 	/**
+	 * Filter the given names list by the default name type.
+	 * 
+	 * @param topic
+	 *            the parent topic
+	 * @param names
+	 *            the names of the topic
+	 * @return the filtered names or the given collection, if the topic does not
+	 *         contain at least one default-typed name
+	 * @throws SQLException
+	 *             thrown by SQL processor
+	 */
+	private Collection<IName> filterByDefaultNameType(final ITopic topic,
+			Collection<IName> names) throws SQLException {
+		/*
+		 * check if default name type exists
+		 */
+		if (getConnectionProvider().getTopicMapStore()
+				.existsTmdmDefaultNameType()) {
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(doReadNames(topic, getConnectionProvider()
+					.getTopicMapStore().getTmdmDefaultNameType()));
+			/*
+			 * at least one default name
+			 */
+			if (!tmp.isEmpty()) {
+				return tmp;
+			}
+		}
+		return names;
+	}
+
+	/**
 	 * Internal best label method only check name attributes.
 	 * 
 	 * @param topic
@@ -5196,7 +5228,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (names.size() == 1) {
 			return names.iterator().next().getValue();
 		}
-		return readBestName(topic, names);
+		/*
+		 * filter by default name type
+		 */
+		names = filterByDefaultNameType(topic, names);
+		/*
+		 * sort by value
+		 */
+		List<IName> list = HashUtil.getList(names);
+		Collections.sort(list, NameByValueComparator.getInstance(true));
+		return list.get(0).getValue();
 	}
 
 	/**
@@ -5213,26 +5254,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	private String readBestName(ITopic topic, Collection<IName> names)
 			throws SQLException {
 		/*
-		 * check if default name type exists
+		 * filter by default name type
 		 */
-		if (getConnectionProvider().getTopicMapStore()
-				.existsTmdmDefaultNameType()) {
-			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(doReadNames(topic, getConnectionProvider()
-					.getTopicMapStore().getTmdmDefaultNameType()));
-			/*
-			 * return the default name
-			 */
-			if (tmp.size() == 1) {
-				return tmp.iterator().next().getValue();
-			}
-			/*
-			 * more than one default name
-			 */
-			else if (tmp.size() > 1) {
-				names = tmp;
-			}
-		}
+		names = filterByDefaultNameType(topic, names);
 		/*
 		 * filter by scoping themes
 		 */

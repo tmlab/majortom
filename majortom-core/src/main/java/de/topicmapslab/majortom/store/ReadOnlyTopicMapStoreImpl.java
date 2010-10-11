@@ -74,8 +74,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	private ITopicMap topicMap;
 	private IConstructFactory factory;
 	private ThreadPoolExecutor threadPool;
-	
-	
+
 	/**
 	 * feature {@link FeatureStrings#SUPPORT_HISTORY}
 	 */
@@ -113,7 +112,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * current state of revision management
 	 */
 	private boolean revisionManagementEnabled;
-	
+
 	/**
 	 * constructor
 	 * 
@@ -123,14 +122,12 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	public ReadOnlyTopicMapStoreImpl(final ITopicMapSystem topicMapSystem) {
 		setTopicMapSystem(topicMapSystem);
 	}
-	
+
 	/**
 	 * constructor
 	 */
-	public ReadOnlyTopicMapStoreImpl() {
-	}
-	
-	
+	public ReadOnlyTopicMapStoreImpl() {}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -188,24 +185,24 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
-		
+
 		switch (paramType) {
-		
-			case LOCATOR: {
-				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
-					return doCreateLocator((ITopicMap) context, (String) params[0]);
-				}
-				throw new OperationSignatureException(context, paramType, params);
+
+		case LOCATOR: {
+			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
+				return doCreateLocator((ITopicMap) context, (String) params[0]);
 			}
-			case SCOPE: {
-				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof Collection<?>) {
-					return doCreateScope((ITopicMap) context, (Collection<ITopic>) params[0]);
-				}
-				throw new OperationSignatureException(context, paramType, params);
+			throw new OperationSignatureException(context, paramType, params);
+		}
+		case SCOPE: {
+			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof Collection<?>) {
+				return doCreateScope((ITopicMap) context, (Collection<ITopic>) params[0]);
 			}
-			default: {
-				throw new UnmodifyableStoreException("Creation not supported by read only topic map store.");
-			}
+			throw new OperationSignatureException(context, paramType, params);
+		}
+		default: {
+			throw new UnmodifyableStoreException("Creation not supported by read only topic map store.");
+		}
 		}
 	}
 
@@ -234,8 +231,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 *             thrown if operation fails
 	 */
 	protected abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException;
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -243,8 +239,6 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		throw new UnmodifyableStoreException("Read-only store does not support construct modification!");
 	}
 
-	
-	
 	// ********************
 	// * MERGE OPERATIONS *
 	// ********************
@@ -1383,7 +1377,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		}
 		this.revisionManagementEnabled = featureRevisionManagement;
 	}
-	
+
 	/**
 	 * Returns the parent topic map system
 	 * 
@@ -1392,7 +1386,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	public ITopicMapSystem getTopicMapSystem() {
 		return topicMapSystem;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1490,7 +1484,6 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		return this.featureSupportTransaction;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1516,7 +1509,16 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 			}
 		}
 		this.threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(max);
-		this.factory = new ConstructFactoryImpl();
+		this.factory = createConstructFactory();
+	}
+
+	/**
+	 * Creates a new construct factory instance
+	 * 
+	 * @return the construct factory
+	 */
+	protected IConstructFactory createConstructFactory() {
+		return new ConstructFactoryImpl();
 	}
 
 	/**
@@ -1575,7 +1577,7 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	protected final ThreadPoolExecutor getThreadPool() {
 		return threadPool;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

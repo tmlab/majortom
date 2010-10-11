@@ -17,7 +17,7 @@ import org.tmapi.core.Role;
  * @author Sven Krosse
  * 
  */
-public interface IAssociationRole extends Role, IConstruct, IReifiable, ITypeable {
+public interface IAssociationRole extends Role, IReifiable, ITypeable {
 
 	/**
 	 * {@inheritDoc}

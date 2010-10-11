@@ -13,7 +13,7 @@ import org.tmapi.core.Association;
  * @author Sven Krosse
  * 
  */
-public interface IAssociation extends Association, IConstruct, ITypeable, IReifiable, IScopable {
+public interface IAssociation extends Association, ITypeable, IReifiable, IScopable {
 
 	/**
 	 * {@inheritDoc}

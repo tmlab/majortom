@@ -11,7 +11,7 @@ import org.tmapi.core.Variant;
  * @author Sven Krosse
  * 
  */
-public interface IName extends Name, IConstruct, ICharacteristics, ITypeable, IReifiable, IScopable {
+public interface IName extends Name, ICharacteristics, IReifiable {
 
 	/**
 	 * Return all variants with the given scope.
