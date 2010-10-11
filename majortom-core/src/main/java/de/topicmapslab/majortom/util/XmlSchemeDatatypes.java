@@ -233,10 +233,10 @@ public class XmlSchemeDatatypes {
 	/**
 	 * XML Scheme Definition data-types of geographical coordinates<br />
 	 * <br />
-	 * <code>http://#geoCoordinate</code>
+	 * <code>http://en.wikipedia.org/wiki/World_Geodetic_System_1984</code>
 	 */
 	// TODO move to other class
-	public static final String WGS84_COORDINATE = "http://de.wikipedia.org/wiki/World_Geodetic_System_1984";
+	public static final String WGS84_COORDINATE = "http://en.wikipedia.org/wiki/World_Geodetic_System_1984";
 
 	/**
 	 * QNamed XML Scheme Definition data-types of geographical coordinates<br />

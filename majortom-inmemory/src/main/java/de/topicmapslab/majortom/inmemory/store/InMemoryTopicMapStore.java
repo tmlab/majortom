@@ -2201,7 +2201,8 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, names);
 		}
@@ -2216,17 +2217,45 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * get all names of the topic
 		 */
-		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore().getNames(topic));
+		Set<IName> names = HashUtil.getHashSet(getCharacteristicsStore()
+				.getNames(topic));
 		if (!names.isEmpty()) {
 			return readBestName(topic, theme, names, strict);
 		}
 		/*
 		 * is strict mode
 		 */
-		if ( strict ){
+		if (strict) {
 			return null;
 		}
 		return readBestIdentifier(topic);
+	}
+
+	/**
+	 * Method filter the given names by the default name type
+	 * 
+	 * @param topic
+	 *            the topic as parent of the names
+	 * @param names
+	 *            the names
+	 * @return the filtered names
+	 */
+	private Set<IName> filterByDefaultNameType(ITopic topic, Set<IName> names) {
+		/*
+		 * check if default name type exists
+		 */
+		if (existsTmdmDefaultNameType()) {
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(getTypedStore().getTypedNames(
+					getTmdmDefaultNameType()));
+			/*
+			 * more than one default name
+			 */
+			if (tmp.size() > 0) {
+				return tmp;
+			}
+		}
+		return names;
 	}
 
 	/**
@@ -2259,35 +2288,35 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		Set<IName> tmp = HashUtil.getHashSet();
 		for (IScope s : scopes) {
 			Set<IName> scopedNames = doReadNames(topic, s);
-			if ( scopedNames.isEmpty()){
+			if (scopedNames.isEmpty()) {
 				continue;
 			}
 			/*
 			 * set number of themes
 			 */
-			if ( numberOfThemes == -1){
+			if (numberOfThemes == -1) {
 				numberOfThemes = s.getThemes().size();
 			}
 			/*
 			 * current scope has more themes than expected
 			 */
-			if ( numberOfThemes < s.getThemes().size()){
+			if (numberOfThemes < s.getThemes().size()) {
 				break;
 			}
 			/*
 			 * get names of the scope and topic
-			 */			
-			tmp.addAll(scopedNames);		
+			 */
+			tmp.addAll(scopedNames);
 			atLeastOneName = true;
 		}
 		/*
 		 * is strict mode but no scoped name
 		 */
-		if ( strict && !atLeastOneName ){
+		if (strict && !atLeastOneName) {
 			return null;
 		}
-		if ( !tmp.isEmpty()){
-			names.retainAll(tmp);			
+		if (!tmp.isEmpty()) {
+			names.retainAll(tmp);
 		}
 		/*
 		 * only one name of the current scope
@@ -2295,7 +2324,16 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		if (names.size() == 1) {
 			return names.iterator().next().getValue();
 		}
-		return readBestName(topic, names);
+		/*
+		 * check default name type
+		 */
+		names = filterByDefaultNameType(topic, names);
+		/*
+		 * sort by value
+		 */
+		List<IName> list = HashUtil.getList(names);
+		Collections.sort(list, NameByValueComparator.getInstance(true));
+		return list.get(0).getValue();
 	}
 
 	/**
@@ -2314,26 +2352,13 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 		/*
 		 * check if default name type exists
 		 */
-		if (existsTmdmDefaultNameType()) {
-			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(getTypedStore().getTypedNames(
-					getTmdmDefaultNameType()));
-			/*
-			 * return the default name
-			 */
-			if (tmp.size() == 1) {
-				return tmp.iterator().next().getValue();
-			}
-			/*
-			 * more than one default name
-			 */
-			else if (tmp.size() > 1) {
-				names = tmp;
-			}
+		names = filterByDefaultNameType(topic, names);
+		if ( names.size() == 1 ){
+			return names.iterator().next().getValue();
 		}
 		/*
 		 * filter by scoping themes
-		 */		
+		 */
 		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
 		scopes.add(getScopeStore().getEmptyScope());
 		if (!scopes.isEmpty()) {
@@ -2345,27 +2370,27 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			int numberOfThemes = -1;
 			for (IScope s : scopes) {
 				Set<IName> scopedNames = doReadNames(topic, s);
-				if ( scopedNames.isEmpty()){
+				if (scopedNames.isEmpty()) {
 					continue;
 				}
 				/*
 				 * set number of themes
 				 */
-				if ( numberOfThemes == -1){
+				if (numberOfThemes == -1) {
 					numberOfThemes = s.getThemes().size();
 				}
 				/*
 				 * current scope has more themes than expected
 				 */
-				if ( numberOfThemes < s.getThemes().size()){
+				if (numberOfThemes < s.getThemes().size()) {
 					break;
 				}
 				/*
 				 * get names of the scope and topic
-				 */				
-				tmp.addAll(scopedNames);				
+				 */
+				tmp.addAll(scopedNames);
 			}
-			if ( !tmp.isEmpty()){
+			if (!tmp.isEmpty()) {
 				names.retainAll(tmp);
 			}
 			/*
@@ -2374,7 +2399,7 @@ public class InMemoryTopicMapStore extends TopicMapStoreImpl {
 			if (names.size() == 1) {
 				return names.iterator().next().getValue();
 			}
-			
+
 		}
 		/*
 		 * sort by value

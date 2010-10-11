@@ -2326,6 +2326,33 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 	}
 
 	/**
+	 * Method filter the given names by the default name type
+	 * 
+	 * @param topic
+	 *            the topic as parent of the names
+	 * @param names
+	 *            the names
+	 * @return the filtered names
+	 */
+	private Set<IName> filterByDefaultNameType(ITopic topic, Set<IName> names) {
+		/*
+		 * check if default name type exists
+		 */
+		if (existsTmdmDefaultNameType()) {
+			Set<IName> tmp = HashUtil.getHashSet(names);
+			tmp.retainAll(getTypedStore().getTypedNames(
+					getTmdmDefaultNameType()));
+			/*
+			 * more than one default name
+			 */
+			if (tmp.size() > 0) {
+				return tmp;
+			}
+		}
+		return names;
+	}
+
+	/**
 	 * Internal best label method only check name attributes.
 	 * 
 	 * @param topic
@@ -2391,7 +2418,16 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		if (names.size() == 1) {
 			return names.iterator().next().getValue();
 		}
-		return readBestName(topic, names);
+		/*
+		 * check default name type
+		 */
+		names = filterByDefaultNameType(topic, names);
+		/*
+		 * sort by value
+		 */
+		List<IName> list = HashUtil.getList(names);
+		Collections.sort(list, NameByValueComparator.getInstance(true));
+		return list.get(0).getValue();
 	}
 
 	/**
@@ -2410,22 +2446,9 @@ public class TransactionTopicMapStore extends TopicMapStoreImpl implements
 		/*
 		 * check if default name type exists
 		 */
-		if (existsTmdmDefaultNameType()) {
-			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(getTypedStore().getTypedNames(
-					getTmdmDefaultNameType()));
-			/*
-			 * return the default name
-			 */
-			if (tmp.size() == 1) {
-				return tmp.iterator().next().getValue();
-			}
-			/*
-			 * more than one default name
-			 */
-			else if (tmp.size() > 1) {
-				names = tmp;
-			}
+		names = filterByDefaultNameType(topic, names);
+		if ( names.size() == 1 ){
+			return names.iterator().next().getValue();
 		}
 		/*
 		 * filter by scoping themes

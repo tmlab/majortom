@@ -23,7 +23,7 @@ import org.tmapi.core.Variant;
  * @author Sven Krosse
  * 
  */
-public interface IVariant extends Variant, IConstruct, IDatatypeAware, IReifiable, IScopable {
+public interface IVariant extends Variant, IDatatypeAware, IReifiable, IScopable {
 
 	/**
 	 * {@inheritDoc}
