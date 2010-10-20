@@ -61,7 +61,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsIdentifier(getStore().getTopicMap().createLocator(
+		return existsIdentifier(getTopicMapStore().getTopicMap().createLocator(
 				reference));
 	}
 
@@ -90,7 +90,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsItemIdentifier(getStore().getTopicMap().createLocator(
+		return existsItemIdentifier(getTopicMapStore().getTopicMap().createLocator(
 				reference));
 	}
 
@@ -117,7 +117,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectIdentifier(getStore().getTopicMap().createLocator(
+		return existsSubjectIdentifier(getTopicMapStore().getTopicMap().createLocator(
 				reference));
 	}
 
@@ -144,7 +144,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectLocator(getStore().getTopicMap().createLocator(
+		return existsSubjectLocator(getTopicMapStore().getTopicMap().createLocator(
 				reference));
 	}
 
@@ -172,7 +172,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getConstructByItemIdentifier(getStore().getTopicMap()
+		return getConstructByItemIdentifier(getTopicMapStore().getTopicMap()
 				.createLocator(reference));
 	}
 
@@ -186,7 +186,7 @@ public class JdbcIdentityIndex extends
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
 		}
-		return getStore().getTopicMap().getConstructByItemIdentifier(locator);
+		return getTopicMapStore().getTopicMap().getConstructByItemIdentifier(locator);
 	}
 
 	/**
@@ -202,8 +202,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor()
-					.getConstructsByIdentitifer(getStore().getTopicMap(),
+			constructs.addAll(getTopicMapStore().getProcessor()
+					.getConstructsByIdentitifer(getTopicMapStore().getTopicMap(),
 							regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
@@ -239,8 +239,8 @@ public class JdbcIdentityIndex extends
 
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getStore().getProcessor()
-					.getConstructsByItemIdentitifer(getStore().getTopicMap(),
+			constructs.addAll(getTopicMapStore().getProcessor()
+					.getConstructsByItemIdentitifer(getTopicMapStore().getTopicMap(),
 							regExp, -1, -1));
 			return constructs;
 		} catch (SQLException e) {
@@ -271,8 +271,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getItemIdentifiers(
-					getStore().getTopicMap(), -1, -1));
+			locators.addAll(getTopicMapStore().getProcessor().getItemIdentifiers(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -288,8 +288,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectIdentifiers(
-					getStore().getTopicMap(), -1, -1));
+			locators.addAll(getTopicMapStore().getProcessor().getSubjectIdentifiers(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -305,8 +305,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getStore().getProcessor().getSubjectLocators(
-					getStore().getTopicMap(), -1, -1));
+			locators.addAll(getTopicMapStore().getProcessor().getSubjectLocators(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -324,7 +324,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectIdentifier(getStore().getTopicMap()
+		return getTopicBySubjectIdentifier(getTopicMapStore().getTopicMap()
 				.createLocator(reference));
 	}
 
@@ -338,7 +338,7 @@ public class JdbcIdentityIndex extends
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
 		}
-		return getStore().getTopicMap().getTopicBySubjectIdentifier(locator);
+		return getTopicMapStore().getTopicMap().getTopicBySubjectIdentifier(locator);
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectLocator(getStore().getTopicMap().createLocator(
+		return getTopicBySubjectLocator(getTopicMapStore().getTopicMap().createLocator(
 				reference));
 	}
 
@@ -366,7 +366,7 @@ public class JdbcIdentityIndex extends
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
 		}
-		return getStore().getTopicMap().getTopicBySubjectLocator(locator);
+		return getTopicMapStore().getTopicMap().getTopicBySubjectLocator(locator);
 	}
 
 	/**
@@ -382,8 +382,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor()
-					.getTopicsBySubjectIdentitifer(getStore().getTopicMap(),
+			topics.addAll(getTopicMapStore().getProcessor()
+					.getTopicsBySubjectIdentitifer(getTopicMapStore().getTopicMap(),
 							regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
@@ -418,8 +418,8 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getTopicsBySubjectLocator(
-					getStore().getTopicMap(), regExp, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectLocator(
+					getTopicMapStore().getTopicMap(), regExp, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

@@ -72,7 +72,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetDirectSubtypes(type, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.DIRECT_SUBTYPE, type, false, offset, limit, null);
@@ -99,7 +99,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetDirectSubtypes(type, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.DIRECT_SUBTYPE, type, false, offset, limit, comparator);
@@ -123,7 +123,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetDirectSupertypes(type, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.DIRECT_SUPERTYPE, type, false, offset, limit, null);
@@ -150,7 +150,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetDirectSupertypes(type, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.DIRECT_SUPERTYPE, type, false, offset, limit, comparator);
@@ -171,7 +171,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubtypes(offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, null, false, offset, limit, null);
@@ -195,7 +195,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubtypes(offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, null, false, offset, limit, comparator);
@@ -219,7 +219,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetSubtypes(type, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, type, false, offset, limit, null);
@@ -246,7 +246,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetSubtypes(type, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, type, false, offset, limit, comparator);
@@ -299,7 +299,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetSubtypes(types, all, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, types, all, offset, limit, null);
@@ -326,7 +326,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetSubtypes(types, all, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUBTYPE, types, all, offset, limit, comparator);
@@ -347,7 +347,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSupertypes(offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, null, false, offset, limit, null);
@@ -371,7 +371,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSupertypes(offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, null, false, offset, limit, comparator);
@@ -395,7 +395,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetSupertypes(type, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, type, false, offset, limit, null);
@@ -422,7 +422,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetSupertypes(type, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, type, false, offset, limit, comparator);
@@ -475,7 +475,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetSupertypes(types, all, offset, limit);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, types, all, offset, limit, null);
@@ -502,7 +502,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetSupertypes(types, all, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(Type.SUPERTYPE, types, all, offset, limit, comparator);

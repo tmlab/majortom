@@ -35,15 +35,13 @@ import de.topicmapslab.majortom.index.nonpaged.CachedScopeIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
-import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
-		implements IScopedIndex {
+public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * @param store
@@ -60,8 +58,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getAssociationScopes(
-					getStore().getTopicMap(), -1, -1);
+			return getTopicMapStore().getProcessor().getAssociationScopes(getTopicMapStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -79,8 +76,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -99,8 +95,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -116,8 +111,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationThemes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationThemes(getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -133,8 +127,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByTheme(
-					getStore().getTopicMap(), theme, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByTheme(getTopicMapStore().getTopicMap(), theme, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -153,8 +146,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByThemes(
-					getStore().getTopicMap(), themes, all, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByThemes(getTopicMapStore().getTopicMap(), themes, all, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -173,10 +165,8 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
-			col.addAll(getStore().getProcessor().getOccurrencesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -186,8 +176,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> doGetCharacteristics(
-			Collection<IScope> scopes) {
+	public Collection<ICharacteristics> doGetCharacteristics(Collection<IScope> scopes) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -196,10 +185,8 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
-			col.addAll(getStore().getProcessor().getOccurrencesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -214,8 +201,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getNameScopes(
-					getStore().getTopicMap(), -1, -1);
+			return getTopicMapStore().getProcessor().getNameScopes(getTopicMapStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -233,8 +219,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -253,8 +238,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -270,8 +254,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNameThemes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNameThemes(getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -287,8 +270,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByTheme(
-					getStore().getTopicMap(), theme, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByTheme(getTopicMapStore().getTopicMap(), theme, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -307,8 +289,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByThemes(
-					getStore().getTopicMap(), themes, all, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByThemes(getTopicMapStore().getTopicMap(), themes, all, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -323,8 +304,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getOccurrenceScopes(
-					getStore().getTopicMap(), -1, -1);
+			return getTopicMapStore().getProcessor().getOccurrenceScopes(getTopicMapStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -342,8 +322,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -362,8 +341,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -379,8 +357,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrenceThemes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrenceThemes(getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -396,8 +373,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByTheme(
-					getStore().getTopicMap(), theme, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByTheme(getTopicMapStore().getTopicMap(), theme, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -416,8 +392,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByThemes(
-					getStore().getTopicMap(), themes, all, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByThemes(getTopicMapStore().getTopicMap(), themes, all, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -436,14 +411,10 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Scoped> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByScope(
-					getStore().getTopicMap(), scope, -1, -1));
-			col.addAll(getStore().getProcessor().getNamesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
-			col.addAll(getStore().getProcessor().getOccurrencesByScope(
-					getStore().getTopicMap(), scope, -1, -1));
-			col.addAll(getStore().getProcessor().getVariantsByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -462,14 +433,10 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Scoped> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
-			col.addAll(getStore().getProcessor().getNamesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
-			col.addAll(getStore().getProcessor().getOccurrencesByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
-			col.addAll(getStore().getProcessor().getVariantsByScopes(
-					getStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByScopes(getTopicMapStore().getTopicMap(), scopes, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -480,18 +447,15 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 	 * {@inheritDoc}
 	 */
 	public IScope doGetScope(Collection<? extends Topic> themes) {
-		return getStore().getTopicMap().createScope(
-				themes.toArray(new Topic[0]));
+		return getTopicMapStore().getTopicMap().createScope(themes.toArray(new Topic[0]));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScope> doGetScopes(Collection<? extends Topic> themes,
-			boolean matchAll) {
+	public Collection<IScope> doGetScopes(Collection<? extends Topic> themes, boolean matchAll) {
 		try {
-			return getStore().getProcessor().getScopesByThemes(
-					getStore().getTopicMap(), themes, matchAll);
+			return getTopicMapStore().getProcessor().getScopesByThemes(getTopicMapStore().getTopicMap(), themes, matchAll);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -505,8 +469,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getProcessor().getVariantScopes(
-					getStore().getTopicMap(), -1, -1);
+			return getTopicMapStore().getProcessor().getVariantScopes(getTopicMapStore().getTopicMap(), -1, -1);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -524,8 +487,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getVariantsByScope(
-					getStore().getTopicMap(), scope, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -558,8 +520,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
 			for (IScope scope : scopes) {
-				col.addAll(getStore().getProcessor().getVariantsByScope(
-						getStore().getTopicMap(), scope, -1, -1));
+				col.addAll(getTopicMapStore().getProcessor().getVariantsByScope(getTopicMapStore().getTopicMap(), scope, -1, -1));
 			}
 			return col;
 		} catch (SQLException e) {
@@ -576,8 +537,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getVariantThemes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantThemes(getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -596,8 +556,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getVariantsByTheme(
-					getStore().getTopicMap(), theme, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByTheme(getTopicMapStore().getTopicMap(), theme, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -616,8 +575,7 @@ public class JdbcScopedIndex extends CachedScopeIndexImpl<JdbcTopicMapStore>
 		}
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getVariantsByThemes(
-					getStore().getTopicMap(), themes, all, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByThemes(getTopicMapStore().getTopicMap(), themes, all, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

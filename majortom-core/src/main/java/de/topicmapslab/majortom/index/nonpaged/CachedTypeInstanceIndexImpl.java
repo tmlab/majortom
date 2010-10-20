@@ -62,7 +62,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetAssociationTypes();
 		}
 		Collection<Topic> types = read(IAssociation.class);
@@ -83,7 +83,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetAssociations(type);
 		}
 		Collection<Association> results = read(IAssociation.class, type, false);
@@ -107,7 +107,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetAssociations(types);
 		}
 		Collection<Association> results = read(IAssociation.class, types, false);
@@ -128,7 +128,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristicTypes();
 		}
 		Collection<Topic> types = read(ICharacteristics.class);
@@ -152,7 +152,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetCharacteristics(type);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false);
@@ -176,7 +176,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetCharacteristics(types);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false);
@@ -197,7 +197,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNameTypes();
 		}
 		Collection<Topic> types = read(IName.class);
@@ -221,7 +221,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetNames(type);
 		}
 		Collection<Name> results = read(IName.class, type, false);
@@ -245,7 +245,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetNames(types);
 		}
 		Collection<Name> results = read(IName.class, types, false);
@@ -266,7 +266,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrenceTypes();
 		}
 		Collection<Topic> types = read(IOccurrence.class);
@@ -290,7 +290,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetOccurrences(type);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false);
@@ -314,7 +314,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetOccurrences(types);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false);
@@ -335,7 +335,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetRoleTypes();
 		}
 		Collection<Topic> types = read(IAssociationRole.class);
@@ -359,7 +359,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetRoles(type);
 		}
 		Collection<Role> results = read(IAssociationRole.class, type, false);
@@ -383,7 +383,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetRoles(types);
 		}
 		Collection<Role> results = read(IAssociationRole.class, types, false);
@@ -404,7 +404,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicTypes();
 		}
 		Collection<Topic> types = read(ITopic.class);
@@ -425,7 +425,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetTopics(type);
 		}
 		Collection<Topic> results = read(ITopic.class, type, false);
@@ -459,7 +459,7 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetTopics(types, all);
 		}
 		Collection<Topic> results = read(ITopic.class, types, all);

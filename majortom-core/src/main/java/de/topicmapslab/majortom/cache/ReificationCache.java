@@ -1,4 +1,4 @@
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import org.apache.commons.collections.bidimap.TreeBidiMap;
 import org.tmapi.core.Construct;
@@ -76,8 +76,7 @@ class ReificationCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void topicMapChanged(String id, TopicMapEventType event,
-			Construct notifier, Object newValue, Object oldValue) {
+	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 		/*
 		 * reification modified
 		 */
@@ -95,13 +94,12 @@ class ReificationCache implements ITopicMapListener {
 			 */
 			else if (newReifier != null) {
 				cacheReification(reifiable, newReifier);
-			}			
+			}
 		}
 		/*
 		 * topic removed as potential reifier
 		 */
-		else if (event == TopicMapEventType.TOPIC_REMOVED
-				&& reification != null) {
+		else if (event == TopicMapEventType.TOPIC_REMOVED && reification != null) {
 			ITopic topic = (ITopic) oldValue;
 			reification.remove(topic);
 		}
@@ -109,9 +107,7 @@ class ReificationCache implements ITopicMapListener {
 		 * reified construct removed
 		 */
 		else if (reification != null
-				&& (event == TopicMapEventType.NAME_REMOVED
-						|| event == TopicMapEventType.ASSOCIATION_REMOVED
-						|| event == TopicMapEventType.OCCURRENCE_REMOVED
+				&& (event == TopicMapEventType.NAME_REMOVED || event == TopicMapEventType.ASSOCIATION_REMOVED || event == TopicMapEventType.OCCURRENCE_REMOVED
 						|| event == TopicMapEventType.VARIANT_REMOVED || event == TopicMapEventType.ROLE_REMOVED)) {
 			reification.removeValue(oldValue);
 		}

@@ -45,7 +45,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference can not be null.");
 		}
-		return existsIdentifier(getStore().getIdentityStore().createLocator(reference));
+		return existsIdentifier(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().containsIdentifier((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().containsIdentifier((ILocator) locator);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference can not be null.");
 		}
-		return existsItemIdentifier(getStore().getIdentityStore().createLocator(reference));
+		return existsItemIdentifier(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().containsItemIdentifier((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().containsItemIdentifier((ILocator) locator);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference can not be null.");
 		}
-		return existsSubjectIdentifier(getStore().getIdentityStore().createLocator(reference));
+		return existsSubjectIdentifier(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().containsSubjectIdentifier((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().containsSubjectIdentifier((ILocator) locator);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference can not be null.");
 		}
-		return existsSubjectLocator(getStore().getIdentityStore().createLocator(reference));
+		return existsSubjectLocator(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().containsSubjectLocator((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().containsSubjectLocator((ILocator) locator);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference can not be null.");
 		}
-		return getConstructByItemIdentifier(getStore().getIdentityStore().createLocator(reference));
+		return getConstructByItemIdentifier(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().byItemIdentifier((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().byItemIdentifier((ILocator) locator);
 	}
 
 	/**
@@ -219,9 +219,9 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new IllegalArgumentException("Regular expression cannot be null!");
 		}
 		Set<Construct> set = HashUtil.getHashSet();
-		for (ILocator locator : getStore().getIdentityStore().getItemIdentifiers()) {
+		for (ILocator locator : getTopicMapStore().getIdentityStore().getItemIdentifiers()) {
 			if (regExp.matcher(locator.getReference()).matches()) {
-				set.add(getStore().getIdentityStore().byItemIdentifier(locator));
+				set.add(getTopicMapStore().getIdentityStore().byItemIdentifier(locator));
 			}
 		}
 		return Collections.unmodifiableCollection(set);
@@ -235,7 +235,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Locator> set = HashUtil.getHashSet();
-		set.addAll(getStore().getIdentityStore().getItemIdentifiers());
+		set.addAll(getTopicMapStore().getIdentityStore().getItemIdentifiers());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -247,7 +247,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Locator> set = HashUtil.getHashSet();
-		set.addAll(getStore().getIdentityStore().getSubjectIdentifiers());
+		set.addAll(getTopicMapStore().getIdentityStore().getSubjectIdentifiers());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -259,7 +259,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Locator> set = HashUtil.getHashSet();
-		set.addAll(getStore().getIdentityStore().getSubjectLocators());
+		set.addAll(getTopicMapStore().getIdentityStore().getSubjectLocators());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -273,7 +273,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null!");
 		}
-		return getTopicBySubjectIdentifier(getStore().getIdentityStore().createLocator(reference));
+		return getTopicBySubjectIdentifier(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -286,7 +286,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().bySubjectIdentifier((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().bySubjectIdentifier((ILocator) locator);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null!");
 		}
-		return getTopicBySubjectLocator(getStore().getIdentityStore().createLocator(reference));
+		return getTopicBySubjectLocator(getTopicMapStore().getIdentityStore().createLocator(reference));
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null!");
 		}
-		return getStore().getIdentityStore().bySubjectLocator((ILocator) locator);
+		return getTopicMapStore().getIdentityStore().bySubjectLocator((ILocator) locator);
 	}
 
 	/**
@@ -339,9 +339,9 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new IllegalArgumentException("Regular expression cannot be null!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		for (ILocator locator : getStore().getIdentityStore().getSubjectIdentifiers()) {
+		for (ILocator locator : getTopicMapStore().getIdentityStore().getSubjectIdentifiers()) {
 			if (regExp.matcher(locator.getReference()).matches()) {
-				set.add(getStore().getIdentityStore().bySubjectIdentifier(locator));
+				set.add(getTopicMapStore().getIdentityStore().bySubjectIdentifier(locator));
 			}
 		}
 		return Collections.unmodifiableCollection(set);
@@ -371,9 +371,9 @@ public class TransactionIdentityIndex extends IndexImpl<TransactionTopicMapStore
 			throw new IllegalArgumentException("Regular expression cannot be null!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		for (ILocator locator : getStore().getIdentityStore().getSubjectLocators()) {
+		for (ILocator locator : getTopicMapStore().getIdentityStore().getSubjectLocators()) {
 			if (regExp.matcher(locator.getReference()).matches()) {
-				set.add(getStore().getIdentityStore().bySubjectLocator(locator));
+				set.add(getTopicMapStore().getIdentityStore().bySubjectLocator(locator));
 			}
 		}
 		return Collections.unmodifiableCollection(set);

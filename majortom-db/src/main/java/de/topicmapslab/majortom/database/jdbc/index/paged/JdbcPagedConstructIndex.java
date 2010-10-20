@@ -74,7 +74,7 @@ public class JdbcPagedConstructIndex extends
 			int offset, int limit) {
 		try {
 			List<Association> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadAssociation(
+			list.addAll(getTopicMapStore().getProcessor().doReadAssociation(
 					(ITopic) topic, offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -104,7 +104,7 @@ public class JdbcPagedConstructIndex extends
 	protected List<Name> doGetNames(Topic topic, int offset, int limit) {
 		try {
 			List<Name> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadNames((ITopic) topic,
+			list.addAll(getTopicMapStore().getProcessor().doReadNames((ITopic) topic,
 					offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -121,7 +121,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfAssociationsPlayed(Topic topic) {
 		try {
-			return getStore().getProcessor().doReadNumberOfAssociationsPlayed(
+			return getTopicMapStore().getProcessor().doReadNumberOfAssociationsPlayed(
 					(ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -137,7 +137,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfNames(Topic topic) {
 		try {
-			return getStore().getProcessor()
+			return getTopicMapStore().getProcessor()
 					.doReadNumberOfNames((ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -153,7 +153,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfOccurrences(Topic topic) {
 		try {
-			return getStore().getProcessor().doReadNumberOfOccurrences(
+			return getTopicMapStore().getProcessor().doReadNumberOfOccurrences(
 					(ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -169,7 +169,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfRoles(Association association) {
 		try {
-			return getStore().getProcessor().doReadNumberOfRoles(
+			return getTopicMapStore().getProcessor().doReadNumberOfRoles(
 					(IAssociation) association);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -185,7 +185,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfRolesPlayed(Topic topic) {
 		try {
-			return getStore().getProcessor().doReadNumberOfRolesPlayed(
+			return getTopicMapStore().getProcessor().doReadNumberOfRolesPlayed(
 					(ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -201,7 +201,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfSupertypes(Topic topic) {
 		try {
-			return getStore().getProcessor().doReadNumberOfSupertypes(
+			return getTopicMapStore().getProcessor().doReadNumberOfSupertypes(
 					(ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -217,7 +217,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfTypes(Topic topic) {
 		try {
-			return getStore().getProcessor()
+			return getTopicMapStore().getProcessor()
 					.doReadNumberOfTypes((ITopic) topic);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -233,7 +233,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected long doGetNumberOfVariants(Name name) {
 		try {
-			return getStore().getProcessor().doReadNumberOfVariants(
+			return getTopicMapStore().getProcessor().doReadNumberOfVariants(
 					(IName) name);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -263,7 +263,7 @@ public class JdbcPagedConstructIndex extends
 			int limit) {
 		try {
 			List<Occurrence> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadOccurrences(
+			list.addAll(getTopicMapStore().getProcessor().doReadOccurrences(
 					(ITopic) topic, offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -294,7 +294,7 @@ public class JdbcPagedConstructIndex extends
 			int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadRoles(
+			list.addAll(getTopicMapStore().getProcessor().doReadRoles(
 					(IAssociation) association, offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -324,7 +324,7 @@ public class JdbcPagedConstructIndex extends
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadRoles((ITopic) topic,
+			list.addAll(getTopicMapStore().getProcessor().doReadRoles((ITopic) topic,
 					offset, limit));
 			return list;
 		} catch (SQLException e) {
@@ -353,7 +353,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit) {
 		List<Topic> list = HashUtil.getList();
-		list.addAll(getStore().getSuptertypes((ITopic) topic, offset, limit));
+		list.addAll(getTopicMapStore().getSuptertypes((ITopic) topic, offset, limit));
 		return list;
 	}
 
@@ -378,7 +378,7 @@ public class JdbcPagedConstructIndex extends
 	 */
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit) {
 		List<Topic> list = HashUtil.getList();
-		list.addAll(getStore().getTypes((ITopic) topic, offset, limit));
+		list.addAll(getTopicMapStore().getTypes((ITopic) topic, offset, limit));
 		return list;
 	}
 
@@ -404,7 +404,7 @@ public class JdbcPagedConstructIndex extends
 	protected List<Variant> doGetVariants(Name name, int offset, int limit) {
 		try {
 			List<Variant> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().doReadVariants((IName) name,
+			list.addAll(getTopicMapStore().getProcessor().doReadVariants((IName) name,
 					offset, limit));
 			return list;
 		} catch (SQLException e) {

@@ -1,4 +1,4 @@
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import java.util.Arrays;
 import java.util.Collection;

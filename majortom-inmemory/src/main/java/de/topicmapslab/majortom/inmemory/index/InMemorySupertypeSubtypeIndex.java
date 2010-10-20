@@ -54,7 +54,7 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTopicTypeStore().getSubtypes());
+		set.addAll(getTopicMapStore().getTopicTypeStore().getSubtypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -67,10 +67,10 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		if (type == null) {
-			set.addAll(getStore().getIdentityStore().getTopics());
+			set.addAll(getTopicMapStore().getIdentityStore().getTopics());
 			set.removeAll(getSupertypes());
 		} else {
-			set.addAll(getStore().getTopicTypeStore().getDirectSubtypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getDirectSubtypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -84,10 +84,10 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		if (type == null) {
-			set.addAll(getStore().getIdentityStore().getTopics());
+			set.addAll(getTopicMapStore().getIdentityStore().getTopics());
 			set.removeAll(getSupertypes());
 		} else {
-			set.addAll(getStore().getTopicTypeStore().getSubtypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -104,7 +104,7 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getSubtypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -135,9 +135,9 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
 			if (set.isEmpty() || !all) {
-				set.addAll(getStore().getTopicTypeStore().getSubtypes((ITopic) type));
+				set.addAll(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type));
 			} else {
-				set.retainAll(getStore().getTopicTypeStore().getSubtypes((ITopic) type));
+				set.retainAll(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type));
 			}
 			if (all && set.isEmpty()) {
 				break;
@@ -154,7 +154,7 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTopicTypeStore().getSupertypes());
+		set.addAll(getTopicMapStore().getTopicTypeStore().getSupertypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -167,10 +167,10 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		if (type == null) {
-			set.addAll(getStore().getIdentityStore().getTopics());
+			set.addAll(getTopicMapStore().getIdentityStore().getTopics());
 			set.removeAll(getSubtypes());
 		} else {
-			set.addAll(getStore().getTopicTypeStore().getDirectSupertypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getDirectSupertypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -184,10 +184,10 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		if (type == null) {
-			set.addAll(getStore().getIdentityStore().getTopics());
+			set.addAll(getTopicMapStore().getIdentityStore().getTopics());
 			set.removeAll(getSubtypes());
 		} else {
-			set.addAll(getStore().getTopicTypeStore().getSupertypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getSupertypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -204,7 +204,7 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getSupertypes((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getSupertypes((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -235,9 +235,9 @@ public class InMemorySupertypeSubtypeIndex extends IndexImpl<InMemoryTopicMapSto
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
 			if (set.isEmpty() || !all) {
-				set.addAll(getStore().getTopicTypeStore().getSupertypes((ITopic) type));
+				set.addAll(getTopicMapStore().getTopicTypeStore().getSupertypes((ITopic) type));
 			} else {
-				set.retainAll(getStore().getTopicTypeStore().getSupertypes((ITopic) type));
+				set.retainAll(getTopicMapStore().getTopicTypeStore().getSupertypes((ITopic) type));
 			}
 			if (all && set.isEmpty()) {
 				break;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import java.util.Collections;
 import java.util.Map;
@@ -117,7 +117,7 @@ class IdentityCache implements ITopicMapListener {
 		 */
 		public BestLabelKey(ITopic parent) {
 			this.parent = parent;
-			this.theme = null;			
+			this.theme = null;
 			this.strict = false;
 		}
 
@@ -136,8 +136,7 @@ class IdentityCache implements ITopicMapListener {
 		public boolean equals(Object obj) {
 			if (obj instanceof BestLabelKey) {
 				boolean result = parent.equals(((BestLabelKey) obj).parent);
-				result &= theme == null ? ((BestLabelKey) obj).theme == null
-						: theme.equals(((BestLabelKey) obj).theme);
+				result &= theme == null ? ((BestLabelKey) obj).theme == null : theme.equals(((BestLabelKey) obj).theme);
 				result &= strict == ((BestLabelKey) obj).strict;
 				return result;
 			}
@@ -150,7 +149,7 @@ class IdentityCache implements ITopicMapListener {
 		public int hashCode() {
 			int hash = parent.hashCode();
 			hash |= theme == null ? 0 : theme.hashCode();
-			hash |= strict?1:0;
+			hash |= strict ? 1 : 0;
 			return hash;
 		}
 	}
@@ -333,8 +332,7 @@ class IdentityCache implements ITopicMapListener {
 	 * @return the identities or <code>null</code> if the given map is
 	 *         <code>null</code> or does not contain the given key.
 	 */
-	public <T extends IConstruct> Set<ILocator> getIdentities(
-			Map<T, Set<ILocator>> map, T construct) {
+	public <T extends IConstruct> Set<ILocator> getIdentities(Map<T, Set<ILocator>> map, T construct) {
 		if (map == null || !map.containsKey(construct)) {
 			return null;
 		}
@@ -535,7 +533,8 @@ class IdentityCache implements ITopicMapListener {
 	 *            the topic
 	 * @param theme
 	 *            the theme
-	 *            @param strict the strict flag
+	 * @param strict
+	 *            the strict flag
 	 * @return the best label
 	 */
 	public String getBestLabel(ITopic t, ITopic theme, boolean strict) {
@@ -552,7 +551,8 @@ class IdentityCache implements ITopicMapListener {
 	 *            the topic
 	 * @param theme
 	 *            the theme
-	 *            @param strict the strict flag
+	 * @param strict
+	 *            the strict flag
 	 * @param bestLabel
 	 *            the best label
 	 */
@@ -595,8 +595,7 @@ class IdentityCache implements ITopicMapListener {
 	 *            the themes
 	 */
 	private void removeBestLabels(ITopic topic, ITopic... themes) {
-		if (bestLabelCacheKeys == null
-				|| !bestLabelCacheKeys.containsKey(topic) || bestLabels == null) {
+		if (bestLabelCacheKeys == null || !bestLabelCacheKeys.containsKey(topic) || bestLabels == null) {
 			return;
 		}
 		Set<BestLabelKey> keys = bestLabelCacheKeys.get(topic);
@@ -622,8 +621,7 @@ class IdentityCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void topicMapChanged(String id, TopicMapEventType event,
-			Construct notifier, Object newValue, Object oldValue) {
+	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 		/*
 		 * topic was removed
 		 */
@@ -633,13 +631,9 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * construct was removed
 		 */
-		else if (event == TopicMapEventType.NAME_REMOVED
-				|| event == TopicMapEventType.ROLE_REMOVED
-				|| event == TopicMapEventType.OCCURRENCE_REMOVED
-				|| event == TopicMapEventType.VARIANT_REMOVED
+		else if (event == TopicMapEventType.NAME_REMOVED || event == TopicMapEventType.ROLE_REMOVED || event == TopicMapEventType.OCCURRENCE_REMOVED || event == TopicMapEventType.VARIANT_REMOVED
 				|| event == TopicMapEventType.ASSOCIATION_REMOVED) {
-			removeConstructItemFromCache((IConstruct) oldValue,
-					(IConstruct) notifier);
+			removeConstructItemFromCache((IConstruct) oldValue, (IConstruct) notifier);
 		}
 		/*
 		 * subject-identifier added
@@ -647,13 +641,11 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.SUBJECT_IDENTIFIER_ADDED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) newValue;
-			if (topicSubjectIdentifiers != null
-					&& topicSubjectIdentifiers.containsKey(topic)) {
+			if (topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(topic)) {
 				topicSubjectIdentifiers.get(topic).add(locator);
 			}
 			cacheSubjectIdentifier(locator, topic);
-			if (identities != null
-					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
+			if (identities != null && identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).add(locator);
 			}
 			removeBestLabels(topic);
@@ -664,13 +656,11 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.SUBJECT_LOCATOR_ADDED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) newValue;
-			if (topicSubjectLocators != null
-					&& topicSubjectLocators.containsKey(topic)) {
+			if (topicSubjectLocators != null && topicSubjectLocators.containsKey(topic)) {
 				topicSubjectLocators.get(topic).add(locator);
 			}
 			cacheSubjectLocator(locator, topic);
-			if (identities != null
-					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
+			if (identities != null && identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).add(locator);
 			}
 			removeBestLabels(topic);
@@ -681,13 +671,11 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.ITEM_IDENTIFIER_ADDED) {
 			IConstruct construct = (IConstruct) notifier;
 			ILocator locator = (ILocator) newValue;
-			if (constructItemIdentifiers != null
-					&& constructItemIdentifiers.containsKey(construct)) {
+			if (constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)) {
 				constructItemIdentifiers.get(construct).add(locator);
 			}
 			cacheItemIdentifier(locator, construct);
-			if (identities != null
-					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
+			if (identities != null && identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).add(locator);
 			}
 			if (construct instanceof ITopic) {
@@ -700,15 +688,13 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if (topicSubjectIdentifiers != null
-					&& topicSubjectIdentifiers.containsKey(topic)) {
+			if (topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(topic)) {
 				topicSubjectIdentifiers.get(topic).remove(locator);
 			}
 			if (subjectIdentifiers != null) {
 				subjectIdentifiers.remove(locator);
 			}
-			if (identities != null
-					&& identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
+			if (identities != null && identities.containsKey(Key.SUBJECT_IDENTIFIER)) {
 				identities.get(Key.SUBJECT_IDENTIFIER).remove(locator);
 			}
 			removeBestLabels(topic);
@@ -719,15 +705,13 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.SUBJECT_LOCATOR_REMOVED) {
 			ITopic topic = (ITopic) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if (topicSubjectLocators != null
-					&& topicSubjectLocators.containsKey(topic)) {
+			if (topicSubjectLocators != null && topicSubjectLocators.containsKey(topic)) {
 				topicSubjectLocators.get(topic).remove(locator);
 			}
 			if (subjectLocators != null) {
 				subjectLocators.remove(locator);
 			}
-			if (identities != null
-					&& identities.containsKey(Key.SUBJEC_LOCATOR)) {
+			if (identities != null && identities.containsKey(Key.SUBJEC_LOCATOR)) {
 				identities.get(Key.SUBJEC_LOCATOR).remove(locator);
 			}
 			removeBestLabels(topic);
@@ -738,15 +722,13 @@ class IdentityCache implements ITopicMapListener {
 		else if (event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED) {
 			IConstruct construct = (IConstruct) notifier;
 			ILocator locator = (ILocator) oldValue;
-			if (constructItemIdentifiers != null
-					&& constructItemIdentifiers.containsKey(construct)) {
+			if (constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)) {
 				constructItemIdentifiers.get(construct).remove(locator);
 			}
 			if (itemIdentifiers != null) {
 				itemIdentifiers.remove(locator);
 			}
-			if (identities != null
-					&& identities.containsKey(Key.ITEM_IDENTIFIER)) {
+			if (identities != null && identities.containsKey(Key.ITEM_IDENTIFIER)) {
 				identities.get(Key.ITEM_IDENTIFIER).remove(locator);
 			}
 			if (construct instanceof ITopic) {
@@ -762,17 +744,14 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * type or scope of name was modified
 		 */
-		else if (event == TopicMapEventType.TYPE_SET
-				&& notifier instanceof IName) {
+		else if (event == TopicMapEventType.TYPE_SET && notifier instanceof IName) {
 			removeBestLabels((ITopic) notifier.getParent());
 		}
 		/*
 		 * scope modified
 		 */
-		else if (event == TopicMapEventType.SCOPE_MODIFIED
-				&& notifier instanceof IName) {
-			removeBestLabels((ITopic) notifier.getParent(), ((IScope) oldValue)
-					.getThemes().toArray(new ITopic[0]));
+		else if (event == TopicMapEventType.SCOPE_MODIFIED && notifier instanceof IName) {
+			removeBestLabels((ITopic) notifier.getParent(), ((IScope) oldValue).getThemes().toArray(new ITopic[0]));
 		}
 		/*
 		 * topics are merging
@@ -784,8 +763,7 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * value changed
 		 */
-		else if (event == TopicMapEventType.VALUE_MODIFIED
-				&& notifier instanceof IName) {
+		else if (event == TopicMapEventType.VALUE_MODIFIED && notifier instanceof IName) {
 			removeBestLabels((ITopic) notifier.getParent());
 		}
 
@@ -800,18 +778,15 @@ class IdentityCache implements ITopicMapListener {
 	 * @param notifier
 	 *            the parent
 	 */
-	private final void removeTopicItemFromCache(ITopic topic,
-			IConstruct notifier) {
+	private final void removeTopicItemFromCache(ITopic topic, IConstruct notifier) {
 		/*
 		 * clear subject-identifiers
 		 */
-		if (topicSubjectIdentifiers != null
-				&& topicSubjectIdentifiers.containsKey(topic)) {
+		if (topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(topic)) {
 			topicSubjectIdentifiers.remove(topic);
 		}
 		if (subjectIdentifiers != null) {
-			for (Entry<ILocator, ITopic> si : HashUtil
-					.getHashSet(subjectIdentifiers.entrySet())) {
+			for (Entry<ILocator, ITopic> si : HashUtil.getHashSet(subjectIdentifiers.entrySet())) {
 				if (si.getValue().equals(topic)) {
 					subjectIdentifiers.remove(si.getKey());
 				}
@@ -820,13 +795,11 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * clear subject-locators
 		 */
-		if (topicSubjectLocators != null
-				&& topicSubjectLocators.containsKey(topic)) {
+		if (topicSubjectLocators != null && topicSubjectLocators.containsKey(topic)) {
 			topicSubjectLocators.remove(topic);
 		}
 		if (subjectLocators != null) {
-			for (Entry<ILocator, ITopic> sl : HashUtil
-					.getHashSet(subjectLocators.entrySet())) {
+			for (Entry<ILocator, ITopic> sl : HashUtil.getHashSet(subjectLocators.entrySet())) {
 				if (sl.getValue().equals(topic)) {
 					subjectLocators.remove(sl.getKey());
 				}
@@ -853,18 +826,15 @@ class IdentityCache implements ITopicMapListener {
 	 * @param notifier
 	 *            the parent
 	 */
-	private final void removeConstructItemFromCache(IConstruct construct,
-			IConstruct notifier) {
+	private final void removeConstructItemFromCache(IConstruct construct, IConstruct notifier) {
 		/*
 		 * clear item-identifiers
 		 */
-		if (constructItemIdentifiers != null
-				&& constructItemIdentifiers.containsKey(construct)) {
+		if (constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)) {
 			constructItemIdentifiers.remove(construct);
 		}
 		if (itemIdentifiers != null) {
-			for (Entry<ILocator, IConstruct> ii : HashUtil
-					.getHashSet(itemIdentifiers.entrySet())) {
+			for (Entry<ILocator, IConstruct> ii : HashUtil.getHashSet(itemIdentifiers.entrySet())) {
 				if (ii.getValue().equals(construct)) {
 					itemIdentifiers.remove(ii.getKey());
 				}
@@ -886,8 +856,7 @@ class IdentityCache implements ITopicMapListener {
 		/*
 		 * remove best label of parent topic if name was removed
 		 */
-		if (construct instanceof IName && bestLabels != null
-				&& bestLabels.containsKey(notifier)) {
+		if (construct instanceof IName && bestLabels != null && bestLabels.containsKey(notifier)) {
 			removeBestLabels((ITopic) notifier);
 		}
 	}

@@ -71,7 +71,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetConstructsByIdentifier(regExp);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.IDENTIFIER, regExp);
@@ -108,7 +108,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetConstructsByItemIdentifier(regExp);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, regExp);
@@ -129,7 +129,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetItemIdentifiers();
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER);
@@ -150,7 +150,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetSubjectIdentifiers();
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER);
@@ -171,7 +171,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetSubjectLocators();
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR);
@@ -205,7 +205,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetTopicsBySubjectIdentifier(regExp);
 		}
 		if ( regExp == null ){
@@ -245,7 +245,7 @@ public abstract class CachedIdentityIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if ( !getStore().isCachingEnabled()){
+		if ( !getTopicMapStore().isCachingEnabled()){
 			return doGetTopicsBySubjectLocator(regExp);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, regExp);

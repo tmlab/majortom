@@ -55,7 +55,7 @@ public abstract class BaseCachedIndexImpl<T extends ITopicMapStore> extends Inde
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public abstract class BaseCachedIndexImpl<T extends ITopicMapStore> extends Inde
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 
@@ -136,7 +136,7 @@ public abstract class BaseCachedIndexImpl<T extends ITopicMapStore> extends Inde
 	 *         <code>false</code> otherwise
 	 */
 	protected boolean isOnTransactionContext(Construct c) {
-		return c != null && ( c instanceof ITransaction || c.getTopicMap() instanceof ITransaction ) ;
+		return c != null && (c instanceof ITransaction || c.getTopicMap() instanceof ITransaction);
 	}
 
 	/**
@@ -156,4 +156,13 @@ public abstract class BaseCachedIndexImpl<T extends ITopicMapStore> extends Inde
 		return false;
 	}
 
+	/**
+	 * Checks if the underlying topic map store supports caching
+	 * 
+	 * @return <code>true</code> if caching is supported and enabled,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isCachingEnabled() {
+		return getTopicMapStore().isCachingEnabled();
+	}
 }

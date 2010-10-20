@@ -18,6 +18,9 @@
  */
 package de.topicmapslab.majortom.tests.revision;
 
+import org.tmapi.core.Topic;
+import org.tmapi.core.TopicMap;
+
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -71,13 +74,32 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		assertNull(index.getFirstRevision());
 		
 		topicMap.getStore().enableRevisionManagement(true);
-		assertNull(index.getFirstRevision());
+		assertNull(index.getFirstRevision());		
 		
 		topicMap.createAssociation(type);
 		assertNotNull(index.getFirstRevision());
 		IRevision r = index.getFirstRevision();
 		assertEquals(3, r.getChangeset().size());
 		assertNull(r.getFuture());
+		
+	}
+	
+	public void testCreateAssociationByMergeIn() throws Exception {
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		assertNull(index.getFirstRevision());
+		
+		TopicMap tm = factory.newTopicMapSystem().createTopicMap("http://psi.second.com/");
+		Topic type = tm.createTopic();		
+		tm.createAssociation(type);
+		
+		topicMap.mergeIn(tm);
+		assertNotNull(index.getFirstRevision());
+		IRevision r = index.getFirstRevision();
+		System.out.println(r.getChangeset());
+		assertEquals(5, r.getChangeset().size());
+		assertNull(r.getFuture());
+		
 	}
 
 }

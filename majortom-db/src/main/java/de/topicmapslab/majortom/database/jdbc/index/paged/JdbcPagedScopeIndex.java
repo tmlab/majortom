@@ -69,7 +69,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationsByScopes(getStore().getTopicMap(), scopes, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -93,7 +93,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(IScope scope, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationsByScope(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -117,7 +117,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Topic theme, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationsByTheme(getStore().getTopicMap(), theme, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -141,7 +141,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationsByThemes(getStore().getTopicMap(), themes, all, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -165,7 +165,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetAssociationScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationScopes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationScopes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -189,7 +189,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetAssociationThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getAssociationThemes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationThemes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -213,7 +213,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit) {
 		try {
 			List<ICharacteristics> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getCharacteristicsByScope(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getCharacteristicsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -237,7 +237,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNamesByScopes(getStore().getTopicMap(), scopes, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -261,7 +261,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(IScope scope, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNamesByScope(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -285,7 +285,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(Topic theme, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNamesByTheme(getStore().getTopicMap(), theme, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -310,7 +310,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNamesByThemes(getStore().getTopicMap(), themes, all, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNamesByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -334,7 +334,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetNameScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNameScopes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNameScopes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -358,7 +358,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetNameThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getNameThemes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getNameThemes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -382,7 +382,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrencesByScopes(getStore().getTopicMap(), scopes, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -406,7 +406,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(IScope scope, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrencesByScope(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -430,7 +430,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Topic theme, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrencesByTheme(getStore().getTopicMap(), theme, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -454,7 +454,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrencesByThemes(getStore().getTopicMap(), themes, all, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -478,7 +478,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetOccurrenceScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrenceScopes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrenceScopes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -502,7 +502,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetOccurrenceThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getOccurrenceThemes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrenceThemes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -526,7 +526,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Scoped> doGetScopables(IScope scope, int offset, int limit) {
 		try {
 			List<Scoped> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getScopables(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getScopables(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -550,7 +550,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantsByScopes(getStore().getTopicMap(), scopes, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -574,7 +574,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(IScope scope, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantsByScope(getStore().getTopicMap(), scope, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -598,7 +598,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Topic theme, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantsByTheme(getStore().getTopicMap(), theme, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -622,7 +622,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantsByThemes(getStore().getTopicMap(), themes, all, offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantsByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -646,7 +646,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetVariantScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantScopes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantScopes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -670,7 +670,7 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetVariantThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getStore().getProcessor().getVariantThemes(getStore().getTopicMap(), offset, limit));
+			col.addAll(getTopicMapStore().getProcessor().getVariantThemes(getTopicMapStore().getTopicMap(), offset, limit));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

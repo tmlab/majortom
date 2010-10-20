@@ -67,7 +67,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetDirectSubtypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getDirectSubtypes(getStore().getTopicMap(), (ITopic) type, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getDirectSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -91,7 +91,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetDirectSupertypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getDirectSupertypes(getStore().getTopicMap(), (ITopic) type, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getDirectSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -115,7 +115,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), types, all, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), types, all, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -139,7 +139,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -163,7 +163,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSubtypes(getStore().getTopicMap(), (ITopic) type, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -187,7 +187,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), types, all, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), types, all, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -211,7 +211,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -235,7 +235,7 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getStore().getProcessor().getSupertypes(getStore().getTopicMap(), (ITopic) type, offset, limit));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

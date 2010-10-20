@@ -80,7 +80,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetAssociationTypes(offset, limit);
 		}
 		Collection<Topic> types = read(IAssociation.class, offset, limit, null);
@@ -104,7 +104,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetAssociationTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IAssociation.class, offset, limit, comparator);
@@ -128,7 +128,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetAssociations(type, offset, limit);
 		}
 		Collection<Association> results = read(IAssociation.class, type, false, offset, limit, null);
@@ -155,7 +155,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetAssociations(type, offset, limit, comparator);
 		}
 		Collection<Association> results = read(IAssociation.class, type, false, offset, limit, comparator);
@@ -179,7 +179,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetAssociations(types, offset, limit);
 		}
 		Collection<Association> results = read(IAssociation.class, types, false, offset, limit, null);
@@ -206,7 +206,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetAssociations(types, offset, limit, comparator);
 		}
 		Collection<Association> results = read(IAssociation.class, types, false, offset, limit, comparator);
@@ -227,7 +227,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristicTypes(offset, limit);
 		}
 		Collection<Topic> types = read(ICharacteristics.class, offset, limit, null);
@@ -251,7 +251,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristicTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(ICharacteristics.class, offset, limit, comparator);
@@ -275,7 +275,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetCharacteristics(type, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false, offset, limit, null);
@@ -302,7 +302,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetCharacteristics(type, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, type, false, offset, limit, comparator);
@@ -326,7 +326,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetCharacteristics(types, offset, limit);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false, offset, limit, null);
@@ -353,7 +353,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetCharacteristics(types, offset, limit, comparator);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, types, false, offset, limit, comparator);
@@ -374,7 +374,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNameTypes(offset, limit);
 		}
 		Collection<Topic> types = read(IName.class, offset, limit, null);
@@ -398,7 +398,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNameTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IName.class, offset, limit, comparator);
@@ -422,7 +422,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetNames(type, offset, limit);
 		}
 		Collection<Name> results = read(IName.class, type, false, offset, limit, null);
@@ -449,7 +449,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetNames(type, offset, limit, comparator);
 		}
 		Collection<Name> results = read(IName.class, type, false, offset, limit, comparator);
@@ -473,7 +473,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetNames(types, offset, limit);
 		}
 		Collection<Name> results = read(IName.class, types, false, offset, limit, null);
@@ -500,7 +500,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetNames(types, offset, limit, comparator);
 		}
 		Collection<Name> results = read(IName.class, types, false, offset, limit, comparator);
@@ -521,7 +521,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrenceTypes(offset, limit);
 		}
 		Collection<Topic> types = read(IOccurrence.class, offset, limit, null);
@@ -545,7 +545,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrenceTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IOccurrence.class, offset, limit, comparator);
@@ -569,7 +569,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetOccurrences(type, offset, limit);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false, offset, limit, null);
@@ -596,7 +596,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetOccurrences(type, offset, limit, comparator);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, type, false, offset, limit, comparator);
@@ -620,7 +620,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetOccurrences(types, offset, limit);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false, offset, limit, null);
@@ -647,7 +647,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetOccurrences(types, offset, limit, comparator);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, types, false, offset, limit, comparator);
@@ -668,7 +668,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetRoleTypes(offset, limit);
 		}
 		Collection<Topic> types = read(IAssociationRole.class, offset, limit, null);
@@ -692,7 +692,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetRoleTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(IAssociationRole.class, offset, limit, comparator);
@@ -716,7 +716,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetRoles(type, offset, limit);
 		}
 		Collection<Role> results = read(IAssociationRole.class, type, false, offset, limit, null);
@@ -743,7 +743,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetRoles(type, offset, limit, comparator);
 		}
 		Collection<Role> results = read(IAssociationRole.class, type, false, offset, limit, comparator);
@@ -767,7 +767,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetRoles(types, offset, limit);
 		}
 		Collection<Role> results = read(IAssociationRole.class, types, false, offset, limit, null);
@@ -794,7 +794,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetRoles(types, offset, limit, comparator);
 		}
 		Collection<Role> results = read(IAssociationRole.class, types, false, offset, limit, comparator);
@@ -815,7 +815,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicTypes(offset, limit);
 		}
 		Collection<Topic> types = read(ITopic.class, offset, limit, null);
@@ -839,7 +839,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicTypes(offset, limit, comparator);
 		}
 		Collection<Topic> types = read(ITopic.class, offset, limit, comparator);
@@ -860,7 +860,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetTopics(type, offset, limit);
 		}
 		Collection<Topic> results = read(ITopic.class, type, false, offset, limit, null);
@@ -884,7 +884,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(type)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
 			return doGetTopics(type, offset, limit, comparator);
 		}
 		Collection<Topic> results = read(ITopic.class, type, false, offset, limit, comparator);
@@ -937,7 +937,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetTopics(types, all, offset, limit);
 		}
 		Collection<Topic> results = read(ITopic.class, types, all, offset, limit, null);
@@ -964,7 +964,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(types)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
 			return doGetTopics(types, all, offset, limit, comparator);
 		}
 		Collection<Topic> results = read(ITopic.class, types, all, offset, limit, comparator);

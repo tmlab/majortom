@@ -60,10 +60,10 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (topic == null || !getStore().getTopicMap().equals(topic.getParent())) {
+		if (topic == null || !getTopicMapStore().getTopicMap().equals(topic.getParent())) {
 			throw new IndexException("Topic is not part of this topic map!");
 		}
-		return getStore().getRevisionStore().getChangeset((ITopic) topic);
+		return getTopicMapStore().getRevisionStore().getChangeset((ITopic) topic);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getStore().getRevisionStore().getFirstRevision();
+		return getTopicMapStore().getRevisionStore().getFirstRevision();
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getStore().getRevisionStore().getLastModification();
+		return getTopicMapStore().getRevisionStore().getLastModification();
 	}
 
 	/**
@@ -93,10 +93,10 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (topic == null || !getStore().getTopicMap().equals(topic.getParent())) {
+		if (topic == null || !getTopicMapStore().getTopicMap().equals(topic.getParent())) {
 			throw new IndexException("Topic is not part of this topic map!");
 		}
-		return getStore().getRevisionStore().getLastModification((ITopic) topic);
+		return getTopicMapStore().getRevisionStore().getLastModification((ITopic) topic);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return getStore().getRevisionStore().getLastRevision();
+		return getTopicMapStore().getRevisionStore().getLastRevision();
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 			throw new IllegalArgumentException("Argument cannot be null!");
 		}
 		try {
-			return getStore().getRevisionStore().getRevision(timestamp);
+			return getTopicMapStore().getRevisionStore().getRevision(timestamp);
 		} catch (TopicMapStoreException e) {
 			throw new IndexException(e);
 		}
@@ -137,7 +137,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 			throw new IllegalArgumentException("Argument cannot be null!");
 		}
 		try {
-			return getStore().getRevisionStore().getRevision(tag);
+			return getTopicMapStore().getRevisionStore().getRevision(tag);
 		} catch (TopicMapStoreException e) {
 			throw new IndexException(e);
 		}
@@ -151,7 +151,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getStore().getRevisionStore().getRevision(id);
+			return getTopicMapStore().getRevisionStore().getRevision(id);
 		} catch (TopicMapStoreException e) {
 			throw new IndexException(e);
 		}
@@ -164,10 +164,10 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (topic == null || !getStore().getTopicMap().equals(topic.getParent())) {
+		if (topic == null || !getTopicMapStore().getTopicMap().equals(topic.getParent())) {
 			throw new IndexException("Topic is not part of this topic map!");
 		}
-		return getStore().getRevisionStore().getRevisions((ITopic) topic);
+		return getTopicMapStore().getRevisionStore().getRevisions((ITopic) topic);
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 	 */
 	public void toXml(File file) throws IndexException {
 		try {
-			Document doc = getStore().getRevisionStore().toXml();
+			Document doc = getTopicMapStore().getRevisionStore().toXml();
 
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			Result result = new StreamResult(file);
@@ -193,10 +193,10 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (associationType == null || !getStore().getTopicMap().equals(associationType.getParent())) {
+		if (associationType == null || !getTopicMapStore().getTopicMap().equals(associationType.getParent())) {
 			throw new IndexException("Topic is not part of this topic map!");
 		}
-		return getStore().getRevisionStore().getAssociationChangeset((ITopic) associationType);
+		return getTopicMapStore().getRevisionStore().getAssociationChangeset((ITopic) associationType);
 	}
 	
 	/**
@@ -206,9 +206,9 @@ public class InMemoryRevisionIndex extends IndexImpl<InMemoryTopicMapStore> impl
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if (associationType == null || !getStore().getTopicMap().equals(associationType.getParent())) {
+		if (associationType == null || !getTopicMapStore().getTopicMap().equals(associationType.getParent())) {
 			throw new IndexException("Topic is not part of this topic map!");
 		}
-		return getStore().getRevisionStore().getAssociationRevisions((ITopic) associationType);
+		return getTopicMapStore().getRevisionStore().getAssociationRevisions((ITopic) associationType);
 	}
 }

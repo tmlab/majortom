@@ -64,7 +64,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Construct> doGetConstructsByIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Construct> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getConstructsByIdentitifer(getStore().getTopicMap(), regExp.pattern(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getConstructsByIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -88,7 +88,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Construct> doGetConstructsByItemIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Construct> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getConstructsByItemIdentitifer(getStore().getTopicMap(), regExp.pattern(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getConstructsByItemIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -112,7 +112,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetItemIdentifiers(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getItemIdentifiers(getStore().getTopicMap(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getItemIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -136,7 +136,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetSubjectIdentifiers(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getSubjectIdentifiers(getStore().getTopicMap(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getSubjectIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -160,7 +160,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetSubjectLocators(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getSubjectLocators(getStore().getTopicMap(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getSubjectLocators(getTopicMapStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -184,7 +184,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Topic> doGetTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getTopicsBySubjectIdentitifer(getStore().getTopicMap(), regExp.pattern(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -208,7 +208,7 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Topic> doGetTopicsBySubjectLocator(Pattern regExp, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getTopicsBySubjectLocator(getStore().getTopicMap(), regExp.pattern(), offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectLocator(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

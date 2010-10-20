@@ -87,7 +87,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetAssociationsPlayed(topic, offset, limit);
 		}
 		List<Association> cache = readConstructs(Type.ASSOCIATION, topic, offset, limit);
@@ -114,7 +114,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetAssociationsPlayed(topic, offset, limit, comparator);
 		}
 		List<Association> cache = readConstructs(Type.ASSOCIATION, topic, offset, limit, comparator);
@@ -138,7 +138,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfAssociationsPlayed(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.ASSOCIATION, topic);
@@ -162,7 +162,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNames(topic, offset, limit);
 		}
 		List<Name> cache = readConstructs(Type.NAMES, topic, offset, limit);
@@ -189,7 +189,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNames(topic, offset, limit, comparator);
 		}
 		List<Name> cache = readConstructs(Type.NAMES, topic, offset, limit, comparator);
@@ -213,7 +213,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfNames(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.NAMES, topic);
@@ -237,7 +237,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetOccurrences(topic, offset, limit);
 		}
 		List<Occurrence> cache = readConstructs(Type.OCCURRENCES, topic, offset, limit);
@@ -264,7 +264,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetOccurrences(topic, offset, limit, comparator);
 		}
 		List<Occurrence> cache = readConstructs(Type.OCCURRENCES, topic, offset, limit, comparator);
@@ -288,7 +288,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfOccurrences(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.OCCURRENCES, topic);
@@ -312,7 +312,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetRoles(association, offset, limit);
 		}
 		List<Role> cache = readConstructs(Type.ROLES, association, offset, limit);
@@ -339,7 +339,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetRoles(association, offset, limit, comparator);
 		}
 		List<Role> cache = readConstructs(Type.ROLES, association, offset, limit, comparator);
@@ -363,7 +363,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(association)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(association)) {
 			return doGetNumberOfRoles(association);
 		}
 		Long noc = readNumberOfConstructs(Type.ROLES, association);
@@ -387,7 +387,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetRolesPlayed(topic, offset, limit);
 		}
 		List<Role> cache = readConstructs(Type.ROLES, topic, offset, limit);
@@ -414,7 +414,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetRolesPlayed(topic, offset, limit, comparator);
 		}
 		List<Role> cache = readConstructs(Type.ROLES, topic, offset, limit, comparator);
@@ -438,7 +438,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfRolesPlayed(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.ROLES, topic);
@@ -462,7 +462,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetSupertypes(topic, offset, limit);
 		}
 		List<Topic> cache = readConstructs(Type.SUPERTYPES, topic, offset, limit);
@@ -489,7 +489,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetSupertypes(topic, offset, limit, comparator);
 		}
 		List<Topic> cache = readConstructs(Type.SUPERTYPES, topic, offset, limit, comparator);
@@ -513,7 +513,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfSupertypes(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.SUPERTYPES, topic);
@@ -537,7 +537,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetTypes(topic, offset, limit);
 		}
 		List<Topic> cache = readConstructs(Type.TYPES, topic, offset, limit);
@@ -564,7 +564,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetTypes(topic, offset, limit, comparator);
 		}
 		List<Topic> cache = readConstructs(Type.TYPES, topic, offset, limit, comparator);
@@ -588,7 +588,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(topic)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(topic)) {
 			return doGetNumberOfTypes(topic);
 		}
 		Long noc = readNumberOfConstructs(Type.TYPES, topic);
@@ -612,7 +612,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetVariants(name, offset, limit);
 		}
 		List<Variant> cache = readConstructs(Type.VARIANTS, name, offset, limit);
@@ -639,7 +639,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetVariants(name, offset, limit, comparator);
 		}
 		List<Variant> cache = readConstructs(Type.VARIANTS, name, offset, limit, comparator);
@@ -663,7 +663,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		/*
 		 * is caching is disabled redirect to topic map store
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(name)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(name)) {
 			return doGetNumberOfVariants(name);
 		}
 		Long noc = readNumberOfConstructs(Type.VARIANTS, name);
@@ -986,7 +986,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -994,7 +994,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

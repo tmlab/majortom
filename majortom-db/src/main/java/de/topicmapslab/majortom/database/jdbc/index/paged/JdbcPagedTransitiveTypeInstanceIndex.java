@@ -57,7 +57,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetAssociationTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getAssociationTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getAssociationTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -81,7 +81,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Association> doGetAssociations(Collection<? extends Topic> types, int offset, int limit) {
 		try {
 			List<Association> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getAssociationsByTypeTransitive(getStore().getTopicMap(),types, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getAssociationsByTypeTransitive(getTopicMapStore().getTopicMap(),types, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -105,7 +105,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Association> doGetAssociations(Topic type, int offset, int limit) {
 		try {
 			List<Association> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getAssociationsByTypeTransitive((ITopic) type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getAssociationsByTypeTransitive((ITopic) type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -129,7 +129,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<ICharacteristics> doGetCharacteristics(Collection<? extends Topic> types, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getCharacteristicsByTypesTransitive(types, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getCharacteristicsByTypesTransitive(types, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -153,7 +153,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<ICharacteristics> doGetCharacteristics(Topic type, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getCharacteristicsByTypeTransitive((ITopic) type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getCharacteristicsByTypeTransitive((ITopic) type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -177,7 +177,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetCharacteristicTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getCharacteristicsTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getCharacteristicsTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -201,7 +201,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Name> doGetNames(Collection<? extends Topic> types, int offset, int limit) {
 		try {
 			List<Name> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getNamesByTypeTransitive(getStore().getTopicMap(),types, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getNamesByTypeTransitive(getTopicMapStore().getTopicMap(),types, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -225,7 +225,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Name> doGetNames(Topic type, int offset, int limit) {
 		try {
 			List<Name> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getNamesByTypeTransitive((ITopic) type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getNamesByTypeTransitive((ITopic) type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -249,7 +249,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetNameTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getNameTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getNameTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -273,7 +273,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Occurrence> doGetOccurrences(Collection<? extends Topic> types, int offset, int limit) {
 		try {
 			List<Occurrence> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive(getStore().getTopicMap(),types, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getOccurrencesByTypeTransitive(getTopicMapStore().getTopicMap(),types, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -297,7 +297,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Occurrence> doGetOccurrences(Topic type, int offset, int limit) {
 		try {
 			List<Occurrence> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getOccurrencesByTypeTransitive((ITopic) type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -332,7 +332,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetOccurrenceTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getOccurrenceTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getOccurrenceTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -356,7 +356,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Role> doGetRoles(Collection<? extends Topic> types, int offset, int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getRolesByTypeTransitive(getStore().getTopicMap(),types, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getRolesByTypeTransitive(getTopicMapStore().getTopicMap(),types, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -380,7 +380,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Role> doGetRoles(Topic type, int offset, int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getRolesByTypeTransitive((ITopic) type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getRolesByTypeTransitive((ITopic) type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -404,7 +404,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetRoleTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getRoleTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getRoleTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -428,7 +428,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetTopics(Collection<Topic> types, boolean all, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getTopicsByTypesTransitive(getStore().getTopicMap(),types, all, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getTopicsByTypesTransitive(getTopicMapStore().getTopicMap(),types, all, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -452,7 +452,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetTopics(Topic type, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getStore().getProcessor().getTopicsByTypeTransitive((ITopic)type, offset, limit));
+			list.addAll(getTopicMapStore().getProcessor().getTopicsByTypeTransitive((ITopic)type, offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -476,7 +476,7 @@ public class JdbcPagedTransitiveTypeInstanceIndex extends PagedTypeInstanceIndex
 	protected List<Topic> doGetTopicTypes(int offset, int limit) {
 		try {
 			List<Topic> types = HashUtil.getList();
-			types.addAll(getStore().getProcessor().getTopicTypes(getStore().getTopicMap(), offset, limit));
+			types.addAll(getTopicMapStore().getProcessor().getTopicTypes(getTopicMapStore().getTopicMap(), offset, limit));
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
