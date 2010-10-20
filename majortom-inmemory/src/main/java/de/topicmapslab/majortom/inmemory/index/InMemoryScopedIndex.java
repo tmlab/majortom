@@ -68,7 +68,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			set.add((ITopic) t);
 		}
 
-		return getStore().getScopeStore().getScope(set);
+		return getTopicMapStore().getScopeStore().getScope(set);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			set.add((ITopic) t);
 		}
 
-		return getStore().getScopeStore().getScope(set);
+		return getTopicMapStore().getScopeStore().getScope(set);
 	}
 
 	/**
@@ -109,9 +109,9 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		Set<IScope> scopes = HashUtil.getHashSet();
 		for (Topic t : themes) {
 			if (scopes.isEmpty() || !matchAll) {
-				scopes.addAll(getStore().getScopeStore().getScopes((ITopic) t));
+				scopes.addAll(getTopicMapStore().getScopeStore().getScopes((ITopic) t));
 			} else {
-				scopes.retainAll(getStore().getScopeStore().getScopes((ITopic) t));
+				scopes.retainAll(getTopicMapStore().getScopeStore().getScopes((ITopic) t));
 			}
 		}
 		return Collections.unmodifiableCollection(scopes);
@@ -130,9 +130,9 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		Set<IScope> scopes = HashUtil.getHashSet();
 		for (Topic t : themes) {
 			if (scopes.isEmpty() || !matchAll) {
-				scopes.addAll(getStore().getScopeStore().getScopes((ITopic) t));
+				scopes.addAll(getTopicMapStore().getScopeStore().getScopes((ITopic) t));
 			} else {
-				scopes.retainAll(getStore().getScopeStore().getScopes((ITopic) t));
+				scopes.retainAll(getTopicMapStore().getScopeStore().getScopes((ITopic) t));
 			}
 		}
 		return Collections.unmodifiableCollection(scopes);
@@ -149,7 +149,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<Scoped> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScoped(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScoped(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -165,7 +165,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Scoped> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScoped(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScoped(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -191,7 +191,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return Collections.unmodifiableCollection(getStore().getScopeStore().getAssociationScopes());
+		return Collections.unmodifiableCollection(getTopicMapStore().getScopeStore().getAssociationScopes());
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<Association> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScopedAssociations(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedAssociations(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -221,7 +221,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Association> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedAssociations(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedAssociations(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -238,7 +238,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Association> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedAssociations(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedAssociations(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -251,7 +251,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (theme == null) {
-			return Collections.unmodifiableCollection(getAssociations(getStore().getScopeStore().getEmptyScope()));
+			return Collections.unmodifiableCollection(getAssociations(getTopicMapStore().getScopeStore().getEmptyScope()));
 		}
 		return Collections.unmodifiableCollection(getAssociations(getScopes(theme)));
 	}
@@ -280,8 +280,8 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScopedNames(scope));
-		set.addAll(getStore().getScopeStore().getScopedOccurrences(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedNames(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedOccurrences(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -297,8 +297,8 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedNames(scope));
-			set.addAll(getStore().getScopeStore().getScopedOccurrences(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedNames(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedOccurrences(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -324,7 +324,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return Collections.unmodifiableCollection(getStore().getScopeStore().getNameScopes());
+		return Collections.unmodifiableCollection(getTopicMapStore().getScopeStore().getNameScopes());
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<Name> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScopedNames(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedNames(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -354,7 +354,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedNames(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedNames(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -371,7 +371,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedNames(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedNames(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -384,7 +384,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (theme == null) {
-			return Collections.unmodifiableCollection(getNames(getStore().getScopeStore().getEmptyScope()));
+			return Collections.unmodifiableCollection(getNames(getTopicMapStore().getScopeStore().getEmptyScope()));
 		}
 		return Collections.unmodifiableCollection(getNames(getScopes(theme)));
 	}
@@ -424,7 +424,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return Collections.unmodifiableCollection(getStore().getScopeStore().getOccurrenceScopes());
+		return Collections.unmodifiableCollection(getTopicMapStore().getScopeStore().getOccurrenceScopes());
 	}
 
 	/**
@@ -438,7 +438,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScopedOccurrences(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedOccurrences(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -454,7 +454,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedOccurrences(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedOccurrences(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -471,7 +471,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedOccurrences(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedOccurrences(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -484,7 +484,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (theme == null) {
-			return Collections.unmodifiableCollection(getOccurrences(getStore().getScopeStore().getEmptyScope()));
+			return Collections.unmodifiableCollection(getOccurrences(getTopicMapStore().getScopeStore().getEmptyScope()));
 		}
 		return Collections.unmodifiableCollection(getOccurrences(getScopes(theme)));
 	}
@@ -523,7 +523,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		return Collections.unmodifiableCollection(getStore().getScopeStore().getVariantScopes());
+		return Collections.unmodifiableCollection(getTopicMapStore().getScopeStore().getVariantScopes());
 	}
 
 	/**
@@ -537,7 +537,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 			throw new IllegalArgumentException("Scope cannot be null!");
 		}
 		Set<Variant> set = HashUtil.getHashSet();
-		set.addAll(getStore().getScopeStore().getScopedVariants(scope));
+		set.addAll(getTopicMapStore().getScopeStore().getScopedVariants(scope));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -553,7 +553,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Variant> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedVariants(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedVariants(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -570,7 +570,7 @@ public class InMemoryScopedIndex extends IndexImpl<InMemoryTopicMapStore> implem
 		}
 		Set<Variant> set = HashUtil.getHashSet();
 		for (IScope scope : scopes) {
-			set.addAll(getStore().getScopeStore().getScopedVariants(scope));
+			set.addAll(getTopicMapStore().getScopeStore().getScopedVariants(scope));
 		}
 		return Collections.unmodifiableCollection(set);
 	}

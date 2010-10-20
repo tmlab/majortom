@@ -68,14 +68,14 @@ public abstract class PagedIndexImpl<T extends ITopicMapStore, E extends Index> 
 		if (!parentIndex.isOpen()) {
 			parentIndex.open();
 		}
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void close() {
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

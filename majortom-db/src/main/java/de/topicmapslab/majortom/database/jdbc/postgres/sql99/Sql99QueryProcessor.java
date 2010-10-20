@@ -2192,7 +2192,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, topicMapId);
 		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
 		stmt.execute();
 	}
 
@@ -2207,7 +2206,6 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, topicMapId);
 		stmt.setLong(4, topicMapId);
 		stmt.setLong(5, topicMapId);
-		stmt.setLong(6, topicMapId);
 		stmt.execute();
 	}
 

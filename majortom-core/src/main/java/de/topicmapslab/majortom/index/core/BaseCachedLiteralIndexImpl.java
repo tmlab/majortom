@@ -378,7 +378,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -386,7 +386,7 @@ public abstract class BaseCachedLiteralIndexImpl<X extends ITopicMapStore> exten
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

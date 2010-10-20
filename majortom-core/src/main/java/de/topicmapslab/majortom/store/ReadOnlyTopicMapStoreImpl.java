@@ -26,7 +26,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.FeatureNotRecognizedException;
+import org.tmapi.core.Locator;
 
+import de.topicmapslab.majortom.cache.Cache;
 import de.topicmapslab.majortom.core.ConstructFactoryImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -54,6 +56,7 @@ import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreMetaData;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.util.FeatureStrings;
@@ -74,6 +77,16 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	private ITopicMap topicMap;
 	private IConstructFactory factory;
 	private ThreadPoolExecutor threadPool;
+	private ITopicMapStoreMetaData metaData;
+	private Cache cache;
+	/**
+	 * flag indicates if the caching is enabled or disabled
+	 */
+	private boolean enableCaching = true;
+	/**
+	 * the base locator of the topic map
+	 */
+	private ILocator baseLocator;
 
 	/**
 	 * feature {@link FeatureStrings#SUPPORT_HISTORY}
@@ -261,6 +274,25 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
+		/*
+		 * avoid caching of transaction constructs
+		 */
+		if (context != null && context.getTopicMap() instanceof ITransaction) {
+			return internalDoRead(context, paramType, params);
+		}
+		/*
+		 * check if caching is enabled
+		 */
+		if (isCachingEnabled()) {
+			return cache.doRead(context, paramType, params);
+		}
+		return internalDoRead(context, paramType, params);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object internalDoRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		switch (paramType) {
 		case ROLE_TYPES: {
 			if (context instanceof IAssociation) {
@@ -745,7 +777,9 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException;
+	public ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException {
+		return getBaseLocator();
+	}
 
 	/**
 	 * Read all names if the given topic.
@@ -1336,6 +1370,9 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	public void clear() {
+		if (cache != null ) {
+			cache.clear();
+		}
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Read-only store does not support deletion of construct!");
 		}
@@ -1510,6 +1547,21 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		}
 		this.threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(max);
 		this.factory = createConstructFactory();
+		this.metaData = createMetaDataInstance();
+		if (isCachingEnabled()) {
+			this.cache = new Cache(this);
+			this.cache.setTopicMapSystem(getTopicMapSystem());
+			this.cache.setTopicMap(getTopicMap());
+			this.cache.initialize(baseLocator);
+			this.cache.connect();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
+		this.baseLocator = (ILocator) topicMapBaseLocator;
 	}
 
 	/**
@@ -1531,6 +1583,10 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		((TopicMapSystemImpl) getTopicMapSystem()).removeTopicMap(((ITopicMap) topicMap).getLocator());
 		connected = false;
 		this.factory = null;
+		this.metaData = null;
+		if (cache != null) {
+			cache.close();
+		}
 	}
 
 	/**
@@ -1583,5 +1639,80 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public IConstructFactory getConstructFactory() {
 		return factory;
+	}
+
+	/**
+	 * Internal called method to create a new meta data instance
+	 * 
+	 * @return the generated meta data instance
+	 */
+	protected ITopicMapStoreMetaData createMetaDataInstance() {
+		return new TopicMapStoreMetaDataImpl();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITopicMapStoreMetaData getMetaData() {
+		return metaData;
+	}
+
+	/**
+	 * Returns the base locator of the topic map
+	 * 
+	 * @return the base locator
+	 */
+	public ILocator getBaseLocator() {
+		return baseLocator;
+	}
+
+	/**
+	 * Returning the cache
+	 * 
+	 * @return the cache
+	 */
+	public Cache getCache() {
+		return cache;
+	}
+
+	/**
+	 * Enable the caching mechanism of the database topic map store. If the
+	 * caching is enabled, the cache stores any read access and deliver the
+	 * values from cache instead calling the database. The cache will be updated
+	 * automatically. If the cache is disabled, it will be destroyed. Any cached
+	 * values are lost.
+	 * 
+	 * @param enable
+	 *            <code>true</code> to enable the cache, <code>false</code> to
+	 *            disable it
+	 */
+	public void enableCaching(boolean enable) {
+		/*
+		 * switch cache on if it does not still running
+		 */
+		if (enable && !isCachingEnabled()) {
+			cache = new Cache(this);
+			cache.connect();
+			cache.initialize(baseLocator);
+			enableCaching = true;
+		}
+		/*
+		 * disable caching if does still running
+		 */
+		else if (!enable && isCachingEnabled()) {
+			enableCaching = false;
+			cache.close();
+			cache = null;
+		}
+	}
+
+	/**
+	 * Method returns the internal state of caching.
+	 * 
+	 * @return <code>true</code> if caching is enabled, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isCachingEnabled() {
+		return enableCaching;
 	}
 }

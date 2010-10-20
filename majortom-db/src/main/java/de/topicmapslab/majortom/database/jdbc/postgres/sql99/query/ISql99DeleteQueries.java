@@ -30,7 +30,7 @@ public interface ISql99DeleteQueries {
 
 	public static final String QUERY_DELETE_ALL_ITEM_IDENTIFIERS = "DELETE FROM rel_item_identifiers WHERE id_construct IN ( SELECT id FROM constructs WHERE id_topicmap = ? OR id = ? );";
 	
-	public static final String QUERY_DELETE_HISTORY = "DELETE FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN ( SELECT id FROM constructs WHERE id_topicmap = ? ) OR id_notifier = ? );";
+	public static final String QUERY_DELETE_HISTORY = "DELETE FROM revisions WHERE id_topicmap = ? ;";
 	
 	public static final String QUERY_DELETE_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + QUERY_DELETE_HISTORY + "DELETE FROM topicmaps WHERE id = ?;";
 

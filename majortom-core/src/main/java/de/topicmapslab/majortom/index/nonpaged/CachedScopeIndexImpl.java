@@ -82,7 +82,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetScope(themes);
 		}
 		IScope scope = readScope(themes);
@@ -132,7 +132,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetScopes(themes, matchAll);
 		}
 		Collection<IScope> scopes = readScopes(IScopable.class, themes, matchAll);
@@ -153,7 +153,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetAssociationScopes();
 		}
 		Collection<IScope> scopes = readScopes(IAssociation.class);
@@ -174,7 +174,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetAssociationThemes();
 		}
 		Collection<Topic> themes = readThemes(IAssociation.class);
@@ -195,7 +195,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetAssociations(theme);
 		}
 		Collection<Association> associations = read(IAssociation.class, theme, false);
@@ -219,7 +219,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetAssociations(themes, all);
 		}
 		Collection<Association> associations = read(IAssociation.class, themes, all);
@@ -243,7 +243,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetAssociations(scope);
 		}
 		Collection<Association> associations = read(IAssociation.class, scope, false);
@@ -274,7 +274,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetAssociations(scopes);
 		}
 		Collection<Association> associations = read(IAssociation.class, scopes, false);
@@ -298,7 +298,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetCharacteristics(scope);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, scope, false);
@@ -323,7 +323,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetCharacteristics(col);
 		}
 		Collection<ICharacteristics> results = read(ICharacteristics.class, col, false);
@@ -344,7 +344,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNameScopes();
 		}
 		Collection<IScope> scopes = readScopes(IName.class);
@@ -365,7 +365,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNameThemes();
 		}
 		Collection<Topic> themes = readThemes(IName.class);
@@ -386,7 +386,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetNames(theme);
 		}
 		Collection<Name> results = read(IName.class, theme, false);
@@ -410,7 +410,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetNames(themes, all);
 		}
 		Collection<Name> results = read(IName.class, themes, all);
@@ -434,7 +434,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetNames(scope);
 		}
 		Collection<Name> results = read(IName.class, scope, false);
@@ -468,7 +468,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetNames(scopes);
 		}
 		Collection<Name> results = read(IName.class, scopes, false);
@@ -489,7 +489,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrenceScopes();
 		}
 		Collection<IScope> scopes = readScopes(IOccurrence.class);
@@ -510,7 +510,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrenceThemes();
 		}
 		Collection<Topic> themes = readThemes(IOccurrence.class);
@@ -531,7 +531,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetOccurrences(theme);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, theme, false);
@@ -555,7 +555,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetOccurrences(themes, all);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, themes, all);
@@ -579,7 +579,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetOccurrences(scope);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, scope, false);
@@ -613,7 +613,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetOccurrences(scopes);
 		}
 		Collection<Occurrence> results = read(IOccurrence.class, scopes, false);
@@ -637,7 +637,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetScopables(scope);
 		}
 		Collection<Scoped> results = read(IScopable.class, scope, false);
@@ -662,7 +662,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetScopables(col);
 		}
 		Collection<Scoped> results = read(IScopable.class, col, false);
@@ -683,7 +683,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariantScopes();
 		}
 		Collection<IScope> scopes = readScopes(IVariant.class);
@@ -704,7 +704,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariantThemes();
 		}
 		Collection<Topic> themes = readThemes(IVariant.class);
@@ -728,7 +728,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
 			return doGetVariants(theme);
 		}
 		Collection<Variant> results = read(IVariant.class, theme, false);
@@ -752,7 +752,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
 			return doGetVariants(themes, all);
 		}
 		Collection<Variant> results = read(IVariant.class, themes, all);
@@ -776,7 +776,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
 			return doGetVariants(scope);
 		}
 		Collection<Variant> results = read(IVariant.class, scope, false);
@@ -810,7 +810,7 @@ public abstract class CachedScopeIndexImpl<T extends ITopicMapStore> extends Bas
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
 			return doGetVariants(scopes);
 		}
 		Collection<Variant> results = read(IVariant.class, scopes, false);

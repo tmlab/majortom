@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import java.util.Map;
 
@@ -68,7 +68,7 @@ public class AssociationCache implements ITopicMapListener {
 		 * does cache contains any value and a role was removed
 		 */
 		if (event == TopicMapEventType.ROLE_REMOVED && players != null) {
-			players.remove((IAssociationRole) oldValue);
+			players.remove(oldValue);
 		}
 		/*
 		 * player of a role was modified

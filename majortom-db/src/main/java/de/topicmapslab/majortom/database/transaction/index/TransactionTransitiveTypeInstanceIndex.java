@@ -60,7 +60,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Association> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getAssociations(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getAssociations(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getAssociations(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -78,7 +78,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Association> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getAssociations(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getAssociations(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getAssociations(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -95,7 +95,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			throw new IllegalArgumentException("Type cannot be null!");
 		}
 		Set<Association> set = HashUtil.getHashSet();
-		set.addAll(super.getAssociations(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+		set.addAll(super.getAssociations(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 		set.addAll(super.getAssociations(type));
 		return Collections.unmodifiableCollection(set);
 	}
@@ -111,7 +111,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			throw new IllegalArgumentException("Type cannot be null!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		set.addAll(super.getCharacteristics(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+		set.addAll(super.getCharacteristics(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 		set.addAll(super.getCharacteristics(type));
 		return Collections.unmodifiableCollection(set);
 	}
@@ -128,7 +128,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getCharacteristics(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getCharacteristics(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getCharacteristics(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -146,7 +146,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getCharacteristics(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getCharacteristics(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getCharacteristics(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -164,7 +164,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Role> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getRoles(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getRoles(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getRoles(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -181,7 +181,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			throw new IllegalArgumentException("Type cannot be null!");
 		}
 		Set<Role> set = HashUtil.getHashSet();
-		set.addAll(super.getRoles(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+		set.addAll(super.getRoles(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 		set.addAll(super.getRoles(type));
 		return Collections.unmodifiableCollection(set);
 	}
@@ -198,7 +198,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Role> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getRoles(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getRoles(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getRoles(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -215,7 +215,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			throw new IllegalArgumentException("Type cannot be null!");
 		}
 		Set<Name> set = HashUtil.getHashSet();
-		set.addAll(super.getNames(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+		set.addAll(super.getNames(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 		set.addAll(super.getNames(type));
 		return Collections.unmodifiableCollection(set);
 	}
@@ -232,7 +232,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getNames(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getNames(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getNames(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -250,7 +250,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getNames(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getNames(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getNames(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -267,7 +267,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			throw new IllegalArgumentException("Type cannot be null!");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		set.addAll(super.getOccurrences(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+		set.addAll(super.getOccurrences(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 		set.addAll(super.getOccurrences(type));
 		return Collections.unmodifiableCollection(set);
 	}
@@ -284,7 +284,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getOccurrences(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getOccurrences(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getOccurrences(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -302,7 +302,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(super.getOccurrences(getStore().getTopicTypeStore().getSubtypes((ITopic) type)));
+			set.addAll(super.getOccurrences(getTopicMapStore().getTopicTypeStore().getSubtypes((ITopic) type)));
 			set.addAll(super.getOccurrences(type));
 		}
 		return Collections.unmodifiableCollection(set);
@@ -320,7 +320,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getInstances((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getInstances((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -337,7 +337,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getInstances((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getInstances((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -374,7 +374,7 @@ public class TransactionTransitiveTypeInstanceIndex extends TransactionTypeInsta
 			return super.getTopics(type);
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTopicTypeStore().getInstances((ITopic) type));
+		set.addAll(getTopicMapStore().getTopicTypeStore().getInstances((ITopic) type));
 		return Collections.unmodifiableCollection(set);
 	}
 

@@ -71,13 +71,14 @@ public class TestTopicMapImpl extends AbstractTest {
 		try{
 			map.remove(false);
 			fail("No exception thrown");
-		}catch (Exception e) {
+		}catch (Exception e) { 
 			assertTrue(e instanceof UnmodifyableStoreException);
 		}
 		
 		
 	}
 
+	
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)}.
 	 */

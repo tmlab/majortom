@@ -425,11 +425,11 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 		otherOccurrence.setValue(other);
 		double distance = coordinate.getDistance(other);
 		
-		
+
+		System.out.println(distance);
 		assertEquals(2, index.getCoordinates(other, distance+1).size());
 		assertTrue(index.getCoordinates(other, distance+1).contains(occurrence));
 		assertTrue(index.getCoordinates(other, distance+1).contains(otherOccurrence));
-		System.out.println(distance);
 //		System.out.println(coordinate.print());
 //		System.out.println(other.print());
 	}

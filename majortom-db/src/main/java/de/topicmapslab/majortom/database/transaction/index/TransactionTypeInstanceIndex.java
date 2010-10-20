@@ -60,7 +60,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getAssociationTypes());
+		set.addAll(getTopicMapStore().getTypedStore().getAssociationTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -83,7 +83,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Association> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedAssociations((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedAssociations((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -96,7 +96,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Association> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getTypedAssociations((ITopic) arg0));
+		set.addAll(getTopicMapStore().getTypedStore().getTypedAssociations((ITopic) arg0));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -108,7 +108,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getCharacteristicTypes());
+		set.addAll(getTopicMapStore().getTypedStore().getCharacteristicTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -120,7 +120,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getTypedCharacteristics((ITopic) type));
+		set.addAll(getTopicMapStore().getTypedStore().getTypedCharacteristics((ITopic) type));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -133,7 +133,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedCharacteristics((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedCharacteristics((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -147,7 +147,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedCharacteristics((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedCharacteristics((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -160,7 +160,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getRoleTypes());
+		set.addAll(getTopicMapStore().getTypedStore().getRoleTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -173,7 +173,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Role> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedRoles((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedRoles((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -186,7 +186,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Role> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getTypedRoles((ITopic) type));
+		set.addAll(getTopicMapStore().getTypedStore().getTypedRoles((ITopic) type));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -199,7 +199,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Role> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedRoles((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedRoles((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -212,7 +212,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getNameTypes());
+		set.addAll(getTopicMapStore().getTypedStore().getNameTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -224,7 +224,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Name> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getTypedNames((ITopic) type));
+		set.addAll(getTopicMapStore().getTypedStore().getTypedNames((ITopic) type));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -237,7 +237,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedNames((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedNames((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -251,7 +251,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Name> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedNames((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedNames((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -264,7 +264,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getOccurrenceTypes());
+		set.addAll(getTopicMapStore().getTypedStore().getOccurrenceTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -276,7 +276,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTypedStore().getTypedOccurrences((ITopic) type));
+		set.addAll(getTopicMapStore().getTypedStore().getTypedOccurrences((ITopic) type));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -289,7 +289,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedOccurrences((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedOccurrences((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -303,7 +303,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTypedStore().getTypedOccurrences((ITopic) type));
+			set.addAll(getTopicMapStore().getTypedStore().getTypedOccurrences((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -316,7 +316,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<Topic> set = HashUtil.getHashSet();
-		set.addAll(getStore().getTopicTypeStore().getTypes());
+		set.addAll(getTopicMapStore().getTopicTypeStore().getTypes());
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -329,7 +329,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -343,7 +343,7 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
-			set.addAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -358,9 +358,9 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
 			if (set.isEmpty() || !all) {
-				set.addAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+				set.addAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 			} else {
-				set.retainAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+				set.retainAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 			}
 		}
 		return Collections.unmodifiableCollection(set);
@@ -375,10 +375,10 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		}
 		Set<Topic> set = HashUtil.getHashSet();
 		if (type == null) {
-			set.addAll(getStore().getIdentityStore().getTopics());
-			set.removeAll(getStore().getTopicTypeStore().getInstances());
+			set.addAll(getTopicMapStore().getIdentityStore().getTopics());
+			set.removeAll(getTopicMapStore().getTopicTypeStore().getInstances());
 		} else {
-			set.addAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+			set.addAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 		}
 		return Collections.unmodifiableCollection(set);
 	}
@@ -393,9 +393,9 @@ public class TransactionTypeInstanceIndex extends IndexImpl<TransactionTopicMapS
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic type : types) {
 			if (set.isEmpty() || !all) {
-				set.addAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+				set.addAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 			} else {
-				set.retainAll(getStore().getTopicTypeStore().getDirectInstances((ITopic) type));
+				set.retainAll(getTopicMapStore().getTopicTypeStore().getDirectInstances((ITopic) type));
 			}
 		}
 		return Collections.unmodifiableCollection(set);

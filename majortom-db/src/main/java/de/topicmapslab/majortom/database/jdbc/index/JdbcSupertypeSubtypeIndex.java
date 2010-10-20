@@ -58,8 +58,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getDirectSubtypes(
-					getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getDirectSubtypes(
+					getTopicMapStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -75,8 +75,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getDirectSupertypes(
-					getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getDirectSupertypes(
+					getTopicMapStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -92,8 +92,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(
-					getStore().getTopicMap(), -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -109,8 +109,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(
-					getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(
+					getTopicMapStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -156,8 +156,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSubtypes(
-					getStore().getTopicMap(), types, all, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(
+					getTopicMapStore().getTopicMap(), types, all, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -173,8 +173,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(
-					getStore().getTopicMap(), -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -189,14 +189,14 @@ public class JdbcSupertypeSubtypeIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (type != null
-				&& !type.getTopicMap().equals(getStore().getTopicMap())) {
+				&& !type.getTopicMap().equals(getTopicMapStore().getTopicMap())) {
 			throw new IllegalArgumentException(
 					"Topic has to be a part of this topic map.");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(
-					getStore().getTopicMap(), (ITopic) type, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(
+					getTopicMapStore().getTopicMap(), (ITopic) type, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -242,8 +242,8 @@ public class JdbcSupertypeSubtypeIndex extends
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getStore().getProcessor().getSupertypes(
-					getStore().getTopicMap(), types, all, -1, -1));
+			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(
+					getTopicMapStore().getTopicMap(), types, all, -1, -1));
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

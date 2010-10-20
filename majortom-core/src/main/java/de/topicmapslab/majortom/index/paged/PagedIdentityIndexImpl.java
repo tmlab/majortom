@@ -104,7 +104,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetConstructsByIdentifier(regExp, offset, limit);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.IDENTIFIER, regExp, offset, limit, null);
@@ -131,7 +131,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetConstructsByIdentifier(regExp, offset, limit, comparator);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.IDENTIFIER, regExp, offset, limit, comparator);
@@ -184,7 +184,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetConstructsByItemIdentifier(regExp, offset, limit);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, regExp, offset, limit, null);
@@ -211,7 +211,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetConstructsByItemIdentifier(regExp, offset, limit, comparator);
 		}
 		Collection<Construct> constructs = read(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, regExp, offset, limit, comparator);
@@ -232,7 +232,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetItemIdentifiers(offset, limit);
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, offset, limit, null);
@@ -253,7 +253,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetItemIdentifiers(offset, limit, comparator);
 		}
 		if ( comparator == null ){
@@ -277,7 +277,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubjectIdentifiers(offset, limit);
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, offset, limit, null);
@@ -301,7 +301,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubjectIdentifiers(offset, limit, comparator);
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, offset, limit, comparator);
@@ -322,7 +322,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubjectLocators(offset, limit);
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, offset, limit, null);
@@ -346,7 +346,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetSubjectLocators(offset, limit, comparator);
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, offset, limit, comparator);
@@ -399,7 +399,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicsBySubjectIdentifier(regExp, offset, limit);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, regExp, offset, limit, null);
@@ -426,7 +426,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicsBySubjectIdentifier(regExp, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, regExp, offset, limit, comparator);
@@ -479,7 +479,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicsBySubjectLocator(regExp, offset, limit);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, regExp, offset, limit, null);
@@ -506,7 +506,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetTopicsBySubjectLocator(regExp, offset, limit, comparator);
 		}
 		Collection<Topic> topics = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, regExp, offset, limit, comparator);

@@ -393,7 +393,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -401,7 +401,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

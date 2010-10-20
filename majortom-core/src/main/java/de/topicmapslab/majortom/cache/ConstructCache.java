@@ -1,4 +1,4 @@
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import java.util.Collections;
 import java.util.Map;
@@ -57,12 +57,9 @@ public class ConstructCache implements ITopicMapListener {
 		public boolean equals(Object obj) {
 			if (obj instanceof CacheKey) {
 				CacheKey other = (CacheKey) obj;
-				boolean result = (parent == null) ? other.parent == null
-						: parent.equals(other.parent);
-				result &= (type == null) ? other.type == null : type
-						.equals(other.type);
-				result &= (scope == null) ? other.scope == null : scope
-						.equals(other.scope);
+				boolean result = (parent == null) ? other.parent == null : parent.equals(other.parent);
+				result &= (type == null) ? other.type == null : type.equals(other.type);
+				result &= (scope == null) ? other.scope == null : scope.equals(other.scope);
 				return result;
 			}
 			return false;
@@ -106,8 +103,7 @@ public class ConstructCache implements ITopicMapListener {
 	 *            the scope of stored values
 	 * @return the generated cache key
 	 */
-	private CacheKey generateCacheKey(IConstruct context, ITopic type,
-			IScope scope) {
+	private CacheKey generateCacheKey(IConstruct context, ITopic type, IScope scope) {
 		CacheKey key = new CacheKey(context, type, scope);
 		if (relevantCacheKeys == null) {
 			relevantCacheKeys = HashUtil.getHashMap();
@@ -170,8 +166,7 @@ public class ConstructCache implements ITopicMapListener {
 	 * @return a set of constructs or <code>null</code> if the given map is null
 	 *         or does not contain the given key
 	 */
-	private <T extends IConstruct> Set<T> getConstructs(IConstruct parent,
-			ITopic type, IScope scope, Map<CacheKey, Set<T>> map) {
+	private <T extends IConstruct> Set<T> getConstructs(IConstruct parent, ITopic type, IScope scope, Map<CacheKey, Set<T>> map) {
 		if (map == null) {
 			return null;
 		}
@@ -206,8 +201,7 @@ public class ConstructCache implements ITopicMapListener {
 	 *            the scope or <code>null</code>
 	 * @return all cached occurrences
 	 */
-	public Set<IOccurrence> getOccurrences(ITopic parent, ITopic type,
-			IScope scope) {
+	public Set<IOccurrence> getOccurrences(ITopic parent, ITopic type, IScope scope) {
 		return getConstructs(parent, type, scope, occurrences);
 	}
 
@@ -237,8 +231,7 @@ public class ConstructCache implements ITopicMapListener {
 	 *            the scope or <code>null</code>
 	 * @return all cached associations
 	 */
-	public Set<IAssociation> getAssociation(IConstruct context, ITopic type,
-			IScope scope) {
+	public Set<IAssociation> getAssociation(IConstruct context, ITopic type, IScope scope) {
 		return getConstructs(context, type, scope, associations);
 	}
 
@@ -279,8 +272,7 @@ public class ConstructCache implements ITopicMapListener {
 	 * @param set
 	 *            the values to cache
 	 */
-	public void cacheNames(ITopic parent, ITopic type, IScope scope,
-			Set<IName> set) {
+	public void cacheNames(ITopic parent, ITopic type, IScope scope, Set<IName> set) {
 		if (names == null) {
 			names = HashUtil.getHashMap();
 		}
@@ -301,8 +293,7 @@ public class ConstructCache implements ITopicMapListener {
 	 * @param set
 	 *            the values to cache
 	 */
-	public void cacheOccurrences(ITopic parent, ITopic type, IScope scope,
-			Set<IOccurrence> set) {
+	public void cacheOccurrences(ITopic parent, ITopic type, IScope scope, Set<IOccurrence> set) {
 		if (occurrences == null) {
 			occurrences = HashUtil.getHashMap();
 		}
@@ -340,8 +331,7 @@ public class ConstructCache implements ITopicMapListener {
 	 * @param set
 	 *            the values to cache
 	 */
-	public void cacheAssociation(IConstruct context, ITopic type, IScope scope,
-			Set<IAssociation> set) {
+	public void cacheAssociation(IConstruct context, ITopic type, IScope scope, Set<IAssociation> set) {
 		if (associations == null) {
 			associations = HashUtil.getHashMap();
 		}
@@ -358,8 +348,7 @@ public class ConstructCache implements ITopicMapListener {
 	 * @param set
 	 *            the values to cache
 	 */
-	public void cacheRoles(IConstruct context, ITopic type,
-			Set<IAssociationRole> set) {
+	public void cacheRoles(IConstruct context, ITopic type, Set<IAssociationRole> set) {
 		if (roles == null) {
 			roles = HashUtil.getHashMap();
 		}
@@ -537,13 +526,11 @@ public class ConstructCache implements ITopicMapListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void topicMapChanged(String id, TopicMapEventType event,
-			Construct notifier, Object newValue, Object oldValue) {
+	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 		/*
 		 * a name was removed or created
 		 */
-		if (names != null
-				&& (event == TopicMapEventType.NAME_REMOVED || event == TopicMapEventType.NAME_ADDED)) {
+		if (names != null && (event == TopicMapEventType.NAME_REMOVED || event == TopicMapEventType.NAME_ADDED)) {
 			/*
 			 * delete direct names of parent
 			 */
@@ -560,8 +547,7 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * an occurrence was removed or created
 		 */
-		else if (occurrences != null
-				&& (event == TopicMapEventType.OCCURRENCE_ADDED || event == TopicMapEventType.OCCURRENCE_REMOVED)) {
+		else if (occurrences != null && (event == TopicMapEventType.OCCURRENCE_ADDED || event == TopicMapEventType.OCCURRENCE_REMOVED)) {
 			/*
 			 * delete direct occurrences of parent
 			 */
@@ -578,8 +564,7 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * a variant was removed or created
 		 */
-		else if (variants != null
-				&& (event == TopicMapEventType.VARIANT_ADDED || event == TopicMapEventType.VARIANT_REMOVED)) {
+		else if (variants != null && (event == TopicMapEventType.VARIANT_ADDED || event == TopicMapEventType.VARIANT_REMOVED)) {
 			/*
 			 * delete direct occurrences of parent
 			 */
@@ -596,15 +581,13 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * an association was removed or created
 		 */
-		else if (associations != null
-				&& (event == TopicMapEventType.ASSOCIATION_ADDED || event == TopicMapEventType.ASSOCIATION_REMOVED)) {
+		else if (associations != null && (event == TopicMapEventType.ASSOCIATION_ADDED || event == TopicMapEventType.ASSOCIATION_REMOVED)) {
 			associations.clear();
 		}
 		/*
 		 * a role was removed or created
 		 */
-		else if (roles != null
-				&& (event == TopicMapEventType.ROLE_ADDED || event == TopicMapEventType.ROLE_REMOVED)) {
+		else if (roles != null && (event == TopicMapEventType.ROLE_ADDED || event == TopicMapEventType.ROLE_REMOVED)) {
 			roles.clear();
 		}
 		/*
@@ -658,10 +641,8 @@ public class ConstructCache implements ITopicMapListener {
 		/*
 		 * a type was added or removed
 		 */
-		else if (topics != null
-				&& (event == TopicMapEventType.TYPE_REMOVED || event == TopicMapEventType.TYPE_ADDED)) {
-			Object ref = event == TopicMapEventType.TYPE_REMOVED ? oldValue
-					: newValue;
+		else if (topics != null && (event == TopicMapEventType.TYPE_REMOVED || event == TopicMapEventType.TYPE_ADDED)) {
+			Object ref = event == TopicMapEventType.TYPE_REMOVED ? oldValue : newValue;
 			// remove all type filtered topic instances
 			for (CacheKey key : getRelevantCacheKeys(ref)) {
 				topics.remove(key);
@@ -704,34 +685,28 @@ public class ConstructCache implements ITopicMapListener {
 		 * call sub caches
 		 */
 		if (topicTypeCache != null) {
-			topicTypeCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			topicTypeCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (typedCache != null) {
 			typedCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (characteristicsCache != null) {
-			characteristicsCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			characteristicsCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (identityCache != null) {
-			identityCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			identityCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (reificationCache != null) {
-			reificationCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			reificationCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (scopeCache != null) {
 			scopeCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (associationCache != null) {
-			associationCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			associationCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 		if (revisionCache != null) {
-			revisionCache.topicMapChanged(id, event, notifier, newValue,
-					oldValue);
+			revisionCache.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 	}
 }

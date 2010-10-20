@@ -95,7 +95,7 @@ public abstract class IndexImpl<T extends ITopicMapStore> implements Index {
 	 * 
 	 * @return the store
 	 */
-	protected T getStore() {
+	protected T getTopicMapStore() {
 		return store;
 	}
 

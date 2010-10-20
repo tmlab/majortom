@@ -62,7 +62,7 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationsByType(
+			col.addAll(getTopicMapStore().getProcessor().getAssociationsByType(
 					(ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
@@ -162,7 +162,7 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNamesByType((ITopic) type,
+			col.addAll(getTopicMapStore().getProcessor().getNamesByType((ITopic) type,
 					-1, -1));
 			return col;
 		} catch (SQLException e) {
@@ -204,7 +204,7 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrencesByType(
+			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByType(
 					(ITopic) type, -1, -1));
 			return col;
 		} catch (SQLException e) {
@@ -247,7 +247,7 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRolesByType((ITopic) type,
+			col.addAll(getTopicMapStore().getProcessor().getRolesByType((ITopic) type,
 					-1, -1));
 			return col;
 		} catch (SQLException e) {
@@ -288,8 +288,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByType(
-					getStore().getTopicMap(), type, -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getTopicsByType(
+					getTopicMapStore().getTopicMap(), type, -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -335,7 +335,7 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicsByTypes(types, all,
+			col.addAll(getTopicMapStore().getProcessor().getTopicsByTypes(types, all,
 					-1, -1));
 			return col;
 		} catch (SQLException e) {
@@ -352,8 +352,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getAssociationTypes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getAssociationTypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -369,8 +369,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getNameTypes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getNameTypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -386,8 +386,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getOccurrenceTypes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getOccurrenceTypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -403,8 +403,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getRoleTypes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getRoleTypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -420,8 +420,8 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getStore().getProcessor().getTopicTypes(
-					getStore().getTopicMap(), -1, -1));
+			col.addAll(getTopicMapStore().getProcessor().getTopicTypes(
+					getTopicMapStore().getTopicMap(), -1, -1));
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

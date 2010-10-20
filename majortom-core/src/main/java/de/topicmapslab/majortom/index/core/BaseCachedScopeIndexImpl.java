@@ -671,7 +671,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -679,7 +679,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

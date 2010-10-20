@@ -1,4 +1,4 @@
-package de.topicmapslab.majortom.database.cache;
+package de.topicmapslab.majortom.cache;
 
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -59,8 +59,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(t, null, null);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(t);
@@ -75,8 +74,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(t, type, null);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(t, type);
@@ -91,8 +89,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(t, null, scope);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(t, scope);
@@ -107,8 +104,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type,
-			IScope scope) throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(t, type, scope);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(t, type, scope);
@@ -123,8 +119,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopicMap tm) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(tm, null, null);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(tm);
@@ -139,8 +134,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(tm, type, null);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(tm, type);
@@ -155,8 +149,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(tm, null, scope);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(tm, scope);
@@ -171,8 +164,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type,
-			IScope scope) throws TopicMapStoreException {
+	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws TopicMapStoreException {
 		Set<IAssociation> associations = cache.getAssociation(tm, type, scope);
 		if (associations == null) {
 			associations = getParentStore().doReadAssociation(tm, type, scope);
@@ -187,8 +179,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t)
-			throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws TopicMapStoreException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t));
 		set.addAll(doReadOccurrences(t));
@@ -201,8 +192,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type)
-			throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws TopicMapStoreException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type));
 		set.addAll(doReadOccurrences(t, type));
@@ -215,8 +205,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope)
-			throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws TopicMapStoreException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, scope));
 		set.addAll(doReadOccurrences(t, scope));
@@ -229,8 +218,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type,
-			IScope scope) throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(doReadNames(t, type, scope));
 		set.addAll(doReadOccurrences(t, type, scope));
@@ -243,8 +231,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConstruct doReadConstruct(ITopicMap t, String id)
-			throws TopicMapStoreException {
+	public IConstruct doReadConstruct(ITopicMap t, String id) throws TopicMapStoreException {
 		IConstruct c = cache.getIdentityCache().byId(id);
 		if (c == null) {
 			c = getParentStore().doReadConstruct(t, id);
@@ -258,10 +245,8 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier)
-			throws TopicMapStoreException {
-		IConstruct c = cache.getIdentityCache()
-				.byItemIdentifier(itemIdentifier);
+	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws TopicMapStoreException {
+		IConstruct c = cache.getIdentityCache().byItemIdentifier(itemIdentifier);
 		if (c == null) {
 			c = getParentStore().doReadConstruct(t, itemIdentifier);
 			if (c != null) {
@@ -274,8 +259,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ILocator doReadDataType(IDatatypeAware c)
-			throws TopicMapStoreException {
+	public ILocator doReadDataType(IDatatypeAware c) throws TopicMapStoreException {
 		ILocator locator = cache.getCharacteristicsCache().getDatatype(c);
 		if (locator == null) {
 			locator = getParentStore().doReadDataType(c);
@@ -295,15 +279,13 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 			ITopicMapStoreIdentity identity = ((ConstructImpl) c).getIdentity();
 			return identity.getId();
 		}
-		throw new TopicMapStoreException(
-				"IConstruct created by external instance.");
+		throw new TopicMapStoreException("IConstruct created by external instance.");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadItemIdentifiers(IConstruct c)
-			throws TopicMapStoreException {
+	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws TopicMapStoreException {
 		Set<ILocator> set = cache.getIdentityCache().getItemIdentifiers(c);
 		if (set == null) {
 			set = getParentStore().doReadItemIdentifiers(c);
@@ -340,8 +322,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, ITopic type)
-			throws TopicMapStoreException {
+	public Set<IName> doReadNames(ITopic t, ITopic type) throws TopicMapStoreException {
 		Set<IName> names = cache.getNames(t, type, null);
 		if (names == null) {
 			names = getParentStore().doReadNames(t, type);
@@ -356,8 +337,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IName> doReadNames(ITopic t, IScope scope) throws TopicMapStoreException {
 		Set<IName> names = cache.getNames(t, null, scope);
 		if (names == null) {
 			names = getParentStore().doReadNames(t, scope);
@@ -372,8 +352,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
 		Set<IName> names = cache.getNames(t, type, scope);
 		if (names == null) {
 			names = getParentStore().doReadNames(t, type, scope);
@@ -388,8 +367,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t)
-			throws TopicMapStoreException {
+	public Set<IOccurrence> doReadOccurrences(ITopic t) throws TopicMapStoreException {
 		Set<IOccurrence> occurrences = cache.getOccurrences(t, null, null);
 		if (occurrences == null) {
 			occurrences = getParentStore().doReadOccurrences(t);
@@ -404,8 +382,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type)
-			throws TopicMapStoreException {
+	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws TopicMapStoreException {
 
 		Set<IOccurrence> occurrences = cache.getOccurrences(t, type, null);
 		if (occurrences == null) {
@@ -421,8 +398,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws TopicMapStoreException {
 		Set<IOccurrence> occurrences = cache.getOccurrences(t, null, scope);
 		if (occurrences == null) {
 			occurrences = getParentStore().doReadOccurrences(t, scope);
@@ -437,8 +413,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type,
-			IScope scope) throws TopicMapStoreException {
+	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
 		Set<IOccurrence> occurrences = cache.getOccurrences(t, type, scope);
 		if (occurrences == null) {
 			occurrences = getParentStore().doReadOccurrences(t, type, scope);
@@ -453,8 +428,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic doReadPlayer(IAssociationRole role)
-			throws TopicMapStoreException {
+	public ITopic doReadPlayer(IAssociationRole role) throws TopicMapStoreException {
 		ITopic player = cache.getAssociationCache().getPlayer(role);
 		if (player == null) {
 			player = getParentStore().doReadPlayer(role);
@@ -494,8 +468,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadRoleTypes(IAssociation association)
-			throws TopicMapStoreException {
+	public Set<ITopic> doReadRoleTypes(IAssociation association) throws TopicMapStoreException {
 		Set<ITopic> set = HashUtil.getHashSet();
 		/*
 		 * iterate over all roles
@@ -515,8 +488,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(IAssociation association)
-			throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(IAssociation association) throws TopicMapStoreException {
 		Set<IAssociationRole> roles = cache.getRoles(association, null);
 		if (roles == null) {
 			roles = getParentStore().doReadRoles(association);
@@ -531,8 +503,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(IAssociation association,
-			ITopic type) throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws TopicMapStoreException {
 		Set<IAssociationRole> roles = cache.getRoles(association, type);
 		if (roles == null) {
 			roles = getParentStore().doReadRoles(association, type);
@@ -547,8 +518,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player)
-			throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(ITopic player) throws TopicMapStoreException {
 		Set<IAssociationRole> roles = cache.getRoles(player, null);
 		if (roles == null) {
 			roles = getParentStore().doReadRoles(player);
@@ -563,8 +533,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type)
-			throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws TopicMapStoreException {
 		Set<IAssociationRole> roles = cache.getRoles(player, type);
 		if (roles == null) {
 			roles = getParentStore().doReadRoles(player, type);
@@ -579,8 +548,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type,
-			ITopic assocType) throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws TopicMapStoreException {
 		/*
 		 * create result set
 		 */
@@ -614,8 +582,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadSubjectIdentifiers(ITopic t)
-			throws TopicMapStoreException {
+	public Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws TopicMapStoreException {
 		Set<ILocator> set = cache.getIdentityCache().getSubjectIdentifiers(t);
 		if (set == null) {
 			set = getParentStore().doReadSubjectIdentifiers(t);
@@ -630,8 +597,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ILocator> doReadSubjectLocators(ITopic t)
-			throws TopicMapStoreException {
+	public Set<ILocator> doReadSubjectLocators(ITopic t) throws TopicMapStoreException {
 		Set<ILocator> set = cache.getIdentityCache().getSubjectLocators(t);
 		if (set == null) {
 			set = getParentStore().doReadSubjectLocators(t);
@@ -646,8 +612,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadSuptertypes(ITopic t)
-			throws TopicMapStoreException {
+	public Set<ITopic> doReadSuptertypes(ITopic t) throws TopicMapStoreException {
 		Set<ITopic> set = cache.getTopicTypeCache().getDirectSupertypes(t);
 		if (set == null) {
 			set = HashUtil.getHashSet(getParentStore().doReadSuptertypes(t));
@@ -662,16 +627,12 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic doReadTopicBySubjectIdentifier(ITopicMap tm,
-			ILocator subjectIdentifier) throws TopicMapStoreException {
-		ITopic t = cache.getIdentityCache().bySubjectIdentifier(
-				subjectIdentifier);
+	public ITopic doReadTopicBySubjectIdentifier(ITopicMap tm, ILocator subjectIdentifier) throws TopicMapStoreException {
+		ITopic t = cache.getIdentityCache().bySubjectIdentifier(subjectIdentifier);
 		if (t == null) {
-			t = getParentStore().doReadTopicBySubjectIdentifier(tm,
-					subjectIdentifier);
+			t = getParentStore().doReadTopicBySubjectIdentifier(tm, subjectIdentifier);
 			if (t != null) {
-				cache.getIdentityCache().cacheSubjectIdentifier(
-						subjectIdentifier, t);
+				cache.getIdentityCache().cacheSubjectIdentifier(subjectIdentifier, t);
 			}
 		}
 		return t;
@@ -680,12 +641,10 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopic doReadTopicBySubjectLocator(ITopicMap tm,
-			ILocator subjectLocator) throws TopicMapStoreException {
+	public ITopic doReadTopicBySubjectLocator(ITopicMap tm, ILocator subjectLocator) throws TopicMapStoreException {
 		ITopic t = cache.getIdentityCache().bySubjectLocator(subjectLocator);
 		if (t == null) {
-			t = getParentStore()
-					.doReadTopicBySubjectLocator(tm, subjectLocator);
+			t = getParentStore().doReadTopicBySubjectLocator(tm, subjectLocator);
 			if (t != null) {
 				cache.getIdentityCache().cacheSubjectLocator(subjectLocator, t);
 			}
@@ -711,8 +670,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type)
-			throws TopicMapStoreException {
+	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws TopicMapStoreException {
 		Set<ITopic> topics = cache.getTopics(type);
 		if (topics == null) {
 			topics = getParentStore().doReadTopics(t, type);
@@ -767,8 +725,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T doReadValue(IDatatypeAware c, Class<T> type)
-			throws TopicMapStoreException {
+	public <T> T doReadValue(IDatatypeAware c, Class<T> type) throws TopicMapStoreException {
 		Object value = cache.getCharacteristicsCache().getValue(c);
 		if (value == null) {
 			value = getParentStore().doReadValue(c, type);
@@ -777,14 +734,11 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 			try {
 				value = DatatypeAwareUtils.toValue(value, type);
 			} catch (NumberFormatException e) {
-				throw new TopicMapStoreException(
-						"Cannot convert to numeric value!", e);
+				throw new TopicMapStoreException("Cannot convert to numeric value!", e);
 			} catch (URISyntaxException e) {
-				throw new TopicMapStoreException(
-						"Cannot convert to URI value!", e);
+				throw new TopicMapStoreException("Cannot convert to URI value!", e);
 			} catch (ParseException e) {
-				throw new TopicMapStoreException(
-						"Cannot convert to specified value!", e);
+				throw new TopicMapStoreException("Cannot convert to specified value!", e);
 			}
 		}
 		return (T) value;
@@ -820,8 +774,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IVariant> doReadVariants(IName n, IScope scope)
-			throws TopicMapStoreException {
+	public Set<IVariant> doReadVariants(IName n, IScope scope) throws TopicMapStoreException {
 		Set<IVariant> variants = cache.getVariants(n, scope);
 		if (variants == null) {
 			variants = getParentStore().doReadVariants(n, scope);
@@ -836,8 +789,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(Locator topicMapBaseLocator)
-			throws TopicMapStoreException {
+	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
 		cache = new ConstructCache();
 		getParentStore().addTopicMapListener(cache);
 	}
@@ -854,9 +806,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public <I extends Index> I getIndex(Class<I> clazz) {
-		throw new UnsupportedOperationException("Index class "
-				+ clazz.getSimpleName()
-				+ " not supported by the this cache implementation!");
+		throw new UnsupportedOperationException("Index class " + clazz.getSimpleName() + " not supported by the this cache implementation!");
 	}
 
 	/**
@@ -869,8 +819,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadFutureRevision(IRevision r)
-			throws TopicMapStoreException {
+	public IRevision doReadFutureRevision(IRevision r) throws TopicMapStoreException {
 		IRevision revision = cache.getRevisionCache().getFutureRevision(r);
 		if (revision == null) {
 			revision = getParentStore().doReadFutureRevision(r);
@@ -884,8 +833,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRevision doReadPastRevision(IRevision r)
-			throws TopicMapStoreException {
+	public IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException {
 		IRevision revision = cache.getRevisionCache().getPastRevision(r);
 		if (revision == null) {
 			revision = getParentStore().doReadPastRevision(r);
@@ -899,8 +847,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Calendar doReadRevisionTimestamp(IRevision r)
-			throws TopicMapStoreException {
+	public Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException {
 		Calendar c = cache.getRevisionCache().getRevisionTimestamp(r);
 		if (c == null) {
 			c = getParentStore().doReadRevisionTimestamp(r);
@@ -924,10 +871,8 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public TopicMapEventType doReadChangeSetType(IRevision revision)
-			throws TopicMapStoreException {
-		TopicMapEventType type = cache.getRevisionCache().getChangesetType(
-				revision);
+	public TopicMapEventType doReadChangeSetType(IRevision revision) throws TopicMapStoreException {
+		TopicMapEventType type = cache.getRevisionCache().getChangesetType(revision);
 		if (type == null) {
 			type = getParentStore().doReadChangeSetType(revision);
 			cache.getRevisionCache().cacheChangesetType(revision, type);
@@ -938,10 +883,8 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, String> doReadMetaData(IRevision revision)
-			throws TopicMapStoreException {
-		Map<String, String> metaData = cache.getRevisionCache().getMetaData(
-				revision);
+	public Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException {
+		Map<String, String> metaData = cache.getRevisionCache().getMetaData(revision);
 		if (metaData == null) {
 			metaData = getParentStore().doReadMetaData(revision);
 			cache.getRevisionCache().cacheMetaData(revision, metaData);
@@ -952,8 +895,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadMetaData(IRevision revision, String key)
-			throws TopicMapStoreException {
+	public String doReadMetaData(IRevision revision, String key) throws TopicMapStoreException {
 		Map<String, String> metaData = doReadMetaData(revision);
 		return metaData.get(key);
 	}
@@ -973,14 +915,11 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict)
-			throws TopicMapStoreException {
-		String bestLabel = cache.getIdentityCache().getBestLabel(topic, theme,
-				strict);
+	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws TopicMapStoreException {
+		String bestLabel = cache.getIdentityCache().getBestLabel(topic, theme, strict);
 		if (bestLabel == null) {
 			bestLabel = getParentStore().doReadBestLabel(topic, theme, strict);
-			cache.getIdentityCache().cacheBestLabel(topic, theme, strict,
-					bestLabel);
+			cache.getIdentityCache().cacheBestLabel(topic, theme, strict, bestLabel);
 		}
 		return bestLabel;
 	}
@@ -989,12 +928,12 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	protected ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Do create locator not supported by cache");
 	}
-	
+
 	@Override
 	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Do create scope not supported by cache");
 	}
-	
+
 	/**
 	 * @return the parentStore
 	 */
@@ -1033,5 +972,5 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	 */
 	public void enableCaching(boolean enable) {
 		// NOTHING TO DO HERE
-	}	
+	}
 }

@@ -222,7 +222,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	 */
 	public void open() {
 		super.open();
-		getStore().addTopicMapListener(this);
+		getTopicMapStore().addTopicMapListener(this);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	 */
 	public void close() {
 		clearCache();
-		getStore().removeTopicMapListener(this);
+		getTopicMapStore().removeTopicMapListener(this);
 		super.close();
 	}
 

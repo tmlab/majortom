@@ -93,6 +93,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		if (isReadOnly() && paramType != TopicMapStoreParameterType.LOCATOR && paramType != TopicMapStoreParameterType.SCOPE) {
 			throw new UnmodifyableStoreException("Creation not supported by read-only stores!");
 		}
+		((TopicMapStoreMetaDataImpl)getMetaData()).setModificationTime();
 		switch (paramType) {
 		case ASSOCIATION: {
 			if (context instanceof ITopicMap) {
@@ -631,6 +632,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Modfication operation not supported by read-only stores!");
 		}
+		((TopicMapStoreMetaDataImpl)getMetaData()).setModificationTime();
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
 			if (params.length == 1 && params[0] instanceof ILocator) {
@@ -1178,6 +1180,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Merge operation not supported by read-only stores!");
 		}
+		((TopicMapStoreMetaDataImpl)getMetaData()).setModificationTime();
 		if (context instanceof TopicMap && others.length > 0) {
 			for (T other : others) {
 				if (other instanceof TopicMap) {
@@ -1259,6 +1262,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Remove operation not supported by read-only stores!");
 		}
+		((TopicMapStoreMetaDataImpl)getMetaData()).setModificationTime();
 		switch (paramType) {
 		case ITEM_IDENTIFIER: {
 			if (context instanceof IConstruct && params.length == 1 && params[0] instanceof ILocator) {
@@ -1386,6 +1390,7 @@ public abstract class TopicMapStoreImpl extends ReadOnlyTopicMapStoreImpl {
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Remove operation not supported by read-only stores!");
 		}
+		((TopicMapStoreMetaDataImpl)getMetaData()).setModificationTime();
 		if (context instanceof ITopicMap) {
 			doRemoveTopicMap((ITopicMap) context, cascade);
 			close();

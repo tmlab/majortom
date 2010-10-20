@@ -58,7 +58,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetBooleans(value);
 		}
 		Collection<ICharacteristics> results = read(Boolean.class, value, null);
@@ -82,7 +82,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristics(value);
 		}
 		Collection<ICharacteristics> results = read(String.class, value, null);
@@ -106,7 +106,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristics(datatype);
 		}
 		Collection<ICharacteristics> results = read(String.class, datatype, null);
@@ -133,7 +133,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristics(value, datatype);
 		}
 		Collection<ICharacteristics> results = read(String.class, value, datatype);
@@ -186,7 +186,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristicsMatches(regExp);
 		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, null);
@@ -213,7 +213,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCharacteristicsMatches(regExp, datatype);
 		}
 		Collection<ICharacteristics> results = read(Pattern.class, regExp, datatype);
@@ -237,7 +237,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCoordinates(value);
 		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, null);
@@ -261,7 +261,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetCoordinates(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Wgs84Coordinate.class, value, deviance);
@@ -285,7 +285,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetDatatypeAwares(dataType);
 		}
 		Collection<IDatatypeAware> results = read(IDatatypeAware.class, null, dataType);
@@ -309,7 +309,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetDateTime(value);
 		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, null);
@@ -336,7 +336,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetDateTime(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Calendar.class, value, deviance);
@@ -357,7 +357,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetDoubles(value);
 		}
 		Collection<ICharacteristics> results = read(Double.class, value, null);
@@ -378,7 +378,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetDoubles(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Double.class, value, deviance);
@@ -399,7 +399,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetFloats(value);
 		}
 		Collection<ICharacteristics> results = read(Float.class, value, null);
@@ -420,7 +420,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetFloats(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Float.class, value, deviance);
@@ -441,7 +441,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetIntegers(value);
 		}
 		Collection<ICharacteristics> results = read(Integer.class, value, null);
@@ -462,7 +462,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetIntegers(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Integer.class, value, deviance);
@@ -483,7 +483,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetLongs(value);
 		}
 		Collection<ICharacteristics> results = read(Long.class, value, null);
@@ -504,7 +504,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetLongs(value, deviance);
 		}
 		Collection<ICharacteristics> results = read(Long.class, value, deviance);
@@ -525,7 +525,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNames();
 		}
 		Collection<Name> results = readConstructs(Name.class);
@@ -549,7 +549,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetNames(literal);
 		}
 		Collection<Name> results = readConstructs(Name.class, literal, null);
@@ -570,7 +570,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrences();
 		}
 		Collection<Occurrence> results = readConstructs(Occurrence.class);
@@ -594,7 +594,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrences(value);
 		}
 		Collection<Occurrence> results = readConstructs(Occurrence.class, value, null);
@@ -621,7 +621,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrences(value, datatype);
 		}
 		Collection<Occurrence> results = readConstructs(Occurrence.class, value, datatype);
@@ -645,7 +645,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetOccurrences(value);
 		}
 		Collection<Occurrence> results = readConstructs(Occurrence.class, value, null);
@@ -669,7 +669,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetUris(value);
 		}
 		Collection<ICharacteristics> results = read(URI.class, value, null);
@@ -690,7 +690,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariants();
 		}
 		Collection<Variant> results = readConstructs(Variant.class);
@@ -714,7 +714,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariants(value);
 		}
 		Collection<Variant> results = readConstructs(Variant.class, value, null);
@@ -738,7 +738,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariants(value);
 		}
 		Collection<Variant> results = readConstructs(Variant.class, value, null);
@@ -765,7 +765,7 @@ public abstract class CachedLiteralIndexImpl<X extends ITopicMapStore> extends B
 		/*
 		 * redirect to real store if caching is disabled
 		 */
-		if (!getStore().isCachingEnabled()) {
+		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetVariants(value, datatype);
 		}
 		Collection<Variant> results = readConstructs(Variant.class, value, datatype);
