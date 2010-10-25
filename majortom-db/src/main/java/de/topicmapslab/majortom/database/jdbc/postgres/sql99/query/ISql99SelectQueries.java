@@ -499,7 +499,7 @@ public interface ISql99SelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_TYPE = "SELECT id_type FROM typeables AS ty, topics AS t WHERE ty.id = ?";
+		public static final String QUERY_READ_TYPE = "SELECT id_type FROM typeables WHERE id = ?";
 
 		/**
 		 * Query to read the types of a topic

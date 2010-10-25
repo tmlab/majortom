@@ -1370,11 +1370,16 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 	 * {@inheritDoc}
 	 */
 	public void clear() {
-		if (cache != null ) {
-			cache.clear();
-		}
 		if (isReadOnly()) {
 			throw new UnmodifyableStoreException("Read-only store does not support deletion of construct!");
+		}
+	}
+	/**
+	 * Clear the cache if it is used
+	 */
+	public void clearCache(){
+		if (cache != null ) {
+			cache.clear();
 		}
 	}
 
@@ -1692,6 +1697,8 @@ public abstract class ReadOnlyTopicMapStoreImpl implements ITopicMapStore {
 		 */
 		if (enable && !isCachingEnabled()) {
 			cache = new Cache(this);
+			cache.setTopicMapSystem(getTopicMapSystem());
+			cache.setTopicMap(getTopicMap());
 			cache.connect();
 			cache.initialize(baseLocator);
 			enableCaching = true;

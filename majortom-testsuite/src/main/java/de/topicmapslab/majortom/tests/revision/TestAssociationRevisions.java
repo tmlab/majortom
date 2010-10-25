@@ -98,8 +98,7 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		IRevision r = index.getFirstRevision();
 		System.out.println(r.getChangeset());
 		assertEquals(5, r.getChangeset().size());
-		assertNull(r.getFuture());
-		
+		assertNull(r.getFuture());		
 	}
 
 }

@@ -26,7 +26,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
  * @author Sven Krosse
  * 
  */
-public abstract class PagedTransitiveTypeInstanceIndexImpl<T extends ITopicMapStore> extends PagedTypeInstanceIndexImpl<T> {
+public abstract class PagedTransitiveTypeInstanceIndexImpl<T extends ITopicMapStore> extends PagedTypeInstanceIndexImpl<T> implements IPagedTransitiveTypeInstanceIndex{
 
 	/**
 	 * constructor
