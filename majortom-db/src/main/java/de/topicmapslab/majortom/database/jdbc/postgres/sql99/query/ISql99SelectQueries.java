@@ -128,6 +128,14 @@ public interface ISql99SelectQueries {
 	}
 
 	interface NonPaged {
+
+		/**
+		 * Load all locators of topic maps
+		 * 
+		 * @since 1.1.2
+		 */
+		public static String QUERY_READ_LOCATORS = "SELECT l.id , reference FROM topicmaps AS tm, locators AS l WHERE id_base_locator = l.id";
+
 		// ******************
 		// * READ TOPIC MAP *
 		// ******************
@@ -156,17 +164,17 @@ public interface ISql99SelectQueries {
 		 * </p>
 		 */
 		public static String QUERY_READ_ASSOCIATIONS_WITH_TYPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_type = ? ";
-//		/**
-//		 * Query to read all associations within a specific type
-//		 * <p>
-//		 * <b>parameters(2):</b> topic map id, scope id
-//		 * </p>
-//		 */
-//		public static String QUERY_READ_ASSOCIATIONS_WITH_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ? ";
+		// /**
+		// * Query to read all associations within a specific type
+		// * <p>
+		// * <b>parameters(2):</b> topic map id, scope id
+		// * </p>
+		// */
+		// public static String QUERY_READ_ASSOCIATIONS_WITH_SCOPE =
+		// "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ? ";
 
 		/**
-		 * Query to read all associations of a specific type and within a
-		 * specific scope
+		 * Query to read all associations of a specific type and within a specific scope
 		 * <p>
 		 * <b>parameters(3):</b> topic map id, type id, scope id
 		 * </p>
@@ -197,8 +205,7 @@ public interface ISql99SelectQueries {
 		public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_scope = ?";
 
 		/**
-		 * Query to read all played associations of a specific type and within a
-		 * specific scope
+		 * Query to read all played associations of a specific type and within a specific scope
 		 * <p>
 		 * <b>parameters(4):</b> topic map id, player id, type id, scope id
 		 * </p>
@@ -226,7 +233,9 @@ public interface ISql99SelectQueries {
 				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM iis ) "
 				+ "UNION "
 				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM iis ) AND v.id_parent = n.id "
-				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) " + "UNION "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) "
+				+ "UNION "
 				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM iis );";
 
 		/**
@@ -247,7 +256,8 @@ public interface ISql99SelectQueries {
 				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id_construct FROM iis ) AND v.id_parent = n.id AND v.id_topicmap = ?"
 				+ "UNION "
 				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id_construct FROM iis ) AND id_topicmap = ? "
-				+ "UNION " + "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM iis );";
+				+ "UNION "
+				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM iis );";
 
 		// ********************
 		// * READ DATATYPE *
@@ -381,7 +391,9 @@ public interface ISql99SelectQueries {
 				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM ids ) "
 				+ "UNION "
 				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM ids ) AND v.id_parent = n.id "
-				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM ids ) " + "UNION "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM ids ) "
+				+ "UNION "
 				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM ids );";
 
 		// **************
@@ -540,8 +552,8 @@ public interface ISql99SelectQueries {
 		/**
 		 * Query to read the scope object by a collection of themes
 		 * <p>
-		 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching
-		 * all, boolean flag exact match, topic map id
+		 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map
+		 * id
 		 * </p>
 		 */
 		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";// "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";

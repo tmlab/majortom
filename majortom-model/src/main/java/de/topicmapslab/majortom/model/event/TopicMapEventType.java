@@ -11,6 +11,8 @@ import de.topicmapslab.majortom.model.core.ICharacteristics;
  */
 public enum TopicMapEventType {
 	
+	 TOPIC_MAP_CREATED,
+	
 	 TOPIC_ADDED,
 	 
 	 TYPE_ADDED,

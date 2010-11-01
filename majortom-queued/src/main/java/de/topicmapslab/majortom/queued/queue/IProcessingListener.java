@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/**
- * 
- */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.queued.queue;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.index.paged.withoutcomp.PagedNonComparedIndexTestSuite;
+import de.topicmapslab.majortom.queued.queue.task.IQueueTask;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class PagedIndexTestSuite {
+public interface IProcessingListener {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged");
-		// $JUnit-BEGIN$
-		suite.addTest(PagedNonComparedIndexTestSuite.suite());
-		// suite.addTest(PagedComparedIndexTestSuite.suite());
-		// $JUnit-END$
-		return suite;
-	}
+	/**
+	 * Method which will be notified by the queue if a task was finished.
+	 * 
+	 * @param task
+	 *            the task which was finished
+	 */
+	public void finished(IQueueTask task);
 
 }

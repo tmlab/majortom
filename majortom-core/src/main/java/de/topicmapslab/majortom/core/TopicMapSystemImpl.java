@@ -33,6 +33,7 @@ import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
+import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
@@ -76,7 +77,14 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	/**
 	 * the parent factory
 	 */
-	private final TopicMapSystemFactoryImpl factory;
+	private TopicMapSystemFactoryImpl factory;
+
+	/**
+	 * constructor for JAVA services
+	 */
+	public TopicMapSystemImpl() {
+		// VOID
+	}
 
 	/**
 	 * constructor
@@ -85,19 +93,14 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 *            the factory
 	 */
 	public TopicMapSystemImpl(TopicMapSystemFactoryImpl factory) {
-		this.factory = factory;
-		properties = new Properties();
-		loadPropertiesFromFile();
-		properties.putAll(((TopicMapSystemFactoryImpl) factory).getProperties());
-		features = HashUtil.getHashMap(factory.getFeatures());
-
+		setFactory(factory);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void close() {
-		for (TopicMap topicMap : topicMaps.values()) {
+		for (TopicMap topicMap : HashUtil.getHashSet(topicMaps.values())) {
 			topicMap.close();
 		}
 	}
@@ -119,7 +122,8 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 */
 	public TopicMap createTopicMap(Locator locator) throws TopicMapExistsException {
 		if (topicMaps.containsKey(locator)) {
-			throw new TopicMapExistsException("A topic map with the identifier '" + locator.getReference() + "' already exists.");
+			throw new TopicMapExistsException("A topic map with the identifier '" + locator.getReference()
+					+ "' already exists.");
 		}
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
@@ -146,7 +150,8 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 */
 	public TopicMap createTopicMap(Locator locator, ITopicMapStore store) throws TopicMapExistsException {
 		if (topicMaps.containsKey(locator)) {
-			throw new TopicMapExistsException("A topic map with the identifier '" + locator.getReference() + "' already exists.");
+			throw new TopicMapExistsException("A topic map with the identifier '" + locator.getReference()
+					+ "' already exists.");
 		}
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
@@ -209,8 +214,7 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	}
 
 	/**
-	 * Hidden method to load optional properties of the current topic map
-	 * system.
+	 * Hidden method to load optional properties of the current topic map system.
 	 * 
 	 * @throws TopicMapStoreException
 	 *             thrown if the properties can not load
@@ -268,7 +272,8 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * 
 	 * {@inheritDoc}
 	 */
-	public void setFeature(String key, boolean value) throws FeatureNotSupportedException, FeatureNotRecognizedException {
+	public void setFeature(String key, boolean value) throws FeatureNotSupportedException,
+			FeatureNotRecognizedException {
 		if (!FeatureStrings.FEATURES.contains(key)) {
 			throw new FeatureNotRecognizedException("Unknown feature string '" + key + "'!");
 		}
@@ -276,6 +281,63 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 			throw new FeatureNotSupportedException("Feature not supported by the engine!");
 		}
 		features.put(key, value);
+	}
+
+	/**
+	 * Internal method to add a topic map to internal storage
+	 * 
+	 * @param locator
+	 *            the base locator
+	 * @param topicMap
+	 *            the topic map
+	 */
+	protected final void addTopicMap(Locator locator, ITopicMap topicMap) throws TopicMapExistsException {
+		if (topicMaps.containsKey(locator)) {
+			throw new TopicMapExistsException("A topic map with the identifier '" + locator.getReference()
+					+ "' already exists.");
+		}
+		topicMaps.put(locator, topicMap);
+	}
+
+	/**
+	 * Internal method to check if the locator is bound to a topic map instance
+	 * 
+	 * @param locator
+	 *            the locator
+	 * @return <code>true</code> if the locator is known as base locator for a topic map instance, <code>false</code>
+	 *         otherwise.
+	 */
+	protected final boolean containsTopicMap(Locator locator) {
+		return topicMaps.containsKey(locator);
+	}
+
+	/**
+	 * Returns the topic map factory instance
+	 */
+	protected TopicMapSystemFactoryImpl getFactory() {
+		return factory;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void setFactory(TopicMapSystemFactory factory) {
+		setFactory((TopicMapSystemFactoryImpl) factory);
+	}
+
+	/**
+	 * Internal method to set the factory instance
+	 * 
+	 * @param factory
+	 *            the factory to set
+	 */
+	public void setFactory(TopicMapSystemFactoryImpl factory) {
+		this.factory = factory;
+		properties = new Properties();
+		loadPropertiesFromFile();
+		properties.putAll(((TopicMapSystemFactoryImpl) factory).getProperties());
+		features = HashUtil.getHashMap(factory.getFeatures());
 	}
 
 }

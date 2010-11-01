@@ -136,7 +136,7 @@ public class LazyStubCreator {
 
 	private static ITopicMapStoreIdentity cloneIdentity(
 			ITopicMapStoreIdentity identity) {
-		return new JdbcIdentity(identity.getId());
+		return new JdbcIdentity(((JdbcIdentity)identity).longId());
 	}
 
 }

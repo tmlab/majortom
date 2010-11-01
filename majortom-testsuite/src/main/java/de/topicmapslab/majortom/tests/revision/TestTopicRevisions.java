@@ -156,7 +156,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 		topicMap.getStore().enableRevisionManagement(true);
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		assertNull(index.getFirstRevision());
+		assertNotNull(index.getFirstRevision());
 		assertEquals(0, index.getChangeset(player).size());
 		
 		role.remove();

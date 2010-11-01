@@ -351,7 +351,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(topic, i * 10, 10);
-			assertEquals(10, list.size());
+			assertEquals(i+"", 10, list.size());
 		}
 		list = index.getSupertypes(topic, 100, 10);
 		assertEquals(1, list.size());

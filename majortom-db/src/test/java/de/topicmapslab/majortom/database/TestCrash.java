@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/**
- * 
- */
-package de.topicmapslab.majortom.tests.index.paged;
+package de.topicmapslab.majortom.database;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.topicmapslab.majortom.tests.index.paged.withoutcomp.PagedNonComparedIndexTestSuite;
+import org.tmapi.core.TopicMap;
+
+import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class PagedIndexTestSuite {
+public class TestCrash extends MaJorToMTestCase {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged");
-		// $JUnit-BEGIN$
-		suite.addTest(PagedNonComparedIndexTestSuite.suite());
-		// suite.addTest(PagedComparedIndexTestSuite.suite());
-		// $JUnit-END$
-		return suite;
+	public void testDbRestart() throws Exception{
+		topicMap.getAssociations();
+		
+		Thread.sleep(10000);
+		
+		topicMap.getTopics();
 	}
-
+	
+	public void testLocators() throws Exception{
+		assertTrue(factory.newTopicMapSystem().getLocators().size() >= 1 );		
+		TopicMap tm = factory.newTopicMapSystem().getTopicMap(BASE);
+		assertEquals(topicMap, tm);
+	}
+	
 }

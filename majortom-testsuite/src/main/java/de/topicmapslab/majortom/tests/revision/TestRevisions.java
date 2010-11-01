@@ -56,35 +56,29 @@ public class TestRevisions extends MaJorToMTestCase {
 	}
 
 	public void testTopicRevisions() throws Exception {
-		boolean hasFeature = factory
-				.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+		boolean hasFeature = factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 
-		if (topicMap.getTopicMapSystem().getFeature(
-				FeatureStrings.SUPPORT_HISTORY)) {
+		if (topicMap.getTopicMapSystem().getFeature(FeatureStrings.SUPPORT_HISTORY)) {
 
-			assertNull(index.getLastModification());
+			assertNotNull(index.getLastModification());
 
 			ITopic topic = createTopic();
 			assertEquals(1, index.getRevisions(topic).size());
-			assertEquals(2, index.getRevisions(topic).get(0).getChangeset()
-					.size());
-			checkChange(index.getRevisions(topic).get(0).getChangeset().get(0),
-					TopicMapEventType.TOPIC_ADDED, topicMap, topic, null);
+			assertEquals(2, index.getRevisions(topic).get(0).getChangeset().size());
+			checkChange(index.getRevisions(topic).get(0).getChangeset().get(0), TopicMapEventType.TOPIC_ADDED,
+					topicMap, topic, null);
 			assertEquals(2, index.getChangeset(topic).size());
 
-			topic.addSubjectIdentifier(topicMap
-					.createLocator("http://psi.exampple.org/topicWithoutII"));
+			topic.addSubjectIdentifier(topicMap.createLocator("http://psi.exampple.org/topicWithoutII"));
 			assertEquals(2, index.getRevisions(topic).size());
-			assertEquals(1, index.getRevisions(topic).get(1).getChangeset()
-					.size());
+			assertEquals(1, index.getRevisions(topic).get(1).getChangeset().size());
 			assertEquals(3, index.getChangeset(topic).size());
 
 			ITopic type = createTopic();
 			assertEquals(1, index.getRevisions(type).size());
-			assertEquals(2, index.getRevisions(type).get(0).getChangeset()
-					.size());
+			assertEquals(2, index.getRevisions(type).get(0).getChangeset().size());
 
 			topic.addType(type);
 			assertEquals(3, index.getRevisions(topic).size());
@@ -94,12 +88,10 @@ public class TestRevisions extends MaJorToMTestCase {
 				cntRev += 6;
 				cntCS++;
 			}
-			assertEquals(cntRev, index.getRevisions(topic).get(2)
-					.getChangeset().size());
+			assertEquals(cntRev, index.getRevisions(topic).get(2).getChangeset().size());
 			assertEquals(cntCS, index.getChangeset(topic).size());
 			assertEquals(2, index.getRevisions(type).size());
-			assertEquals(cntRev, index.getRevisions(type).get(1).getChangeset()
-					.size());
+			assertEquals(cntRev, index.getRevisions(type).get(1).getChangeset().size());
 			assertEquals(hasFeature ? 4 : 3, index.getChangeset(type).size());
 			topic.createName(type, "Name", new Topic[0]);
 			assertEquals(hasFeature ? 5 : 4, index.getChangeset(type).size());
@@ -112,31 +104,26 @@ public class TestRevisions extends MaJorToMTestCase {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 
-		assertNull(index.getLastModification());
+		assertNotNull(index.getLastModification());
 
 		ITopic topicWithoutIdentifier = createTopic();
 		Calendar calendar = new GregorianCalendar();
 		Calendar lastModification = index.getLastModification();
 		assertNotNull(lastModification);
-		assertEquals(calendar.getTimeInMillis(),
-				lastModification.getTimeInMillis(), 20);
+		assertEquals(calendar.getTimeInMillis(), lastModification.getTimeInMillis(), 20);
 
-		Calendar lastModificationOrTopic = index
-				.getLastModification(topicWithoutIdentifier);
+		Calendar lastModificationOrTopic = index.getLastModification(topicWithoutIdentifier);
 		assertNotNull(lastModificationOrTopic);
-		assertEquals(calendar.getTimeInMillis(),
-				lastModificationOrTopic.getTimeInMillis(), 20);
+		assertEquals(calendar.getTimeInMillis(), lastModificationOrTopic.getTimeInMillis(), 20);
 
-		topicWithoutIdentifier.addSubjectIdentifier(topicMap
-				.createLocator("http://psi.exampple.org/topicWithoutII"));
+		topicWithoutIdentifier.addSubjectIdentifier(topicMap.createLocator("http://psi.exampple.org/topicWithoutII"));
 
-		assertNotSame(lastModificationOrTopic,
-				index.getLastModification(topicWithoutIdentifier));
+		assertNotSame(lastModificationOrTopic, index.getLastModification(topicWithoutIdentifier));
 		assertNotSame(lastModification, index.getLastModification());
 	}
 
-	public void checkChange(IRevisionChange change, TopicMapEventType type,
-			Construct context, Object newValue, Object oldValue) {
+	public void checkChange(IRevisionChange change, TopicMapEventType type, Construct context, Object newValue,
+			Object oldValue) {
 		assertEquals(type, change.getType());
 		assertEquals(context, change.getContext());
 		assertEquals(newValue, change.getNewValue());
@@ -180,8 +167,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(revision);
 		assertFalse(revision.getChangeset().isEmpty());
 		IRevisionChange change = revision.getChangeset().get(0);
-		checkChange(change, TopicMapEventType.ROLE_REMOVED, association, null,
-				role);
+		checkChange(change, TopicMapEventType.ROLE_REMOVED, association, null, role);
 		role = (Role) change.getOldValue();
 		assertTrue(role instanceof ReadOnlyAssociationRole);
 		assertEquals(type, role.getType());
@@ -221,19 +207,16 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(TopicMapEventType.ROLE_REMOVED, change.getType());
 		assertEquals(association, change.getContext());
 		assertNull(change.getNewValue());
-		assertTrue(otherRole.equals(change.getOldValue())
-				|| role.equals(change.getOldValue()));
+		assertTrue(otherRole.equals(change.getOldValue()) || role.equals(change.getOldValue()));
 
 		change = revision.getChangeset().get(1);
 		assertEquals(TopicMapEventType.ROLE_REMOVED, change.getType());
 		assertEquals(association, change.getContext());
 		assertNull(change.getNewValue());
-		assertTrue(otherRole.equals(change.getOldValue())
-				|| role.equals(change.getOldValue()));
+		assertTrue(otherRole.equals(change.getOldValue()) || role.equals(change.getOldValue()));
 
 		change = revision.getChangeset().get(2);
-		checkChange(change, TopicMapEventType.ASSOCIATION_REMOVED, topicMap,
-				null, association);
+		checkChange(change, TopicMapEventType.ASSOCIATION_REMOVED, topicMap, null, association);
 		association = (IAssociation) change.getOldValue();
 		assertTrue(association instanceof ReadOnlyAssociation);
 		assertEquals(2, association.getRoles().size());
@@ -245,8 +228,7 @@ public class TestRevisions extends MaJorToMTestCase {
 	}
 
 	public void testRemovingTypeInstanceRelation() throws Exception {
-		boolean hasFeature = factory
-				.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+		boolean hasFeature = factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
 		ITopic topic = createTopic();
 		ITopic other = createTopic();
 
@@ -277,7 +259,7 @@ public class TestRevisions extends MaJorToMTestCase {
 
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
-		cnt = hasFeature ? cnt+1 : cnt;
+		cnt = hasFeature ? cnt + 1 : cnt;
 		assertEquals(cnt, topic.getAssociationsPlayed().size());
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
@@ -292,84 +274,101 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(revision);
 
 		for (long l = 1; l < 100; l++) {
-			revision.addMetaData("key#" + Long.toString(l),
-					"value#" + Long.toString(l));
-			assertEquals("value#" + Long.toString(l),
-					revision.getMetaData("key#" + Long.toString(l)));
+			revision.addMetaData("key#" + Long.toString(l), "value#" + Long.toString(l));
+			assertEquals("value#" + Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
 			assertEquals(l, revision.getMetadata().size());
 		}
 
 		for (long l = 1; l < 100; l++) {
-			revision.addMetaData("key#" + Long.toString(l),
-					"new#" + Long.toString(l));
-			assertEquals("new#" + Long.toString(l),
-					revision.getMetaData("key#" + Long.toString(l)));
-			assertEquals(
-					"Number of meta-data should be keep constants because of overwrite key",
-					99, revision.getMetadata().size());
+			revision.addMetaData("key#" + Long.toString(l), "new#" + Long.toString(l));
+			assertEquals("new#" + Long.toString(l), revision.getMetaData("key#" + Long.toString(l)));
+			assertEquals("Number of meta-data should be keep constants because of overwrite key", 99, revision
+					.getMetadata().size());
 		}
 	}
-	
-	public void testChangesetType() throws Exception{
-		if ( factory.getFeature(FeatureStrings.SUPPORT_HISTORY)){
+
+	public void testChangesetType() throws Exception {
+		if (factory.getFeature(FeatureStrings.SUPPORT_HISTORY)) {
 			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 			index.open();
-			
+
 			Topic t = createTopic();
-			
+
 			IRevision r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.TOPIC_ADDED, r.getChangesetType());
-			
+
 			Name n = t.createName("Name");
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.NAME_ADDED, r.getChangesetType());
-			
+
 			Variant v = n.createVariant("Name", createTopic());
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.VARIANT_ADDED, r.getChangesetType());
-			
+
 			v.remove();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.VARIANT_REMOVED, r.getChangesetType());
-			
+
 			n.remove();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.NAME_REMOVED, r.getChangesetType());
-			
-			Occurrence o = t.createOccurrence(createTopic(), "Value");			
+
+			Occurrence o = t.createOccurrence(createTopic(), "Value");
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.OCCURRENCE_ADDED, r.getChangesetType());
-			
+
 			o.remove();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.OCCURRENCE_REMOVED, r.getChangesetType());
-			
+
 			Association a = createAssociation(createTopic());
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ASSOCIATION_ADDED, r.getChangesetType());
-		
+
 			Role role = a.createRole(createTopic(), createTopic());
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ROLE_ADDED, r.getChangesetType());
-			
+
 			role.remove();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ROLE_REMOVED, r.getChangesetType());
-			
+
 			a.remove();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ASSOCIATION_REMOVED, r.getChangesetType());
+		}
+	}
+	
+	public void testTopicMapRevision() throws Exception{
+		if (factory.getFeature(FeatureStrings.SUPPORT_HISTORY)) {
+			IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+			index.open();
+			
+			/*
+			 * first revision may not be null 
+			 */
+			if ( topicMap.getStore().isRevisionManagementEnabled()){
+				assertNotNull(index.getFirstRevision());
+				IRevision r = index.getFirstRevision();
+				assertEquals(TopicMapEventType.TOPIC_MAP_CREATED,r.getChangesetType());
+				assertEquals(1, r.getChangeset().size());
+				IRevisionChange diff = r.getChangeset().getFirst();
+				assertEquals(topicMap, diff.getContext());
+				assertEquals(TopicMapEventType.TOPIC_MAP_CREATED, diff.getType());
+				assertEquals(topicMap, diff.getNewValue());
+				assertNull(diff.getOldValue());
+			}
 		}
 	}
 }

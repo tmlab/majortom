@@ -96,6 +96,18 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			throw new TopicMapStoreException("Cannot close prepared statements!", e);
 		}
 	}
+	
+	private PreparedStatement preparedStatementReadTopicMapLocators;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadTopicMapLocators() throws SQLException {
+		if ( preparedStatementReadTopicMapLocators == null ){
+			preparedStatementReadTopicMapLocators = getReaderConnection().prepareStatement(ISql99SelectQueries.NonPaged.QUERY_READ_LOCATORS);
+		}
+		return preparedStatementReadTopicMapLocators;
+	}
 
 	// ****************
 	// * INSERT QUERY *

@@ -3,6 +3,8 @@
  */
 package de.topicmapslab.majortom.queued.queue.task;
 
+import org.tmapi.core.Construct;
+
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -18,7 +20,7 @@ public class MergeTask extends QueueTaskImpl {
 	/**
 	 * array of all parameters
 	 */
-	private IConstruct[] constructs;
+	private Construct[] constructs;
 
 	/**
 	 * constructor
@@ -27,16 +29,15 @@ public class MergeTask extends QueueTaskImpl {
 	 *            the context
 	 * @param constructs
 	 */
-	public <T extends IConstruct> MergeTask(T context, T... constructs) {
-		super(context, null);
+	public <T extends Construct> MergeTask(T context, T... constructs) {
+		super((IConstruct)context, null);
 		this.constructs = constructs;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doTask(ITopicMapStore topicMapStore)
-			throws TopicMapStoreException {
+	public void doTask(ITopicMapStore topicMapStore) throws TopicMapStoreException {
 		topicMapStore.doMerge(getContext(), constructs);
 	}
 

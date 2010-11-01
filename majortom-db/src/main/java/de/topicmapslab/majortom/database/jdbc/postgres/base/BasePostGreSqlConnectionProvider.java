@@ -42,96 +42,64 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BasePostGreSqlConnectionProvider implements
-		IConnectionProvider {
+public abstract class BasePostGreSqlConnectionProvider implements IConnectionProvider {
 
-	protected static final Map<String, List<String>> schemaInformation = HashUtil
-			.getHashMap();
+	/**
+	 * 
+	 */
+	private static final String WORKAROUND = "SELECT id FROM topics OFFSET 0 LIMIT 1";
+	protected static final Map<String, List<String>> schemaInformation = HashUtil.getHashMap();
 
 	static {
-		schemaInformation.put(
-				"associations",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope", "id_type" }));
-		schemaInformation.put("changesets", Arrays.asList(new String[] { "id",
-				"id_revision", "id_notifier", "type", "newvalue", "oldvalue",
-				"time" }));
-		schemaInformation.put("constructs", Arrays.asList(new String[] { "id",
-				"id_parent", "id_topicmap" }));
+		schemaInformation.put("associations",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "id_type" }));
+		schemaInformation.put("changesets", Arrays.asList(new String[] { "id", "id_revision", "id_notifier", "type",
+				"newvalue", "oldvalue", "time" }));
+		schemaInformation.put("constructs", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap" }));
 		schemaInformation.put(
 				"datatypeawares",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope", "value", "id_datatype" }));
-		schemaInformation.put(
-				"history",
-				Arrays.asList(new String[] { "id", "id_topicmap",
-						"id_revision", "id_parent", "names", "occurrences",
-						"variants", "associations", "id_scope",
-						"id_reification", "id_player", "types", "supertypes",
-						"value", "type", "themes", "itemidentifiers",
-						"subjectidentifiers", "subjectlocators", "datatype",
-						"roles", "bestlabel" }));
-		schemaInformation.put(
-				"literals",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"value" }));
-		schemaInformation.put("locators",
-				Arrays.asList(new String[] { "id", "reference" }));
-		schemaInformation.put("metadata",
-				Arrays.asList(new String[] { "id_revision", "key", "value" }));
-		schemaInformation.put(
-				"names",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope", "id_type", "value" }));
-		schemaInformation.put(
-				"occurrences",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope", "id_type", "value",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "value",
 						"id_datatype" }));
 		schemaInformation.put(
-				"reifiables",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier" }));
-		schemaInformation.put("rel_instance_of",
-				Arrays.asList(new String[] { "id_instance", "id_type" }));
-		schemaInformation.put("rel_item_identifiers",
-				Arrays.asList(new String[] { "id_construct", "id_locator" }));
-		schemaInformation.put("rel_kind_of",
-				Arrays.asList(new String[] { "id_subtype", "id_supertype" }));
-		schemaInformation.put("rel_subject_identifiers",
-				Arrays.asList(new String[] { "id_topic", "id_locator" }));
-		schemaInformation.put("rel_subject_locators",
-				Arrays.asList(new String[] { "id_topic", "id_locator" }));
-		schemaInformation.put("rel_themes",
-				Arrays.asList(new String[] { "id_scope", "id_theme" }));
-		schemaInformation.put("revisions",
-				Arrays.asList(new String[] { "id", "time", "id_topicmap", "type" }));
+				"history",
+				Arrays.asList(new String[] { "id", "id_topicmap", "id_revision", "id_parent", "names", "occurrences",
+						"variants", "associations", "id_scope", "id_reification", "id_player", "types", "supertypes",
+						"value", "type", "themes", "itemidentifiers", "subjectidentifiers", "subjectlocators",
+						"datatype", "roles", "bestlabel" }));
+		schemaInformation.put("literals", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "value" }));
+		schemaInformation.put("locators", Arrays.asList(new String[] { "id", "reference" }));
+		schemaInformation.put("metadata", Arrays.asList(new String[] { "id_revision", "key", "value" }));
 		schemaInformation.put(
-				"roles",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_type", "id_player" }));
+				"names",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "id_type",
+						"value" }));
 		schemaInformation.put(
-				"scopeables",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope" }));
-		schemaInformation.put("scopes",
-				Arrays.asList(new String[] { "id", "id_topicmap" }));
-		schemaInformation.put("tags",
-				Arrays.asList(new String[] { "tag", "time" }));
-		schemaInformation.put(
-				"topicmaps",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_base_locator" }));
-		schemaInformation.put("topics", Arrays.asList(new String[] { "id",
-				"id_parent", "id_topicmap" }));
-		schemaInformation.put(
-				"typeables",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_type" }));
+				"occurrences",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "id_type",
+						"value", "id_datatype" }));
+		schemaInformation.put("reifiables",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier" }));
+		schemaInformation.put("rel_instance_of", Arrays.asList(new String[] { "id_instance", "id_type" }));
+		schemaInformation.put("rel_item_identifiers", Arrays.asList(new String[] { "id_construct", "id_locator" }));
+		schemaInformation.put("rel_kind_of", Arrays.asList(new String[] { "id_subtype", "id_supertype" }));
+		schemaInformation.put("rel_subject_identifiers", Arrays.asList(new String[] { "id_topic", "id_locator" }));
+		schemaInformation.put("rel_subject_locators", Arrays.asList(new String[] { "id_topic", "id_locator" }));
+		schemaInformation.put("rel_themes", Arrays.asList(new String[] { "id_scope", "id_theme" }));
+		schemaInformation.put("revisions", Arrays.asList(new String[] { "id", "time", "id_topicmap", "type" }));
+		schemaInformation.put("roles",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_type", "id_player" }));
+		schemaInformation.put("scopeables",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope" }));
+		schemaInformation.put("scopes", Arrays.asList(new String[] { "id", "id_topicmap" }));
+		schemaInformation.put("tags", Arrays.asList(new String[] { "tag", "time" }));
+		schemaInformation.put("topicmaps",
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_base_locator" }));
+		schemaInformation.put("topics", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap" }));
+		schemaInformation.put("typeables", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_type" }));
 		schemaInformation.put(
 				"variants",
-				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap",
-						"id_reifier", "id_scope", "value", "id_datatype" }));
+				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "value",
+						"id_datatype" }));
 	}
 
 	/**
@@ -210,10 +178,20 @@ public abstract class BasePostGreSqlConnectionProvider implements
 	public IQueryProcessor getProcessor() throws TopicMapStoreException {
 		try {
 			if (writerConnection == null || readerConnection == null) {
-				throw new TopicMapStoreException(
-						"Connection is not established!");
-			} else if (writerConnection.isClosed()
-					|| readerConnection.isClosed()) {
+				throw new TopicMapStoreException("Connection is not established!");
+			} else if (writerConnection.isClosed() || readerConnection.isClosed()) {
+				openConnections(host, database, user, password);
+			}
+			/*
+			 * check if connections are really valid XXX: isValid(int) does not works currently
+			 */
+			try {
+				writerConnection.createStatement().execute(WORKAROUND);
+				readerConnection.createStatement().execute(WORKAROUND);
+			} catch (Exception e) {
+				/*
+				 * reset
+				 */
 				openConnections(host, database, user, password);
 			}
 		} catch (SQLException e) {
@@ -225,36 +203,49 @@ public abstract class BasePostGreSqlConnectionProvider implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void openConnections(String host, String database, String user,
-			String password) throws SQLException, TopicMapStoreException {
-		if (store == null) {
-			throw new TopicMapStoreException("Topic map store not set!");
-		}
+	public void openConnections(String host, String database, String user, String password) throws SQLException,
+			TopicMapStoreException {
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
-			throw new TopicMapStoreException(
-					"Cannot find driver class for PostGreSQL!", e);
+			throw new TopicMapStoreException("Cannot find driver class for PostGreSQL!", e);
 		}
 		this.host = host;
 		this.database = database;
 		this.user = user;
 		this.password = password;
-		if (writerConnection == null || writerConnection.isClosed()) {
-			writerConnection = DriverManager.getConnection("jdbc:postgresql://"
-					+ host + "/" + database, user, password);
+		/*
+		 * check if old processor is still alive
+		 */
+		if (processor != null) {
+			processor.close();
 		}
-		if (readerConnection == null || readerConnection.isClosed()) {
-			readerConnection = DriverManager.getConnection("jdbc:postgresql://"
-					+ host + "/" + database, user, password);
+		/*
+		 * check if old connection is established
+		 */
+		if (writerConnection != null && !writerConnection.isClosed()) {
+			writerConnection.close();
 		}
-		if (metaData == null) {
-			metaData = readerConnection.getMetaData();
+		/*
+		 * initialize connection
+		 */
+		writerConnection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
+		/*
+		 * check if old connection is established
+		 */
+		if (readerConnection != null && !readerConnection.isClosed()) {
+			readerConnection.close();
 		}
-		if (processor == null) {
-			processor = createProcessor(this, readerConnection,
-					writerConnection);
-		}
+		/*
+		 * initialize connection
+		 */
+		readerConnection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
+		metaData = readerConnection.getMetaData();
+		/*
+		 * create new processor
+		 */
+		processor = createProcessor(this, readerConnection, writerConnection);
+
 		int state = getDatabaseState();
 		switch (state) {
 		case STATE_DATABASE_IS_EMPTY: {
@@ -267,9 +258,7 @@ public abstract class BasePostGreSqlConnectionProvider implements
 			break;
 		case STATE_DATABASE_IS_INVALID:
 		default:
-			throw new TopicMapStoreException(
-					"Invalid database schema or unknown database state '"
-							+ state + "!");
+			throw new TopicMapStoreException("Invalid database schema or unknown database state '" + state + "!");
 		}
 	}
 
@@ -284,8 +273,7 @@ public abstract class BasePostGreSqlConnectionProvider implements
 	 *            the connection to modify database
 	 * @return the created query processor instance
 	 */
-	protected abstract Sql99QueryProcessor createProcessor(
-			IConnectionProvider provider, Connection readerConnection,
+	protected abstract Sql99QueryProcessor createProcessor(IConnectionProvider provider, Connection readerConnection,
 			Connection writerConnetion);
 
 	/**
@@ -302,8 +290,8 @@ public abstract class BasePostGreSqlConnectionProvider implements
 	 * {@inheritDoc}
 	 */
 	public void createSchema() throws SQLException {
-		Statement stmt = writerConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		Statement stmt = writerConnection
+				.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		stmt.executeUpdate(getSchemaQuery());
 	}
 
@@ -322,8 +310,7 @@ public abstract class BasePostGreSqlConnectionProvider implements
 		/*
 		 * extract all tables
 		 */
-		ResultSet rs = getDatabaseMetaData().getTables(null, null, null,
-				new String[] { "TABLE" });
+		ResultSet rs = getDatabaseMetaData().getTables(null, null, null, new String[] { "TABLE" });
 		rs.beforeFirst();
 		/*
 		 * check if each table of the database is valid for the given schema
@@ -337,18 +324,14 @@ public abstract class BasePostGreSqlConnectionProvider implements
 			List<String> columnsInformation = schemaInformation.get(tableName);
 			if (columnsInformation == null) {
 				rs.close();
-				System.err
-						.println("Table '"
-								+ tableName
-								+ "' is invalid for postgres database schema of MaJorToM");
+				System.err.println("Table '" + tableName + "' is invalid for postgres database schema of MaJorToM");
 				return STATE_DATABASE_IS_INVALID;
 			}
 			List<String> databaseColumns = HashUtil.getList();
 			/*
 			 * extract all columns
 			 */
-			ResultSet rsColumns = getDatabaseMetaData().getColumns(null, null,
-					tableName, null);
+			ResultSet rsColumns = getDatabaseMetaData().getColumns(null, null, tableName, null);
 			rsColumns.beforeFirst();
 			/*
 			 * iterate over columns
@@ -358,12 +341,8 @@ public abstract class BasePostGreSqlConnectionProvider implements
 				if (!columnsInformation.contains(columnName)) {
 					rsColumns.close();
 					rs.close();
-					System.err
-							.println("Column '"
-									+ columnName
-									+ "' of table '"
-									+ tableName
-									+ "' is invalid for postgres database schema of MaJorToM");
+					System.err.println("Column '" + columnName + "' of table '" + tableName
+							+ "' is invalid for postgres database schema of MaJorToM");
 					return STATE_DATABASE_IS_INVALID;
 				}
 				databaseColumns.add(columnName);
@@ -384,22 +363,22 @@ public abstract class BasePostGreSqlConnectionProvider implements
 		for (Entry<String, List<String>> entry : schemaInformation.entrySet()) {
 			List<String> columns = databaseValues.get(entry.getKey());
 			if (columns == null) {
-				System.err
-						.println("Table '" + entry.getKey() + "' is missing!");
+				System.err.println("Table '" + entry.getKey() + "' is missing!");
 				return STATE_DATABASE_IS_INVALID;
 			}
 			if (!entry.getValue().containsAll(columns)) {
 				entry.getValue().removeAll(columns);
-				System.err.println("At least one column " + entry.getValue()
-						+ " of table '" + entry.getKey() + "' is missing!");
+				System.err.println("At least one column " + entry.getValue() + " of table '" + entry.getKey()
+						+ "' is missing!");
 				return STATE_DATABASE_IS_INVALID;
 			}
 		}
 		return STATE_DATABASE_IS_VALID;
 	}
-	
+
 	/**
 	 * Returns the internal JDBC connection to read from database
+	 * 
 	 * @return the readerConnection
 	 */
 	protected Connection getReaderConnection() {

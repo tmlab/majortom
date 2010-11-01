@@ -67,18 +67,19 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 	public void testCreateAssociation() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		assertNull(index.getFirstRevision());
+		IRevision first = index.getFirstRevision(); 
+		assertNotNull(first);
 		
 		topicMap.getStore().enableRevisionManagement(false);
 		ITopic type = createTopic();
-		assertNull(index.getFirstRevision());
+		assertEquals(first, index.getLastRevision());
 		
 		topicMap.getStore().enableRevisionManagement(true);
-		assertNull(index.getFirstRevision());		
+		assertEquals(first, index.getLastRevision());
 		
 		topicMap.createAssociation(type);
-		assertNotNull(index.getFirstRevision());
-		IRevision r = index.getFirstRevision();
+		assertNotNull(index.getLastRevision());
+		IRevision r = index.getLastRevision();
 		assertEquals(3, r.getChangeset().size());
 		assertNull(r.getFuture());
 		
@@ -87,15 +88,15 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 	public void testCreateAssociationByMergeIn() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		assertNull(index.getFirstRevision());
+		assertNotNull(index.getFirstRevision());
 		
 		TopicMap tm = factory.newTopicMapSystem().createTopicMap("http://psi.second.com/");
 		Topic type = tm.createTopic();		
 		tm.createAssociation(type);
 		
 		topicMap.mergeIn(tm);
-		assertNotNull(index.getFirstRevision());
-		IRevision r = index.getFirstRevision();
+		assertNotNull(index.getLastRevision());
+		IRevision r = index.getLastRevision();
 		System.out.println(r.getChangeset());
 		assertEquals(5, r.getChangeset().size());
 		assertNull(r.getFuture());		

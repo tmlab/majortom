@@ -17,6 +17,7 @@ package de.topicmapslab.majortom.core;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.tmapi.core.FeatureNotRecognizedException;
@@ -25,6 +26,7 @@ import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
+import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -89,13 +91,19 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 * {@inheritDoc}
 	 */
 	public TopicMapSystem newTopicMapSystem() throws TMAPIException {
+		ServiceLoader<ITopicMapSystem> loader = ServiceLoader.load(ITopicMapSystem.class);
+		for (ITopicMapSystem system : loader) {
+			system.setFactory(this);
+			return system;
+		}
 		return new TopicMapSystemImpl(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setFeature(String arg0, boolean arg1) throws FeatureNotSupportedException, FeatureNotRecognizedException {
+	public void setFeature(String arg0, boolean arg1) throws FeatureNotSupportedException,
+			FeatureNotRecognizedException {
 		if (!FeatureStrings.FEATURES.contains(arg0)) {
 			throw new FeatureNotRecognizedException("Unknown feature string '" + arg0 + "'!");
 		}

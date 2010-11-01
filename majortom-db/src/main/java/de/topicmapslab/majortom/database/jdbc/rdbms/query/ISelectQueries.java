@@ -128,6 +128,12 @@ public interface ISelectQueries {
 	}
 
 	interface NonPaged {
+		/**
+		 * Load all locators of topic maps
+		 * 
+		 * @since 1.1.2
+		 */
+		public static String QUERY_READ_LOCATORS = "SELECT l.id , reference FROM topicmaps AS tm, locators AS l WHERE id_base_locator = l.id";
 		// ******************
 		// * READ TOPIC MAP *
 		// ******************

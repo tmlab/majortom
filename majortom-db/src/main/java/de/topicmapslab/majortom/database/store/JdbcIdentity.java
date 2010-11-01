@@ -29,7 +29,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	/**
 	 * the internal id
 	 */
-	private String id;
+	private long id;
 
 	/**
 	 * constructor
@@ -37,7 +37,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * @param id
 	 *            the id
 	 */
-	public JdbcIdentity(final String id) {
+	public JdbcIdentity(final long id) {
 		this.id = id;
 	}
 
@@ -47,6 +47,15 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * @return the id
 	 */
 	public String getId() {
+		return String.valueOf(id);
+	}
+	
+	/**
+	 * Return the internal id of the constructn as long
+	 * 
+	 * @return the id
+	 */
+	public long longId() {
 		return id;
 	}
 
@@ -55,7 +64,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof JdbcIdentity) {
-			return ((JdbcIdentity) obj).getId().equalsIgnoreCase(id);
+			return ((JdbcIdentity) obj).longId() == id;
 		}
 		return false;
 	}
@@ -64,7 +73,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * {@inheritDoc}
 	 */
 	public int hashCode() {
-		return getId().hashCode();
+		return Long.valueOf(id).hashCode();
 	}
 
 	/**
@@ -73,10 +82,15 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(String id) {
-		// System.out.println("Id change from '" + this.id + "' to '" + id +
-		// "'.");
+	public void setId(long id) {		
 		this.id = id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setId(String id) {
+		this.id = Long.parseLong(id);
 	}
 
 }

@@ -20,7 +20,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TransactionException;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.model.transaction.ITransactionTopicMapStore;
-import de.topicmapslab.majortom.store.TopicMapStoreImpl;
+import de.topicmapslab.majortom.store.ModifableTopicMapStoreImpl;
 import de.topicmapslab.majortom.transaction.TransactionImpl;
 
 /**
@@ -41,7 +41,7 @@ public class InMemoryTransaction extends TransactionImpl {
 	 */
 	public InMemoryTransaction(ITopicMap parent) {
 		super(parent);
-		this.transactionTopicMapStore = new TransactionTopicMapStore(getTopicMap().getTopicMapSystem(), (TopicMapStoreImpl) parent.getStore(), this);
+		this.transactionTopicMapStore = new TransactionTopicMapStore(getTopicMap().getTopicMapSystem(), (ModifableTopicMapStoreImpl) parent.getStore(), this);
 		this.transactionTopicMapStore.setTopicMap(this);
 		this.transactionTopicMapStore.connect();
 	}

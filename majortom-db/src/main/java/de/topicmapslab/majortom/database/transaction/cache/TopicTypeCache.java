@@ -32,7 +32,7 @@ import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
-import de.topicmapslab.majortom.store.TopicMapStoreImpl;
+import de.topicmapslab.majortom.store.ModifableTopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -1002,7 +1002,7 @@ public class TopicTypeCache implements IDataStore {
 	 * 
 	 * @return the topic map store
 	 */
-	protected TopicMapStoreImpl getTopicMapStore() {
+	protected ModifableTopicMapStoreImpl getTopicMapStore() {
 		return topicMapStore.getRealStore();
 	}
 
