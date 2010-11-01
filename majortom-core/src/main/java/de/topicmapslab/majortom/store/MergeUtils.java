@@ -73,7 +73,7 @@ public class MergeUtils {
 	 *            a set of themes
 	 * @return the merging candidate-name combination or <code>null</code>
 	 */
-	public static NameMergeCandidate detectMergeByNameCandidate(TopicMapStoreImpl store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
+	public static NameMergeCandidate detectMergeByNameCandidate(ModifableTopicMapStoreImpl store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
 		IName duplette = getDuplette(store, topic, nameType, value, themes);
 		if (duplette != null) {
 			return new NameMergeCandidate(topic, duplette);
@@ -91,7 +91,7 @@ public class MergeUtils {
 	 * @return the found topic or <code>null</code>
 	 * @throws TopicMapStoreException
 	 */
-	public static ITopic getDuplette(TopicMapStoreImpl store, Topic topic) throws TopicMapStoreException {
+	public static ITopic getDuplette(ModifableTopicMapStoreImpl store, Topic topic) throws TopicMapStoreException {
 		for (Locator locator : topic.getItemIdentifiers()) {
 			ILocator loc = store.doCreateLocator(store.getTopicMap(), locator.getReference());
 			IConstruct duplette = store.doReadConstruct(store.getTopicMap(), loc);
@@ -150,7 +150,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IName getDuplette(TopicMapStoreImpl store, ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IName getDuplette(ModifableTopicMapStoreImpl store, ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -184,7 +184,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IVariant getDuplette(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IVariant getDuplette(ModifableTopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -220,7 +220,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IOccurrence getDuplette(TopicMapStoreImpl store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IOccurrence getDuplette(ModifableTopicMapStoreImpl store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -252,7 +252,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IAssociation getDuplette(TopicMapStoreImpl store, ITopic topic, ITopic other, IAssociation association) throws TopicMapStoreException {
+	public static IAssociation getDuplette(ModifableTopicMapStoreImpl store, ITopic topic, ITopic other, IAssociation association) throws TopicMapStoreException {
 		/*
 		 * iterate over all associations
 		 */
@@ -314,7 +314,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IAssociation getDuplette(TopicMapStoreImpl store, IAssociation association, Set<IAssociation> excluded) throws TopicMapStoreException {
+	public static IAssociation getDuplette(ModifableTopicMapStoreImpl store, IAssociation association, Set<IAssociation> excluded) throws TopicMapStoreException {
 		/*
 		 * iterate over all filtered associations
 		 */
@@ -379,7 +379,7 @@ public class MergeUtils {
 	 *            the revision to store changes
 	 * @throws TopicMapStoreException
 	 */
-	public static void doMerge(TopicMapStoreImpl store, ITopic topic, ITopic other, IRevision revision) throws TopicMapStoreException {
+	public static void doMerge(ModifableTopicMapStoreImpl store, ITopic topic, ITopic other, IRevision revision) throws TopicMapStoreException {
 		/*
 		 * move names
 		 */
@@ -619,7 +619,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceIdentity(TopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
+	public static void replaceIdentity(ModifableTopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		/*
 		 * item-identifier
 		 */
@@ -657,7 +657,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceAsTypeOrSupertype(TopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
+	public static void replaceAsTypeOrSupertype(ModifableTopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		ITypeInstanceIndex typeIndex = store.getIndex(ITypeInstanceIndex.class);
 		if (!typeIndex.isOpen()) {
 			typeIndex.open();
@@ -719,7 +719,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceAsTheme(TopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
+	public static void replaceAsTheme(ModifableTopicMapStoreImpl store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		IScopedIndex scopeIndex = store.getIndex(IScopedIndex.class);
 		if (!scopeIndex.isOpen()) {
 			scopeIndex.open();
@@ -769,7 +769,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void doMergeReifiable(TopicMapStoreImpl store, IReifiable reifiable, IReifiable other, IRevision revision) throws TopicMapStoreException {
+	public static void doMergeReifiable(ModifableTopicMapStoreImpl store, IReifiable reifiable, IReifiable other, IRevision revision) throws TopicMapStoreException {
 		Topic reifierOfOther = other.getReifier();
 		if (reifierOfOther != null) {
 			Topic reifier = reifiable.getReifier();
@@ -812,7 +812,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void doMergeTopicMaps(TopicMapStoreImpl store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+	public static void doMergeTopicMaps(ModifableTopicMapStoreImpl store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
 		/*
 		 * copy identifies
 		 */
@@ -1014,7 +1014,7 @@ public class MergeUtils {
 	 *            the set of themes
 	 * @return the scope object
 	 */
-	public static IScope getCorrespondingScope(TopicMapStoreImpl store, final Set<Topic> themes) {
+	public static IScope getCorrespondingScope(ModifableTopicMapStoreImpl store, final Set<Topic> themes) {
 		Set<Topic> set = HashUtil.getHashSet();
 		for (Topic t : themes) {
 			ITopic theme = getDuplette(store, t);
@@ -1039,7 +1039,7 @@ public class MergeUtils {
 	 *         <code>false</code> otherwise.
 	 * @throws TopicMapStoreException
 	 */
-	private static boolean checkTmdmAssociation(TopicMapStoreImpl store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+	private static boolean checkTmdmAssociation(ModifableTopicMapStoreImpl store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
 		Locator typeInstanceLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
 		Locator supertypeSubtypeLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 
@@ -1122,7 +1122,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void removeDuplicates(final TopicMapStoreImpl store, final ITopicMap topicMap) throws TopicMapStoreException {
+	public static void removeDuplicates(final ModifableTopicMapStoreImpl store, final ITopicMap topicMap) throws TopicMapStoreException {
 		// ThreadPoolExecutor executor = (ThreadPoolExecutor)
 		// Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()
 		// * 4);
@@ -1400,7 +1400,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static Set<IAssociation> getDuplettes(TopicMapStoreImpl store, IAssociation association) throws TopicMapStoreException {
+	public static Set<IAssociation> getDuplettes(ModifableTopicMapStoreImpl store, IAssociation association) throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		/*
 		 * iterate over all filtered associations
@@ -1471,7 +1471,7 @@ public class MergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static Set<IVariant> getDuplettes(TopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
+	public static Set<IVariant> getDuplettes(ModifableTopicMapStoreImpl store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IVariant> variants = HashUtil.getHashSet();
 		/*
 		 * get scope as filter

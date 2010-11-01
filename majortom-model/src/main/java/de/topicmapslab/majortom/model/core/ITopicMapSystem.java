@@ -21,6 +21,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
+import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
@@ -33,8 +34,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 public interface ITopicMapSystem extends TopicMapSystem {
 
 	/**
-	 * Create a new topic map instance for the given locator and set the store
-	 * reference to the given variable.
+	 * Create a new topic map instance for the given locator and set the store reference to the given variable.
 	 * 
 	 * @param locator
 	 *            the base locator
@@ -45,7 +45,7 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 *             thrown if the topic map cannot created
 	 */
 	public TopicMap createTopicMap(Locator locator, ITopicMapStore store) throws TopicMapExistsException;
-	
+
 	/**
 	 * Create a new topic map instance with the base locator created from the given reference and set the store
 	 * reference to the given variable.
@@ -59,7 +59,7 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 *             thrown if the topic map cannot created
 	 */
 	public TopicMap createTopicMap(String ref, ITopicMapStore store) throws TopicMapExistsException;
-	
+
 	/**
 	 * Internal method to set a feature, called from topic map store
 	 * 
@@ -72,5 +72,14 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 * @throws FeatureNotRecognizedException
 	 *             thrown if feature is not supported by MaJorToM
 	 */
-	public void setFeature(String key, boolean value) throws FeatureNotSupportedException, FeatureNotRecognizedException;
+	public void setFeature(String key, boolean value) throws FeatureNotSupportedException,
+			FeatureNotRecognizedException;
+
+	/**
+	 * Internal method to set the factory instance
+	 * 
+	 * @param factory
+	 *            the factory to set
+	 */
+	public void setFactory(TopicMapSystemFactory factory);
 }

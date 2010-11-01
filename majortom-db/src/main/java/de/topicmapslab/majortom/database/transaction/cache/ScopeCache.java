@@ -42,7 +42,7 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
-import de.topicmapslab.majortom.store.TopicMapStoreImpl;
+import de.topicmapslab.majortom.store.ModifableTopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -750,7 +750,7 @@ public class ScopeCache implements IDataStore {
 	/**
 	 * @return the topicMapStore
 	 */
-	public TopicMapStoreImpl getTopicMapStore() {
+	public ModifableTopicMapStoreImpl getTopicMapStore() {
 		return topicMapStore.getRealStore();
 	}
 

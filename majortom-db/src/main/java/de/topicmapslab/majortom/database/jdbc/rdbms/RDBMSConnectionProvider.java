@@ -135,9 +135,6 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 */
 	public void openConnections(String host, String database, String user,
 			String password) throws SQLException, TopicMapStoreException {
-		if (store == null) {
-			throw new TopicMapStoreException("Topic map store not set!");
-		}
 		try {
 			Class.forName(getDriverClassName());
 		} catch (ClassNotFoundException e) {

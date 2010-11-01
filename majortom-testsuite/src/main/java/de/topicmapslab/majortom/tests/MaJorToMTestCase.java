@@ -40,6 +40,10 @@ import de.topicmapslab.majortom.util.FeatureStrings;
  */
 public class MaJorToMTestCase extends TestCase {
 
+	/**
+	 * 
+	 */
+	protected static final String BASE = "http://psi.majortom.test";
 	protected ITopicMap topicMap;
 	protected TopicMapSystemFactory factory;
 	protected ITopicMapSystem topicMapSystem;
@@ -56,7 +60,7 @@ public class MaJorToMTestCase extends TestCase {
 				false);
 		topicMapSystem = (ITopicMapSystem) factory.newTopicMapSystem();
 		topicMap = (ITopicMap) topicMapSystem
-				.createTopicMap("http://psi.majortom.test");
+				.createTopicMap(BASE);
 	}
 
 	/**

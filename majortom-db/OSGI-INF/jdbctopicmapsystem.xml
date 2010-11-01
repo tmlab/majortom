@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" name="jdbctopicmapsystem">
+   <implementation class="de.topicmapslab.majortom.database.core.JdbcTopicMapSystem"/>
+   <service>
+      <provide interface="de.topicmapslab.majortom.model.core.ITopicMapSystem"/>
+   </service>
+</scr:component>

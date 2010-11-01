@@ -27,7 +27,7 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
-import de.topicmapslab.majortom.store.TopicMapStoreImpl;
+import de.topicmapslab.majortom.store.ModifableTopicMapStoreImpl;
 
 /**
  * Internal data store of reifier-reified relations.
@@ -278,7 +278,7 @@ public class ReificationCache implements IDataStore {
 	 * 
 	 * @return the store the store instance
 	 */
-	protected TopicMapStoreImpl getTopicMapStore() {
+	protected ModifableTopicMapStoreImpl getTopicMapStore() {
 		return topicMapStore.getRealStore();
 	}
 

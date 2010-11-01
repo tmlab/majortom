@@ -41,6 +41,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.store.ReadOnlyTopicMapStoreImpl;
+import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -162,7 +163,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void setStore(final ITopicMapStore store) {
+	public void setStore(final ITopicMapStore store) {
 		if (store == null) {
 			throw new IllegalArgumentException("Store argument cannot be null.");
 		}
@@ -170,7 +171,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			this.store.close();
 		}
 		this.store = store;
-		((ReadOnlyTopicMapStoreImpl)this.store).setTopicMap(this);
+		((TopicMapStoreImpl)this.store).setTopicMap(this);
 		this.store.connect();
 	}
 

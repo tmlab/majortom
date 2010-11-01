@@ -28,6 +28,8 @@ import java.sql.SQLException;
 public interface IQueryBuilder {
 
 	public void close();
+	
+	public PreparedStatement getQueryReadTopicMapLocators() throws SQLException;
 
 	// ****************
 	// * INSERT QUERY *
