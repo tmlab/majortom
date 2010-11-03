@@ -24,6 +24,7 @@ import org.tmapi.core.TopicMap;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
@@ -45,6 +46,7 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		association.setReifier(reifier);
 
 		association.remove();
+		topicMap.getStore().commit();
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
@@ -72,12 +74,14 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		
 		topicMap.getStore().enableRevisionManagement(false);
 		ITopic type = createTopic();
+		topicMap.getStore().commit();
 		assertEquals(first, index.getLastRevision());
 		
 		topicMap.getStore().enableRevisionManagement(true);
 		assertEquals(first, index.getLastRevision());
 		
 		topicMap.createAssociation(type);
+		topicMap.getStore().commit();
 		assertNotNull(index.getLastRevision());
 		IRevision r = index.getLastRevision();
 		assertEquals(3, r.getChangeset().size());
@@ -93,8 +97,10 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		TopicMap tm = factory.newTopicMapSystem().createTopicMap("http://psi.second.com/");
 		Topic type = tm.createTopic();		
 		tm.createAssociation(type);
+		((ITopicMap)tm).getStore().commit();
 		
 		topicMap.mergeIn(tm);
+		topicMap.getStore().commit();
 		assertNotNull(index.getLastRevision());
 		IRevision r = index.getLastRevision();
 		System.out.println(r.getChangeset());

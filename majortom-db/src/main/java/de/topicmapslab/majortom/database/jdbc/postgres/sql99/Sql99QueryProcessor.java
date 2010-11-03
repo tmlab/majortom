@@ -4979,7 +4979,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (revision != null) {
 			PreparedStatement stmt = queryBuilder.getQueryTopicDump();
 			stmt.setLong(1, revision.getId());
-			stmt.setString(2, topic.getBestLabel());
+			stmt.setString(2, doReadBestLabel(topic));
 			stmt.setLong(3, Long.parseLong(topic.getId()));
 			stmt.execute();
 		}

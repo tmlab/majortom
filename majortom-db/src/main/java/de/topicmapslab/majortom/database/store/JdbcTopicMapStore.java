@@ -2283,5 +2283,13 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 		enableCaching(wasCachingEnabled);
 	}
+	
+	/**
+	 * Returns the internal identity of the topic map
+	 * @return the identity
+	 */
+	public JdbcIdentity getTopicMapIdentity() {
+		return identity;
+	}
 
 }

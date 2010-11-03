@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.tests.event;
+package de.topicmapslab.majortom.queued;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class EventTestSuite {
+public class QueuedTopicMapStoreTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.event");
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.queued");				
 		// $JUnit-BEGIN$
-//		suite.addTestSuite(TestEventModel.class);
+		suite.addTest(MaJorToMTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}
-
+	
 }

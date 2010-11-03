@@ -24,7 +24,6 @@ import org.tmapi.core.Construct;
 import org.tmapi.core.IdentityConstraintException;
 import org.tmapi.core.ModelConstraintException;
 import org.tmapi.core.Reifiable;
-import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
@@ -1599,17 +1598,17 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		/*
 		 * use as role-player
 		 */
-		for (Role r : topic.getRolesPlayed()) {
+		for (IAssociationRole r : doReadRoles(topic)) {
 			/*
 			 * ignore instance role
 			 */
-			if (existsTmdmInstanceRoleType() && r.getType().equals(getTmdmInstanceRoleType())) {
+			if (existsTmdmInstanceRoleType() && doReadType(r).equals(getTmdmInstanceRoleType())) {
 				continue;
 			}
 			/*
 			 * ignore subtype-role
 			 */
-			if (existsTmdmSubtypeRoleType() && r.getType().equals(getTmdmSubtypeRoleType())) {
+			if (existsTmdmSubtypeRoleType() && doReadType(r).equals(getTmdmSubtypeRoleType())) {
 				continue;
 			}
 			/*
@@ -1633,7 +1632,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		/*
 		 * check if deletion constraints are defined and topic is used as reifier
 		 */
-		if (isReificationDeletionRestricted() && topic.getReified() != null) {
+		if (isReificationDeletionRestricted() && doReadReification(topic) != null) {
 			return true;
 		}
 		return false;

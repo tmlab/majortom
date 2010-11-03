@@ -111,6 +111,7 @@ public class TestEventModel extends MaJorToMTestCase {
 
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
@@ -132,6 +133,7 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void testEventSupertypeAdded() throws Exception {
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
+		topicMap.getStore().commit();
 
 
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
@@ -159,7 +161,7 @@ public class TestEventModel extends MaJorToMTestCase {
 	public void testEventSubjectIdentifierAdded() throws Exception {
 		final ITopic topic = createTopic();
 		final Locator locator = createLocator("http://psi.example.org/locator");
-
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -184,6 +186,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final Locator locator = createLocator("http://psi.example.org/locator");
 
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -227,26 +230,26 @@ public class TestEventModel extends MaJorToMTestCase {
 		_testEventItemIdentifierAdded(role, itemIdentifier);
 		// for topic map
 		_testEventItemIdentifierAdded(topicMap, itemIdentifier);
-		topicMap.getStore().commit();
 	}
 
 	public void _testEventItemIdentifierAdded(final Construct construct, final Locator itemIdentifier) throws Exception {
+		topicMap.getStore().commit();		
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(ITEM_IDENTIFIER_ADDED, event);
+				if (event == ITEM_IDENTIFIER_ADDED) {
+					checked = true;
 					assertEquals(construct, notifier);
 					assertTrue(newValue instanceof ILocator);
 					assertEquals(itemIdentifier, newValue);
 					assertNull(oldValue);
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
 		construct.addItemIdentifier(itemIdentifier);
+		topicMap.getStore().commit();	
 		topicMap.removeTopicMapListener(listener);
 		construct.removeItemIdentifier(itemIdentifier);
 		assertTrue(listener.checked);
@@ -270,13 +273,12 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void _testEventScopeModified(final Scoped scoped, final Set<Topic> themes) throws Exception {
 		final ITopic theme = createTopic();
-
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(SCOPE_MODIFIED, event);
+				if (event == SCOPE_MODIFIED) {
 					assertEquals(scoped, notifier);
 					assertTrue(newValue instanceof IScope);
 					assertTrue(((IScope) newValue).getThemes().containsAll(themes));
@@ -286,20 +288,20 @@ public class TestEventModel extends MaJorToMTestCase {
 					assertTrue(oldValue instanceof IScope);
 					assertTrue(((IScope) oldValue).getThemes().containsAll(themes));
 					assertEquals(themes.size(), ((IScope) oldValue).getThemes().size());
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
 		scoped.addTheme(theme);
-		topicMap.removeTopicMapListener(listener);
+		topicMap.getStore().commit();
 
+		topicMap.removeTopicMapListener(listener);		
 		listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(SCOPE_MODIFIED, event);
+				if (event == SCOPE_MODIFIED) {
 					assertEquals(scoped, notifier);
 					assertNotNull(newValue);
 					assertTrue(newValue instanceof IScope);
@@ -309,14 +311,15 @@ public class TestEventModel extends MaJorToMTestCase {
 					assertTrue(((IScope) oldValue).getThemes().containsAll(themes));
 					assertTrue(((IScope) oldValue).getThemes().contains(theme));
 					assertEquals(themes.size() + 1, ((IScope) oldValue).getThemes().size());
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 
 		topicMap.addTopicMapListener(listener);
-		scoped.removeTheme(theme);
+		scoped.removeTheme(theme);	
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventRoleAdded() throws Exception {
@@ -329,15 +332,14 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 				if (notifier instanceof IAssociation) {
-					if (!checked) {
-						assertEquals(ROLE_ADDED, event);
+					if (event == ROLE_ADDED) {
 						assertEquals(association, notifier);
 						assertTrue(newValue instanceof IAssociationRole);
 						assertEquals(type, ((IAssociationRole) newValue).getType());
 						assertEquals(player, ((IAssociationRole) newValue).getPlayer());
 						assertNull(oldValue);
+						checked = true;
 					}
-					checked = true;
 				}
 			}
 		};
@@ -349,18 +351,18 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void testEventAssociationAdded() throws Exception {
 		final ITopic type = createTopic();
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(ASSOCIATION_ADDED, event);
+				if (event == ASSOCIATION_ADDED) {
 					assertEquals(topicMap, notifier);
 					assertTrue(newValue instanceof IAssociation);
 					assertTrue(topicMap.getAssociations().contains(newValue));
 					assertNull(oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -376,14 +378,13 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(NAME_ADDED, event);
+				if (event == NAME_ADDED) {
 					assertEquals(topic, notifier);
 					assertTrue(newValue instanceof IName);
 					assertTrue(topic.getNames().contains(newValue));
 					assertNull(oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -399,14 +400,13 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(OCCURRENCE_ADDED, event);
+				if (event == OCCURRENCE_ADDED) {
 					assertEquals(topic, notifier);
 					assertTrue(newValue instanceof IOccurrence);
 					assertTrue(topic.getOccurrences().contains(newValue));
 					assertNull(oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -423,14 +423,13 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(VARIANT_ADDED, event);
+				if (event == VARIANT_ADDED) {
 					assertEquals(name, notifier);
 					assertTrue(newValue instanceof IVariant);
 					assertTrue(name.getVariants().contains(newValue));
 					assertNull(oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -450,15 +449,15 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
+				if (event == PLAYER_MODIFIED) {
 					assertEquals(PLAYER_MODIFIED, event);
 					assertEquals(role, notifier);
 					assertTrue(newValue instanceof ITopic);
 					assertEquals(newPlayer, newValue);
 					assertTrue(oldValue instanceof ITopic);
 					assertEquals(player, oldValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -471,19 +470,19 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final Locator locator = createLocator("http://psi.example.org/locator");
 		topic.addSubjectIdentifier(locator);
+		topicMap.getStore().commit();
 
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(SUBJECT_IDENTIFIER_REMOVED, event);
+				if (event == SUBJECT_IDENTIFIER_REMOVED) {
 					assertEquals(topic, notifier);
 					assertTrue(oldValue instanceof ILocator);
 					assertEquals(locator, oldValue);
 					assertNull(newValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -496,19 +495,19 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final Locator locator = createLocator("http://psi.example.org/locator");
 		topic.addSubjectLocator(locator);
+		topicMap.getStore().commit();
 
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(SUBJECT_LOCATOR_REMOVED, event);
+				if (event == SUBJECT_LOCATOR_REMOVED) {
 					assertEquals(topic, notifier);
 					assertTrue(oldValue instanceof ILocator);
 					assertEquals(locator, oldValue);
 					assertNull(newValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
@@ -544,23 +543,24 @@ public class TestEventModel extends MaJorToMTestCase {
 
 	public void _testEventItemIdentifierRemoved(final Construct construct, final Locator locator) throws Exception {
 		construct.addItemIdentifier(locator);
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(ITEM_IDENTIFIER_REMOVED, event);
+				if (event == TopicMapEventType.ITEM_IDENTIFIER_REMOVED) {
 					assertEquals(construct, notifier);
 					assertTrue(oldValue instanceof ILocator);
 					assertEquals(locator, oldValue);
 					assertNull(newValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
 		construct.removeItemIdentifier(locator);
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventTypeRemoved() throws Exception {
@@ -570,6 +570,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
 		topic.addType(type);
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -599,6 +600,7 @@ public class TestEventModel extends MaJorToMTestCase {
 		final ITopic topic = createTopic();
 		final ITopic type = createTopic();
 		topic.addSupertype(type);
+		topicMap.getStore().commit();
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 
 			@Override
@@ -670,8 +672,10 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		};
 		topicMap.addTopicMapListener(listener);
+		topicMap.getStore().commit();
 		construct.remove();
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventTypeSet() throws Exception {
@@ -699,18 +703,19 @@ public class TestEventModel extends MaJorToMTestCase {
 
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(TYPE_SET, event);
+				if (event == TYPE_SET) {
 					assertEquals(typeable, notifier);
 					assertEquals("Old Type for " + typeable.getClass().getSimpleName() + " is wrong!", oldType, oldValue);
 					assertEquals("New Type for " + typeable.getClass().getSimpleName() + " is wrong!", newType, newValue);
+					checked = true;
 				}
-				checked = true;
 			}
 		};
 		topicMap.addTopicMapListener(listener);
+		topicMap.getStore().commit();
 		typeable.setType(newType);
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventReifierSet() throws Exception {
@@ -741,20 +746,21 @@ public class TestEventModel extends MaJorToMTestCase {
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(REIFIER_SET, event);
+				if (event == REIFIER_SET) {
 					assertEquals(reifiable, notifier);
 					assertEquals("Old Reifier for " + reifiable.getClass().getSimpleName() + " is wrong!", oldReifier, oldValue);
 					assertEquals("New Reifier for " + reifiable.getClass().getSimpleName() + " is wrong!", newReifier, newValue);
+					checked = true;
 				}
-				checked = true;
 			}
 
 		};
 		topicMap.addTopicMapListener(listener);
+		topicMap.getStore().commit();
 		reifiable.setReifier(newReifier);
 		reifiable.setReifier(null);
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventValueModified() throws Exception {
@@ -776,16 +782,16 @@ public class TestEventModel extends MaJorToMTestCase {
 		CheckedTopicMapListener listener = new CheckedTopicMapListener() {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-				if (!checked) {
-					assertEquals(VALUE_MODIFIED, event);
+				if (event == TopicMapEventType.VALUE_MODIFIED) {
 					assertEquals(construct, notifier);
 					assertEquals("Old Value for " + construct.getClass().getSimpleName() + " is wrong!", oldValue_, oldValue);
 					assertEquals("New Reifier for " + construct.getClass().getSimpleName() + " is wrong!", newValue_, newValue);
-				}
-				checked = true;
+					checked = true;
+					}
 			}
 		};
 		topicMap.addTopicMapListener(listener);
+		topicMap.getStore().commit();
 
 		if (construct instanceof Name) {
 			((Name) construct).setValue(newValue_);
@@ -795,6 +801,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			fail("Invalid construct calling!");
 		}
 		assertTrue(listener.checked);
+		topicMap.removeTopicMapListener(listener);
 	}
 
 	public void testEventMerge() throws Exception {
@@ -818,6 +825,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			}
 		};
 		topicMap.addTopicMapListener(listener);
+		topicMap.getStore().commit();
 		topic.mergeIn(otherTopic);
 		topicMap.getStore().commit();
 		assertTrue(listener.checked);

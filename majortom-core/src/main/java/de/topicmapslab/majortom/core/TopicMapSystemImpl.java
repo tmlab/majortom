@@ -59,10 +59,6 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	 * a map of all locators created by the topic map system
 	 */
 	private final Map<String, Locator> locators = HashUtil.getWeakHashMap();
-	/**
-	 * the property file name
-	 */
-	private static final String propertyFile = "engine.properties";
 
 	/**
 	 * the topic map system properties
@@ -213,45 +209,6 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		return topicMaps.get(arg0);
 	}
 
-	/**
-	 * Hidden method to load optional properties of the current topic map system.
-	 * 
-	 * @throws TopicMapStoreException
-	 *             thrown if the properties can not load
-	 */
-	private void loadPropertiesFromFile() throws TopicMapStoreException {
-		/*
-		 * load from file
-		 */
-		File file = new File(propertyFile);
-		if (file.exists()) {
-			Properties properties = new Properties();
-			try {
-				properties.load(new FileInputStream(file));
-				for (Entry<Object, Object> entry : properties.entrySet()) {
-					this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
-				}
-			} catch (FileNotFoundException e) {
-				// NOTHING TO DO
-			} catch (IOException e) {
-				// NOTHING TO DO
-			}
-		}
-		/*
-		 * load from resources if exists
-		 */
-		Properties properties = new Properties();
-		try {
-			properties.load(TopicMapStoreFactory.class.getResourceAsStream(propertyFile));
-			for (Entry<Object, Object> entry : properties.entrySet()) {
-				this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
-			}
-		} catch (IOException e) {
-			// NOTHING TO DO
-		} catch (NullPointerException e) {
-			// NOTHING TO DO
-		}
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -260,12 +217,13 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null.");
 		}
-		ITopicMap topicMap = (ITopicMap) getTopicMap(locator);
-		if (topicMap == null) {
-			throw new IllegalArgumentException("No topic map contained for the given locator.");
-		}
-		this.topicMaps.remove(locator);
-		return topicMap;
+		
+//		ITopicMap topicMap = (ITopicMap) getTopicMap(locator);
+//		if (topicMap == null) {
+//			throw new IllegalArgumentException("No topic map contained for the given locator.");
+//		}
+		return this.topicMaps.remove(locator);
+//		return topicMap;
 	}
 
 	/**
@@ -335,7 +293,6 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 	public void setFactory(TopicMapSystemFactoryImpl factory) {
 		this.factory = factory;
 		properties = new Properties();
-		loadPropertiesFromFile();
 		properties.putAll(((TopicMapSystemFactoryImpl) factory).getProperties());
 		features = HashUtil.getHashMap(factory.getFeatures());
 	}

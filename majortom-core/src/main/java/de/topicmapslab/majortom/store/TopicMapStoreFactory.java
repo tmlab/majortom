@@ -67,7 +67,7 @@ public class TopicMapStoreFactory {
 		}
 
 		try {
-			ITopicMapStoreFactory storeFac = getStoreFactories().get(className.toString());
+			ITopicMapStoreFactory storeFac = getStoreFactories().get(className.toString().trim());
 
 			ITopicMapStore store = storeFac.newTopicMapStore(topicMapSystem);
 			store.initialize(topicMapBaseLocator);
@@ -163,7 +163,7 @@ public class TopicMapStoreFactory {
 			ITopicMapStore newStore;
 			try {
 				newStore = store.getClass().getConstructor().newInstance();
-				((ReadOnlyTopicMapStoreImpl) newStore).setTopicMapSystem(tmSystem);
+				((TopicMapStoreImpl) newStore).setTopicMapSystem(tmSystem);
 				return newStore;
 			} catch (Exception e) {
 				throw new RuntimeException(e);

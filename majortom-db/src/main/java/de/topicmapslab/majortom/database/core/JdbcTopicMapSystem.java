@@ -30,6 +30,7 @@ import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -39,6 +40,8 @@ import de.topicmapslab.majortom.util.HashUtil;
  * 
  */
 public class JdbcTopicMapSystem extends TopicMapSystemImpl {
+
+	private Set<Locator> storedTopicMapLocators;
 
 	/**
 	 * constructor for JAVA services
@@ -57,47 +60,50 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 		super(factory);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<Locator> getLocators() {
-		return loadLocatorsFromDatabase();
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public Set<Locator> getLocators() {
+//		return loadLocatorsFromDatabase();
+//	}
 
 	/**
 	 * Internal method to load all locators from database
 	 */
 	private final Set<Locator> loadLocatorsFromDatabase() {
-		Set<Locator> storedTopicMapLocators = HashUtil.getHashSet();
-		/*
-		 * try to load connection parameters
-		 */
-		Object host = getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
-		Object database = getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
-		Object user = getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
-		Object password = getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
-		Object dialect = getProperty(JdbcTopicMapStoreProperty.SQL_DIALECT);
-
-		/*
-		 * check required parameters
-		 */
-		if (database == null || host == null || user == null || dialect == null) {
-			throw new TMAPIRuntimeException("Missing connection properties!");
-		}
-
-		try {
+		if (storedTopicMapLocators == null) {
+			storedTopicMapLocators = HashUtil.getHashSet();
 			/*
-			 * load locators
+			 * try to load connection parameters
 			 */
-			IConnectionProvider provider = ConnectionProviderFactory.getFactory().newConnectionProvider(
-					dialect.toString());
-			provider.openConnections(host.toString(), database.toString(), user.toString(), password == null ? ""
-					: password.toString());
-			for (ILocator loc : provider.getProcessor().getLocators()) {
-				storedTopicMapLocators.add(loc);
+			Object host = getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
+			Object database = getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
+			Object user = getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
+			Object password = getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
+			Object dialect = getProperty(JdbcTopicMapStoreProperty.SQL_DIALECT);
+
+			/*
+			 * check required parameters
+			 */
+			if (database == null || host == null || user == null || dialect == null) {
+				throw new TMAPIRuntimeException("Missing connection properties!");
 			}
-		} catch (SQLException e) {
-			throw new TMAPIRuntimeException("Connection or communiation with database failed!", e);
+
+			try {
+				/*
+				 * load locators
+				 */
+				IConnectionProvider provider = ConnectionProviderFactory.getFactory().newConnectionProvider(
+						dialect.toString());
+				provider.openConnections(host.toString(), database.toString(), user.toString(), password == null ? ""
+						: password.toString());
+				for (ILocator loc : provider.getProcessor().getLocators()) {
+					storedTopicMapLocators.add(loc);
+				}
+				provider.closeConnections();
+			} catch (SQLException e) {
+				throw new TMAPIRuntimeException("Connection or communiation with database failed!", e);
+			}
 		}
 		return storedTopicMapLocators;
 	}
@@ -134,5 +140,37 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 	 */
 	public TopicMap getTopicMap(String reference) {
 		return getTopicMap(createLocator(reference));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMap createTopicMap(Locator locator) throws TopicMapExistsException {
+		if (storedTopicMapLocators == null) {
+			loadLocatorsFromDatabase();
+		}
+		storedTopicMapLocators.add(locator);
+		return super.createTopicMap(locator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public TopicMap createTopicMap(Locator locator, ITopicMapStore store) throws TopicMapExistsException {
+		if (storedTopicMapLocators == null) {
+			loadLocatorsFromDatabase();
+		}
+		storedTopicMapLocators.add(locator);
+		return super.createTopicMap(locator, store);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITopicMap removeTopicMap(Locator locator) {
+		if (storedTopicMapLocators != null) {
+			storedTopicMapLocators.remove(locator);
+		}
+		return super.removeTopicMap(locator);
 	}
 }

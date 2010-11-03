@@ -36,7 +36,6 @@ public class TestTopicMapSystem extends TestCase {
 
 	public void testTopicMapSystemFactory() throws Exception {
 		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();		
-		assertNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
 		TopicMapSystem system = factory.newTopicMapSystem();
 		Assert.assertTrue(system instanceof TopicMapSystemImpl);

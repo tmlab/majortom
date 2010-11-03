@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
@@ -33,6 +33,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
+import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -42,6 +43,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class ScopeStore implements IDataStore {
 
+	/**
+	 * the topic map store
+	 */
+	private final ITopicMapStore store;
 	/**
 	 * storage map of scope-themes mapping
 	 */
@@ -85,11 +90,30 @@ public class ScopeStore implements IDataStore {
 
 	/**
 	 * constructor
+	 * @param store the topic map store
 	 */
-	public ScopeStore() {
-		emptyScope = new ScopeImpl();
+	public ScopeStore(ITopicMapStore store) {
+		this.store = store;
+		emptyScope = createEmptyScope();
 	}
 
+	/**
+	 * Returns the internal reference of the topic map store.
+	 * 
+	 * @return the topic map store
+	 */
+	protected ITopicMapStore getStore() {
+		return store;
+	}
+
+	/**
+	 * Generates a new empty scope construct
+	 * @return the scope construct
+	 */
+	protected IScope createEmptyScope(){
+		return new ScopeImpl();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
