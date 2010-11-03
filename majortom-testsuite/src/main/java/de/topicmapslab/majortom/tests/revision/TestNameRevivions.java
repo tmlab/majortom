@@ -44,6 +44,7 @@ public class TestNameRevivions extends MaJorToMTestCase {
 		Variant other = n.createVariant("Var2", createTopic());
 		n.setReifier(reifier);
 		n.remove();
+		topicMap.getStore().commit();
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();

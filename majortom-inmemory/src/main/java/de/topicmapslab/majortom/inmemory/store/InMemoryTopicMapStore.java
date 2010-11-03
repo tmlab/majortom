@@ -162,7 +162,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create topic and add to identity store
 		 */
@@ -340,7 +340,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
@@ -462,7 +462,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
@@ -520,7 +520,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
@@ -597,7 +597,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create topic and add to identity store
 		 */
@@ -735,7 +735,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = UUID.randomUUID().toString();
+		final String id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
@@ -2334,10 +2334,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			removeVariant(v, true, revision);
 		}
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(name);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeName(name);
@@ -2357,6 +2353,10 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		 * remove typed
 		 */
 		getTypedStore().removeType(name);
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(name);
 		/*
 		 * store revision
 		 */
@@ -2394,10 +2394,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			getRevisionStore().createLazyCopy(occurrence);
 		}
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(occurrence);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeOccurrence(occurrence);
@@ -2417,6 +2413,10 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		 * remove typed
 		 */
 		getTypedStore().removeType(occurrence);
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(occurrence);
 		/*
 		 * store revision
 		 */
@@ -2510,10 +2510,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			getRevisionStore().createLazyCopy(variant);
 		}
 		/*
-		 * remove construct
-		 */
-		getIdentityStore().removeConstruct(variant);
-		/*
 		 * remove characteristics
 		 */
 		getCharacteristicsStore().removeVariant(variant);
@@ -2529,6 +2525,10 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			removeConstruct(reifier, cascade, revision);
 			getReificationStore().removeReification(variant);
 		}
+		/*
+		 * remove construct
+		 */
+		getIdentityStore().removeConstruct(variant);
 		/*
 		 * store revision
 		 */
@@ -2669,15 +2669,14 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		for (ICharacteristics characteristic : characteristics) {
 			removeConstruct(characteristic, cascade, revision);
 		}
-
-		/*
-		 * remove the identity
-		 */
-		getIdentityStore().removeTopic(topic);
 		/*
 		 * remove as parent
 		 */
 		getCharacteristicsStore().removeTopic(topic);
+		/*
+		 * remove the identity
+		 */
+		getIdentityStore().removeTopic(topic);
 		/*
 		 * store revision
 		 */
@@ -2977,7 +2976,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.associationStore = createAssociationStore(this);
 		this.revisionStore = createRevisionStore(this);
 
-		this.identity = new InMemoryIdentity(UUID.randomUUID().toString());
+		this.identity = new InMemoryIdentity(generateId());
 
 		/*
 		 * store topic map creation revision
@@ -3325,7 +3324,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * @return the scopeStore
 	 */
 	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
-		return new ScopeStore();
+		return new ScopeStore(store);
 	}
 
 	/**
@@ -3565,5 +3564,14 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public boolean isCachingEnabled() {
 		return false;
+	}
+
+	/**
+	 * generates a new ID for a new construct
+	 * 
+	 * @return the id
+	 */
+	protected String generateId() {
+		return UUID.randomUUID().toString();
 	}
 }

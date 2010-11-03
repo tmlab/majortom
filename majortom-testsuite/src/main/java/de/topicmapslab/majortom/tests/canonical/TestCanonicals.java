@@ -64,6 +64,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		System.out.print("Remove duplicates ... ");
 		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		topicMap.getStore().commit();
 		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("reifier should be merged", topics.length * 12 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
@@ -102,6 +103,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		System.out.print("Remove duplicates ... ");
 		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		topicMap.getStore().commit();
 		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("Number of names should be 1", 1, parent.getNames().size());
 		Name n = parent.getNames().iterator().next();
@@ -133,6 +135,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		System.out.print("Remove duplicates ... ");
 		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		topicMap.getStore().commit();
 		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals("reifier should be merged", topics.length * 2 + 1, topicMap.getTopics().size());
 		for (int i = 0; i < topics.length; i++) {
@@ -166,6 +169,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		System.out.print("Remove duplicates ... ");
 		long t = System.currentTimeMillis();
 		topicMap.removeDuplicates();
+		topicMap.getStore().commit();
 		System.out.println(" finised after " + (System.currentTimeMillis() - t ) + "ms.");
 		assertEquals(1, topicMap.getAssociations().size());
 		assertEquals("reifier should be merged", 3, topicMap.getTopics().size());

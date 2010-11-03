@@ -24,13 +24,6 @@ import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
-import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
-import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
-import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
-import de.topicmapslab.majortom.inmemory.store.internal.ReificationStore;
-import de.topicmapslab.majortom.inmemory.store.internal.ScopeStore;
-import de.topicmapslab.majortom.inmemory.store.internal.TopicTypeStore;
-import de.topicmapslab.majortom.inmemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyAssociationStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyCharacteristicsStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyIdentityStore;
@@ -38,6 +31,14 @@ import de.topicmapslab.majortom.inmemory.transaction.internal.LazyReificationSto
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyScopeStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTopicTypeStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyTypedStore;
+import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualAssociationStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualCharacteristicsStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualIdentityStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualReificationStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualScopeStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualTopicTypeStore;
+import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualTypedStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -56,11 +57,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore implements ITransactionTopicMapStore {
+public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore implements ITransactionTopicMapStore {
 
 	private List<TransactionCommand> commands = new LinkedList<TransactionCommand>();
 	private LinkedList<TransactionCommand> commited = new LinkedList<TransactionCommand>();
-	private final ITopicMapStore store;
 	private final ITransaction transaction;
 
 	/**
@@ -70,10 +70,12 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 *            the topic map system
 	 * @param store
 	 *            the real store
+	 * @param transaction
+	 *            the transaction
 	 */
-	public InMemoryTransactionTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store, ITransaction transaction) {
-		super(topicMapSystem);
-		this.store = store;
+	public InMemoryTransactionTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store,
+			ITransaction transaction) {
+		super(topicMapSystem, store);
 		this.transaction = transaction;
 	}
 
@@ -91,32 +93,33 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 		try {
 			final Map<Object, Object> lazy = HashUtil.getHashMap();
 			lazy.put(transaction, transaction.getTopicMap());
-			ITopicMapListener listener = new ITopicMapListener() {				
-				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
-					if ( event == TopicMapEventType.MERGE){
+			ITopicMapListener listener = new ITopicMapListener() {
+				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue,
+						Object oldValue) {
+					if (event == TopicMapEventType.MERGE) {
 						Object oldValue_ = null;
 						/* find old value */
 						// By subject-identifier
-						for ( Locator l : ((ITopic)oldValue).getSubjectIdentifiers()){
+						for (Locator l : ((ITopic) oldValue).getSubjectIdentifiers()) {
 							oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
-							if ( oldValue_ != null ){
+							if (oldValue_ != null) {
 								break;
 							}
 						}
 						// By subject-locator
-						if ( oldValue_ == null ){
-							for ( Locator l : ((ITopic)oldValue).getSubjectLocators()){
+						if (oldValue_ == null) {
+							for (Locator l : ((ITopic) oldValue).getSubjectLocators()) {
 								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
-								if ( oldValue_ != null ){
+								if (oldValue_ != null) {
 									break;
 								}
 							}
 						}
 						// By item-identifier
-						if ( oldValue_ == null ){
-							for ( Locator l : ((ITopic)oldValue).getItemIdentifiers()){
+						if (oldValue_ == null) {
+							for (Locator l : ((ITopic) oldValue).getItemIdentifiers()) {
 								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
-								if ( oldValue_ != null ){
+								if (oldValue_ != null) {
 									break;
 								}
 							}
@@ -126,7 +129,7 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 					}
 				}
 			};
-			getRealStore().addTopicMapListener(listener);			
+			getRealStore().addTopicMapListener(listener);
 			for (TransactionCommand command : commands) {
 				Object obj = command.commit(getRealStore(), lazy);
 				if (obj != null && command.getResult() != null) {
@@ -144,16 +147,9 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITopicMapStore getRealStore() {
-		return store;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public synchronized void rollback() {
 		Iterator<TransactionCommand> descendingIterator = commited.descendingIterator();
-		while (descendingIterator.hasNext()) {			
+		while (descendingIterator.hasNext()) {
 			descendingIterator.next().rollback();
 		}
 		commited.clear();
@@ -162,8 +158,10 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params);		
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY,
+				context, paramType, params);
 		super.doModify(context, paramType, params);
 		commands.add(command);
 	}
@@ -171,8 +169,10 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params);		
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE,
+				context, paramType, params);
 		super.doRemove(context, paramType, params);
 		commands.add(command);
 	}
@@ -181,7 +181,8 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade);
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE,
+				context, null, cascade);
 		super.doRemove(context, cascade);
 		commands.add(command);
 	}
@@ -189,59 +190,61 @@ public class InMemoryTransactionTopicMapStore extends InMemoryTopicMapStore impl
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
 		Object obj = super.doCreate(context, paramType, params);
-		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType, params));
+		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType,
+				params));
 		return obj;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IdentityStore createIdentityStore(InMemoryTopicMapStore store) {
+	protected VirtualIdentityStore<?> createIdentityStore(InMemoryTopicMapStore store) {
 		return new LazyIdentityStore(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected AssociationStore createAssociationStore(InMemoryTopicMapStore store) {
+	protected VirtualAssociationStore<?> createAssociationStore(InMemoryTopicMapStore store) {
 		return new LazyAssociationStore(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ReificationStore createReificationStore(InMemoryTopicMapStore store) {
+	protected VirtualReificationStore<?> createReificationStore(InMemoryTopicMapStore store) {
 		return new LazyReificationStore(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected TypedStore createTypedStore(InMemoryTopicMapStore store) {
+	protected VirtualTypedStore<?> createTypedStore(InMemoryTopicMapStore store) {
 		return new LazyTypedStore(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected CharacteristicsStore createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
+	protected VirtualCharacteristicsStore<?> createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
 		return new LazyCharacteristicsStore(this, xsdString);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ScopeStore createScopeStore(InMemoryTopicMapStore store) {
+	protected VirtualScopeStore<?> createScopeStore(InMemoryTopicMapStore store) {
 		return new LazyScopeStore(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected TopicTypeStore createTopicTypeStore(InMemoryTopicMapStore store) {
-		return new LazyTopicTypeStore(store);
+	protected VirtualTopicTypeStore<?> createTopicTypeStore(InMemoryTopicMapStore store) {
+		return new LazyTopicTypeStore(this);
 	}
 
 	/**

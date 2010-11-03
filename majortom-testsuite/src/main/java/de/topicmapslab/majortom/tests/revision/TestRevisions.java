@@ -65,6 +65,7 @@ public class TestRevisions extends MaJorToMTestCase {
 			assertNotNull(index.getLastModification());
 
 			ITopic topic = createTopic();
+			topicMap.getStore().commit();
 			assertEquals(1, index.getRevisions(topic).size());
 			assertEquals(2, index.getRevisions(topic).get(0).getChangeset().size());
 			checkChange(index.getRevisions(topic).get(0).getChangeset().get(0), TopicMapEventType.TOPIC_ADDED,
@@ -72,15 +73,18 @@ public class TestRevisions extends MaJorToMTestCase {
 			assertEquals(2, index.getChangeset(topic).size());
 
 			topic.addSubjectIdentifier(topicMap.createLocator("http://psi.exampple.org/topicWithoutII"));
+			topicMap.getStore().commit();
 			assertEquals(2, index.getRevisions(topic).size());
 			assertEquals(1, index.getRevisions(topic).get(1).getChangeset().size());
 			assertEquals(3, index.getChangeset(topic).size());
 
 			ITopic type = createTopic();
+			topicMap.getStore().commit();
 			assertEquals(1, index.getRevisions(type).size());
 			assertEquals(2, index.getRevisions(type).get(0).getChangeset().size());
 
 			topic.addType(type);
+			topicMap.getStore().commit();
 			assertEquals(3, index.getRevisions(topic).size());
 
 			int cntRev = 1, cntCS = 4;
@@ -94,6 +98,7 @@ public class TestRevisions extends MaJorToMTestCase {
 			assertEquals(cntRev, index.getRevisions(type).get(1).getChangeset().size());
 			assertEquals(hasFeature ? 4 : 3, index.getChangeset(type).size());
 			topic.createName(type, "Name", new Topic[0]);
+			topicMap.getStore().commit();
 			assertEquals(hasFeature ? 5 : 4, index.getChangeset(type).size());
 			cntCS += 4;
 			assertEquals(cntCS, index.getChangeset(topic).size());
@@ -107,6 +112,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(index.getLastModification());
 
 		ITopic topicWithoutIdentifier = createTopic();
+		topicMap.getStore().commit();
 		Calendar calendar = new GregorianCalendar();
 		Calendar lastModification = index.getLastModification();
 		assertNotNull(lastModification);
@@ -117,6 +123,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(calendar.getTimeInMillis(), lastModificationOrTopic.getTimeInMillis(), 20);
 
 		topicWithoutIdentifier.addSubjectIdentifier(topicMap.createLocator("http://psi.exampple.org/topicWithoutII"));
+		topicMap.getStore().commit();
 
 		assertNotSame(lastModificationOrTopic, index.getLastModification(topicWithoutIdentifier));
 		assertNotSame(lastModification, index.getLastModification());
@@ -137,7 +144,8 @@ public class TestRevisions extends MaJorToMTestCase {
 		Role role = association.createRole(type, topic);
 
 		topic.remove(true);
-
+		topicMap.getStore().commit();
+		
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		IRevision revision = index.getLastRevision();
@@ -162,7 +170,8 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic type = createTopic();
 		Role role = association.createRole(type, player);
 		role.remove();
-
+		topicMap.getStore().commit();
+		
 		IRevision revision = index.getLastRevision();
 		assertNotNull(revision);
 		assertFalse(revision.getChangeset().isEmpty());
@@ -186,6 +195,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic otherPlayer = createTopic();
 		ITopic otherType = createTopic();
 		Role otherRole = association.createRole(otherType, otherPlayer);
+		topicMap.getStore().commit();
 
 		Changeset set = index.getAssociationChangeset(assoicationType);
 		assertEquals(5, set.size());
@@ -199,6 +209,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(9, set.size());
 
 		association.remove();
+		topicMap.getStore().commit();
 
 		IRevision revision = index.getLastRevision();
 		assertNotNull(revision);
@@ -233,6 +244,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		ITopic other = createTopic();
 
 		topic.addType(other);
+		topicMap.getStore().commit();
 
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
@@ -242,6 +254,7 @@ public class TestRevisions extends MaJorToMTestCase {
 		if (hasFeature) {
 			Association a = topic.getAssociationsPlayed().iterator().next();
 			a.remove();
+			topicMap.getStore().commit();
 			cnt--;
 		}
 
@@ -249,13 +262,14 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
 		topic.remove();
+		topicMap.getStore().commit();
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 
 		topic = createTopic();
-
 		topic.addType(other);
+		topicMap.getStore().commit();
 
 		assertEquals(1, topic.getTypes().size());
 		assertTrue(topic.getTypes().contains(other));
@@ -268,6 +282,7 @@ public class TestRevisions extends MaJorToMTestCase {
 
 	public void testMetaData() {
 		createTopic();
+		topicMap.getStore().commit();
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		IRevision revision = index.getLastRevision();
@@ -293,57 +308,68 @@ public class TestRevisions extends MaJorToMTestCase {
 			index.open();
 
 			Topic t = createTopic();
+			topicMap.getStore().commit();
 
 			IRevision r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.TOPIC_ADDED, r.getChangesetType());
 
 			Name n = t.createName("Name");
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.NAME_ADDED, r.getChangesetType());
 
 			Variant v = n.createVariant("Name", createTopic());
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.VARIANT_ADDED, r.getChangesetType());
 
 			v.remove();
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.VARIANT_REMOVED, r.getChangesetType());
 
 			n.remove();
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.NAME_REMOVED, r.getChangesetType());
 
 			Occurrence o = t.createOccurrence(createTopic(), "Value");
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.OCCURRENCE_ADDED, r.getChangesetType());
 
 			o.remove();
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.OCCURRENCE_REMOVED, r.getChangesetType());
 
 			Association a = createAssociation(createTopic());
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ASSOCIATION_ADDED, r.getChangesetType());
 
 			Role role = a.createRole(createTopic(), createTopic());
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ROLE_ADDED, r.getChangesetType());
 
 			role.remove();
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ROLE_REMOVED, r.getChangesetType());
 
 			a.remove();
+			topicMap.getStore().commit();
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ASSOCIATION_REMOVED, r.getChangesetType());

@@ -7,19 +7,27 @@ import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.index.Index;
 
+import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
+import de.topicmapslab.majortom.inmemory.transaction.InMemoryTransaction;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
+import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
+import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.queued.queue.IProcessingListener;
 import de.topicmapslab.majortom.queued.queue.TopicMapStoreQueue;
 import de.topicmapslab.majortom.queued.queue.task.CreateTask;
+import de.topicmapslab.majortom.queued.queue.task.IQueueTask;
 import de.topicmapslab.majortom.queued.queue.task.MergeTask;
 import de.topicmapslab.majortom.queued.queue.task.ModifyTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveConstructTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveTask;
+import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 
 /**
@@ -29,9 +37,9 @@ import de.topicmapslab.majortom.store.TopicMapStoreImpl;
  * @author Sven Krosse
  * 
  */
-public class QueuedTopicMapStore extends TopicMapStoreImpl {
+public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessingListener {
 
-	private InMemoryTopicMapStore inMemoryTopicMapStore;
+	private VirtualInMemoryTopicMapStore inMemoryTopicMapStore;
 	private JdbcTopicMapStore jdbcTopicMapStore;
 	private TopicMapStoreQueue queue;
 
@@ -53,27 +61,27 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void setTopicMap(ITopicMap topicMap) throws TopicMapStoreException {
+		super.setTopicMap(topicMap);
+		jdbcTopicMapStore.setTopicMap(topicMap);
+		inMemoryTopicMapStore.setTopicMap(topicMap);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
 		super.initialize(topicMapBaseLocator);
-		/*
-		 * initialize in memory layer
-		 */
-		inMemoryTopicMapStore = new InMemoryTopicMapStore();
-		inMemoryTopicMapStore.initialize(topicMapBaseLocator);
-		inMemoryTopicMapStore.setTopicMap(getTopicMap());
-		inMemoryTopicMapStore.setTopicMapSystem(getTopicMapSystem());
 		/*
 		 * initialize in database layer
 		 */
 		jdbcTopicMapStore = new JdbcTopicMapStore();
-		jdbcTopicMapStore.initialize(topicMapBaseLocator);
-		jdbcTopicMapStore.setTopicMap(getTopicMap());
 		jdbcTopicMapStore.setTopicMapSystem(getTopicMapSystem());
 		/*
-		 * initialize queue
+		 * initialize in memory layer
 		 */
-		queue = new TopicMapStoreQueue(jdbcTopicMapStore);
-		queue.start();
+		inMemoryTopicMapStore = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
+		inMemoryTopicMapStore.setTopicMapSystem(getTopicMapSystem());
 	}
 
 	/**
@@ -81,25 +89,50 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 	 */
 	public void connect() throws TopicMapStoreException {
 		super.connect();
-		inMemoryTopicMapStore.connect();
+		jdbcTopicMapStore.initialize(getBaseLocator());
 		jdbcTopicMapStore.connect();
+		inMemoryTopicMapStore.initialize(getBaseLocator());
+		inMemoryTopicMapStore.connect();
+		/*
+		 * initialize queue
+		 */
+		queue = new TopicMapStoreQueue(jdbcTopicMapStore);
+		queue.addProcessingListener(this);
+		queue.start();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void close() throws TopicMapStoreException {
+		doQueueShutdown();
+		queue.removeProcessingListener(this);
 		inMemoryTopicMapStore.close();
 		jdbcTopicMapStore.close();
-		queue.interrupt();
 		super.close();
+	}
+
+	/**
+	 * shutdown the worker thread queue
+	 */
+	private synchronized void doQueueShutdown() {
+		queue.interrupt();
+		while (queue.isAlive()) {
+			// VOID
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <I extends Index> I getIndex(Class<I> clazz) {
-		throw new UnsupportedOperationException("Currently not supported!");
+		/*
+		 * revision is handled by the JDBC topic map store
+		 */
+		if (IRevisionIndex.class.isAssignableFrom(clazz)) {
+			return jdbcTopicMapStore.getIndex(clazz);
+		}
+		return inMemoryTopicMapStore.getIndex(clazz);
 	}
 
 	/**
@@ -114,6 +147,29 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 	 */
 	public void enableCaching(boolean enable) {
 		jdbcTopicMapStore.enableCaching(enable);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
+			throws TopicMapStoreException {
+		if (!isConnected()) {
+			throw new TopicMapStoreException("Connection is not established");
+		}
+
+		switch (paramType) {
+			case ID: {
+				if (context instanceof ITopicMap) {
+					return jdbcTopicMapStore.getTopicMapIdentity().getId();
+				}
+			}
+				break;
+		}
+		/*
+		 * redirect to virtual layer
+		 */
+		return inMemoryTopicMapStore.doRead(context, paramType, params);
 	}
 
 	/**
@@ -159,6 +215,20 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 	 */
 	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
 		/*
+		 * is deletion of whole topic map
+		 */
+		if (context == getTopicMap()) {
+			/*
+			 * destroy queue
+			 */
+			doQueueShutdown();
+			/*
+			 * destroy topic map
+			 */
+			jdbcTopicMapStore.doRemove(context, cascade);
+			return;
+		}
+		/*
 		 * remove from virtual memory layer
 		 */
 		inMemoryTopicMapStore.doRemove(context, cascade);
@@ -170,15 +240,6 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 		 * register task
 		 */
 		queue.add(task);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -224,32 +285,124 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITransaction createTransaction() {
-		// TODO Auto-generated method stub
-		return null;
+		return new InMemoryTransaction(getTopicMap());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isTransactable() {
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commit() {
-		// TODO Auto-generated method stub
-
+		while (queue.size() != 0 && !queue.isInterrupted() && queue.isAlive()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// VOID
+			}
+		}
+		if (queue.isInterrupted() || !queue.isAlive()) {
+			throw new TopicMapStoreException("Worker thread was shutdown!");
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
-		// TODO Auto-generated method stub
-
+		if (isReadOnly()) {
+			throw new UnmodifyableStoreException("Read-only store does not support deletion of construct!");
+		}
+		/*
+		 * wait for finishing all tasks of the worker tread
+		 */
+		commit();
+		/*
+		 * remove duplicates
+		 */
+		MergeUtils.removeDuplicates(this, getTopicMap());
+		/*
+		 * wait for finishing all tasks of the worker tread
+		 */
+		commit();
+		/*
+		 * reset virtual memory layer
+		 */
+		inMemoryTopicMapStore.close();
+		inMemoryTopicMapStore  = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
+		inMemoryTopicMapStore.setTopicMap(getTopicMap());
+		inMemoryTopicMapStore.initialize(getBaseLocator());
+		inMemoryTopicMapStore.connect();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void clear() {
-		// TODO Auto-generated method stub
+	public synchronized void clear() {
+		/*
+		 * wait for finishing all tasks of the worker tread
+		 */
+		commit();
+		inMemoryTopicMapStore.clear();
+		jdbcTopicMapStore.clear();
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isRevisionManagementSupported() {
+		return jdbcTopicMapStore.isRevisionManagementEnabled();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
+		if (!isRevisionManagementSupported() && enabled) {
+			throw new TopicMapStoreException(
+					"Revision management not supported by the current store and cannot be enabled!");
+		}
+		jdbcTopicMapStore.enableRevisionManagement(enabled);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isReadOnly() {
+		return jdbcTopicMapStore.isReadOnly();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void finished(IQueueTask task) {
+		if (task instanceof CreateTask) {
+			CreateTask ct = (CreateTask) task;
+			Object result = task.getResult();
+			if (result instanceof IConstruct) {
+				String databaseId = ((ConstructImpl) result).getIdentity().getId();
+				((ConstructImpl) ct.getInMemoryClone()).getIdentity().setId(databaseId);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addTopicMapListener(ITopicMapListener listener) {
+		jdbcTopicMapStore.addTopicMapListener(listener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeTopicMapListener(ITopicMapListener listener) {
+		jdbcTopicMapStore.removeTopicMapListener(listener);
 	}
 
 }

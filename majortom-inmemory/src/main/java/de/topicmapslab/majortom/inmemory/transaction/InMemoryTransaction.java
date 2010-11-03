@@ -69,7 +69,7 @@ public class InMemoryTransaction extends TransactionImpl {
 	 * {@inheritDoc}
 	 */
 	public <T extends IConstruct> T moveToTransactionContext(T construct) {
-		return ((LazyIdentityStore) transactionTopicMapStore.getIdentityStore()).createLazyStub(construct);
+		return ((LazyIdentityStore) transactionTopicMapStore.getIdentityStore()).asVirtualConstruct(construct);
 	}
 
 }

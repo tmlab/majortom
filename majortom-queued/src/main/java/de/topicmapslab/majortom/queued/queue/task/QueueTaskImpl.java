@@ -66,8 +66,6 @@ public abstract class QueueTaskImpl implements IQueueTask {
 	 */
 	public TopicMapStoreParameterType getParameterType() {
 		return parameterType;
-	}
-	
-	
+	}	
 
 }

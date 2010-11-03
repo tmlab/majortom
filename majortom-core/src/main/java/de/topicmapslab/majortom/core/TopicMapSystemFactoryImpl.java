@@ -15,10 +15,15 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.FeatureNotSupportedException;
@@ -27,6 +32,8 @@ import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.store.TopicMapStoreFactory;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -35,9 +42,13 @@ import de.topicmapslab.majortom.util.HashUtil;
  * 
  */
 public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
+	/**
+	 * the property file name
+	 */
+	private static final String propertyFile = "engine.properties";
 
 	private Map<String, Object> features = null;
-	private final Properties properties = new Properties();
+	private final Properties properties;
 
 	private static final Set<String> SUPPORTED_FEATURES = HashUtil.getHashSet();
 	static {
@@ -64,6 +75,8 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		features.put(FeatureStrings.SUPPORT_TRANSACTION, false);
 		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
 		features.put(FeatureStrings.READ_ONLY_SYSTEM, false);
+		properties = new Properties();
+		loadPropertiesFromFile();
 	}
 
 	/**
@@ -77,7 +90,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 * {@inheritDoc}
 	 */
 	public Object getProperty(String arg0) {
-		return properties == null ? null : properties.get(arg0);
+		return properties.get(arg0);
 	}
 
 	/**
@@ -136,6 +149,47 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 */
 	Map<String, Object> getFeatures() {
 		return features;
+	}
+	
+
+	/**
+	 * Hidden method to load optional properties of the current topic map system.
+	 * 
+	 * @throws TopicMapStoreException
+	 *             thrown if the properties can not load
+	 */
+	private void loadPropertiesFromFile() throws TopicMapStoreException {
+		/*
+		 * load from file
+		 */
+		File file = new File(propertyFile);
+		if (file.exists()) {
+			Properties properties = new Properties();
+			try {
+				properties.load(new FileInputStream(file));
+				for (Entry<Object, Object> entry : properties.entrySet()) {
+					this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
+				}
+			} catch (FileNotFoundException e) {
+				// NOTHING TO DO
+			} catch (IOException e) {
+				// NOTHING TO DO
+			}
+		}
+		/*
+		 * load from resources if exists
+		 */
+		Properties properties = new Properties();
+		try {
+			properties.load(TopicMapStoreFactory.class.getResourceAsStream(propertyFile));
+			for (Entry<Object, Object> entry : properties.entrySet()) {
+				this.properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
+			}
+		} catch (IOException e) {
+			// NOTHING TO DO
+		} catch (NullPointerException e) {
+			// NOTHING TO DO
+		}
 	}
 
 }

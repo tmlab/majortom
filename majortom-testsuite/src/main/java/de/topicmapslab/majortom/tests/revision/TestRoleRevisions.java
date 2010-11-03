@@ -41,6 +41,7 @@ public class TestRoleRevisions extends MaJorToMTestCase {
 		role.setReifier(reifier);
 
 		role.remove();
+		topicMap.getStore().commit();
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();

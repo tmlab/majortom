@@ -45,6 +45,7 @@ public class TestVariantRevisions extends MaJorToMTestCase {
 		v.setReifier(reifier);
 		
 		v.remove();
+		topicMap.getStore().commit();
 		
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();

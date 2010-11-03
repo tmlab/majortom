@@ -10,7 +10,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 
 /**
  * @author Sven
- *
+ * 
  */
 public interface IQueueTask {
 
@@ -22,18 +22,18 @@ public interface IQueueTask {
 	 * @throws TopicMapStoreException
 	 * 
 	 */
-	public void doTask(ITopicMapStore topicMapStore)
-			throws TopicMapStoreException;
-	
+	public void doTask(ITopicMapStore topicMapStore) throws TopicMapStoreException;
+
 	/**
 	 * Returns the result of the task execution
 	 */
 	public Object getResult();
-	
+
 	/**
 	 * Returns a calendar instance representing the definition time of this task
+	 * 
 	 * @return the timestamp
 	 */
 	public Calendar getTimeStamp();
-	
+
 }

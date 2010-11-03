@@ -38,6 +38,7 @@ public class TopicMapStoreQueue extends Thread {
 	 */
 	public synchronized void start() {
 		this.tasks = new ConcurrentLinkedQueue<IQueueTask>();
+		super.start();
 	}
 
 	/**
@@ -45,14 +46,19 @@ public class TopicMapStoreQueue extends Thread {
 	 */
 	public void run() {
 		while (!isInterrupted()) {
-			while (tasks.isEmpty()) {
-				IQueueTask task = tasks.poll();
-				task.doTask(topicMapStore);
-				if (listeners != null) {
-					for (IProcessingListener listener : listeners) {
-						listener.finished(task);
+			try {
+				while (!tasks.isEmpty()) {
+					IQueueTask task = tasks.poll();
+					task.doTask(topicMapStore);
+					if (listeners != null) {
+						for (IProcessingListener listener : listeners) {
+							listener.finished(task);
+						}
 					}
 				}
+			} catch (Exception e) {
+				interrupt();
+				e.printStackTrace();
 			}
 			try {
 				sleep(1000);
@@ -67,7 +73,7 @@ public class TopicMapStoreQueue extends Thread {
 	 * 
 	 * @return the number of tasks
 	 */
-	public int size() {
+	public synchronized int size() {
 		return tasks.size();
 	}
 
@@ -85,7 +91,7 @@ public class TopicMapStoreQueue extends Thread {
 	 *            the new task
 	 * @return <code>true</code> if the task could add to queue, <code>false</code> otherwise
 	 */
-	public boolean add(IQueueTask e) {
+	public synchronized boolean add(IQueueTask e) {
 		return tasks.add(e);
 	}
 

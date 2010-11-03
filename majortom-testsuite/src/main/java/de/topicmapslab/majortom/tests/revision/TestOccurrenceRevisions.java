@@ -40,6 +40,7 @@ public class TestOccurrenceRevisions extends MaJorToMTestCase {
 		IOccurrence o = (IOccurrence) topic.createOccurrence(type, "Value", theme);
 		o.setReifier(reifier);
 		o.remove();
+		topicMap.getStore().commit();
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
