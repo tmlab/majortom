@@ -51,8 +51,7 @@ public class HashUtil {
 	}
 
 	/**
-	 * Method try to initialize a gnu.trove.THashSet if the library is located
-	 * in the class path
+	 * Method try to initialize a gnu.trove.THashSet if the library is located in the class path
 	 * 
 	 * @param <T>
 	 *            the type of elements
@@ -69,8 +68,7 @@ public class HashUtil {
 	}
 
 	/**
-	 * Method try to initialize a gnu.trove.THashSet if the library is located
-	 * in the class path
+	 * Method try to initialize a gnu.trove.THashSet if the library is located in the class path
 	 * 
 	 * @param initial
 	 *            the initial set
@@ -96,8 +94,8 @@ public class HashUtil {
 	}
 
 	/**
-	 * Returns the set class to use. If the method is called at the first time,
-	 * the set class will be located in the class path.
+	 * Returns the set class to use. If the method is called at the first time, the set class will be located in the
+	 * class path.
 	 * 
 	 * @return the setClass the set class
 	 */
@@ -117,8 +115,7 @@ public class HashUtil {
 	}
 
 	/**
-	 * Method try to initialize a gnu.trove.THashMap if the library is located
-	 * in the class path
+	 * Method try to initialize a gnu.trove.THashMap if the library is located in the class path
 	 * 
 	 * @param <K>
 	 *            the key type
@@ -137,8 +134,7 @@ public class HashUtil {
 	}
 
 	/**
-	 * Method try to initialize a gnu.trove.THashMap if the library is located
-	 * in the class path
+	 * Method try to initialize a gnu.trove.THashMap if the library is located in the class path
 	 * 
 	 * @param initial
 	 *            the initial map
@@ -166,8 +162,8 @@ public class HashUtil {
 	}
 
 	/**
-	 * Returns the map class to use. If the method is called at the first time,
-	 * the set class will be located in the class path.
+	 * Returns the map class to use. If the method is called at the first time, the set class will be located in the
+	 * class path.
 	 * 
 	 * @return the setClass the set class
 	 */
@@ -245,8 +241,7 @@ public class HashUtil {
 	}
 
 	/**
-	 * Clears the indexes in context to the given list, to avoid indexes out of
-	 * range.
+	 * Clears the indexes in context to the given list, to avoid indexes out of range.
 	 * 
 	 * @param list
 	 *            the list
@@ -256,7 +251,7 @@ public class HashUtil {
 	 *            the limit
 	 * @return an two-
 	 */
-	public static  final <X> List<X> secureSubList(List<X> list, int offset, int limit) {
+	public static final <X> List<X> secureSubList(List<X> list, int offset, int limit) {
 		int from = offset;
 		if (from < 0) {
 			from = 0;
@@ -275,5 +270,25 @@ public class HashUtil {
 		}
 		return Collections.unmodifiableList(list.subList(from, to));
 	}
-	
+
+	/**
+	 * External access method to overwrite internal set class.
+	 * 
+	 * @param clazz
+	 *            the class
+	 */
+	public synchronized static <T extends Set<?>>void overwriteSetImplementationClass(Class<T> clazz) {
+		setClass = clazz;
+	}
+
+	/**
+	 * External access method to overwrite internal map class.
+	 * 
+	 * @param clazz
+	 *            the class
+	 */
+	public synchronized static <T extends Map<?,?>> void overwriteMapImplementationClass(Class<T> clazz) {
+		mapClass = clazz;
+	}
+
 }

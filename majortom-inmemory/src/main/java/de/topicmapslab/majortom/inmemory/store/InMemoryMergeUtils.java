@@ -757,6 +757,7 @@ public class InMemoryMergeUtils {
 						.setId(newReifier.getId());
 				((InMemoryIdentity) ((TopicImpl) reifierOfOther).getIdentity())
 						.setId(newReifier.getId());
+				store.modifyReifier(other, null, null);
 			}
 		}
 	}
@@ -1161,16 +1162,16 @@ public class InMemoryMergeUtils {
 			final ITopicMap topicMap) throws TopicMapStoreException {
 		final IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
 
-		for (final Topic topic : topicMap.getTopics()) {
+		for (final ITopic topic : store.doReadTopics(topicMap)) {
 			Set<Construct> removed = HashUtil.getHashSet();
 			/*
 			 * check name duplicates
 			 */
-			for (Name name : topic.getNames()) {
+			for (IName name : store.doReadNames(topic)) {
 				if (removed.contains(name)) {
 					continue;
 				}
-				for (Name duplicate : topic.getNames()) {
+				for (IName duplicate : store.doReadNames(topic)) {
 					if (duplicate.equals(name) || removed.contains(duplicate)) {
 						continue;
 					}
@@ -1179,27 +1180,27 @@ public class InMemoryMergeUtils {
 					 * are equal
 					 */
 					if (duplicate.getType().equals(name.getType())
-							&& duplicate.getValue().equals(name.getValue())
-							&& ((IName) duplicate).getScopeObject().equals(
-									((IName) name).getScopeObject())) {
+							&& store.doReadValue(duplicate).equals(store.doReadValue(name))
+							&& duplicate.getScopeObject().equals(
+									name.getScopeObject())) {
 						/*
 						 * copy item-identifier
 						 */
 						for (Locator ii : duplicate.getItemIdentifiers()) {
-							store.removeItemIdentifier((IName) duplicate,
+							store.removeItemIdentifier(duplicate,
 									(ILocator) ii, revision);
-							store.modifyItemIdentifier((IName) name,
+							store.modifyItemIdentifier(name,
 									(ILocator) ii, revision);
 						}
 						/*
 						 * copy variants
 						 */
 						for (Variant v : duplicate.getVariants()) {
-							Variant copy = getDuplette(store, (IName) name,
+							Variant copy = getDuplette(store, name,
 									v.getValue(), (ILocator) v.getDatatype(),
 									((IVariant) v).getScopeObject().getThemes());
 							if (copy == null) {
-								copy = store.createVariant((IName) name, v
+								copy = store.createVariant(name, v
 										.getValue(),
 										(ILocator) v.getDatatype(),
 										((IVariant) v).getScopeObject()
@@ -1223,12 +1224,12 @@ public class InMemoryMergeUtils {
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, (IName) name,
-								(IName) duplicate, revision);
+						doMergeReifiable(store, name,
+								duplicate, revision);
 						/*
 						 * remove duplicate
 						 */
-						store.removeName((IName) duplicate, true, revision);
+						store.removeName(duplicate, true, revision);
 						removed.add(duplicate);
 					}
 				}
@@ -1240,7 +1241,7 @@ public class InMemoryMergeUtils {
 						continue;
 					}
 					for (IVariant dup : MergeUtils.getDuplettes(store,
-							(IName) name, v.getValue(), (ILocator) v
+							name, v.getValue(), (ILocator) v
 									.getDatatype(), ((IVariant) v)
 									.getScopeObject().getThemes())) {
 						if (v.equals(dup) || removed.contains(dup)) {
@@ -1291,10 +1292,10 @@ public class InMemoryMergeUtils {
 					 * occurrences are equal if the value, datatype, the type
 					 * and scope property are equal
 					 */
-					if (duplicate.getType().equals(duplicate.getType())
+					if (duplicate.getType().equals(occurrence.getType())
 							&& duplicate.getValue()
-									.equals(duplicate.getValue())
-							&& ((IOccurrence) duplicate).getScopeObject()
+									.equals(occurrence.getValue())
+							&& ((IOccurrence) occurrence).getScopeObject()
 									.equals(((IOccurrence) duplicate)
 											.getScopeObject())
 							&& occurrence.getDatatype().equals(

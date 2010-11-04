@@ -18,6 +18,8 @@
  */
 package de.topicmapslab.majortom.tests.revision;
 
+import java.util.UUID;
+
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
@@ -36,7 +38,7 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
  */
 public class TestAssociationRevisions extends MaJorToMTestCase {
 
-	public void testRevision() throws Exception {				
+	public void testRevision() throws Exception {
 		ITopic type = createTopic();
 		ITopic theme = createTopic();
 		ITopic reifier = createTopic();
@@ -55,9 +57,9 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		assertEquals(4, revision.getChangeset().size());
 		assertEquals(association, revision.getChangeset().get(3).getOldValue());
 		assertTrue(revision.getChangeset().get(3).getOldValue() instanceof ReadOnlyAssociation);
-		
+
 		association = (IAssociation) revision.getChangeset().get(3).getOldValue();
-		
+
 		assertEquals(topicMap, association.getParent());
 		assertEquals(type, association.getType());
 		assertEquals(reifier, association.getReifier());
@@ -65,47 +67,51 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		assertTrue(association.getRoles().contains(role));
 		assertTrue(association.getRoles().contains(other));
 	}
-	
+
 	public void testCreateAssociation() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
-		IRevision first = index.getFirstRevision(); 
+		IRevision first = index.getFirstRevision();
 		assertNotNull(first);
-		
+
 		topicMap.getStore().enableRevisionManagement(false);
 		ITopic type = createTopic();
 		topicMap.getStore().commit();
 		assertEquals(first.getId(), index.getLastRevision().getId());
-		
+
 		topicMap.getStore().enableRevisionManagement(true);
 		assertEquals(first.getId(), index.getLastRevision().getId());
-		
+
 		topicMap.createAssociation(type);
 		topicMap.getStore().commit();
 		assertNotNull(index.getLastRevision());
 		IRevision r = index.getLastRevision();
 		assertEquals(3, r.getChangeset().size());
 		assertNull(r.getFuture());
-		
+
 	}
-	
+
 	public void testCreateAssociationByMergeIn() throws Exception {
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
 		assertNotNull(index.getFirstRevision());
-		
-		TopicMap tm = factory.newTopicMapSystem().createTopicMap("http://psi.second.com/");
-		Topic type = tm.createTopic();		
+
+		TopicMap tm = factory.newTopicMapSystem().createTopicMap("http://psi.second.com/" + UUID.randomUUID());
+		Topic type = tm.createTopic();
 		tm.createAssociation(type);
-		((ITopicMap)tm).getStore().commit();
-		
+		((ITopicMap) tm).getStore().commit();
+
 		topicMap.mergeIn(tm);
 		topicMap.getStore().commit();
-		assertNotNull(index.getLastRevision());
-		IRevision r = index.getLastRevision();
-		System.out.println(r.getChangeset());
-		assertEquals(5, r.getChangeset().size());
-		assertNull(r.getFuture());		
+		try {
+			assertNotNull(index.getLastRevision());
+			IRevision r = index.getLastRevision();
+			assertEquals(5, r.getChangeset().size());
+			assertNull(r.getFuture());
+
+		} finally {
+			tm.remove();
+		}
 	}
 
 }
