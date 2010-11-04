@@ -93,7 +93,6 @@ import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
-import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.ModifableTopicMapStoreImpl;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -510,7 +509,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doMergeTopicMaps(TopicMap context, TopicMap other) throws TopicMapStoreException {
-		MergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
+		JdbcMergeUtils.doMergeTopicMaps(this, (ITopicMap) context, other);
 	}
 
 	/**
@@ -1725,7 +1724,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 					 * notify listener
 					 */
 					notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-				}	
+				}
 				/*
 				 * store history
 				 */
@@ -2028,10 +2027,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 * create a new topic map
 			 */
 			if (id == null) {
-				id = provider.getProcessor().doCreateTopicMapIdentity(getBaseLocator());				
-				
+				id = provider.getProcessor().doCreateTopicMapIdentity(getBaseLocator());
+
 			}
-			this.identity = new JdbcIdentity(id);		
+			this.identity = new JdbcIdentity(id);
 
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot open connection to database!", e);
@@ -2283,13 +2282,21 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 		enableCaching(wasCachingEnabled);
 	}
-	
+
 	/**
 	 * Returns the internal identity of the topic map
+	 * 
 	 * @return the identity
 	 */
 	public JdbcIdentity getTopicMapIdentity() {
 		return identity;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeDuplicates() {
+		JdbcMergeUtils.removeDuplicates(this, getTopicMap());
 	}
 
 }
