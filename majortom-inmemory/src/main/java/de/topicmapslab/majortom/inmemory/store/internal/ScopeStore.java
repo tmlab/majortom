@@ -90,7 +90,9 @@ public class ScopeStore implements IDataStore {
 
 	/**
 	 * constructor
-	 * @param store the topic map store
+	 * 
+	 * @param store
+	 *            the topic map store
 	 */
 	public ScopeStore(ITopicMapStore store) {
 		this.store = store;
@@ -108,12 +110,13 @@ public class ScopeStore implements IDataStore {
 
 	/**
 	 * Generates a new empty scope construct
+	 * 
 	 * @return the scope construct
 	 */
-	protected IScope createEmptyScope(){
+	protected IScope createEmptyScope() {
 		return new ScopeImpl();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -197,7 +200,7 @@ public class ScopeStore implements IDataStore {
 		scoped.addAll(getScopedOccurrences(scope));
 		scoped.addAll(getScopedNames(scope));
 		scoped.addAll(getScopedVariants(scope));
-		if ( scoped.isEmpty()){
+		if (scoped.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return scoped;
@@ -250,7 +253,7 @@ public class ScopeStore implements IDataStore {
 				}
 			}
 		}
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -381,10 +384,12 @@ public class ScopeStore implements IDataStore {
 		if (associationScopes != null && associationScopes.containsKey(scoped)) {
 			IScope s = associationScopes.remove(scoped);
 			Set<IAssociation> set = scopedAssociations.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedAssociations.remove(s);
-			} 
+			if (set != null) {
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedAssociations.remove(s);
+				}
+			}
 			return s;
 		}
 		return emptyScope;
@@ -401,10 +406,12 @@ public class ScopeStore implements IDataStore {
 		if (occurrenceScopes != null && occurrenceScopes.containsKey(scoped)) {
 			IScope s = occurrenceScopes.remove(scoped);
 			Set<IOccurrence> set = scopedOccurrences.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedOccurrences.remove(s);
-			} 
+			if (set != null) {
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedOccurrences.remove(s);
+				}
+			}
 			return s;
 		}
 		return emptyScope;
@@ -421,10 +428,12 @@ public class ScopeStore implements IDataStore {
 		if (nameScopes != null && nameScopes.containsKey(scoped)) {
 			IScope s = nameScopes.remove(scoped);
 			Set<IName> set = scopedNames.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedNames.remove(s);
-			} 
+			if (set != null) {
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedNames.remove(s);
+				}
+			}
 			return s;
 		}
 		return emptyScope;
@@ -441,10 +450,12 @@ public class ScopeStore implements IDataStore {
 		if (variantScopes != null && variantScopes.containsKey(scoped)) {
 			IScope s = variantScopes.remove(scoped);
 			Set<IVariant> set = scopedVariants.get(s);
-			set.remove(scoped);
-			if (set.isEmpty()) {
-				scopedVariants.remove(s);
-			} 
+			if (set != null) {
+				set.remove(scoped);
+				if (set.isEmpty()) {
+					scopedVariants.remove(s);
+				}
+			}
 			return s;
 		}
 		return emptyScope;
@@ -584,12 +595,11 @@ public class ScopeStore implements IDataStore {
 	 * 
 	 * @param theme
 	 *            the theme
-	 * @return <code>true</code> if the topic is used as theme,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the topic is used as theme, <code>false</code> otherwise.
 	 */
 	public boolean usedAsTheme(ITopic theme) {
-		for ( IScope scope : getScopes(theme)){
-			if ( !getScoped(scope).isEmpty()){
+		for (IScope scope : getScopes(theme)) {
+			if (!getScoped(scope).isEmpty()) {
 				return true;
 			}
 		}
@@ -662,7 +672,7 @@ public class ScopeStore implements IDataStore {
 				scopes.remove(scope);
 			}
 		}
-		if ( removed.isEmpty()){
+		if (removed.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return removed;
@@ -727,12 +737,12 @@ public class ScopeStore implements IDataStore {
 		Set<IScope> set = HashUtil.getHashSet();
 		if (scopes != null) {
 			for (IScope s : scopes.keySet()) {
-				if (s instanceof ScopeImpl && s.containsTheme(theme) ) {
+				if (s instanceof ScopeImpl && s.containsTheme(theme)) {
 					set.add(s);
 				}
 			}
 		}
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -797,8 +807,8 @@ public class ScopeStore implements IDataStore {
 	 * 
 	 * @param scopable
 	 *            the object to check
-	 * @return <code>true</code> if the data store contains a scope relation for
-	 *         the given object, <code>false</code> otherwise.
+	 * @return <code>true</code> if the data store contains a scope relation for the given object, <code>false</code>
+	 *         otherwise.
 	 */
 	protected final boolean containsScopeable(IScopable scopable) {
 		if (scopable instanceof IAssociation) {
@@ -810,12 +820,13 @@ public class ScopeStore implements IDataStore {
 		}
 		return variantScopes != null && variantScopes.containsKey(scopable);
 	}
-	
+
 	/**
 	 * Returns all scopes
+	 * 
 	 * @return the scopes
 	 */
-	public Set<IScope> getScopes(){
+	public Set<IScope> getScopes() {
 		Set<IScope> set = HashUtil.getHashSet(scopes.keySet());
 		set.add(emptyScope);
 		return set;

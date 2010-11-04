@@ -291,4 +291,10 @@ public interface ITopicMapStore {
 	 * @since 1.1.2
 	 */
 	public ITopicMapStoreMetaData getMetaData();
+		
+	/**
+	 * Returns the internal identity of the topic map
+	 * @return the identity
+	 */
+	public ITopicMapStoreIdentity getTopicMapIdentity();
 }

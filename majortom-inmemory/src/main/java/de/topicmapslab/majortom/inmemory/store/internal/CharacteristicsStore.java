@@ -318,10 +318,20 @@ public class CharacteristicsStore implements IDataStore {
 			return;
 		}
 
+		/*
+		 * remove variant
+		 */
 		Set<IVariant> set = variants.get(v.getParent());
-		set.remove(v);
-		if (set.isEmpty()) {
+		Set<IVariant> newSet = HashUtil.getHashSet();
+		for ( IVariant var : set ){
+			if ( !v.equals(var)){
+				newSet.add(var);
+			}
+		}
+		if (newSet.isEmpty()) {
 			variants.remove(v.getParent());
+		}else{
+			variants.put(v.getParent(), newSet);
 		}
 
 		/*
@@ -536,13 +546,13 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public void removeTopic(final ITopic topic) {
 		if (names != null && names.containsKey(topic)) {
-			for (IName n : names.get(topic)) {
+			for (IName n : HashUtil.getHashSet(names.get(topic))) {
 				removeName(n);
 			}
 			this.names.remove(topic);
 		}
 		if (occurrences != null && occurrences.containsKey(topic)) {
-			for (IOccurrence o : occurrences.get(topic)) {
+			for (IOccurrence o : HashUtil.getHashSet(occurrences.get(topic))) {
 				removeOccurrence(o);
 			}
 			this.occurrences.remove(topic);

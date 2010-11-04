@@ -201,10 +201,12 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertEquals(5, set.size());
 
 		IAssociation other = createAssociation(assoicationType);
+		topicMap.getStore().commit();
 		set = index.getAssociationChangeset(assoicationType);
 		assertEquals(8, set.size());
 
 		other.createRole(createTopic(), createTopic());
+		topicMap.getStore().commit();
 		set = index.getAssociationChangeset(assoicationType);
 		assertEquals(9, set.size());
 
@@ -357,7 +359,9 @@ public class TestRevisions extends MaJorToMTestCase {
 			assertEquals(TopicMapEventType.ASSOCIATION_ADDED, r.getChangesetType());
 
 			Role role = a.createRole(createTopic(), createTopic());
+			System.out.println(role.getId());
 			topicMap.getStore().commit();
+			System.out.println(role.getId());
 			r = index.getLastRevision();
 			assertNotNull(r);
 			assertEquals(TopicMapEventType.ROLE_ADDED, r.getChangesetType());

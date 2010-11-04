@@ -803,7 +803,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			ITopic newTopic = createTopic(getTopicMap(), revision);
 			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
 			String oldId = context.getId();
-			((InMemoryIdentity) ((TopicImpl) context).getIdentity()).setId(newTopic.getId());
+			((TopicImpl) context).getIdentity().setId(newTopic.getId());
 			((ConstructImpl) context).setRemoved(false);
 			/*
 			 * notify listeners
@@ -813,7 +813,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
 			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
 			oldId = other.getId();
-			((InMemoryIdentity) ((TopicImpl) other).getIdentity()).setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.getId());
 			((ConstructImpl) other).setRemoved(false);
 			/*
 			 * notify listeners
@@ -3573,5 +3573,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected String generateId() {
 		return UUID.randomUUID().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public InMemoryIdentity getTopicMapIdentity() {
+		return identity;
 	}
 }

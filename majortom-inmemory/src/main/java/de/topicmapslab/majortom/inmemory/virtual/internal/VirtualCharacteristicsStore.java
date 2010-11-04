@@ -41,7 +41,8 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends CharacteristicsStore {
+public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends CharacteristicsStore implements
+		IVirtualStore {
 
 	private final T store;
 
@@ -383,4 +384,18 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if (construct instanceof ITopic) {
+			removeTopic((ITopic) construct);
+		} else if (construct instanceof IOccurrence) {
+			removeOccurrence((IOccurrence) construct);
+		} else if (construct instanceof IName) {
+			removeName((IName) construct);
+		} else if (construct instanceof IVariant) {
+			removeVariant((IVariant) construct);
+		}
+	}
 }

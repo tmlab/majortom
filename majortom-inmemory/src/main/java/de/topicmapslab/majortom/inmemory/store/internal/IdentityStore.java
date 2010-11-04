@@ -372,7 +372,9 @@ public class IdentityStore implements IDataStore {
 		 * remove backward relation
 		 */
 		Set<ILocator> set = constructItemIdentitiers.get(c);
-		set.remove(identifier);
+		if (set != null) {
+			set.remove(identifier);
+		}
 	}
 
 	/**
@@ -393,7 +395,9 @@ public class IdentityStore implements IDataStore {
 		 * remove backward relation
 		 */
 		Set<ILocator> set = topicSubjectIdentifiers.get(t);
-		set.remove(identifier);
+		if (set != null) {
+			set.remove(identifier);
+		}
 	}
 
 	/**
@@ -414,7 +418,9 @@ public class IdentityStore implements IDataStore {
 		 * remove backward relation
 		 */
 		Set<ILocator> set = topicSubjectLocators.get(t);
-		set.remove(identifier);
+		if (set != null) {
+			set.remove(identifier);
+		}
 	}
 
 	/**
@@ -492,8 +498,7 @@ public class IdentityStore implements IDataStore {
 	}
 
 	/**
-	 * Creates a new locator instance of the reference is unknown or return the
-	 * stored instance
+	 * Creates a new locator instance of the reference is unknown or return the stored instance
 	 * 
 	 * @param reference
 	 *            the reference
@@ -584,7 +589,8 @@ public class IdentityStore implements IDataStore {
 			 * store revision
 			 */
 			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, topic, null, subjectIdentifier);
-			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, replacement, subjectIdentifier, null);
+			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, replacement, subjectIdentifier,
+					null);
 		}
 		/*
 		 * move all subject-locator
@@ -610,7 +616,7 @@ public class IdentityStore implements IDataStore {
 		set.addAll(getItemIdentifiers());
 		set.addAll(getSubjectIdentifiers());
 		set.addAll(getSubjectLocators());
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -657,8 +663,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param locator
 	 *            the identifier
-	 * @return <code>true</code> if the locator is used as identifier,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the locator is used as identifier, <code>false</code> otherwise.
 	 */
 	public boolean containsIdentifier(ILocator locator) {
 		return containsItemIdentifier(locator) || containsSubjectIdentifier(locator) || containsSubjectLocator(locator);
@@ -669,8 +674,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param locator
 	 *            the item-identifier
-	 * @return <code>true</code> if the locator is used as item-identifier,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the locator is used as item-identifier, <code>false</code> otherwise.
 	 */
 	public boolean containsItemIdentifier(ILocator locator) {
 		if (itemIdentifiers == null) {
@@ -684,8 +688,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param locator
 	 *            the subject-identifier
-	 * @return <code>true</code> if the locator is used as subject-identifier,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the locator is used as subject-identifier, <code>false</code> otherwise.
 	 */
 	public boolean containsSubjectIdentifier(ILocator locator) {
 		if (subjectIdentifiers == null) {
@@ -699,8 +702,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param locator
 	 *            the subject-locator
-	 * @return <code>true</code> if the locator is used as subject-locator,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the locator is used as subject-locator, <code>false</code> otherwise.
 	 */
 	public boolean containsSubjectLocator(ILocator locator) {
 		if (subjectLocators == null) {
@@ -714,8 +716,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param construct
 	 *            the construct
-	 * @return the internal id and never <code>null</code>. If the construct is
-	 *         unknown an exception will be thrown.
+	 * @return the internal id and never <code>null</code>. If the construct is unknown an exception will be thrown.
 	 */
 	public String getId(IConstruct construct) {
 		if (!containsConstruct(construct)) {
@@ -738,8 +739,8 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject locator is store for
-	 *         the given topic, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one subject locator is store for the given topic, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsSubjectLocators(ITopic topic) {
 		if (topicSubjectLocators == null) {
@@ -749,13 +750,12 @@ public class IdentityStore implements IDataStore {
 	}
 
 	/**
-	 * Checks if the store know at least one subject identifier for the given
-	 * topic
+	 * Checks if the store know at least one subject identifier for the given topic
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject identifier is store for
-	 *         the given topic, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one subject identifier is store for the given topic, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsSubjectIdentifiers(ITopic topic) {
 		if (topicSubjectIdentifiers == null) {
@@ -765,13 +765,12 @@ public class IdentityStore implements IDataStore {
 	}
 
 	/**
-	 * Checks if the store know at least one item identifier for the given
-	 * construct
+	 * Checks if the store know at least one item identifier for the given construct
 	 * 
 	 * @param construct
 	 *            the construct
-	 * @return <code>true</code> if at least one item identifier is store for
-	 *         the given construct, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one item identifier is store for the given construct, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsItemIdentifiers(IConstruct construct) {
 		if (constructItemIdentitiers == null) {
@@ -785,8 +784,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param construct
 	 *            the construct
-	 * @return <code>true</code> if the id is known by the store,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the id is known by the store, <code>false</code> otherwise.
 	 */
 	protected final boolean containsConstruct(IConstruct construct) {
 		return ids != null && ids.containsKey(construct.getId());

@@ -17,16 +17,19 @@ package de.topicmapslab.majortom.inmemory.virtual.internal;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Construct;
 
+import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.inmemory.store.internal.IdentityStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -35,10 +38,14 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends IdentityStore {
+public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends IdentityStore implements IVirtualStore {
 
 	private Set<String> removedIds;
 	private Set<String> virtualConstructs;
+
+	private Map<IConstruct, Set<ILocator>> removedItemIdentifiers;
+	private Map<ITopic, Set<ILocator>> removedSubjectIdentifiers;
+	private Map<ITopic, Set<ILocator>> removedSubjectLocators;
 
 	/**
 	 * @param store
@@ -64,10 +71,9 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(t)) {
 			throw new ConstructRemovedException(t);
 		}
-		/*
-		 * copy lazy to internal store if not done before
-		 */
-		getSubjectLocators(t);
+		if (removedSubjectLocators != null && removedSubjectLocators.containsKey(t)) {
+			removedSubjectLocators.get(t).remove(locator);
+		}
 		super.addSubjectLocator(t, locator);
 	}
 
@@ -79,9 +85,20 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 			throw new ConstructRemovedException(t);
 		}
 		/*
-		 * copy lazy to internal store if not done before
+		 * initialize map for locator deletion
 		 */
-		getSubjectLocators(t);
+		if (removedSubjectLocators == null) {
+			removedSubjectLocators = HashUtil.getHashMap();
+		}
+		Set<ILocator> set = removedSubjectLocators.get(t);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+			removedSubjectLocators.put(t, set);
+		}
+		/*
+		 * add locator as removed
+		 */
+		set.add(identifier);
 		super.removeSubjectLocator(t, identifier);
 	}
 
@@ -93,19 +110,28 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(t)) {
 			throw new ConstructRemovedException(t);
 		}
+		Set<ILocator> set = HashUtil.getHashSet();
 		/*
-		 * check if already copied to internal cache
+		 * load from real store if it is not virtual
 		 */
-		if (!containsSubjectLocators(t) && !isVirtual(t)) {
+		if (!isVirtual(t)) {
 			/*
 			 * copy to internal store
 			 */
-			for (ILocator locator : (Collection<ILocator>) getStore().getRealStore().doRead(t,
-					TopicMapStoreParameterType.SUBJECT_LOCATOR)) {
-				super.addSubjectLocator(t, locator);
-			}
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t,
+					TopicMapStoreParameterType.SUBJECT_LOCATOR));
 		}
-		Set<ILocator> set = super.getSubjectLocators(t);
+		/*
+		 * add internal subject locators
+		 */
+		set.addAll(super.getSubjectLocators(t));
+
+		/*
+		 * remove locators marked as removed
+		 */
+		if (removedSubjectLocators != null && removedSubjectLocators.containsKey(t)) {
+			set.removeAll(removedSubjectLocators.get(t));
+		}
 		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
@@ -132,6 +158,13 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(topic)) {
 			return null;
 		}
+		/*
+		 * check if locator was removed from the topic
+		 */
+		if (removedSubjectLocators != null && removedSubjectLocators.containsKey(topic)
+				&& removedSubjectLocators.get(topic).contains(l)) {
+			return null;
+		}
 		return topic;
 	}
 
@@ -144,10 +177,10 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(t)) {
 			throw new ConstructRemovedException(t);
 		}
-		/*
-		 * copy lazy to internal store if not done before
-		 */
-		getSubjectIdentifiers(t);
+
+		if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(t)) {
+			removedSubjectIdentifiers.get(t).remove(identifier);
+		}
 		super.addSubjectIdentifier(t, identifier);
 	}
 
@@ -159,9 +192,20 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 			throw new ConstructRemovedException(t);
 		}
 		/*
-		 * copy lazy to internal store if not done before
+		 * initialize map for locator deletion
 		 */
-		getSubjectIdentifiers(t);
+		if (removedSubjectIdentifiers == null) {
+			removedSubjectIdentifiers = HashUtil.getHashMap();
+		}
+		Set<ILocator> set = removedSubjectIdentifiers.get(t);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+			removedSubjectIdentifiers.put(t, set);
+		}
+		/*
+		 * add locator as removed
+		 */
+		set.add(identifier);
 		super.removeSubjectIdentifier(t, identifier);
 	}
 
@@ -173,19 +217,28 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(t)) {
 			throw new ConstructRemovedException(t);
 		}
+		Set<ILocator> set = HashUtil.getHashSet();
 		/*
-		 * check if already copied to internal cache
+		 * load from real store if it is not virtual
 		 */
-		if (!containsSubjectIdentifiers(t) && !isVirtual(t)) {
+		if (!isVirtual(t)) {
 			/*
 			 * copy to internal store
 			 */
-			for (ILocator locator : (Collection<ILocator>) getStore().getRealStore().doRead(t,
-					TopicMapStoreParameterType.SUBJECT_IDENTIFIER)) {
-				super.addSubjectIdentifier(t, locator);
-			}
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t,
+					TopicMapStoreParameterType.SUBJECT_IDENTIFIER));
 		}
-		Set<ILocator> set = super.getSubjectIdentifiers(t);
+		/*
+		 * add internal subject locators
+		 */
+		set.addAll(super.getSubjectIdentifiers(t));
+
+		/*
+		 * remove locators marked as removed
+		 */
+		if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(t)) {
+			set.removeAll(removedSubjectIdentifiers.get(t));
+		}
 		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
@@ -212,6 +265,13 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(topic)) {
 			return null;
 		}
+		/*
+		 * check if locator was removed from the topic
+		 */
+		if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(topic)
+				&& removedSubjectIdentifiers.get(topic).contains(l)) {
+			return null;
+		}
 		return topic;
 	}
 
@@ -224,10 +284,9 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(c)) {
 			throw new ConstructRemovedException(c);
 		}
-		/*
-		 * copy lazy to internal store if not done before
-		 */
-		getItemIdentifiers(c);
+		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(c)) {
+			removedItemIdentifiers.get(c).remove(identifier);
+		}
 		super.addItemIdentifer(c, identifier);
 	}
 
@@ -238,10 +297,22 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(c)) {
 			throw new ConstructRemovedException(c);
 		}
+
 		/*
-		 * copy lazy to internal store if not done before
+		 * initialize map for locator deletion
 		 */
-		getItemIdentifiers(c);
+		if (removedItemIdentifiers == null) {
+			removedItemIdentifiers = HashUtil.getHashMap();
+		}
+		Set<ILocator> set = removedItemIdentifiers.get(c);
+		if (set == null) {
+			set = HashUtil.getHashSet();
+			removedItemIdentifiers.put(c, set);
+		}
+		/*
+		 * add locator as removed
+		 */
+		set.add(identifier);
 		super.removeItemIdentifer(c, identifier);
 	}
 
@@ -253,19 +324,28 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(c)) {
 			throw new ConstructRemovedException(c);
 		}
+		Set<ILocator> set = HashUtil.getHashSet();
 		/*
-		 * check if already copied to internal cache
+		 * load from real store if it is not virtual
 		 */
-		if (!containsItemIdentifiers(c) && !isVirtual(c)) {
+		if (!isVirtual(c)) {
 			/*
 			 * copy to internal store
 			 */
-			for (ILocator locator : (Collection<ILocator>) getStore().getRealStore().doRead(c,
-					TopicMapStoreParameterType.ITEM_IDENTIFIER)) {
-				super.addItemIdentifer(c, locator);
-			}
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(c,
+					TopicMapStoreParameterType.ITEM_IDENTIFIER));
 		}
-		Set<ILocator> set = super.getItemIdentifiers(c);
+		/*
+		 * add internal subject locators
+		 */
+		set.addAll(super.getItemIdentifiers(c));
+
+		/*
+		 * remove locators marked as removed
+		 */
+		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(c)) {
+			set.removeAll(removedItemIdentifiers.get(c));
+		}
 		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
@@ -293,6 +373,13 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		if (isRemovedConstruct(construct)) {
 			return null;
 		}
+		/*
+		 * check if locator was removed from the topic
+		 */
+		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(construct)
+				&& removedItemIdentifiers.get(construct).contains(l)) {
+			return null;
+		}
 		return construct;
 	}
 
@@ -313,6 +400,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	 * {@inheritDoc}
 	 */
 	public void removeConstruct(IConstruct c) {
+		System.out.println("Remove " + c.getId());
 		if (containsConstruct(c)) {
 			super.removeConstruct(c);
 		}
@@ -447,7 +535,13 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	 * @return <code>true</code> if the construct is virtual, <code>false</code> otherwise
 	 */
 	public boolean isVirtual(Construct c) {
-		if (virtualConstructs != null && virtualConstructs.contains(c.getId())) {
+		final String id;
+		if (c instanceof ITopicMap) {
+			id = ((ITopicMap) c).getStore().getTopicMapIdentity().getId();
+		} else {
+			id = ((ConstructImpl) c).getIdentity().getId();
+		}
+		if (virtualConstructs != null && virtualConstructs.contains(id)) {
 			return true;
 		}
 		return false;
@@ -481,16 +575,23 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	}
 
 	/**
-	 * Removes the given construct from the virtual layer
-	 * 
-	 * @param c
-	 *            the construct
+	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct c) {
-		if (virtualConstructs != null) {
-			virtualConstructs.remove(c.getId());
-			super.removeConstruct(c);
+	public void removeVirtualConstruct(IConstruct construct) {
+
+		if (construct instanceof ITopic) {
+			super.removeTopic((ITopic) construct);
+		} else {
+			super.removeConstruct(construct);
 		}
+
+		/*
+		 * remove potential deletion marker
+		 */
+		if (removedIds != null) {
+			removedIds.remove(construct.getId());
+		}
+
 	}
 
 }

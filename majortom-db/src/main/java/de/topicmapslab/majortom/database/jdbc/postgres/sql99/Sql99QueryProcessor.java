@@ -496,7 +496,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -1446,11 +1446,11 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IScope doReadScope(IScopable s) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadScope();
 		stmt.setLong(1, Long.parseLong(s.getId()));
-		ResultSet set = stmt.executeQuery();
+		ResultSet set = stmt.executeQuery();	
 		set.next();
 		long scopeId = set.getLong("id_scope");
 		set.close();
-		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));
+		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));		
 	}
 
 	/**
@@ -4443,7 +4443,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Changeset doReadChangesetsByAssociationType(ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByAssociationType();
-		stmt.setLong(1, Long.parseLong(type.getId()));
+		long typeId = Long.parseLong(type.getId());
+		stmt.setLong(1, typeId);
+		stmt.setLong(2, typeId);
 		return Jdbc2Construct.toChangeSet(this, type.getTopicMap(), stmt.executeQuery());
 	}
 
@@ -4456,6 +4458,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, topicId);
 		stmt.setString(2, topic.getId());
 		stmt.setString(3, topic.getId());
+		stmt.setLong(4, topicId);
 		return Jdbc2Construct.toChangeSet(this, topic.getTopicMap(), stmt.executeQuery());
 	}
 
@@ -4567,7 +4570,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public List<IRevision> doReadRevisionsByAssociationType(ITopic type) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByAssociationType();
-		stmt.setLong(1, Long.parseLong(type.getId()));
+		long typeId = Long.parseLong(type.getId());
+		stmt.setLong(1, typeId);
+		stmt.setLong(2, typeId);
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
@@ -4586,6 +4591,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, topicId);
 		stmt.setString(2, topic.getId());
 		stmt.setString(3, topic.getId());
+		stmt.setLong(4, topicId);
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
@@ -4989,7 +4995,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Map<TopicMapStoreParameterType, Object> doReadHistory(IConstruct c, TopicMapStoreParameterType... arguments)
-			throws SQLException {	
+			throws SQLException {
 		IConstruct c_ = doReadConstruct(c.getTopicMap(), Long.parseLong(c.getId()), false);
 		Map<TopicMapStoreParameterType, Object> results = HashUtil.getHashMap();
 		/*
@@ -5013,144 +5019,145 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			if (rs.next()) {
 				for (TopicMapStoreParameterType type : arguments) {
 					switch (type) {
-					case ITEM_IDENTIFIER: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("itemidentifiers");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
-						}
-						results.put(type, set);
-					}
-						break;
-					case SUBJECT_IDENTIFIER: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("subjectidentifiers");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
-						}
-						results.put(type, set);
-					}
-						break;
-					case SUBJECT_LOCATOR: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("subjectlocators");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
-						}
-						results.put(type, set);
-					}
-						break;
-					case NAME: {
-						Collection<IName> set = HashUtil.getHashSet();
-						Array a = rs.getArray("names");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyName(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
-						}
-						results.put(type, set);
-					}
-						break;
-					case OCCURRENCE: {
-						Collection<IOccurrence> set = HashUtil.getHashSet();
-						Array a = rs.getArray("occurrences");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyOccurrence(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
-						}
-						results.put(type, set);
-					}
-						break;
-					case VARIANT: {
-						Collection<IVariant> set = HashUtil.getHashSet();
-						Array a = rs.getArray("variants");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
-						}
-						results.put(type, set);
-					}
-						break;
-					case ASSOCIATION: {
-						Collection<IAssociation> set = HashUtil.getHashSet();
-						Array a = rs.getArray("associations");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
-						}
-						results.put(type, set);
-					}
-						break;
-					case TYPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("types");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
-						}
-						/*
-						 * special handling of non-multiple and multiple-types
-						 */
-						if (c instanceof ITopic) {
+						case ITEM_IDENTIFIER: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("itemidentifiers");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
 							results.put(type, set);
-						} else {
-							results.put(type, set.iterator().next());
 						}
-					}
-						break;
-					case SUPERTYPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("supertypes");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							break;
+						case SUBJECT_IDENTIFIER: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("subjectidentifiers");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case ROLE: {
-						Collection<IAssociationRole> set = HashUtil.getHashSet();
-						Array a = rs.getArray("roles");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyAssociationRole(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
+							break;
+						case SUBJECT_LOCATOR: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("subjectlocators");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case PLAYER: {
-						results.put(
-								type,
-								new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-										.getConstructFactory()
-										.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
-					}
-						break;
-					case REIFICATION: {
-						results.put(type, rs.getLong("id_reification"));
-					}
-						break;
-					case VALUE: {
-						results.put(type, rs.getString("value"));
-					}
-						break;
-					case DATATYPE: {
-						results.put(type, new LocatorImpl(rs.getString("datatype")));
-					}
-						break;
-					case SCOPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("themes");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							break;
+						case NAME: {
+							Collection<IName> set = HashUtil.getHashSet();
+							Array a = rs.getArray("names");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyName(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
+							}
+							results.put(type, set);
 						}
-						results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
-					}
-						break;
-					case BEST_LABEL: {
-						results.put(type, rs.getString("bestlabel"));
-					}
-						break;
+							break;
+						case OCCURRENCE: {
+							Collection<IOccurrence> set = HashUtil.getHashSet();
+							Array a = rs.getArray("occurrences");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyOccurrence(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
+							}
+							results.put(type, set);
+						}
+							break;
+						case VARIANT: {
+							Collection<IVariant> set = HashUtil.getHashSet();
+							Array a = rs.getArray("variants");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
+							}
+							results.put(type, set);
+						}
+							break;
+						case ASSOCIATION: {
+							Collection<IAssociation> set = HashUtil.getHashSet();
+							Array a = rs.getArray("associations");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, set);
+						}
+							break;
+						case TYPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("types");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							/*
+							 * special handling of non-multiple and multiple-types
+							 */
+							if (c instanceof ITopic) {
+								results.put(type, set);
+							} else {
+								results.put(type, set.iterator().next());
+							}
+						}
+							break;
+						case SUPERTYPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("supertypes");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, set);
+						}
+							break;
+						case ROLE: {
+							Collection<IAssociationRole> set = HashUtil.getHashSet();
+							Array a = rs.getArray("roles");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyAssociationRole(this, getConnectionProvider()
+										.getTopicMapStore().getConstructFactory()
+										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
+							}
+							results.put(type, set);
+						}
+							break;
+						case PLAYER: {
+							results.put(
+									type,
+									new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+											.getConstructFactory()
+											.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
+						}
+							break;
+						case REIFICATION: {
+							results.put(type, rs.getLong("id_reification"));
+						}
+							break;
+						case VALUE: {
+							results.put(type, rs.getString("value"));
+						}
+							break;
+						case DATATYPE: {
+							results.put(type, new LocatorImpl(rs.getString("datatype")));
+						}
+							break;
+						case SCOPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("themes");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
+						}
+							break;
+						case BEST_LABEL: {
+							results.put(type, rs.getString("bestlabel"));
+						}
+							break;
 					}
 				}
 			}
@@ -5300,15 +5307,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		getWriterConnection().commit();
 		getWriterConnection().setAutoCommit(true);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Set<ILocator> getLocators() throws SQLException {
 		Set<ILocator> locators = HashUtil.getHashSet();
 		PreparedStatement stmt = queryBuilder.getQueryReadTopicMapLocators();
-		ResultSet rs = stmt.executeQuery();		
-		while ( rs.next()){
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
 			locators.add(new LocatorImpl(rs.getString("reference"), rs.getString("id")));
 		}
 		rs.close();

@@ -60,6 +60,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 			 * remove topic
 			 */
 			topic.remove();
+			topicMap.getStore().commit();
 
 			/*
 			 * get last revision and change
@@ -76,7 +77,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 			/*
 			 * check number of type of read only topic
 			 */
-			assertEquals(topic, change.getOldValue());
+			assertEquals("Old value is not the expected topic!",topic, change.getOldValue());
 			assertTrue(change.getOldValue() instanceof ReadOnlyTopic);
 			assertEquals(2, ((ITopic) change.getOldValue()).getTypes().size());
 
@@ -93,6 +94,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 				}
 				assertEquals("Number of types should be " + i, i, t.getTypes().size());
 				t.remove();
+				topicMap.getStore().commit();
 				r = index.getLastRevision();
 				if ( topicMap.getTopicMapSystem().getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 					assertEquals(1+i*3, r.getChangeset().size());
@@ -127,6 +129,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 				 * remove all topics and all types
 				 */
 				t.remove();
+				topicMap.getStore().commit();
 				r = index.getLastRevision();
 				for ( int j = 0 ; j < types.length ; j++ ){
 					types[j].remove();
@@ -153,6 +156,7 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 		IAssociation a = createAssociation(createTopic());
 		ITopic player = createTopic();
 		IAssociationRole role = (IAssociationRole)a.createRole(createTopic(), player);
+		topicMap.getStore().commit();
 		topicMap.getStore().enableRevisionManagement(true);
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
 		index.open();
@@ -160,8 +164,8 @@ public class TestTopicRevisions extends MaJorToMTestCase {
 		assertEquals(0, index.getChangeset(player).size());
 		
 		role.remove();
-		assertEquals(1, index.getChangeset(player).size());
-		System.out.println(index.getChangeset(player));
+		topicMap.getStore().commit();
+		assertEquals(1, index.getChangeset(player).size(),1);
 		
 	}
 

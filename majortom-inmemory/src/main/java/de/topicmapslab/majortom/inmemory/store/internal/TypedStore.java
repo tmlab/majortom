@@ -86,7 +86,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * constructor
 	 * 
-	 * @param store the parent store
+	 * @param store
+	 *            the parent store
 	 */
 	public TypedStore(final InMemoryTopicMapStore store) {
 		this.store = store;
@@ -125,7 +126,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Remove the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the removed type
 	 */
 	public ITopic removeType(Typed typed) {
@@ -145,54 +147,19 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Remove the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the removed type
 	 */
 	public ITopic removeType(IName typed) {
 		if (nameTypes != null && nameTypes.containsKey(typed)) {
 			ITopic t = nameTypes.remove(typed);
 			Set<IName> set = typedNames.get(t);
-			set.remove(typed);
-			if (set.isEmpty()) {
-				typedNames.remove(t);
-			} 
-			return t;
-		}
-		return null;
-	}
-
-	/**
-	 * Remove the given type for the typed attribute
-	 * 
-	 * @param typed the typed item
-	 * @return the removed type
-	 */
-	public ITopic removeType(IOccurrence typed) {
-		if (occurrenceTypes != null && occurrenceTypes.containsKey(typed)) {
-			ITopic t = occurrenceTypes.remove(typed);
-			Set<IOccurrence> set = typedOccurrences.get(t);
-			set.remove(typed);
-			if (set.isEmpty()) {
-				typedOccurrences.remove(t);
-			} 
-			return t;
-		}
-		return null;
-	}
-
-	/**
-	 * Remove the given type for the typed attribute
-	 * 
-	 * @param typed the typed item
-	 * @return the removed type
-	 */
-	public ITopic removeType(IAssociation typed) {
-		if (associationTypes != null && associationTypes.containsKey(typed)) {
-			ITopic t = associationTypes.remove(typed);
-			Set<IAssociation> set = typedAssociations.get(t);
-			set.remove(typed);
-			if (set.isEmpty()) {
-				typedAssociations.remove(t);
+			if (set != null) {
+				set.remove(typed);
+				if (set.isEmpty()) {
+					typedNames.remove(t);
+				}
 			}
 			return t;
 		}
@@ -202,17 +169,64 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Remove the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
+	 * @return the removed type
+	 */
+	public ITopic removeType(IOccurrence typed) {
+		if (occurrenceTypes != null && occurrenceTypes.containsKey(typed)) {
+			ITopic t = occurrenceTypes.remove(typed);
+			Set<IOccurrence> set = typedOccurrences.get(t);
+			if (set != null) {
+				set.remove(typed);
+				if (set.isEmpty()) {
+					typedOccurrences.remove(t);
+				}
+			}
+			return t;
+		}
+		return null;
+	}
+
+	/**
+	 * Remove the given type for the typed attribute
+	 * 
+	 * @param typed
+	 *            the typed item
+	 * @return the removed type
+	 */
+	public ITopic removeType(IAssociation typed) {
+		if (associationTypes != null && associationTypes.containsKey(typed)) {
+			ITopic t = associationTypes.remove(typed);
+			Set<IAssociation> set = typedAssociations.get(t);
+			if (set != null) {
+				set.remove(typed);
+				if (set.isEmpty()) {
+					typedAssociations.remove(t);
+				}
+			}
+			return t;
+		}
+		return null;
+	}
+
+	/**
+	 * Remove the given type for the typed attribute
+	 * 
+	 * @param typed
+	 *            the typed item
 	 * @return the removed type
 	 */
 	public ITopic removeType(IAssociationRole typed) {
 		if (roleTypes != null && roleTypes.containsKey(typed)) {
 			ITopic t = roleTypes.remove(typed);
 			Set<IAssociationRole> set = typedRoles.get(t);
-			set.remove(typed);
-			if (set.isEmpty()) {
-				typedRoles.remove(t);
-			} 
+			if (set != null) {
+				set.remove(typed);
+				if (set.isEmpty()) {
+					typedRoles.remove(t);
+				}
+			}
 			return t;
 		}
 		return null;
@@ -221,8 +235,10 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(Typed typed, ITopic t) {
 		if (typed instanceof IName) {
@@ -241,8 +257,10 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IName typed, ITopic t) {
 		if (nameTypes == null) {
@@ -264,8 +282,10 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IOccurrence typed, ITopic t) {
 		if (occurrenceTypes == null) {
@@ -287,8 +307,10 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IAssociation typed, ITopic t) {
 		if (associationTypes == null) {
@@ -310,8 +332,10 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Store the given type for the typed attribute
 	 * 
-	 * @param typed the typed item
-	 * @param t the topic
+	 * @param typed
+	 *            the typed item
+	 * @param t
+	 *            the topic
 	 */
 	public void setType(IAssociationRole typed, ITopic t) {
 		if (roleTypes == null) {
@@ -333,7 +357,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(Typed typed) {
@@ -353,7 +378,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IName typed) {
@@ -366,7 +392,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IOccurrence typed) {
@@ -379,7 +406,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IAssociation typed) {
@@ -392,7 +420,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Return the type of the typed attribute
 	 * 
-	 * @param typed the typed item
+	 * @param typed
+	 *            the typed item
 	 * @return the type
 	 */
 	public ITopic getType(IAssociationRole typed) {
@@ -405,7 +434,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed attributes
 	 */
 	public Set<ITypeable> getTyped(ITopic t) {
@@ -414,7 +444,7 @@ public class TypedStore implements IDataStore {
 		set.addAll(getTypedRoles(t));
 		set.addAll(getTypedNames(t));
 		set.addAll(getTypedOccurrences(t));
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -423,7 +453,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed attributes
 	 */
 	public Set<IAssociation> getTypedAssociations(ITopic t) {
@@ -436,7 +467,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed association role items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed association role items
 	 */
 	public Set<IAssociationRole> getTypedRoles(ITopic t) {
@@ -449,14 +481,15 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<ICharacteristics> getTypedCharacteristics(ITopic t) {
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getTypedNames(t));
 		set.addAll(getTypedOccurrences(t));
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -465,7 +498,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<IName> getTypedNames(ITopic t) {
@@ -478,7 +512,8 @@ public class TypedStore implements IDataStore {
 	/**
 	 * Returns the typed names items of the given type.
 	 * 
-	 * @param t the type
+	 * @param t
+	 *            the type
 	 * @return a set containing all typed characteristics
 	 */
 	public Set<IOccurrence> getTypedOccurrences(ITopic t) {
@@ -489,10 +524,10 @@ public class TypedStore implements IDataStore {
 	}
 
 	/**
-	 * Removing the given topic as type of each stored typed. The typed objects
-	 * will be removed too.
+	 * Removing the given topic as type of each stored typed. The typed objects will be removed too.
 	 * 
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 * @return the removed typed items
 	 */
 	public Set<ITypeable> removeType(ITopic type) {
@@ -538,7 +573,7 @@ public class TypedStore implements IDataStore {
 		if (typedOccurrences != null) {
 			typedOccurrences.remove(type);
 		}
-		if ( removed.isEmpty()){
+		if (removed.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return removed;
@@ -626,8 +661,7 @@ public class TypedStore implements IDataStore {
 	}
 
 	/**
-	 * Return a set containing all topic types used as type of a characteristics
-	 * item.
+	 * Return a set containing all topic types used as type of a characteristics item.
 	 * 
 	 * @return a set of all types
 	 */
@@ -635,7 +669,7 @@ public class TypedStore implements IDataStore {
 		Set<ITopic> set = HashUtil.getHashSet();
 		set.addAll(getNameTypes());
 		set.addAll(getOccurrenceTypes());
-		if ( set.isEmpty()){
+		if (set.isEmpty()) {
 			return Collections.emptySet();
 		}
 		return set;
@@ -654,8 +688,7 @@ public class TypedStore implements IDataStore {
 	}
 
 	/**
-	 * Return a set containing all topic types used as type of an association
-	 * item.
+	 * Return a set containing all topic types used as type of an association item.
 	 * 
 	 * @return a set of all types
 	 */
@@ -679,8 +712,7 @@ public class TypedStore implements IDataStore {
 	}
 
 	/**
-	 * Return a set containing all topic types used as type of an occurrence
-	 * item.
+	 * Return a set containing all topic types used as type of an occurrence item.
 	 * 
 	 * @return a set of all types
 	 */
@@ -690,7 +722,7 @@ public class TypedStore implements IDataStore {
 		}
 		return HashUtil.getHashSet(typedOccurrences.keySet());
 	}
-	
+
 	/**
 	 * Return the internal stored store instance.
 	 * 

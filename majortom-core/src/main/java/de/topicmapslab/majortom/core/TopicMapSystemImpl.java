@@ -16,13 +16,8 @@
 
 package de.topicmapslab.majortom.core;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,7 +32,6 @@ import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
 import de.topicmapslab.majortom.util.FeatureStrings;
@@ -209,7 +203,6 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		return topicMaps.get(arg0);
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -217,13 +210,13 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null.");
 		}
-		
-//		ITopicMap topicMap = (ITopicMap) getTopicMap(locator);
-//		if (topicMap == null) {
-//			throw new IllegalArgumentException("No topic map contained for the given locator.");
-//		}
+
+		// ITopicMap topicMap = (ITopicMap) getTopicMap(locator);
+		// if (topicMap == null) {
+		// throw new IllegalArgumentException("No topic map contained for the given locator.");
+		// }
 		return this.topicMaps.remove(locator);
-//		return topicMap;
+		// return topicMap;
 	}
 
 	/**
