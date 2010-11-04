@@ -121,7 +121,8 @@ public class TransactionTopicMapStore extends ModifableTopicMapStoreImpl impleme
 	 * @param transaction
 	 *            the transaction
 	 */
-	public TransactionTopicMapStore(ITopicMapSystem topicMapSystem, ModifableTopicMapStoreImpl store, ITransaction transaction) {
+	public TransactionTopicMapStore(ITopicMapSystem topicMapSystem, ModifableTopicMapStoreImpl store,
+			ITransaction transaction) {
 		super(topicMapSystem);
 		this.store = store;
 		this.transaction = transaction;
@@ -3507,38 +3508,38 @@ public class TransactionTopicMapStore extends ModifableTopicMapStoreImpl impleme
 				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue,
 						Object oldValue) {
 					switch (event) {
-					case MERGE: {
-						Object oldValue_ = null;
-						/* find old value */
-						// By subject-identifier
-						for (Locator l : ((ITopic) oldValue).getSubjectIdentifiers()) {
-							oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
-							if (oldValue_ != null) {
-								break;
-							}
-						}
-						// By subject-locator
-						if (oldValue_ == null) {
-							for (Locator l : ((ITopic) oldValue).getSubjectLocators()) {
-								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
+						case MERGE: {
+							Object oldValue_ = null;
+							/* find old value */
+							// By subject-identifier
+							for (Locator l : ((ITopic) oldValue).getSubjectIdentifiers()) {
+								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
 								if (oldValue_ != null) {
 									break;
 								}
 							}
-						}
-						// By item-identifier
-						if (oldValue_ == null) {
-							for (Locator l : ((ITopic) oldValue).getItemIdentifiers()) {
-								oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
-								if (oldValue_ != null) {
-									break;
+							// By subject-locator
+							if (oldValue_ == null) {
+								for (Locator l : ((ITopic) oldValue).getSubjectLocators()) {
+									oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
+									if (oldValue_ != null) {
+										break;
+									}
 								}
 							}
+							// By item-identifier
+							if (oldValue_ == null) {
+								for (Locator l : ((ITopic) oldValue).getItemIdentifiers()) {
+									oldValue_ = doRead(getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
+									if (oldValue_ != null) {
+										break;
+									}
+								}
+							}
+							// store mapping
+							lazy.put(oldValue_, newValue);
 						}
-						// store mapping
-						lazy.put(oldValue_, newValue);
-					}
-						break;
+							break;
 					}
 				}
 			};
@@ -3635,5 +3636,12 @@ public class TransactionTopicMapStore extends ModifableTopicMapStoreImpl impleme
 	 */
 	public void enableCaching(boolean enable) {
 		// NOTHING TO DO HERE
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public JdbcIdentity getTopicMapIdentity() {
+		return identity;
 	}
 }

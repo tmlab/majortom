@@ -20,6 +20,7 @@ import org.apache.commons.collections.bidimap.TreeBidiMap;
 
 import de.topicmapslab.majortom.inmemory.store.internal.ReificationStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IReifiable;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
@@ -31,7 +32,7 @@ import de.topicmapslab.majortom.model.transaction.ITransaction;
  * @author Sven Krosse
  * 
  */
-public class VirtualReificationStore<T extends VirtualTopicMapStore> extends ReificationStore {
+public class VirtualReificationStore<T extends VirtualTopicMapStore> extends ReificationStore implements IVirtualStore {
 
 	private BidiMap removedReifications;
 
@@ -206,6 +207,24 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 		if (reifiable != null) {
 			setReifier(reifiable, replacement);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if (construct instanceof ITopic) {
+			super.removeReifier((ITopic) construct);
+			if (removedReifications != null) {
+				removedReifications.remove(construct.getId());
+			}
+		} else if (construct instanceof IReifiable) {
+			super.removeReification((IReifiable) construct);
+			if (removedReifications != null) {
+				removedReifications.removeValue(construct.getId());
+			}
+		}
+
 	}
 
 }

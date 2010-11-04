@@ -24,6 +24,7 @@ import org.tmapi.core.Topic;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.internal.TopicTypeStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
@@ -35,7 +36,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends TopicTypeStore {
+public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends TopicTypeStore implements IVirtualStore{
 
 	private Map<String, Set<String>> removedInstances;
 	private Map<String, Set<String>> removedTypes;
@@ -438,4 +439,14 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 		return set;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if ( construct instanceof ITopic ){
+			removeTopic((ITopic) construct);			
+		}
+	}
+	
+	
 }

@@ -705,6 +705,10 @@ public class Jdbc2Construct {
 				oldValue = processor.doReadConstruct(topicMap, Long.parseLong(data.oldValue), true);
 			}
 				break;
+			case TOPIC_MAP_CREATED:{
+				notifier = topicMap;
+				newValue = topicMap;
+			}break;
 			}
 			changeset.add(new RevisionChangeImpl(data.revision, data.type, notifier, newValue, oldValue));
 		}

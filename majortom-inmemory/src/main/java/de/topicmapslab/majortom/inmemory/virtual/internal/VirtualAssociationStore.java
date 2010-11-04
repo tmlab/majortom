@@ -27,6 +27,7 @@ import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.exception.ConstructRemovedException;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -39,7 +40,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualAssociationStore<T extends VirtualTopicMapStore> extends AssociationStore {
+public class VirtualAssociationStore<T extends VirtualTopicMapStore> extends AssociationStore implements IVirtualStore {
 
 	private final T store;
 
@@ -247,5 +248,16 @@ public class VirtualAssociationStore<T extends VirtualTopicMapStore> extends Ass
 			changedPlayers.clear();
 		}
 		super.close();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if (construct instanceof IAssociation) {
+			removeAssociation((IAssociation) construct);
+		} else if (construct instanceof IAssociationRole) {
+			removeRole((IAssociationRole) construct);
+		}
 	}
 }

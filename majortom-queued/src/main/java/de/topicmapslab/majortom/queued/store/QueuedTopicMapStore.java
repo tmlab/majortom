@@ -17,6 +17,7 @@ import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.queued.queue.IProcessingListener;
@@ -164,7 +165,6 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 					return jdbcTopicMapStore.getTopicMapIdentity().getId();
 				}
 			}
-				break;
 		}
 		/*
 		 * redirect to virtual layer
@@ -299,7 +299,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 * {@inheritDoc}
 	 */
 	public void commit() {
-		while (queue.size() != 0 && !queue.isInterrupted() && queue.isAlive()) {
+		while (queue.isBusy() && !queue.isInterrupted() && queue.isAlive()) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -334,7 +334,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 		 * reset virtual memory layer
 		 */
 		inMemoryTopicMapStore.close();
-		inMemoryTopicMapStore  = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
+		inMemoryTopicMapStore = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
 		inMemoryTopicMapStore.setTopicMap(getTopicMap());
 		inMemoryTopicMapStore.initialize(getBaseLocator());
 		inMemoryTopicMapStore.connect();
@@ -356,7 +356,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 * {@inheritDoc}
 	 */
 	public boolean isRevisionManagementSupported() {
-		return jdbcTopicMapStore.isRevisionManagementEnabled();
+		return jdbcTopicMapStore.isRevisionManagementSupported();
 	}
 
 	/**
@@ -385,8 +385,10 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 			CreateTask ct = (CreateTask) task;
 			Object result = task.getResult();
 			if (result instanceof IConstruct) {
+				ConstructImpl memory = (ConstructImpl) ct.getInMemoryClone();
+				inMemoryTopicMapStore.removeVirtualConstruct(memory);
 				String databaseId = ((ConstructImpl) result).getIdentity().getId();
-				((ConstructImpl) ct.getInMemoryClone()).getIdentity().setId(databaseId);
+				memory.getIdentity().setId(databaseId);
 			}
 		}
 	}
@@ -403,6 +405,13 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 */
 	public void removeTopicMapListener(ITopicMapListener listener) {
 		jdbcTopicMapStore.removeTopicMapListener(listener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITopicMapStoreIdentity getTopicMapIdentity() {
+		return jdbcTopicMapStore.getTopicMapIdentity();
 	}
 
 }

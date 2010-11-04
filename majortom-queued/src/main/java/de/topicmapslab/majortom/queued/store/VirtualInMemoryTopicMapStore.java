@@ -29,6 +29,7 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 
 /**
@@ -119,6 +120,11 @@ public class VirtualInMemoryTopicMapStore extends VirtualTopicMapStore {
 			case REVISION_TIMESTAMP: {
 				return getRealStore().doRead(context, paramType, params);
 			}
+			case TYPE: {
+				if (context == null && params.length == 1 && params[0] instanceof IRevision) {
+					return getRealStore().doRead(context, paramType, params);
+				}
+			}
 		}
 		return super.doRead(context, paramType, params);
 	}
@@ -147,6 +153,20 @@ public class VirtualInMemoryTopicMapStore extends VirtualTopicMapStore {
 				super.doModify(context, paramType, params);
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isRevisionManagementEnabled() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isRevisionManagementSupported() {
+		return false;
 	}
 
 }

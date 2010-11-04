@@ -950,6 +950,13 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public ITopicMapStoreIdentity getTopicMapIdentity() {
+		return parentStore.getTopicMapIdentity();
+	}
+	
+	/**
 	 * Clear the meta data information for the given revision from internal
 	 * cache
 	 * 

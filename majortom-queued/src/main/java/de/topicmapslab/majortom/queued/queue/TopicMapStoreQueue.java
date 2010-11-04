@@ -20,8 +20,8 @@ public class TopicMapStoreQueue extends Thread {
 	private ITopicMapStore topicMapStore;
 
 	private Queue<IQueueTask> tasks;
-
 	private Set<IProcessingListener> listeners;
+	private boolean busy = false;
 
 	/**
 	 * constructor
@@ -47,7 +47,7 @@ public class TopicMapStoreQueue extends Thread {
 	public void run() {
 		while (!isInterrupted()) {
 			try {
-				while (!tasks.isEmpty()) {
+				while (!tasks.isEmpty()) {					
 					IQueueTask task = tasks.poll();
 					task.doTask(topicMapStore);
 					if (listeners != null) {
@@ -55,6 +55,7 @@ public class TopicMapStoreQueue extends Thread {
 							listener.finished(task);
 						}
 					}
+					busy = !tasks.isEmpty();
 				}
 			} catch (Exception e) {
 				interrupt();
@@ -120,6 +121,15 @@ public class TopicMapStoreQueue extends Thread {
 		if (listeners != null) {
 			listeners.remove(listener);
 		}
+	}
+
+	/**
+	 * Checks if there is a task in progress or any tasks to do.
+	 * 
+	 * @return <code>true</code> if there are any tasks to do or a task is currently in progress.
+	 */
+	public boolean isBusy() {
+		return busy || !tasks.isEmpty();
 	}
 
 }

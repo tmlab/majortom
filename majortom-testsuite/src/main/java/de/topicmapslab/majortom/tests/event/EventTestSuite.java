@@ -27,7 +27,7 @@ public class EventTestSuite {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.event");
 		// $JUnit-BEGIN$
-//		suite.addTestSuite(TestEventModel.class);
+		suite.addTestSuite(TestEventModel.class);
 		// $JUnit-END$
 		return suite;
 	}

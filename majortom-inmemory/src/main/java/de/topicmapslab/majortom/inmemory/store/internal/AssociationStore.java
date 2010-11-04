@@ -183,11 +183,9 @@ public class AssociationStore implements IDataStore {
 		 * remove role from played roles
 		 */
 		Set<IAssociationRole> set = playedRoles.get(player);
-		if (set == null) {
-			throw new TopicMapStoreException("Roles cache does not contains the given player.");
+		if (set != null) {
+			set.remove(role);
 		}
-		set.remove(role);
-		playedRoles.put(player, set);
 		/*
 		 * remove role
 		 */

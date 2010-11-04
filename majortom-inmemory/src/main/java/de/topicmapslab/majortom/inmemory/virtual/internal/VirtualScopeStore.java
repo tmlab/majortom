@@ -30,6 +30,7 @@ import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.inmemory.store.internal.ScopeStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
 import de.topicmapslab.majortom.model.core.IAssociation;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScopable;
@@ -45,7 +46,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStore {
+public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStore implements IVirtualStore {
 
 	private Set<String> modifiedScopeables;
 
@@ -311,14 +312,15 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 		if (!index.isOpen()) {
 			index.open();
 		}
-				
+
 		IScope cleaned = scope;
-		try{
-			cleaned = (IScope)getStore().getRealStore().doCreate(getStore().getTopicMap(), TopicMapStoreParameterType.SCOPE, scope.getThemes());
-		}catch(Exception e){
-			//VOID
+		try {
+			cleaned = (IScope) getStore().getRealStore().doCreate(getStore().getTopicMap(),
+					TopicMapStoreParameterType.SCOPE, scope.getThemes());
+		} catch (Exception e) {
+			// VOID
 		}
-		
+
 		Set<Scoped> set = HashUtil.getHashSet();
 		if (!getVirtualIdentityStore().isVirtual(cleaned)) {
 			if (Name.class.isAssignableFrom(clazz)) {
@@ -511,6 +513,18 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 		IScope scope = getScope(scoped);
 		super.removeScoped(scoped);
 		return scope;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if (construct instanceof IScopable) {
+			removeScoped((IScopable) construct);
+			if (modifiedScopeables != null) {
+				modifiedScopeables.remove(construct.getId());
+			}
+		}
 	}
 
 }

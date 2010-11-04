@@ -75,10 +75,10 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		topicMap.getStore().enableRevisionManagement(false);
 		ITopic type = createTopic();
 		topicMap.getStore().commit();
-		assertEquals(first, index.getLastRevision());
+		assertEquals(first.getId(), index.getLastRevision().getId());
 		
 		topicMap.getStore().enableRevisionManagement(true);
-		assertEquals(first, index.getLastRevision());
+		assertEquals(first.getId(), index.getLastRevision().getId());
 		
 		topicMap.createAssociation(type);
 		topicMap.getStore().commit();

@@ -201,6 +201,17 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	/**
 	 * {@inheritDoc}
 	 */
+	public String doReadId(IConstruct c) throws TopicMapStoreException {
+		try {
+			return getRealStore().doRead(c, TopicMapStoreParameterType.ID).toString();
+		} catch (TopicMapStoreException e) {
+			return super.doReadId(c);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected VirtualIdentityStore<?> createIdentityStore(InMemoryTopicMapStore store) {
 		return new LazyIdentityStore(this);
 	}

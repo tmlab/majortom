@@ -29,6 +29,7 @@ import de.topicmapslab.majortom.inmemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.inmemory.virtual.VirtualTopicMapStore;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -43,7 +44,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStore {
+public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStore implements IVirtualStore{
 
 	private Set<ITypeable> modifiedConstructs;
 	private Map<ITopic, Set<ITypeable>> changedTypes;
@@ -659,5 +660,14 @@ public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStor
 	@SuppressWarnings("unchecked")
 	protected T getStore() {
 		return (T) super.getStore();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		if ( construct instanceof ITypeable){
+			removeType((ITypeable) construct);
+		}
 	}
 }

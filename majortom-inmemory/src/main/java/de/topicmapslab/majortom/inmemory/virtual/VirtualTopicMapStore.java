@@ -23,6 +23,7 @@ import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualReificationStor
 import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualScopeStore;
 import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualTopicTypeStore;
 import de.topicmapslab.majortom.inmemory.virtual.internal.VirtualTypedStore;
+import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
@@ -96,6 +97,77 @@ public abstract class VirtualTopicMapStore extends InMemoryTopicMapStore {
 	 */
 	public boolean isRevisionManagementEnabled() {
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualIdentityStore<?> getIdentityStore() {
+		return (VirtualIdentityStore<?>) super.getIdentityStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualAssociationStore<?> getAssociationStore() {
+		return (VirtualAssociationStore<?>) super.getAssociationStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualReificationStore<?> getReificationStore() {
+		return (VirtualReificationStore<?>) super.getReificationStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualTypedStore<?> getTypedStore() {
+		return (VirtualTypedStore<?>) super.getTypedStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualTopicTypeStore<?> getTopicTypeStore() {
+		return (VirtualTopicTypeStore<?>) super.getTopicTypeStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualCharacteristicsStore<?> getCharacteristicsStore() {
+		return (VirtualCharacteristicsStore<?>) super.getCharacteristicsStore();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public VirtualScopeStore<?> getScopeStore() {
+		return (VirtualScopeStore<?>) super.getScopeStore();
+	}
+
+	/**
+	 * Returns a virtual construct from the current virtual topic map store. The construct will not mark as removed and
+	 * will not removed from the underlying real topic map store.
+	 * 
+	 * @param construct
+	 *            the construct to remove
+	 */
+	public void removeVirtualConstruct(IConstruct construct) {
+		/*
+		 * handle only virtual constructs and not already removed construct
+		 */
+		if (getIdentityStore().isVirtual(construct) && !getIdentityStore().isRemovedConstruct(construct)) {
+			getAssociationStore().removeVirtualConstruct(construct);
+			getCharacteristicsStore().removeVirtualConstruct(construct);
+			getTopicTypeStore().removeVirtualConstruct(construct);
+			getTypedStore().removeVirtualConstruct(construct);
+			getScopeStore().removeVirtualConstruct(construct);
+			getReificationStore().removeVirtualConstruct(construct);
+			getIdentityStore().removeVirtualConstruct(construct);
+		}
 	}
 
 }

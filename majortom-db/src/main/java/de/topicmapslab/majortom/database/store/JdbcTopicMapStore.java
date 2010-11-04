@@ -833,7 +833,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * avoid caching of transaction constructs
 		 */
-		if (context != null && context.getTopicMap() instanceof ITransaction) {
+		if (context != null && (context instanceof ITransaction || context.getTopicMap() instanceof ITransaction)) {
 			return super.doRead(context, paramType, params);
 		}
 		/*
@@ -1725,15 +1725,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 					 * notify listener
 					 */
 					notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-				}
-				/*
-				 * notify listener
-				 */
-				notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
+				}	
 				/*
 				 * store history
 				 */
 				storeRevision(revision, TopicMapEventType.ROLE_REMOVED, parent, null, role);
+				/*
+				 * notify listener
+				 */
+				notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
