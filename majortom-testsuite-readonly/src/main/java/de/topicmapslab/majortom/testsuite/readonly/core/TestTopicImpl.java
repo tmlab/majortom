@@ -1338,13 +1338,13 @@ public class TestTopicImpl extends AbstractTest{
 		
 		ITopic topic1 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/1"));
 		assertNotNull(topic1);
-		assertEquals("aa", topic1.getBestLabel(theme1,false));
+		assertEquals("aa", topic1.getBestLabel(theme1,true));
 		assertNull(topic1.getBestLabel(theme2,true));
 		
 		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/2"));
 		assertNotNull(topic2);
-		assertEquals("aa", topic2.getBestLabel(theme2,false));
-		assertEquals("a", topic2.getBestLabel(theme1,false));
+		assertEquals("aa", topic2.getBestLabel(theme2,true));
+		assertEquals("a", topic2.getBestLabel(theme1,true));
 		
 		ITopic topic3 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/3"));
 		assertNotNull(topic3);

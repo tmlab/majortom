@@ -201,9 +201,7 @@ public class TestOccurrenceImpl extends AbstractTest {
 
 		assertNotNull(map);
 
-		ITopic topic = (ITopic) map
-				.getTopicBySubjectIdentifier(map
-						.createLocator("http://TestOccurrenceImpl/testCoordinateValue/topic/1"));
+		ITopic topic = (ITopic) map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testCoordinateValue/topic/1"));
 		assertNotNull(topic);
 
 		ITopic type_geo = (ITopic) map
@@ -451,18 +449,14 @@ public class TestOccurrenceImpl extends AbstractTest {
 
 		assertNotNull(map);
 
-		ITopic topic = (ITopic) map
-				.getTopicBySubjectIdentifier(map
-						.createLocator("http://TestOccurrenceImpl/testSetValueWgs84Coordinate/topic/1"));
+		ITopic topic = (ITopic) map.getTopicBySubjectIdentifier(map.createLocator("http://TestOccurrenceImpl/testSetValueWgs84Coordinate/topic/1"));
 		assertNotNull(topic);
 
 		assertEquals(1, topic.getOccurrences().size());
 		IOccurrence o = (IOccurrence) topic.getOccurrences().iterator().next();
 
-		assertEquals(o.getDatatype(),
-				map.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE));
-		o.setValue(new Wgs84Coordinate(new Wgs84Degree(47.0), new Wgs84Degree(
-				11.0)));
+		assertEquals(o.getDatatype(), map.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE));
+		o.setValue(new Wgs84Coordinate(new Wgs84Degree(47.0), new Wgs84Degree(11.0)));
 	}
 
 	/**
@@ -1059,8 +1053,7 @@ public class TestOccurrenceImpl extends AbstractTest {
 		assertEquals(1, topic.getOccurrences().size());
 		IOccurrence o = (IOccurrence) topic.getOccurrences().iterator().next();
 
-		assertEquals(o.getDatatype(),
-				map.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE));
+		assertEquals(o.getDatatype(),map.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE));
 		o.setValue(new Wgs84Circuit(new Wgs84Coordinate(new Wgs84Degree(47.0),
 				new Wgs84Degree(11.0)), 2));
 	}

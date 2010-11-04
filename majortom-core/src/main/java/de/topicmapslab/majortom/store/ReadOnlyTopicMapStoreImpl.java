@@ -719,7 +719,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	public abstract Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
-	 * Read all scoped names if the given topic.
+	 * Read all scoped names of the given topic where the scope matches exactly.
 	 * 
 	 * @param t
 	 *            the topic
