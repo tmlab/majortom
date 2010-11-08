@@ -26,6 +26,7 @@ import java.util.List;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.IndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -62,7 +63,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadChangesetsByAssociationType((ITopic) associationType);
+			ISession session = getTopicMapStore().openSession();
+			Changeset set = session.getProcessor().doReadChangesetsByAssociationType((ITopic) associationType);
+			session.commit();
+			session.close();
+			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -79,7 +84,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadRevisionsByAssociationType((ITopic) associationType);
+			ISession session = getTopicMapStore().openSession();
+			List<IRevision> list = session.getProcessor().doReadRevisionsByAssociationType((ITopic) associationType);
+			session.commit();
+			session.close();
+			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -96,7 +105,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadChangesetsByTopic((ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			Changeset set =  session.getProcessor().doReadChangesetsByTopic((ITopic) topic);
+			session.commit();
+			session.close();
+			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -110,7 +123,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadFirstRevision(getTopicMapStore().getTopicMap());
+			ISession session = getTopicMapStore().openSession();
+			IRevision r = session.getProcessor().doReadFirstRevision(getTopicMapStore().getTopicMap());
+			session.commit();
+			session.close();
+			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -124,7 +141,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadLastModification(getTopicMapStore().getTopicMap());
+			ISession session = getTopicMapStore().openSession();
+			Calendar c = session.getProcessor().doReadLastModification(getTopicMapStore().getTopicMap());
+			session.commit();
+			session.close();
+			return c;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -141,7 +162,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadLastModificationOfTopic((ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			Calendar c = session.getProcessor().doReadLastModificationOfTopic((ITopic) topic);
+			session.commit();
+			session.close();
+			return c;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -155,7 +180,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadLastRevision(getTopicMapStore().getTopicMap());
+			ISession session = getTopicMapStore().openSession();
+			IRevision r = session.getProcessor().doReadLastRevision(getTopicMapStore().getTopicMap());
+			session.commit();
+			session.close();
+			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -172,7 +201,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadRevisionByTimestamp(getTopicMapStore().getTopicMap(), timestamp);
+			ISession session = getTopicMapStore().openSession();
+			IRevision r =  session.getProcessor().doReadRevisionByTimestamp(getTopicMapStore().getTopicMap(), timestamp);
+			session.commit();
+			session.close();
+			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -189,7 +222,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadRevisionByTag(getTopicMapStore().getTopicMap(), tag);
+			ISession session = getTopicMapStore().openSession();
+			IRevision r =   session.getProcessor().doReadRevisionByTag(getTopicMapStore().getTopicMap(), tag);
+			session.commit();
+			session.close();
+			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -217,7 +254,11 @@ public class JdbcRevisionIndex extends IndexImpl<JdbcTopicMapStore> implements I
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		try {
-			return getTopicMapStore().getProcessor().doReadRevisionsByTopic((ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			List<IRevision> list = session.getProcessor().doReadRevisionsByTopic((ITopic) topic);
+			session.commit();
+			session.close();
+			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}

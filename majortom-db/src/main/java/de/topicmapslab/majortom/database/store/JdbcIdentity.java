@@ -18,8 +18,7 @@ package de.topicmapslab.majortom.database.store;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 
 /**
- * Implementation of {@link ITopicMapStoreIdentity} for a
- * {@link JdbcTopicMapStore}.
+ * Implementation of {@link ITopicMapStoreIdentity} for a {@link JdbcTopicMapStore}.
  * 
  * @author Sven Krosse
  * 
@@ -49,7 +48,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	public String getId() {
 		return String.valueOf(id);
 	}
-	
+
 	/**
 	 * Return the internal id of the constructn as long
 	 * 
@@ -82,7 +81,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(long id) {		
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -90,7 +89,11 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * {@inheritDoc}
 	 */
 	public void setId(String id) {
-		this.id = Long.parseLong(id);
+		try {
+			this.id = Long.parseLong(id);
+		} catch (NumberFormatException e) {
+			System.out.println("Abort modification of ID!");
+		}
 	}
 
 }

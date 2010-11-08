@@ -925,7 +925,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	}
 
 	@Override
-	protected ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
+	public ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Do create locator not supported by cache");
 	}
 

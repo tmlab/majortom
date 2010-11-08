@@ -66,7 +66,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 * @return the connection
 	 */
 	protected Connection getWriterConnection() {
-		return getProcessor().getWriterConnection();
+		return getProcessor().getConnection();
 	}
 
 	/**

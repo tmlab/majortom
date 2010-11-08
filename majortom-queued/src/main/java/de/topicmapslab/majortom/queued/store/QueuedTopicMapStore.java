@@ -3,6 +3,9 @@
  */
 package de.topicmapslab.majortom.queued.store;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.index.Index;
@@ -27,9 +30,10 @@ import de.topicmapslab.majortom.queued.queue.task.IQueueTask;
 import de.topicmapslab.majortom.queued.queue.task.MergeTask;
 import de.topicmapslab.majortom.queued.queue.task.ModifyTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveConstructTask;
+import de.topicmapslab.majortom.queued.queue.task.RemoveDuplicatesTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveTask;
-import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
+import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * A queued topic map store, which reads and writes any context to memory and creating a task to persist information to
@@ -83,6 +87,12 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 		 */
 		inMemoryTopicMapStore = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
 		inMemoryTopicMapStore.setTopicMapSystem(getTopicMapSystem());
+		
+		/*
+		 * overwrite set and map class for concurrent modification access
+		 */
+		HashUtil.overwriteMapImplementationClass(ConcurrentHashMap.class);
+		HashUtil.overwriteSetImplementationClass(CopyOnWriteArraySet.class);
 	}
 
 	/**
@@ -90,9 +100,9 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 */
 	public void connect() throws TopicMapStoreException {
 		super.connect();
-		jdbcTopicMapStore.initialize(getBaseLocator());
+		jdbcTopicMapStore.initialize(getTopicMapBaseLocator());
 		jdbcTopicMapStore.connect();
-		inMemoryTopicMapStore.initialize(getBaseLocator());
+		inMemoryTopicMapStore.initialize(getTopicMapBaseLocator());
 		inMemoryTopicMapStore.connect();
 		/*
 		 * initialize queue
@@ -319,25 +329,19 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 			throw new UnmodifyableStoreException("Read-only store does not support deletion of construct!");
 		}
 		/*
-		 * wait for finishing all tasks of the worker tread
+		 * wait for finishing all tasks of the worker tread //
 		 */
-		commit();
+//		commit();
 		/*
-		 * remove duplicates
+		 * remove duplicates from virtual store
 		 */
-		MergeUtils.removeDuplicates(this, getTopicMap());
+		inMemoryTopicMapStore.removeDuplicates();
+
 		/*
-		 * wait for finishing all tasks of the worker tread
+		 * add task to queue
 		 */
-		commit();
-		/*
-		 * reset virtual memory layer
-		 */
-		inMemoryTopicMapStore.close();
-		inMemoryTopicMapStore = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
-		inMemoryTopicMapStore.setTopicMap(getTopicMap());
-		inMemoryTopicMapStore.initialize(getBaseLocator());
-		inMemoryTopicMapStore.connect();
+		RemoveDuplicatesTask task = new RemoveDuplicatesTask(getTopicMap());
+		queue.add(task);
 	}
 
 	/**
@@ -380,7 +384,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	/**
 	 * {@inheritDoc}
 	 */
-	public void finished(IQueueTask task) {
+	public void finished(IQueueTask task) {	
 		if (task instanceof CreateTask) {
 			CreateTask ct = (CreateTask) task;
 			Object result = task.getResult();
@@ -390,7 +394,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 				String databaseId = ((ConstructImpl) result).getIdentity().getId();
 				memory.getIdentity().setId(databaseId);
 			}
-		}
+		}		
 	}
 
 	/**

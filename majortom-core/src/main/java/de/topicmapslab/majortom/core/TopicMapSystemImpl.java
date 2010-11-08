@@ -34,6 +34,7 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
+import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -288,6 +289,13 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		properties = new Properties();
 		properties.putAll(((TopicMapSystemFactoryImpl) factory).getProperties());
 		features = HashUtil.getHashMap(factory.getFeatures());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Class<? extends ITopicMapStore> getHandledClass() {
+		return TopicMapStoreImpl.class;
 	}
 
 }

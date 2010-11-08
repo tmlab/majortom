@@ -82,4 +82,10 @@ public interface ITopicMapSystem extends TopicMapSystem {
 	 *            the factory to set
 	 */
 	public void setFactory(TopicMapSystemFactory factory);
+	
+	/**
+	 * Returns the topic map store class which can be handled by this topic map system instance
+	 * @return the class
+	 */
+	public Class<? extends ITopicMapStore> getHandledClass();
 }

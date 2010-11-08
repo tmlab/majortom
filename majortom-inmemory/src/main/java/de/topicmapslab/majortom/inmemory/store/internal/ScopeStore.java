@@ -180,6 +180,7 @@ public class ScopeStore implements IDataStore {
 				return entry.getKey();
 			}
 		}
+
 		Set<ITopic> set = HashUtil.getHashSet();
 		set.addAll(themes);
 		IScope scope = new ScopeImpl(set);
@@ -243,13 +244,13 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IVariant> getScopedVariants(IScope scope) {
 		Set<IVariant> set = HashUtil.getHashSet();
-		if (scopedVariants != null) {
-			for (Entry<IVariant, IScope> entry : variantScopes.entrySet()) {
-				Set<ITopic> themes = HashUtil.getHashSet(entry.getValue().getThemes());
-				themes.addAll(entry.getKey().getParent().getScopeObject().getThemes());
+		if (scopedVariants != null && scopedVariants.containsKey(scope)) {
+			for (IVariant variant : scopedVariants.get(scope)) {
+				Set<ITopic> themes = HashUtil.getHashSet(scope.getThemes());
+				themes.addAll(getScope(variant.getParent()).getThemes());
 				IScope s = getScope(themes);
 				if (scope.equals(s)) {
-					set.add(entry.getKey());
+					set.add(variant);
 				}
 			}
 		}
@@ -736,9 +737,11 @@ public class ScopeStore implements IDataStore {
 	public Set<IScope> getScopes(ITopic theme) {
 		Set<IScope> set = HashUtil.getHashSet();
 		if (scopes != null) {
-			for (IScope s : scopes.keySet()) {
-				if (s instanceof ScopeImpl && s.containsTheme(theme)) {
-					set.add(s);
+			synchronized (scopes) {
+				for (IScope s : scopes.keySet()) {
+					if (s instanceof ScopeImpl && s.containsTheme(theme)) {
+						set.add(s);
+					}
 				}
 			}
 		}

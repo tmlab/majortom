@@ -44,7 +44,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStore implements IVirtualStore{
+public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStore implements IVirtualStore {
 
 	private Set<ITypeable> modifiedConstructs;
 	private Map<ITopic, Set<ITypeable>> changedTypes;
@@ -632,15 +632,17 @@ public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStor
 				changedTypes = HashUtil.getHashMap();
 			}
 			ITopic oldType = (ITopic) typed.getType();
-			/*
-			 * add new type change to type specific list
-			 */
-			Set<ITypeable> set = changedTypes.get(oldType);
-			if (set == null) {
-				set = HashUtil.getHashSet();
-				changedTypes.put(oldType, set);
+			if (oldType != null) {
+				/*
+				 * add new type change to type specific list
+				 */
+				Set<ITypeable> set = changedTypes.get(oldType);
+				if (set == null) {
+					set = HashUtil.getHashSet();
+					changedTypes.put(oldType, set);
+				}
+				set.add(typed);
 			}
-			set.add(typed);
 		}
 	}
 
@@ -661,12 +663,12 @@ public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStor
 	protected T getStore() {
 		return (T) super.getStore();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void removeVirtualConstruct(IConstruct construct) {
-		if ( construct instanceof ITypeable){
+		if (construct instanceof ITypeable) {
 			removeType((ITypeable) construct);
 		}
 	}

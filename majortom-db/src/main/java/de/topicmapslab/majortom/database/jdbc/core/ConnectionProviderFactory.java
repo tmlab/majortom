@@ -18,6 +18,8 @@
  */
 package de.topicmapslab.majortom.database.jdbc.core;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.hsqldb.HSQLDBConnectionProvider;
@@ -31,8 +33,7 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Connection factory to create a specific connection provider for a given SQL
- * dialect.
+ * Connection factory to create a specific connection provider for a given SQL dialect.
  * 
  * @author Sven Krosse
  * 
@@ -99,8 +100,55 @@ public class ConnectionProviderFactory {
 	 * @throws TopicMapStoreException
 	 *             thrown if the connection provider cannot be initialized
 	 */
-	public IConnectionProvider newConnectionProvider(final SqlDialect dialect) throws IllegalArgumentException, TopicMapStoreException {
+	public IConnectionProvider newConnectionProvider(final SqlDialect dialect) throws IllegalArgumentException,
+			TopicMapStoreException {
 		return newConnectionProvider(dialect.name());
+	}
+
+	/**
+	 * Create a new connection provider for the given dialect
+	 * 
+	 * @param dialect
+	 *            the SQL dialect
+	 * @param host
+	 *            the database host
+	 * @param database
+	 *            the database names
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
+	 * @return a new connection provider
+	 * @throws IllegalArgumentException
+	 *             thrown if the given SQL dialect is unknown
+	 * @throws TopicMapStoreException
+	 *             thrown if the connection provider cannot be initialized
+	 * 
+	 */
+	public IConnectionProvider newConnectionProvider(final String dialect, final String host, final String database,
+			final String user, final String password) throws TopicMapStoreException {
+		if (!protocols.containsKey(dialect)) {
+			throw new TopicMapStoreException("No connection provider class registered for given dialect '" + dialect
+					+ "'.");
+		}
+		Class<? extends IConnectionProvider> clazz = protocols.get(dialect);
+		try {
+			Constructor<? extends IConnectionProvider> constructor = clazz.getConstructor(String.class, String.class,
+					String.class, String.class);
+			return constructor.newInstance(host, database, user, password);
+		} catch (InstantiationException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		} catch (IllegalAccessException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		} catch (IllegalArgumentException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		} catch (InvocationTargetException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		} catch (SecurityException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		} catch (NoSuchMethodException e) {
+			throw new TopicMapStoreException("Cannot initialize connection provider for dialect '" + dialect + "'.", e);
+		}
 	}
 
 	/**
@@ -117,7 +165,8 @@ public class ConnectionProviderFactory {
 	 */
 	public IConnectionProvider newConnectionProvider(final String dialect) throws TopicMapStoreException {
 		if (!protocols.containsKey(dialect)) {
-			throw new TopicMapStoreException("No connection provider class registered for given dialect '" + dialect + "'.");
+			throw new TopicMapStoreException("No connection provider class registered for given dialect '" + dialect
+					+ "'.");
 		}
 		Class<? extends IConnectionProvider> clazz = protocols.get(dialect);
 		try {

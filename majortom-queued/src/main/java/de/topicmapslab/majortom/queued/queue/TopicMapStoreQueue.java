@@ -47,7 +47,7 @@ public class TopicMapStoreQueue extends Thread {
 	public void run() {
 		while (!isInterrupted()) {
 			try {
-				while (!tasks.isEmpty()) {					
+				while (!tasks.isEmpty()) {		
 					IQueueTask task = tasks.poll();
 					task.doTask(topicMapStore);
 					if (listeners != null) {

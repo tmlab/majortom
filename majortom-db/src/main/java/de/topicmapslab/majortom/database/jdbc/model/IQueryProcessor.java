@@ -55,9 +55,7 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public interface IQueryProcessor {
 
-	public Connection getWriterConnection();
-
-	public Connection getReaderConnection();
+	public Connection getConnection();
 
 	public void close();
 
@@ -66,11 +64,11 @@ public interface IQueryProcessor {
 	public void commit() throws SQLException;
 
 	/**
-	 * Returns the connection handler of the current query processor
+	 * Returns the session of the query processor instance
 	 * 
-	 * @return the connection handler
+	 * @return the session
 	 */
-	public <T extends IConnectionProvider> T getConnectionProvider();
+	public <T extends ISession> T getSession();
 
 	public Long doReadExistingTopicMapIdentity(ILocator baseLocator) throws SQLException;
 	
