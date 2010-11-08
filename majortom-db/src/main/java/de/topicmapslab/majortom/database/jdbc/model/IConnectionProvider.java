@@ -50,46 +50,20 @@ public interface IConnectionProvider {
 	public final static String DATABASE_NOT_EXISTS = "3D000";
 
 	/**
-	 * Open a new connection to the given database. If there is already an
-	 * existing connection to any database an exception will be thrown.
+	 * Creating a new session for accessing the database
 	 * 
-	 * @param host
-	 *            the host
-	 * @param database
-	 *            the database name
-	 * @param user
-	 *            the user
-	 * @param password
-	 *            the password
-	 * @throws SQLException
-	 *             thrown if the connection cannot be established
-	 * @throws TopicMapStoreException
-	 *             thrown if the driver class is unknown
+	 * @return the new session
 	 */
-	public void openConnections(String host, String database, String user, String password) throws SQLException, TopicMapStoreException;
+	public <T extends ISession> T openSession();
 
 	/**
-	 * Close an existing connection. If there is not an existing exception,
-	 * nothing happens.
-	 * 
-	 * @throws SQLException
-	 *             thrown if connection cannot be closed.
+	 * Closing the connection provider
+	 * @throws SQLException thrown if operation fails
 	 */
-	public void closeConnections() throws SQLException;
-
+	public void close() throws SQLException;
+	
 	/**
-	 * Returns the internal query processor instance, which should be used to
-	 * execute queries.
-	 * 
-	 * @return the query processor
-	 * @throws TopicMapStoreException
-	 *             thrown if the connection is not established
-	 */
-	public <T extends IQueryProcessor> T getProcessor() throws TopicMapStoreException;
-
-	/**
-	 * Return the meta data of the existing connection. If the connection is not
-	 * open, an exception will be thrown.
+	 * Return the meta data of the existing connection. If the connection is not open, an exception will be thrown.
 	 * 
 	 * @return the meta data
 	 * @throws TopicMapStoreException
@@ -105,8 +79,7 @@ public interface IConnectionProvider {
 	public JdbcTopicMapStore getTopicMapStore();
 
 	/**
-	 * Method set the internal reference of the JDBC topic map store to the
-	 * given reference.
+	 * Method set the internal reference of the JDBC topic map store to the given reference.
 	 * 
 	 * @param store
 	 *            the topic map store
@@ -114,8 +87,7 @@ public interface IConnectionProvider {
 	public void setTopicMapStore(JdbcTopicMapStore store);
 
 	/**
-	 * Method called by the connection provider to initialize the database
-	 * schema.
+	 * Method called by the connection provider to initialize the database schema.
 	 */
 	public void createSchema() throws SQLException;
 

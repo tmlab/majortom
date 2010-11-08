@@ -123,7 +123,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * 
 	 * @return the connection the connection
 	 */
-	public Connection getWriterConnection() {
+	public Connection getConnection() {
 		return writerConnection;
 	}
 
@@ -2712,7 +2712,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2748,7 +2748,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		Array a = getWriterConnection().createArrayOf("bigint", ids);
+		Array a = getConnection().createArrayOf("bigint", ids);
 		stmt.setArray(1, a);
 		stmt.setArray(2, a);
 		if (offset != -1) {
@@ -2786,7 +2786,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2822,7 +2822,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -2859,7 +2859,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -5582,15 +5582,15 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void openTransaction() throws SQLException {
-		getWriterConnection().setAutoCommit(false);
+		getConnection().setAutoCommit(false);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commit() throws SQLException {
-		getWriterConnection().commit();
-		getWriterConnection().setAutoCommit(true);
+		getConnection().commit();
+		getConnection().setAutoCommit(true);
 	}
 
 	/**
