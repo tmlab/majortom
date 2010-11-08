@@ -29,6 +29,7 @@ import org.tmapi.core.MalformedIRIException;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.nonpaged.CachedIdentityIndexImpl;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -38,8 +39,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcIdentityIndex extends
-		CachedIdentityIndexImpl<JdbcTopicMapStore> {
+public class JdbcIdentityIndex extends CachedIdentityIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * constructor
@@ -61,8 +61,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsIdentifier(getTopicMapStore().getTopicMap().createLocator(
-				reference));
+		return existsIdentifier(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -75,9 +74,7 @@ public class JdbcIdentityIndex extends
 		if (locator == null) {
 			throw new IllegalArgumentException("Locator cannot be null");
 		}
-		return existsItemIdentifier(locator)
-				|| existsSubjectIdentifier(locator)
-				|| existsSubjectLocator(locator);
+		return existsItemIdentifier(locator) || existsSubjectIdentifier(locator) || existsSubjectLocator(locator);
 	}
 
 	/**
@@ -90,8 +87,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsItemIdentifier(getTopicMapStore().getTopicMap().createLocator(
-				reference));
+		return existsItemIdentifier(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -117,8 +113,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectIdentifier(getTopicMapStore().getTopicMap().createLocator(
-				reference));
+		return existsSubjectIdentifier(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -144,8 +139,7 @@ public class JdbcIdentityIndex extends
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return existsSubjectLocator(getTopicMapStore().getTopicMap().createLocator(
-				reference));
+		return existsSubjectLocator(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -164,16 +158,14 @@ public class JdbcIdentityIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Construct getConstructByItemIdentifier(String reference)
-			throws MalformedIRIException {
+	public Construct getConstructByItemIdentifier(String reference) throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getConstructByItemIdentifier(getTopicMapStore().getTopicMap()
-				.createLocator(reference));
+		return getConstructByItemIdentifier(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -197,14 +189,15 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression  cannot be null");
+			throw new IllegalArgumentException("Regular expression  cannot be null");
 		}
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getTopicMapStore().getProcessor()
-					.getConstructsByIdentitifer(getTopicMapStore().getTopicMap(),
-							regExp, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			constructs.addAll(session.getProcessor().getConstructsByIdentitifer(
+					getTopicMapStore().getTopicMap(), regExp, -1, -1));
+			session.commit();
+			session.close();
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -219,8 +212,7 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression  cannot be null");
+			throw new IllegalArgumentException("Regular expression  cannot be null");
 		}
 		return doGetConstructsByIdentifier(regExp.pattern());
 	}
@@ -233,15 +225,16 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression  cannot be null");
+			throw new IllegalArgumentException("Regular expression  cannot be null");
 		}
 
 		try {
 			Set<Construct> constructs = HashUtil.getHashSet();
-			constructs.addAll(getTopicMapStore().getProcessor()
-					.getConstructsByItemIdentitifer(getTopicMapStore().getTopicMap(),
-							regExp, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			constructs.addAll(session.getProcessor().getConstructsByItemIdentitifer(
+					getTopicMapStore().getTopicMap(), regExp, -1, -1));
+			session.commit();
+			session.close();
 			return constructs;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -256,8 +249,7 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression  cannot be null");
+			throw new IllegalArgumentException("Regular expression  cannot be null");
 		}
 		return doGetConstructsByItemIdentifier(regExp.pattern());
 	}
@@ -271,8 +263,11 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getTopicMapStore().getProcessor().getItemIdentifiers(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			locators.addAll(session.getProcessor().getItemIdentifiers(getTopicMapStore().getTopicMap(), -1,
+					-1));
+			session.commit();
+			session.close();
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -288,8 +283,11 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getTopicMapStore().getProcessor().getSubjectIdentifiers(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			locators.addAll(session.getProcessor().getSubjectIdentifiers(getTopicMapStore().getTopicMap(),
+					-1, -1));
+			session.commit();
+			session.close();
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -305,8 +303,11 @@ public class JdbcIdentityIndex extends
 		}
 		try {
 			Set<Locator> locators = HashUtil.getHashSet();
-			locators.addAll(getTopicMapStore().getProcessor().getSubjectLocators(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			locators.addAll(session.getProcessor().getSubjectLocators(getTopicMapStore().getTopicMap(), -1,
+					-1));
+			session.commit();
+			session.close();
 			return locators;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -316,16 +317,14 @@ public class JdbcIdentityIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic getTopicBySubjectIdentifier(String reference)
-			throws MalformedIRIException {
+	public Topic getTopicBySubjectIdentifier(String reference) throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectIdentifier(getTopicMapStore().getTopicMap()
-				.createLocator(reference));
+		return getTopicBySubjectIdentifier(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -344,16 +343,14 @@ public class JdbcIdentityIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic getTopicBySubjectLocator(String reference)
-			throws MalformedIRIException {
+	public Topic getTopicBySubjectLocator(String reference) throws MalformedIRIException {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (reference == null) {
 			throw new IllegalArgumentException("Reference cannot be null");
 		}
-		return getTopicBySubjectLocator(getTopicMapStore().getTopicMap().createLocator(
-				reference));
+		return getTopicBySubjectLocator(getTopicMapStore().getTopicMap().createLocator(reference));
 	}
 
 	/**
@@ -377,14 +374,15 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null");
+			throw new IllegalArgumentException("Regular expression cannot be null");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getTopicMapStore().getProcessor()
-					.getTopicsBySubjectIdentitifer(getTopicMapStore().getTopicMap(),
-							regExp, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getTopicsBySubjectIdentitifer(
+					getTopicMapStore().getTopicMap(), regExp, -1, -1));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -399,8 +397,7 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null");
+			throw new IllegalArgumentException("Regular expression cannot be null");
 		}
 		return doGetTopicsBySubjectIdentifier(regExp.pattern());
 	}
@@ -413,13 +410,15 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null");
+			throw new IllegalArgumentException("Regular expression cannot be null");
 		}
 		try {
 			Set<Topic> topics = HashUtil.getHashSet();
-			topics.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectLocator(
-					getTopicMapStore().getTopicMap(), regExp, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getTopicsBySubjectLocator(getTopicMapStore().getTopicMap(),
+					regExp, -1, -1));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -434,8 +433,7 @@ public class JdbcIdentityIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null");
+			throw new IllegalArgumentException("Regular expression cannot be null");
 		}
 		return doGetTopicsBySubjectLocator(regExp.pattern());
 	}

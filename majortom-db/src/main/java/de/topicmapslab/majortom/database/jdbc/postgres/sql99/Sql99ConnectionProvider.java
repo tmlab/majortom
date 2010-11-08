@@ -19,10 +19,8 @@
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.Scanner;
 
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
@@ -41,23 +39,33 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor
+	 * 
+	 * @param host
+	 *            the host
+	 * @param database database
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
 	 */
-	protected Sql99QueryProcessor createProcessor(IConnectionProvider provider,
-			Connection readerConnection, Connection writerConnetion) {
-		return new Sql99QueryProcessor(this, readerConnection, writerConnetion);
+	public Sql99ConnectionProvider(String host, String datatbase, String user, String password) {
+		super(host, datatbase, user, password);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Sql99QueryProcessor getProcessor() throws TopicMapStoreException {
-		return (Sql99QueryProcessor) super.getProcessor();
+	@Override
+	@SuppressWarnings("unchecked")
+	public SQL99Session openSession() {
+		return new SQL99Session(this, getUrl(), getUser(), getPassword());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected String getSchemaQuery() {
 		InputStream is = getClass().getResourceAsStream("script.sql");
 		if (is == null) {

@@ -17,7 +17,6 @@ package de.topicmapslab.majortom.store;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -48,6 +47,8 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public abstract class TopicMapStoreImpl implements ITopicMapStore {
 
+	public static boolean OUTPUT = false;
+
 	private boolean connected = false;
 	private Set<ITopicMapListener> listeners = null;
 	private ITopicMapSystem topicMapSystem;
@@ -55,6 +56,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	private IConstructFactory factory;
 	private ThreadPoolExecutor threadPool;
 	private ITopicMapStoreMetaData metaData;
+	private String topicMapBaseLocatorReference;
 	/**
 	 * the base locator of the topic map
 	 */
@@ -156,8 +158,11 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 *            the old value
 	 */
 	public void notifyListeners(TopicMapEventType event, IConstruct notifier, Object newValue, Object oldValue) {
-		String id = UUID.randomUUID().toString();
+		String id = null;
 		for (ITopicMapListener listener : getListeners()) {
+			if (id == null) {
+				id = generateId();
+			}
 			listener.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
 	}
@@ -172,16 +177,13 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		this.topicMapSystem = topicMapSystem;
 		try {
 			this.featureAutomaticMerging = topicMapSystem.getFeature(FeatureStrings.AUTOMATIC_MERGING);
-			this.featureDeletionConstraintReification = topicMapSystem
-					.getFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
+			this.featureDeletionConstraintReification = topicMapSystem.getFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
 			this.featureMergingByName = topicMapSystem.getFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME);
 			this.featureReadOnlyStore = topicMapSystem.getFeature(FeatureStrings.READ_ONLY_SYSTEM);
 			this.featureRevisionManagement = topicMapSystem.getFeature(FeatureStrings.SUPPORT_HISTORY);
-			this.featureSupertypeSubtypeAssociation = topicMapSystem
-					.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
+			this.featureSupertypeSubtypeAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 			this.featureSupportTransaction = topicMapSystem.getFeature(FeatureStrings.SUPPORT_TRANSACTION);
-			this.featureTypeInstanceAssociation = topicMapSystem
-					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+			this.featureTypeInstanceAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
 		} catch (FeatureNotRecognizedException e) {
 			throw new TopicMapStoreException("Feature is missing", e);
 		}
@@ -223,8 +225,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
 		if (!isRevisionManagementSupported() && enabled) {
-			throw new TopicMapStoreException(
-					"Revision management not supported by the current store and cannot be enabled!");
+			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
 		}
 		this.revisionManagementEnabled = enabled;
 	}
@@ -266,8 +267,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	}
 
 	/**
-	 * Method returns checks if the deletion constraint contains the constraint, that topics used as reifier cannot be
-	 * removed until the reification was destroyed.
+	 * Method returns checks if the deletion constraint contains the constraint, that topics used as reifier cannot be removed until the reification was
+	 * destroyed.
 	 * 
 	 * @see TopicMapStoreProperty#DELETION_CONSTRAINTS_REIFICATION
 	 * 
@@ -318,6 +319,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 */
 	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
 		this.baseLocator = (ILocator) topicMapBaseLocator;
+		this.topicMapBaseLocatorReference = topicMapBaseLocator.getReference();
+		if (!topicMapBaseLocatorReference.endsWith("#") && !topicMapBaseLocatorReference.endsWith("/")) {
+			this.topicMapBaseLocatorReference += "/";
+		}
 	}
 
 	/**
@@ -336,7 +341,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		if (!isConnected()) {
 			return;
 		}
-		((TopicMapSystemImpl) getTopicMapSystem()).removeTopicMap(getBaseLocator());
+		((TopicMapSystemImpl) getTopicMapSystem()).removeTopicMap(getTopicMapBaseLocator());
 		connected = false;
 		this.factory = null;
 		this.metaData = null;
@@ -415,7 +420,29 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @return the base locator
 	 */
-	public ILocator getBaseLocator() {
+	public ILocator getTopicMapBaseLocator() {
 		return baseLocator;
+	}
+
+	/**
+	 * The topic map base locator reference
+	 * 
+	 * @return the topicMapBaseLocator
+	 */
+	public String getTopicMapBaseLocatorReference() {
+		return topicMapBaseLocatorReference;
+	}
+
+	/**
+	 * generates a new ID for a new construct
+	 * 
+	 * @return the id
+	 */
+	protected String generateId() {
+		long t = System.currentTimeMillis();
+		String s = Double.toString(Math.round(Math.random() * Double.MAX_VALUE)); // UUID.randomUUID().toString();
+		if ( OUTPUT)
+		System.out.println("Generate an id in " + (System.currentTimeMillis() - t) + " ms");
+		return s;
 	}
 }

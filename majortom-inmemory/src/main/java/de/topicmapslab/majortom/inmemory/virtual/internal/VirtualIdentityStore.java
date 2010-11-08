@@ -400,7 +400,6 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	 * {@inheritDoc}
 	 */
 	public void removeConstruct(IConstruct c) {
-		System.out.println("Remove " + c.getId());
 		if (containsConstruct(c)) {
 			super.removeConstruct(c);
 		}

@@ -33,7 +33,7 @@ import de.topicmapslab.majortom.model.core.ILocator;
  * @author Sven Krosse
  * 
  */
-public class LocatorImpl implements ILocator {
+public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 
 	private final URI uri;
 	private final String reference;
@@ -45,7 +45,7 @@ public class LocatorImpl implements ILocator {
 	 * @param reference
 	 *            the reference
 	 */
-	public LocatorImpl(final String reference) throws MalformedIRIException {
+	public LocatorImpl(String reference) throws MalformedIRIException {
 		this(reference, UUID.randomUUID().toString());
 	}
 
@@ -147,5 +147,12 @@ public class LocatorImpl implements ILocator {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int compareTo(LocatorImpl o) {
+		return getReference().compareTo(o.getReference());
 	}
 }

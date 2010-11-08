@@ -19,14 +19,13 @@
 package de.topicmapslab.majortom.database.jdbc.postgres.optimized;
 
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99ConnectionProvider;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
@@ -53,25 +52,32 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 * constructor
 	 */
 	public PostGreSqlConnectionProvider() {
+		// VOID
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * 
+	 * @param host
+	 *            the host
+	 * @param database
+	 *            database
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
+	 */
+	public PostGreSqlConnectionProvider(String host, String datatbase, String user, String password) {
+		super(host, datatbase, user, password);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public PostGreSqlQueryProcessor getProcessor()
-			throws TopicMapStoreException {
-		return (PostGreSqlQueryProcessor) super.getProcessor();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected PostGreSqlQueryProcessor createProcessor(
-			IConnectionProvider provider, Connection readerConnection,
-			Connection writerConnetion) {
-		return new PostGreSqlQueryProcessor(this, readerConnection,
-				writerConnetion);
+	public PostGreSqlSession openSession() {
+		return new PostGreSqlSession(this, getUrl(), getUser(), getPassword());
 	}
 
 	/**
@@ -83,9 +89,8 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		 */
 		boolean plpgsqlExists = false;
 		try {
-			Statement stmt = getReaderConnection().createStatement();
-			ResultSet rs = stmt
-					.executeQuery("SELECT lanname FROM pg_language;");
+			Statement stmt = getGlobalSession().getConnection().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT lanname FROM pg_language;");
 			while (rs.next()) {
 				if ("plpgsql".equalsIgnoreCase(rs.getString("lanname"))) {
 					plpgsqlExists = true;
@@ -95,8 +100,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			throw new TopicMapStoreException(
-					"Cannot read registered languages from database.", e);
+			throw new TopicMapStoreException("Cannot read registered languages from database.", e);
 		}
 		/*
 		 * read script file
@@ -115,8 +119,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		 * add language creation if language not exists
 		 */
 		if (!plpgsqlExists) {
-			return "CREATE PROCEDURAL LANGUAGE plpgsql;\r\n"
-					+ buffer.toString();
+			return "CREATE PROCEDURAL LANGUAGE plpgsql;\r\n" + buffer.toString();
 		}
 		/*
 		 * language exists
@@ -127,35 +130,43 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void openConnections(String host, String database, String user,
-			String password) throws SQLException, TopicMapStoreException {
-		super.openConnections(host, database, user, password);
+	public void setTopicMapStore(JdbcTopicMapStore store) {
+		super.setTopicMapStore(store);
+		try {
+			checkStoredProcedures();
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Cannot check stored procedures!", e);
+		}
+	}
+
+	/**
+	 * Internal method to check the store procedures
+	 * 
+	 * @throws SQLException
+	 */
+	private void checkStoredProcedures() throws SQLException {
 		/*
 		 * Check if procedure 'scope_by_themes' exists
 		 */
-		ResultSet rs = getDatabaseMetaData().getProcedures(null, null,
-				"scope_by_themes");
+		ResultSet rs = getDatabaseMetaData().getProcedures(null, null, "scope_by_themes");
 		procedureScopeByThemes = rs.next();
 		rs.close();
 		/*
 		 * Check if procedure 'topics_by_type_transitive' exists
 		 */
-		rs = getDatabaseMetaData().getProcedures(null, null,
-				"topics_by_type_transitive");
+		rs = getDatabaseMetaData().getProcedures(null, null, "topics_by_type_transitive");
 		procedureTopicsByTypeTransitive = rs.next();
 		rs.close();
 		/*
 		 * Check if procedure 'transitive_types' exists
 		 */
-		rs = getDatabaseMetaData()
-				.getProcedures(null, null, "transitive_types");
+		rs = getDatabaseMetaData().getProcedures(null, null, "transitive_types");
 		procedureTransitiveTypes = rs.next();
 		rs.close();
 		/*
 		 * Check if procedures 'transitive_subtypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null,
-				"transitive_subtypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null, "transitive_subtypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -168,8 +179,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedures 'transitive_supertypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null,
-				"transitive_supertypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null, "transitive_supertypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -182,8 +192,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedures 'types_and_subtypes' are existing
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null,
-				"types_and_subtypes", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null, "types_and_subtypes", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("typeId")) {
@@ -197,8 +206,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 		/*
 		 * Check if procedure 'best_label' exists
 		 */
-		rs = getDatabaseMetaData().getProcedureColumns(null, null,
-				"best_label", "%");
+		rs = getDatabaseMetaData().getProcedureColumns(null, null, "best_label", "%");
 		while (rs.next()) {
 			String columnName = rs.getString("COLUMN_NAME");
 			if (columnName.equalsIgnoreCase("themeId")) {
@@ -212,8 +220,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'scope_by_themes' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureScopeByThemes() {
 		return procedureScopeByThemes;
@@ -222,8 +229,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'topics_by_type_transitive' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTopicsByTypeTransitive() {
 		return procedureTopicsByTypeTransitive;
@@ -232,19 +238,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'transitive_subtypes' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTransitiveSubtypes() {
 		return procedureTransitiveSubtypes;
 	}
 
 	/**
-	 * Method checks if the procedure 'transitive_subtypes' with array parameter
-	 * exists.
+	 * Method checks if the procedure 'transitive_subtypes' with array parameter exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTransitiveSubtypesArray() {
 		return procedureTransitiveSubtypesArray;
@@ -253,19 +256,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'transitive_supertypes' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTransitiveSupertypes() {
 		return procedureTransitiveSupertypes;
 	}
 
 	/**
-	 * Method checks if the procedure 'transitive_supertypes' with array
-	 * parameter exists.
+	 * Method checks if the procedure 'transitive_supertypes' with array parameter exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTransitiveSupertypesArray() {
 		return procedureTransitiveSupertypesArray;
@@ -274,8 +274,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'transitive_types' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTransitiveTypes() {
 		return procedureTransitiveTypes;
@@ -284,19 +283,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'types_and_subtypes' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTypesAndSubtypes() {
 		return procedureTypesAndSubtypes;
 	}
 
 	/**
-	 * Method checks if the procedure 'types_and_subtypes' with array parameter
-	 * exists.
+	 * Method checks if the procedure 'types_and_subtypes' with array parameter exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureTypesAndSubtypesArray() {
 		return procedureTypesAndSubtypesArray;
@@ -305,8 +301,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'best_label' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureBestLabel() {
 		return procedureBestLabel;
@@ -315,8 +310,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * Method checks if the procedure 'best_label' exists.
 	 * 
-	 * @return <code>true</code> if the procedure exists, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
 	 */
 	protected boolean existsProcedureBestLabelWithTheme() {
 		return procedureBestLabelWithTheme;

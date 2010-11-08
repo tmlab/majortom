@@ -676,7 +676,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 *             thrown if operation fails
 	 */
 	public ILocator doReadLocator(ITopicMap t) throws TopicMapStoreException {
-		return getBaseLocator();
+		return getTopicMapBaseLocator();
 	}
 
 	/**
@@ -1296,7 +1296,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 			this.cache = new Cache(this);
 			this.cache.setTopicMapSystem(getTopicMapSystem());
 			this.cache.setTopicMap(getTopicMap());
-			this.cache.initialize(getBaseLocator());
+			this.cache.initialize(getTopicMapBaseLocator());
 			this.cache.connect();
 		}
 	}
@@ -1340,7 +1340,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 			cache.setTopicMapSystem(getTopicMapSystem());
 			cache.setTopicMap(getTopicMap());
 			cache.connect();
-			cache.initialize(getBaseLocator());
+			cache.initialize(getTopicMapBaseLocator());
 			enableCaching = true;
 		}
 		/*

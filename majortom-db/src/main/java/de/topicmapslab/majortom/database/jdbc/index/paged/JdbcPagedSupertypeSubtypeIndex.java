@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedSupertypeSubtypeIndexImpl;
 import de.topicmapslab.majortom.model.core.ITopic;
@@ -53,8 +54,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
@@ -67,7 +68,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetDirectSubtypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getDirectSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getDirectSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type,
+					offset, limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -77,8 +82,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
@@ -91,7 +96,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetDirectSupertypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getDirectSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getDirectSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type,
+					offset, limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -101,11 +110,12 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
+	protected List<Topic> doGetSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit,
+			Comparator<Topic> comparator) {
 		return super.doGetSubtypes(types, all, offset, limit, comparator);
 	}
 
@@ -115,7 +125,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), types, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), types, all, offset,
+					limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -125,8 +139,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetSubtypes(int offset, int limit, Comparator<Topic> comparator) {
@@ -139,7 +153,10 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -149,8 +166,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
@@ -163,7 +180,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSubtypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset,
+					limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -173,11 +194,12 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
+	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit,
+			Comparator<Topic> comparator) {
 		return super.doGetSupertypes(types, all, offset, limit, comparator);
 	}
 
@@ -187,7 +209,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), types, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), types, all, offset,
+					limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -197,8 +223,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetSupertypes(int offset, int limit, Comparator<Topic> comparator) {
@@ -211,7 +237,10 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -221,8 +250,8 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator) {
@@ -235,7 +264,11 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 	protected List<Topic> doGetSupertypes(Topic type, int offset, int limit) {
 		try {
 			List<Topic> topics = HashUtil.getList();
-			topics.addAll(getTopicMapStore().getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			topics.addAll(session.getProcessor().getSupertypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset,
+					limit));
+			session.commit();
+			session.close();
 			return topics;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

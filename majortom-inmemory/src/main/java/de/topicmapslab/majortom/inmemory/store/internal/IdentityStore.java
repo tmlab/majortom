@@ -18,10 +18,6 @@ package de.topicmapslab.majortom.inmemory.store.internal;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.bidimap.TreeBidiMap;
 
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
@@ -29,7 +25,6 @@ import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.revision.IRevision;
@@ -43,15 +38,17 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class IdentityStore implements IDataStore {
 
+	public static int CAPACITY = 1000000;
+
 	/**
 	 * storage map of id-construct relation of the topic map engine
 	 */
-	private BidiMap ids;
+	private Map<String, IConstruct> ids;
 
 	/**
 	 * storage map of the reference-locator mapping of the topic map
 	 */
-	private Map<String, ILocator> locators;
+	// private Map<String, ILocator> locators;
 
 	/**
 	 * item-identifier mapping of the topic map engine
@@ -110,9 +107,9 @@ public class IdentityStore implements IDataStore {
 		if (ids != null) {
 			ids.clear();
 		}
-		if (locators != null) {
-			locators.clear();
-		}
+		// if (locators != null) {
+		// locators.clear();
+		// }
 		if (itemIdentifiers != null) {
 			itemIdentifiers.clear();
 		}
@@ -147,7 +144,7 @@ public class IdentityStore implements IDataStore {
 		if (ids == null) {
 			return null;
 		}
-		return (IConstruct) ids.get(id);
+		return ids.get(id);
 	}
 
 	/**
@@ -244,11 +241,11 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void setId(final IConstruct c, final String id) {
 		if (ids == null) {
-			ids = new TreeBidiMap();
+			ids = HashUtil.getHashMap(CAPACITY);
 		}
 		if (c instanceof ITopic) {
 			if (topics == null) {
-				topics = HashUtil.getHashSet();
+				topics = HashUtil.getHashSet(CAPACITY);
 			}
 			this.topics.add((ITopic) c);
 		}
@@ -293,7 +290,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void addSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
-			subjectIdentifiers = HashUtil.getHashMap();
+			subjectIdentifiers = HashUtil.getHashMap(CAPACITY);
 		}
 		this.subjectIdentifiers.put(identifier, t);
 
@@ -301,7 +298,7 @@ public class IdentityStore implements IDataStore {
 		 * store backward relation
 		 */
 		if (topicSubjectIdentifiers == null) {
-			topicSubjectIdentifiers = HashUtil.getHashMap();
+			topicSubjectIdentifiers = HashUtil.getHashMap(CAPACITY);
 		}
 		Set<ILocator> set = topicSubjectIdentifiers.get(t);
 		if (set == null) {
@@ -445,7 +442,7 @@ public class IdentityStore implements IDataStore {
 			/*
 			 * remove id
 			 */
-			ids.removeValue(c);
+			ids.remove(c.getId());
 		}
 	}
 
@@ -494,7 +491,7 @@ public class IdentityStore implements IDataStore {
 		/*
 		 * remove id
 		 */
-		ids.removeValue(t);
+		ids.remove(t.getId());
 	}
 
 	/**
@@ -504,15 +501,15 @@ public class IdentityStore implements IDataStore {
 	 *            the reference
 	 * @return the locator
 	 */
-	public ILocator createLocator(final String reference) {
-		if (locators == null) {
-			locators = HashUtil.getHashMap();
-		} else if (locators.containsKey(reference)) {
-			return locators.get(reference);
-		}
-		ILocator l = new LocatorImpl(reference);
-		locators.put(reference, l);
-		return l;
+	public ILocator createLocator(String reference) {
+		// if (locators == null) {
+		// locators = HashUtil.getHashMap(CAPACITY);
+		// } else if (locators.containsKey(reference)) {
+		// return locators.get(reference);
+		// }
+		// ILocator l = new LocatorImpl(reference);
+		// locators.put(reference, l);
+		return new LocatorImpl(reference);
 	}
 
 	/**
@@ -525,18 +522,6 @@ public class IdentityStore implements IDataStore {
 			return Collections.emptySet();
 		}
 		return topics;
-	}
-
-	/**
-	 * Create a random item-identifier.
-	 * 
-	 * @param topicMap
-	 *            the topic map
-	 * @return the item-identifier
-	 */
-	public ILocator createItemIdentifier(ITopicMap topicMap) {
-		String itemIdentifier = topicMap.getLocator().getReference() + "/" + UUID.randomUUID().toString();
-		return createLocator(itemIdentifier);
 	}
 
 	public <T extends IConstruct> void replace(T construct, T replacement) {
@@ -589,8 +574,7 @@ public class IdentityStore implements IDataStore {
 			 * store revision
 			 */
 			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, topic, null, subjectIdentifier);
-			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, replacement, subjectIdentifier,
-					null);
+			store.storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, replacement, subjectIdentifier, null);
 		}
 		/*
 		 * move all subject-locator
@@ -711,19 +695,19 @@ public class IdentityStore implements IDataStore {
 		return subjectLocators.containsKey(locator);
 	}
 
-	/**
-	 * Return the internal stored id of the given construct
-	 * 
-	 * @param construct
-	 *            the construct
-	 * @return the internal id and never <code>null</code>. If the construct is unknown an exception will be thrown.
-	 */
-	public String getId(IConstruct construct) {
-		if (!containsConstruct(construct)) {
-			throw new TopicMapStoreException("Id of the given construct does not exist.");
-		}
-		return (String) ids.getKey(construct);
-	}
+	// /**
+	// * Return the internal stored id of the given construct
+	// *
+	// * @param construct
+	// * the construct
+	// * @return the internal id and never <code>null</code>. If the construct is unknown an exception will be thrown.
+	// */
+	// public String getId(IConstruct construct) {
+	// if (!containsConstruct(construct)) {
+	// throw new TopicMapStoreException("Id of the given construct does not exist.");
+	// }
+	// return (String) ids.getKey(construct);
+	// }
 
 	/**
 	 * Return the internal stored store instance.
@@ -739,8 +723,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject locator is store for the given topic, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if at least one subject locator is store for the given topic, <code>false</code> otherwise.
 	 */
 	protected boolean containsSubjectLocators(ITopic topic) {
 		if (topicSubjectLocators == null) {
@@ -754,8 +737,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject identifier is store for the given topic, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if at least one subject identifier is store for the given topic, <code>false</code> otherwise.
 	 */
 	protected boolean containsSubjectIdentifiers(ITopic topic) {
 		if (topicSubjectIdentifiers == null) {
@@ -769,8 +751,7 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param construct
 	 *            the construct
-	 * @return <code>true</code> if at least one item identifier is store for the given construct, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if at least one item identifier is store for the given construct, <code>false</code> otherwise.
 	 */
 	protected boolean containsItemIdentifiers(IConstruct construct) {
 		if (constructItemIdentitiers == null) {
