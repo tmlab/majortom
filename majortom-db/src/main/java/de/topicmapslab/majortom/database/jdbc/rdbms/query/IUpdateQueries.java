@@ -30,7 +30,7 @@ public interface IUpdateQueries {
 	 * of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_SUBJECT_LOCATOR = "INSERT INTO rel_subject_locators(id_topic, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
+	public static final String QUERY_ADD_SUBJECT_LOCATOR = "INSERT INTO rel_subject_locators(id_topic, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
 	/**
 	 * query to add a item-identifier for a construct
 	 * <p>
@@ -38,7 +38,7 @@ public interface IUpdateQueries {
 	 * reference of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_ITEM_IDENTIFIER = "INSERT INTO rel_item_identifiers(id_construct, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
+	public static final String QUERY_ADD_ITEM_IDENTIFIER = "INSERT INTO rel_item_identifiers(id_construct, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
 	/**
 	 * query to add a subject-identifier for a topic
 	 * <p>
@@ -46,7 +46,7 @@ public interface IUpdateQueries {
 	 * of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_SUBJECT_IDENTIFIER ="INSERT INTO rel_subject_identifiers(id_topic, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
+	public static final String QUERY_ADD_SUBJECT_IDENTIFIER ="INSERT INTO rel_subject_identifiers(id_topic, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
 
 	/**
 	 * query to add a theme to an existing scope
@@ -178,7 +178,7 @@ public interface IUpdateQueries {
 	 * <b>parameters(4):</b> subtype id, supertype id, subtype id, supertype id
 	 * </p>
 	 */
-	public static final String QUERY_MODIFY_SUPERTYPES = "INSERT INTO rel_kind_of(id_subtype, id_supertype) SELECT ?,? WHERE NOT EXISTS ( SELECT id_subtype, id_supertype  FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ? );";
+	public static final String QUERY_MODIFY_SUPERTYPES = "INSERT INTO rel_kind_of(id_subtype, id_supertype) VALUES (?,?) WHERE NOT EXISTS ( SELECT id_subtype, id_supertype  FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ? );";
 
 	/**
 	 * query to modify the value of a name, occurrence or variant

@@ -24,13 +24,13 @@ package de.topicmapslab.majortom.database.jdbc.rdbms.query;
  */
 public interface IRevisionQueries {
 	
-	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(`time`, id_topicmap, type) VALUES(now(),?, ?)";
+	public static final String QUERY_CREATE_REVISION = "INSERT INTO revisions(time, id_topicmap, type) VALUES(now(),?, ?)";
 
-	public static final String QUERY_CREATE_CHANGESET = "INSERT INTO changesets(id_revision,type,id_notifier, newValue, oldValue,`time`) VALUES(?,?,?,?,?,now())";
+	public static final String QUERY_CREATE_CHANGESET = "INSERT INTO changesets(id_revision,type,id_notifier, newValue, oldValue, time) VALUES(?,?,?,?,?,now())";
 
 	public static final String QUERY_CREATE_TAG = "INSERT INTO tags(tag, time) VALUES (?,?);";
 		
-	public static final String QUERY_CREATE_METADATA = "INSERT INTO metadata(id_revision, `key`, `value`) VALUES (?,?,?);";
+	public static final String QUERY_CREATE_METADATA = "INSERT INTO metadata(id_revision, key, value) VALUES (?,?,?);";
 
 	public static final String QUERY_MODIFY_METADATA = "UPDATE metadata SET value = ? WHERE id_revision = ? AND key = ?;";
 	

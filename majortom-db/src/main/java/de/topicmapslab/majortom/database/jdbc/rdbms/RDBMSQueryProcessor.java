@@ -89,6 +89,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  */
 public class RDBMSQueryProcessor implements IQueryProcessor {
 
+	public static String GENERATED_KEY_COLUMN_NAME = "GENERATED_KEY";
 	private final RDBMSQueryBuilder queryBuilder;
 	private final RDBMSConnectionProvider provider;
 	private final Connection writerConnection;
@@ -159,7 +160,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setLong(4, Long.parseLong(scope.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -231,7 +232,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value);
 		stmt.execute();
-		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -247,7 +248,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setString(4, value);
 		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toName(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -263,7 +264,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setString(4, value);
 		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -282,7 +283,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.setString(6, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -298,7 +299,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setString(4, value.getReference());
 		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -317,7 +318,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.setString(6, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -334,7 +335,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setString(4, value);
 		stmt.setString(5, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -353,7 +354,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.setString(6, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -367,7 +368,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setLong(4, Long.parseLong(player.getId()));
 		stmt.execute();
-		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toRole(association, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	protected IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
@@ -438,7 +439,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		 */
 		ResultSet set = stmt.getGeneratedKeys();
 		set.next();
-		long id = set.getLong("GENERATED_KEY");
+		long id = set.getLong(GENERATED_KEY_COLUMN_NAME);
 		set.close();
 		/*
 		 * add all themes
@@ -496,7 +497,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * check if topic map was created
 		 */
-		final long id = set.getLong("GENERATED_KEY");
+		final long id = set.getLong(GENERATED_KEY_COLUMN_NAME);
 		set.close();
 		return id;
 	}
@@ -526,7 +527,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		 * check if topic was created
 		 */
 		if (set != null) {
-			ITopic topic = Jdbc2Construct.toTopic(topicMap, set, "GENERATED_KEY");
+			ITopic topic = Jdbc2Construct.toTopic(topicMap, set, GENERATED_KEY_COLUMN_NAME);
 			if (topic == null) {
 				throw new TopicMapStoreException("Internal SQL error, missing result 'id'.");
 			}
@@ -594,7 +595,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(4, Long.parseLong(scope.getId()));
 		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -611,7 +612,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(4, Long.parseLong(scope.getId()));
 		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -629,7 +630,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(4, Long.parseLong(scope.getId()));
 		stmt.setString(5, datatype.getReference());
 		stmt.execute();
-		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
+		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
 
 	/**
@@ -4742,7 +4743,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {
 			rs.next();
-			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("GENERATED_KEY")) {
+			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong(GENERATED_KEY_COLUMN_NAME)) {
 			};
 		} finally {
 			rs.close();
@@ -5100,26 +5101,93 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociationRole role) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(role)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			PreparedStatement stmt = queryBuilder.getQueryRoleDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setLong(3, Long.parseLong(role.getId()));
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("trying fallback (role)");
+			dumpFallback(revision, role);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, IAssociationRole role) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(role)) {
 			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
 		}
-		PreparedStatement stmt = queryBuilder.getQueryRoleDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setLong(3, Long.parseLong(role.getId()));
-		stmt.execute();
+		// copy stuff
+		PreparedStatement stmtSelect = queryBuilder.getQueryRoleDumpSelect();
+		stmtSelect.setLong(1, Long.parseLong(role.getId()));
+		ResultSet rs = stmtSelect.executeQuery();
+		
+		if(!rs.next())
+			System.out.println("no result!");
+		//rs.next();
+
+		// do updates
+		PreparedStatement stmtIns = queryBuilder.getQueryRoleDumpInsertIntoHistory();
+		stmtIns.setLong(1, rs.getLong(1));
+		stmtIns.setLong(2, revision.getId());
+		stmtIns.setLong(3, rs.getLong(2));
+		stmtIns.setLong(4, rs.getLong(3));
+		stmtIns.setString(5, ii);
+		stmtIns.setString(6, String.valueOf(rs.getLong(4)));
+		stmtIns.setLong(7, rs.getLong(5));
+		stmtIns.setLong(8, rs.getLong(6));
+		stmtIns.execute();
+		rs.close();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociation association) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(association)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			// themes
+			String themes = "";
+			for (ITopic theme : doReadScope(association).getThemes()) {
+				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			}
+			// roles
+			String roles = "";
+			for (IAssociationRole role : doReadRoles(association, -1, -1)) {
+				roles += role.getId() + (!roles.isEmpty() ? "," : "");
+			}
+			PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setString(3, themes);
+			stmt.setString(4, roles);
+			stmt.setLong(5, Long.parseLong(association.getId()));
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("trying fallback (assoc)");
+			dumpFallback(revision, association);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, IAssociation association) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(association)) {
@@ -5135,19 +5203,57 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (IAssociationRole role : doReadRoles(association, -1, -1)) {
 			roles += role.getId() + (!roles.isEmpty() ? "," : "");
 		}
-		PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setString(3, themes);
-		stmt.setString(4, roles);
-		stmt.setLong(5, Long.parseLong(association.getId()));
-		stmt.execute();
+		PreparedStatement stmtSelect = queryBuilder.getQueryAssociationDumpSelect();
+		stmtSelect.setLong(1, Long.parseLong(association.getId()));
+		ResultSet rs = stmtSelect.executeQuery();
+		rs.next();
+
+		PreparedStatement stmtIns = queryBuilder.getQueryAssociationDumpInsertIntoHistory();
+		stmtIns.setLong(1, rs.getLong(1));
+		stmtIns.setLong(2, revision.getId());
+		stmtIns.setLong(3, rs.getLong(2));
+		stmtIns.setLong(4, rs.getLong(3));
+		stmtIns.setString(5, ii);
+		stmtIns.setString(6, String.valueOf(rs.getLong(4)));
+		stmtIns.setLong(7, rs.getLong(5));
+		stmtIns.setLong(8, rs.getLong(6));
+		stmtIns.setString(9, themes);
+		stmtIns.setString(10, roles);
+		stmtIns.execute();
+		rs.close();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IVariant variant) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(variant)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			// themes
+			String themes = "";
+			for (ITopic theme : doReadScope(variant).getThemes()) {
+				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			}
+			PreparedStatement stmt = queryBuilder.getQueryVariantDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setString(3, themes);
+			stmt.setString(4, doReadDataType(variant).getId());
+			stmt.setLong(5, Long.parseLong(variant.getId()));
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("trying fallback (variant)");
+			dumpFallback(revision, variant);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, IVariant variant)
+			throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(variant)) {
@@ -5158,19 +5264,61 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (ITopic theme : doReadScope(variant).getThemes()) {
 			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
 		}
-		PreparedStatement stmt = queryBuilder.getQueryVariantDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setString(3, themes);
-		stmt.setString(4, doReadDataType(variant).getId());
-		stmt.setLong(5, Long.parseLong(variant.getId()));
-		stmt.execute();
+		PreparedStatement stmt = queryBuilder.getQueryVariantDumpSelect();
+		stmt.setLong(1, Long.parseLong(variant.getId()));
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+
+		PreparedStatement stmtIns = queryBuilder.getQueryVariantDumpInsertIntoHistory();
+		stmtIns.setLong(1, rs.getLong(1));
+		stmtIns.setLong(2, revision.getId());
+		stmtIns.setLong(3, rs.getLong(2));
+		stmtIns.setLong(4, rs.getLong(3));
+		stmtIns.setString(5, ii);
+		stmtIns.setLong(6, rs.getLong(4));
+		stmtIns.setLong(7, rs.getLong(5));
+		stmtIns.setString(8, themes);
+		stmtIns.setString(9, doReadDataType(variant).getId());
+		stmtIns.setString(10, rs.getString(6));
+		stmtIns.execute();
+		rs.close();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IName name) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(name)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			// themes
+			String themes = "";
+			for (ITopic theme : doReadScope(name).getThemes()) {
+				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			}
+			// variants
+			String variants = "";
+			for (IVariant variant : doReadVariants(name, -1, -1)) {
+				variants += variant.getId() + (!variants.isEmpty() ? "," : "");
+			}
+			PreparedStatement stmt = queryBuilder.getQueryNameDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setString(3, variants);
+			stmt.setString(4, themes);
+			stmt.setLong(5, Long.parseLong(name.getId()));
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("trying fallback (name)");
+			dumpFallback(revision, name);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, IName name) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(name)) {
@@ -5186,19 +5334,58 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (IVariant variant : doReadVariants(name, -1, -1)) {
 			variants += variant.getId() + (!variants.isEmpty() ? "," : "");
 		}
-		PreparedStatement stmt = queryBuilder.getQueryNameDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setString(3, variants);
-		stmt.setString(4, themes);
-		stmt.setLong(5, Long.parseLong(name.getId()));
-		stmt.execute();
+
+		PreparedStatement stmt = queryBuilder.getQueryNameDumpSelect();
+		stmt.setLong(1, Long.parseLong(name.getId()));
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+
+		PreparedStatement stmtIns = queryBuilder.getQueryNameDumpInsertIntoHistory();
+		stmtIns.setLong(1, rs.getLong(1));
+		stmtIns.setLong(2, revision.getId());
+		stmtIns.setLong(3, rs.getLong(2));
+		stmtIns.setLong(4, rs.getLong(3));
+		stmtIns.setString(5, ii);
+		stmtIns.setString(6, String.valueOf(rs.getLong(4)));
+		stmtIns.setString(7, variants);
+		stmtIns.setLong(8, rs.getLong(5));
+		stmtIns.setLong(9, rs.getLong(6));
+		stmtIns.setString(10, themes);
+		stmtIns.setString(11, rs.getString(7));
+		stmtIns.execute();
+		rs.close();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IOccurrence occurrence) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(occurrence)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			// themes
+			String themes = "";
+			for (ITopic theme : doReadScope(occurrence).getThemes()) {
+				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			}
+			PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setString(3, themes);
+			stmt.setString(4, doReadDataType(occurrence).getId());
+			stmt.setLong(5, Long.parseLong(occurrence.getId()));
+			stmt.execute();
+		} catch(SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("trying fallback (occ)");
+			dumpFallback(revision, occurrence);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, IOccurrence occurrence) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(occurrence)) {
@@ -5209,19 +5396,99 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (ITopic theme : doReadScope(occurrence).getThemes()) {
 			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
 		}
-		PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setString(3, themes);
-		stmt.setString(4, doReadDataType(occurrence).getId());
-		stmt.setLong(5, Long.parseLong(occurrence.getId()));
-		stmt.execute();
+		PreparedStatement stmt = queryBuilder.getQueryOccurrenceDumpSelect();
+		stmt.setLong(1, Long.parseLong(occurrence.getId()));
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+		
+		PreparedStatement stmtIns = queryBuilder.getQueryOccurrenceDumpInsertIntoHistory();
+		stmtIns.setLong(1, rs.getLong(1));
+		stmtIns.setLong(2, revision.getId());
+		stmtIns.setLong(3, rs.getLong(2));
+		stmtIns.setLong(4, rs.getLong(3));
+		stmtIns.setString(5, ii);
+		stmtIns.setString(6, String.valueOf(rs.getLong(4)));
+		stmtIns.setLong(7, rs.getLong(5));
+		stmtIns.setLong(8, rs.getLong(6));
+		stmtIns.setString(9, themes);
+		stmtIns.setString(10, rs.getString(7));
+		stmtIns.setString(11, doReadDataType(occurrence).getId());
+		stmtIns.execute();
+		rs.close();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, ITopic topic) throws SQLException {
+		try {
+			// ii
+			String ii = "";
+			for (ILocator itemIdentifier : doReadItemIdentifiers(topic)) {
+				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			}
+			// si
+			String si = "";
+			for (ILocator loc : doReadSubjectIdentifiers(topic)) {
+				si += loc.getId() + (!si.isEmpty() ? "," : "");
+			}
+			// sl
+			String sl = "";
+			for (ILocator loc : doReadSubjectLocators(topic)) {
+				sl += loc.getId() + (!sl.isEmpty() ? "," : "");
+			}
+			// types
+			String types = "";
+			for (ITopic t : doReadTypes(topic, -1, -1)) {
+				types += t.getId() + (!types.isEmpty() ? "," : "");
+			}
+			// supertypes
+			String supertypes = "";
+			for (ITopic t : getSupertypes(topic.getTopicMap(), topic, -1, -1)) {
+				supertypes += t.getId() + (!supertypes.isEmpty() ? "," : "");
+			}
+			// names
+			String names = "";
+			for (IName n : doReadNames(topic, -1, -1)) {
+				names += n.getId() + (!names.isEmpty() ? "," : "");
+			}
+			// occurrences
+			String occurrences = "";
+			for (IOccurrence o : doReadOccurrences(topic, -1, -1)) {
+				occurrences += o.getId() + (!occurrences.isEmpty() ? "," : "");
+			}
+			// associations
+			String associations = "";
+			for (IAssociation a : doReadAssociation(topic, -1, -1)) {
+				associations += a.getId() + (!associations.isEmpty() ? "," : "");
+			}
+			Reifiable r = doReadReification(topic);
+	
+			PreparedStatement stmt = queryBuilder.getQueryTopicDump();
+			stmt.setLong(1, revision.getId());
+			stmt.setString(2, ii);
+			stmt.setString(3, si);
+			stmt.setString(4, sl);
+			stmt.setString(5, types);
+			stmt.setString(6, supertypes);
+			stmt.setString(7, names);
+			stmt.setString(8, occurrences);
+			stmt.setString(9, associations);
+			if (r != null) {
+				stmt.setString(10, r.getId());
+			} else {
+				stmt.setNull(10, Types.VARCHAR);
+			}
+			stmt.setString(11, topic.getBestLabel());
+			stmt.setLong(12, Long.parseLong(topic.getId()));
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println("trying fallback (topic)");
+			dumpFallback(revision, topic);
+		}
+	}
+
+	public void dumpFallback(IRevision revision, ITopic topic) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(topic)) {
@@ -5264,24 +5531,37 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 		Reifiable r = doReadReification(topic);
 
-		PreparedStatement stmt = queryBuilder.getQueryTopicDump();
-		stmt.setLong(1, revision.getId());
-		stmt.setString(2, ii);
-		stmt.setString(3, si);
-		stmt.setString(4, sl);
-		stmt.setString(5, types);
-		stmt.setString(6, supertypes);
-		stmt.setString(7, names);
-		stmt.setString(8, occurrences);
-		stmt.setString(9, associations);
-		if (r != null) {
-			stmt.setString(10, r.getId());
-		} else {
-			stmt.setNull(10, Types.VARCHAR);
+		try {
+			PreparedStatement stmt = queryBuilder.getQueryTopicDumpSelect();
+			stmt.setLong(1, Long.parseLong(topic.getId()));
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+		
+			PreparedStatement stmtIns = queryBuilder.getQueryTopicDumpInsertIntoHistory();
+			stmtIns.setLong(1, rs.getLong(1));
+			stmtIns.setLong(2, revision.getId());
+			stmtIns.setLong(3, rs.getLong(2));
+			stmtIns.setLong(4, rs.getLong(3));
+			stmtIns.setString(5, ii);
+			stmtIns.setString(6, si);
+			stmtIns.setString(7, sl);
+			stmtIns.setString(8, types);
+			stmtIns.setString(9, supertypes);
+			stmtIns.setString(10, names);
+			stmtIns.setString(11, occurrences);
+			stmtIns.setString(12, associations);
+			if (r != null) {
+				stmtIns.setLong(13, Long.parseLong(r.getId()));
+			} else {
+				stmtIns.setNull(13, Types.BIGINT);
+			}
+			stmtIns.setString(14, topic.getBestLabel());
+			stmtIns.execute();
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println("trying to dump topic with id " + topic.getId());
+			e.printStackTrace();
 		}
-		stmt.setString(11, topic.getBestLabel());
-		stmt.setLong(12, Long.parseLong(topic.getId()));
-		stmt.execute();
 	}
 
 	/**
