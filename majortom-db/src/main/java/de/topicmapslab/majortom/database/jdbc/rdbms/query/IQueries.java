@@ -40,5 +40,5 @@ public interface IQueries {
 	 * <b>parameters(3):</b> the topic map id, the parent id, the reference
 	 * </p>
 	 */
-	public static final String SNIPPET_CREATE_TOPIC_IF_SUBJECT_IDENTIFIER_NOT_EXISTS = "INSERT INTO topics(id_topicmap,id_parent) SELECT ?,? WHERE NOT EXISTS (SELECT t.id, l.id FROM topics AS t, locators AS l, rel_subject_identifiers as r WHERE reference = ? AND l.id = r.id_locator AND r.id_topic = t.id);";
+	public static final String SNIPPET_CREATE_TOPIC_IF_SUBJECT_IDENTIFIER_NOT_EXISTS = "INSERT INTO topics(id_topicmap,id_parent) VALUES( ?,? ) WHERE NOT EXISTS (SELECT t.id, l.id FROM topics AS t, locators AS l, rel_subject_identifiers as r WHERE reference = ? AND l.id = r.id_locator AND r.id_topic = t.id);";
 }

@@ -87,7 +87,11 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 				if (PreparedStatement.class.equals(field.getType())) {
 					PreparedStatement stmt = (PreparedStatement) field.get(this);
 					if (stmt != null) {
-						stmt.cancel();
+						try {
+							stmt.cancel();
+						} catch (SQLException e) {
+							System.out.println("canceling not supported, skipping...");
+						}
 						stmt.close();
 					}
 				}
@@ -3566,11 +3570,23 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementQueryReadMetadataByKey;
 
 	private PreparedStatement preparedStatementQueryAssociationDump;
+	private PreparedStatement preparedStatementQueryAssociationDumpSelect;
+	private PreparedStatement preparedStatementQueryAssociationDumpInsertIntoHistory;
 	private PreparedStatement preparedStatementQueryRoleDump;
+	private PreparedStatement preparedStatementQueryRoleDumpSelect;
+	private PreparedStatement preparedStatementQueryRoleDumpInsertIntoHistory;
 	private PreparedStatement preparedStatementQueryVariantDump;
+	private PreparedStatement preparedStatementQueryVariantDumpSelect;
+	private PreparedStatement preparedStatementQueryVariantDumpInsertIntoHistory;
 	private PreparedStatement preparedStatementQueryNameDump;
+	private PreparedStatement preparedStatementQueryNameDumpSelect;
+	private PreparedStatement preparedStatementQueryNameDumpInsertIntoHistory;
 	private PreparedStatement preparedStatementQueryOccurrenceDump;
+	private PreparedStatement preparedStatementQueryOccurrenceDumpSelect;
+	private PreparedStatement preparedStatementQueryOccurrenceDumpInsertIntoHistory;
 	private PreparedStatement preparedStatementQueryTopicDump;
+	private PreparedStatement preparedStatementQueryTopicDumpSelect;
+	private PreparedStatement preparedStatementQueryTopicDumpInsertIntoHistory;
 
 	private PreparedStatement preparedStatementQueryReadHistory;
 
@@ -3832,12 +3848,44 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		return preparedStatementQueryRoleDump;
 	}
 
+	public PreparedStatement getQueryRoleDumpSelect() throws SQLException {
+		if (preparedStatementQueryRoleDumpSelect == null) {
+			preparedStatementQueryRoleDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_ROLE_SELECT);
+		}
+		return preparedStatementQueryRoleDumpSelect;
+	}
+
+	public PreparedStatement getQueryRoleDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryRoleDumpInsertIntoHistory == null) {
+			preparedStatementQueryRoleDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_ROLE_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryRoleDumpInsertIntoHistory;
+	}
+	
 	public PreparedStatement getQueryAssociationDump() throws SQLException {
 		if (preparedStatementQueryAssociationDump == null) {
 			preparedStatementQueryAssociationDump = getWriterConnection().prepareStatement(
 					IDumpQueries.QUERY_DUMP_ASSOCIATION);
 		}
 		return preparedStatementQueryAssociationDump;
+	}
+
+	public PreparedStatement getQueryAssociationDumpSelect() throws SQLException {
+		if (preparedStatementQueryAssociationDumpSelect == null) {
+			preparedStatementQueryAssociationDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_ASSOCIATION_SELECT);
+		}
+		return preparedStatementQueryAssociationDumpSelect;
+	}
+
+	public PreparedStatement getQueryAssociationDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryAssociationDumpInsertIntoHistory == null) {
+			preparedStatementQueryAssociationDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_ASSOCIATION_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryAssociationDumpInsertIntoHistory;
 	}
 
 	public PreparedStatement getQueryVariantDump() throws SQLException {
@@ -3847,11 +3895,43 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		return preparedStatementQueryVariantDump;
 	}
 
+	public PreparedStatement getQueryVariantDumpSelect() throws SQLException {
+		if (preparedStatementQueryVariantDumpSelect == null) {
+			preparedStatementQueryVariantDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_VARIANT_SELECT);
+		}
+		return preparedStatementQueryVariantDumpSelect;
+	}
+	
+	public PreparedStatement getQueryVariantDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryVariantDumpInsertIntoHistory == null) {
+			preparedStatementQueryVariantDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_VARIANT_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryVariantDumpInsertIntoHistory;
+	}
+
 	public PreparedStatement getQueryNameDump() throws SQLException {
 		if (preparedStatementQueryNameDump == null) {
 			preparedStatementQueryNameDump = getWriterConnection().prepareStatement(IDumpQueries.QUERY_DUMP_NAME);
 		}
 		return preparedStatementQueryNameDump;
+	}
+
+	public PreparedStatement getQueryNameDumpSelect() throws SQLException {
+		if (preparedStatementQueryNameDumpSelect == null) {
+			preparedStatementQueryNameDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_NAME_SELECT);
+		}
+		return preparedStatementQueryNameDumpSelect;
+	}
+
+	public PreparedStatement getQueryNameDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryNameDumpInsertIntoHistory == null) {
+			preparedStatementQueryNameDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_NAME_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryNameDumpInsertIntoHistory;
 	}
 
 	public PreparedStatement getQueryOccurrenceDump() throws SQLException {
@@ -3862,11 +3942,43 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		return preparedStatementQueryOccurrenceDump;
 	}
 
+	public PreparedStatement getQueryOccurrenceDumpSelect() throws SQLException {
+		if (preparedStatementQueryOccurrenceDumpSelect == null) {
+			preparedStatementQueryOccurrenceDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_OCCURRENCE_SELECT);
+		}
+		return preparedStatementQueryOccurrenceDumpSelect;
+	}
+
+	public PreparedStatement getQueryOccurrenceDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryOccurrenceDumpInsertIntoHistory == null) {
+			preparedStatementQueryOccurrenceDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_OCCURRENCE_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryOccurrenceDumpInsertIntoHistory;
+	}
+
 	public PreparedStatement getQueryTopicDump() throws SQLException {
 		if (preparedStatementQueryTopicDump == null) {
 			preparedStatementQueryTopicDump = getWriterConnection().prepareStatement(IDumpQueries.QUERY_DUMP_TOPIC);
 		}
 		return preparedStatementQueryTopicDump;
+	}
+
+	public PreparedStatement getQueryTopicDumpSelect() throws SQLException {
+		if (preparedStatementQueryTopicDumpSelect == null) {
+			preparedStatementQueryTopicDumpSelect = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_TOPIC_SELECT);
+		}
+		return preparedStatementQueryTopicDumpSelect;
+	}
+
+	public PreparedStatement getQueryTopicDumpInsertIntoHistory() throws SQLException {
+		if (preparedStatementQueryTopicDumpInsertIntoHistory == null) {
+			preparedStatementQueryTopicDumpInsertIntoHistory = getWriterConnection().prepareStatement(
+					IDumpQueries.QUERY_DUMP_TOPIC_INSERT_INTO_HISTORY);
+		}
+		return preparedStatementQueryTopicDumpInsertIntoHistory;
 	}
 
 	/**
