@@ -21,6 +21,7 @@ package de.topicmapslab.majortom.database.jdbc.index;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
@@ -29,6 +30,7 @@ import org.tmapi.core.Role;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.nonpaged.CachedTypeInstanceIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -42,8 +44,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcTypeInstanceIndex extends
-		CachedTypeInstanceIndexImpl<JdbcTopicMapStore> {
+public class JdbcTypeInstanceIndex extends CachedTypeInstanceIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * @param store
@@ -62,8 +63,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Association> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationsByType(
-					(ITopic) type, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationsByType((ITopic) type, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -83,8 +89,7 @@ public class JdbcTypeInstanceIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Association> doGetAssociations(
-			Collection<? extends Topic> types) {
+	public Collection<Association> doGetAssociations(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -137,8 +142,7 @@ public class JdbcTypeInstanceIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> doGetCharacteristics(
-			Collection<? extends Topic> types) {
+	public Collection<ICharacteristics> doGetCharacteristics(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -162,8 +166,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Name> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getNamesByType((ITopic) type,
-					-1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNamesByType((ITopic) type, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -204,8 +213,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByType(
-					(ITopic) type, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrencesByType((ITopic) type, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -225,8 +239,7 @@ public class JdbcTypeInstanceIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<Occurrence> doGetOccurrences(
-			Collection<? extends Topic> types) {
+	public Collection<Occurrence> doGetOccurrences(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -247,8 +260,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Role> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getRolesByType((ITopic) type,
-					-1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getRolesByType((ITopic) type, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -288,8 +306,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getTopicsByType(
-					getTopicMapStore().getTopicMap(), type, -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getTopicsByType(getTopicMapStore().getTopicMap(), type, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -335,8 +358,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getTopicsByTypes(types, all,
-					-1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getTopicsByTypes(types, all, -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -352,8 +380,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationTypes(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationTypes(getTopicMapStore().getTopicMap(), -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -369,8 +402,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getNameTypes(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNameTypes(getTopicMapStore().getTopicMap(), -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -386,8 +424,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrenceTypes(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrenceTypes(getTopicMapStore().getTopicMap(), -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -403,8 +446,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getRoleTypes(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getRoleTypes(getTopicMapStore().getTopicMap(), -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -420,8 +468,13 @@ public class JdbcTypeInstanceIndex extends
 		}
 		try {
 			Collection<Topic> col = HashUtil.getHashSet();
-			col.addAll(getTopicMapStore().getProcessor().getTopicTypes(
-					getTopicMapStore().getTopicMap(), -1, -1));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getTopicTypes(getTopicMapStore().getTopicMap(), -1, -1));
+			session.commit();
+			session.close();
+			if (col.isEmpty()) {
+				return Collections.emptySet();
+			}
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

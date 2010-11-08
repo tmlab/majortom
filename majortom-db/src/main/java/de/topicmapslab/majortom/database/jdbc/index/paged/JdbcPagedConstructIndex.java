@@ -29,6 +29,7 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedConstructIndexImpl;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -41,8 +42,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class JdbcPagedConstructIndex extends
-		PagedConstructIndexImpl<JdbcTopicMapStore> {
+public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMapStore> {
 
 	/**
 	 * @param store
@@ -54,28 +54,29 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Association> doGetAssociationsPlayed(Topic topic,
-			int offset, int limit, Comparator<Association> comparator) {
+	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit,
+			Comparator<Association> comparator) {
 		return super.doGetAssociationsPlayed(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Association> doGetAssociationsPlayed(Topic topic,
-			int offset, int limit) {
+	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit) {
 		try {
 			List<Association> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadAssociation(
-					(ITopic) topic, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadAssociation((ITopic) topic, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -85,27 +86,28 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Name> doGetNames(Topic topic, int offset, int limit,
-			Comparator<Name> comparator) {
+	protected List<Name> doGetNames(Topic topic, int offset, int limit, Comparator<Name> comparator) {
 		return super.doGetNames(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(Topic topic, int offset, int limit) {
 		try {
 			List<Name> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadNames((ITopic) topic,
-					offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadNames((ITopic) topic, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -115,14 +117,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfAssociationsPlayed(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfAssociationsPlayed(
-					(ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfAssociationsPlayed((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -131,14 +136,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfNames(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor()
-					.doReadNumberOfNames((ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfNames((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -147,14 +155,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfOccurrences(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfOccurrences(
-					(ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfOccurrences((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -163,14 +174,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfRoles(Association association) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfRoles(
-					(IAssociation) association);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfRoles((IAssociation) association);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -179,14 +193,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfRolesPlayed(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfRolesPlayed(
-					(ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfRolesPlayed((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -195,14 +212,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfSupertypes(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfSupertypes(
-					(ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfSupertypes((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -211,14 +231,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfTypes(Topic topic) {
 		try {
-			return getTopicMapStore().getProcessor()
-					.doReadNumberOfTypes((ITopic) topic);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfTypes((ITopic) topic);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -227,14 +250,17 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected long doGetNumberOfVariants(Name name) {
 		try {
-			return getTopicMapStore().getProcessor().doReadNumberOfVariants(
-					(IName) name);
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfVariants((IName) name);
+			session.commit();
+			session.close();
+			return number;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
@@ -243,28 +269,28 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Occurrence> doGetOccurrences(Topic topic, int offset,
-			int limit, Comparator<Occurrence> comparator) {
+	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit, Comparator<Occurrence> comparator) {
 		return super.doGetOccurrences(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Occurrence> doGetOccurrences(Topic topic, int offset,
-			int limit) {
+	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit) {
 		try {
 			List<Occurrence> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadOccurrences(
-					(ITopic) topic, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadOccurrences((ITopic) topic, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -274,28 +300,28 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Role> doGetRoles(Association association, int offset,
-			int limit, Comparator<Role> comparator) {
+	protected List<Role> doGetRoles(Association association, int offset, int limit, Comparator<Role> comparator) {
 		return super.doGetRoles(association, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Role> doGetRoles(Association association, int offset,
-			int limit) {
+	protected List<Role> doGetRoles(Association association, int offset, int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadRoles(
-					(IAssociation) association, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadRoles((IAssociation) association, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -305,27 +331,28 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit,
-			Comparator<Role> comparator) {
+	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit, Comparator<Role> comparator) {
 		return super.doGetRolesPlayed(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit) {
 		try {
 			List<Role> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadRoles((ITopic) topic,
-					offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadRoles((ITopic) topic, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -335,20 +362,19 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit,
-			Comparator<Topic> comparator) {
+	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		return super.doGetSupertypes(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit) {
@@ -360,20 +386,19 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetTypes(Topic topic, int offset, int limit,
-			Comparator<Topic> comparator) {
+	protected List<Topic> doGetTypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		return super.doGetTypes(topic, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit) {
@@ -385,27 +410,28 @@ public class JdbcPagedConstructIndex extends
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Variant> doGetVariants(Name name, int offset, int limit,
-			Comparator<Variant> comparator) {
+	protected List<Variant> doGetVariants(Name name, int offset, int limit, Comparator<Variant> comparator) {
 		return super.doGetVariants(name, offset, limit, comparator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Variant> doGetVariants(Name name, int offset, int limit) {
 		try {
 			List<Variant> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().doReadVariants((IName) name,
-					offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadVariants((IName) name, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

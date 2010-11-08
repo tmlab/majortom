@@ -49,7 +49,6 @@ import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
-import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -90,30 +89,25 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 public class Sql99QueryProcessor implements IQueryProcessor {
 
 	private final Sql99QueryBuilder queryBuilder;
-	private final Sql99ConnectionProvider provider;
-	private final Connection writerConnection;
-	private final Connection readerConnection;
+	private final SQL99Session session;
+	private final Connection connection;
 
 	/**
 	 * constructor
 	 * 
-	 * @param provider
-	 *            the connection provider
-	 * @param readerConnection
-	 *            the JDBC connection to read database
-	 * @param writerConnection
-	 *            the JDBC connection to modify database
+	 * @param session
+	 *            the session
+	 * @param connection
+	 *            the database connection for this query processor
 	 */
-	public Sql99QueryProcessor(Sql99ConnectionProvider provider, Connection readerConnection,
-			Connection writerConnection) {
-		this.provider = provider;
-		this.readerConnection = readerConnection;
-		this.writerConnection = writerConnection;
+	public Sql99QueryProcessor(SQL99Session session, Connection connection) {
+		this.session = session;
+		this.connection = connection;
 		this.queryBuilder = createQueryBuilder();
 	}
 
 	protected Sql99QueryBuilder createQueryBuilder() {
-		return new Sql99QueryBuilder(provider);
+		return new Sql99QueryBuilder(session);
 	}
 
 	protected Sql99QueryBuilder getQueryBuilder() {
@@ -125,23 +119,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * 
 	 * @return the connection the connection
 	 */
-	public Connection getWriterConnection() {
-		return writerConnection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Connection getReaderConnection() {
-		return readerConnection;
+	public Connection getConnection() {
+		return connection;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public BasePostGreSqlConnectionProvider getConnectionProvider() {
-		return provider;
+	public SQL99Session getSession() {
+		return session;
 	}
 
 	/**
@@ -1446,11 +1433,11 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IScope doReadScope(IScopable s) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryReadScope();
 		stmt.setLong(1, Long.parseLong(s.getId()));
-		ResultSet set = stmt.executeQuery();	
+		ResultSet set = stmt.executeQuery();
 		set.next();
 		long scopeId = set.getLong("id_scope");
 		set.close();
-		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));		
+		return new ScopeImpl(Long.toString(scopeId), doReadThemes(s.getTopicMap(), scopeId));
 	}
 
 	/**
@@ -1463,7 +1450,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		ResultSet set = stmt.executeQuery();
 		Collection<ITopic> themes = HashUtil.getHashSet();
 		while (set.next()) {
-			themes.add(getConnectionProvider().getTopicMapStore().getConstructFactory()
+			themes.add(getSession().getTopicMapStore().getConstructFactory()
 					.newTopic(new JdbcIdentity(set.getLong("id_theme")), topicMap));
 		}
 		set.close();
@@ -1616,7 +1603,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
 		doRemoveAssociation(association, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -1654,12 +1641,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
 				association.getTopicMap(), null, association);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
 				association.getTopicMap(), null, association);
 	}
 
@@ -1677,8 +1664,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveName(IName name, boolean cascade) throws SQLException {
-		doRemoveName(name, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.NAME_REMOVED));
+		doRemoveName(name, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.NAME_REMOVED));
 		return true;
 	}
 
@@ -1724,13 +1710,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(),
-				null, name);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED,
-				name.getParent(), null, name);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null,
+				name);
 	}
 
 	/**
@@ -1738,7 +1723,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException {
 		doRemoveOccurrence(occurrence, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_REMOVED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_REMOVED));
 		return true;
 	}
 
@@ -1775,12 +1760,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED,
-				occurrence.getParent(), null, occurrence);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(),
+				null, occurrence);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
 				occurrence.getParent(), null, occurrence);
 	}
 
@@ -1788,8 +1773,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException {
-		doRemoveRole(role, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.ROLE_REMOVED));
+		doRemoveRole(role, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.ROLE_REMOVED));
 		return true;
 	}
 
@@ -1826,13 +1810,12 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(),
-				null, role);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED,
-				role.getParent(), null, role);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
+				role);
 	}
 
 	/**
@@ -1884,8 +1867,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
-		doRemoveTopic(topic, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
+		doRemoveTopic(topic, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2025,13 +2007,13 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED,
-				topic.getTopicMap(), null, topic);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null,
+				topic);
 		/*
 		 * store revision
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED,
-				topic.getTopicMap(), null, topic);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
+				null, topic);
 	}
 
 	/**
@@ -2076,7 +2058,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveVariant(IVariant variant, boolean cascade) throws SQLException {
 		doRemoveVariant(variant, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -2101,13 +2083,13 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED,
-				variant.getParent(), null, variant);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null,
+				variant);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED,
-				variant.getParent(), null, variant);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
+				null, variant);
 	}
 
 	// ****************
@@ -2305,19 +2287,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset,
 			long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id");
+		return Jdbc2Construct.toAssociations(getSession().getTopicMapStore().getTopicMap(), set, "id");
 	}
 
 	/**
@@ -2333,7 +2315,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toCharacteristics(getConnectionProvider().getTopicMapStore().getTopicMap(), set);
+		return Jdbc2Construct.toCharacteristics(getSession().getTopicMapStore().getTopicMap(), set);
 	}
 
 	/**
@@ -2347,7 +2329,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		Array a = getWriterConnection().createArrayOf("bigint", ids);
+		Array a = getConnection().createArrayOf("bigint", ids);
 		stmt.setArray(1, a);
 		stmt.setArray(2, a);
 		if (offset != -1) {
@@ -2355,7 +2337,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toCharacteristics(getConnectionProvider().getTopicMapStore().getTopicMap(), set);
+		return Jdbc2Construct.toCharacteristics(getSession().getTopicMapStore().getTopicMap(), set);
 	}
 
 	/**
@@ -2379,19 +2361,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
+		return Jdbc2Construct.toNames(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -2415,20 +2397,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id",
-				"id_parent");
+		return Jdbc2Construct.toOccurrences(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -2452,19 +2433,19 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
 			ids[n++] = Long.parseLong(type.getId());
 		}
-		stmt.setArray(2, getWriterConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toRoles(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
+		return Jdbc2Construct.toRoles(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -3052,7 +3033,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3101,7 +3082,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3201,7 +3182,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3249,7 +3230,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3332,7 +3313,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3379,7 +3360,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3480,7 +3461,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3519,7 +3500,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		for (Topic t : themes) {
 			ids[n++] = Long.parseLong(t.getId());
 		}
-		Array array = getReaderConnection().createArrayOf("bigint", ids);
+		Array array = getConnection().createArrayOf("bigint", ids);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setArray(2, array);
 		n = 3;
@@ -4321,7 +4302,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {
 			rs.next();
-			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			return new RevisionImpl(getSession().getTopicMapStore(), rs.getLong("id")) {
 			};
 		} finally {
 			rs.close();
@@ -4576,7 +4557,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			revisions.add(new RevisionImpl(getSession().getTopicMapStore(), rs.getLong("id")) {
 			});
 		}
 		return revisions;
@@ -4595,7 +4576,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			revisions.add(new RevisionImpl(getSession().getTopicMapStore(), rs.getLong("id")) {
 			});
 		}
 		return revisions;
@@ -4734,9 +4715,9 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * check if default name type exists
 		 */
-		if (getConnectionProvider().getTopicMapStore().existsTmdmDefaultNameType()) {
+		if (getSession().getTopicMapStore().existsTmdmDefaultNameType()) {
 			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(doReadNames(topic, getConnectionProvider().getTopicMapStore().getTmdmDefaultNameType()));
+			tmp.retainAll(doReadNames(topic, getSession().getTopicMapStore().getTmdmDefaultNameType()));
 			/*
 			 * at least one default name
 			 */
@@ -5006,7 +4987,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			 * read data from store
 			 */
 			for (TopicMapStoreParameterType type : arguments) {
-				results.put(type, getConnectionProvider().getTopicMapStore().doRead(c_, type));
+				results.put(type, getSession().getTopicMapStore().doRead(c_, type));
 			}
 		}
 		/*
@@ -5050,7 +5031,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<IName> set = HashUtil.getHashSet();
 							Array a = rs.getArray("names");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyName(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyName(this, getSession().getTopicMapStore()
 										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
@@ -5060,7 +5041,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<IOccurrence> set = HashUtil.getHashSet();
 							Array a = rs.getArray("occurrences");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyOccurrence(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyOccurrence(this, getSession().getTopicMapStore()
 										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
@@ -5070,7 +5051,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<IVariant> set = HashUtil.getHashSet();
 							Array a = rs.getArray("variants");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyVariant(this, getSession().getTopicMapStore()
 										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
 							}
 							results.put(type, set);
@@ -5080,7 +5061,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<IAssociation> set = HashUtil.getHashSet();
 							Array a = rs.getArray("associations");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore()
 										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
@@ -5090,7 +5071,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("types");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							/*
@@ -5107,7 +5088,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("supertypes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
@@ -5117,18 +5098,16 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<IAssociationRole> set = HashUtil.getHashSet();
 							Array a = rs.getArray("roles");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociationRole(this, getConnectionProvider()
-										.getTopicMapStore().getConstructFactory()
+								set.add(new JdbcReadOnlyAssociationRole(this, getSession().getTopicMapStore()
+										.getConstructFactory()
 										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
 							}
 							results.put(type, set);
 						}
 							break;
 						case PLAYER: {
-							results.put(
-									type,
-									new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-											.getConstructFactory()
+							results.put(type,
+									new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
 											.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
 						}
 							break;
@@ -5148,7 +5127,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("themes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
@@ -5183,9 +5162,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				 * calling object is not a topic -> reification value represents the reifier topic
 				 */
 				else {
-					results.put(TopicMapStoreParameterType.REIFICATION,
-							new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+					results.put(TopicMapStoreParameterType.REIFICATION, new JdbcReadOnlyTopic(this, getSession()
+							.getTopicMapStore().getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 				}
 			}
 		}
@@ -5212,54 +5190,52 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		rs.close();
 		if (type != null) {
 			if (type.equalsIgnoreCase("n")) {
-				return new JdbcReadOnlyName(this, getConnectionProvider()
+				return new JdbcReadOnlyName(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newName(
 								new JdbcIdentity(id),
-								getConnectionProvider()
+								getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newTopic(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap())));
+												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("o")) {
-				return new JdbcReadOnlyOccurrence(this, getConnectionProvider()
+				return new JdbcReadOnlyOccurrence(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newOccurrence(
 								new JdbcIdentity(id),
-								getConnectionProvider()
+								getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newTopic(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap())));
+												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("t")) {
-				return new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(id), getConnectionProvider().getTopicMapStore().getTopicMap()));
+				return new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
+						.newTopic(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("a")) {
-				return new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
-						.getConstructFactory()
-						.newAssociation(new JdbcIdentity(id), getConnectionProvider().getTopicMapStore().getTopicMap()));
+				return new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore().getConstructFactory()
+						.newAssociation(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("r")) {
-				return new JdbcReadOnlyAssociationRole(this, getConnectionProvider()
+				return new JdbcReadOnlyAssociationRole(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newAssociationRole(
 								new JdbcIdentity(id),
-								new JdbcReadOnlyAssociation(this, getConnectionProvider()
+								new JdbcReadOnlyAssociation(this, getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newAssociation(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap()))));
+												getSession().getTopicMapStore().getTopicMap()))));
 			} else if (type.equalsIgnoreCase("v")) {
-				IName parent = (IName) doReadConstruct(getConnectionProvider().getTopicMapStore().getTopicMap(),
-						parentId, false);
+				IName parent = (IName) doReadConstruct(getSession().getTopicMapStore().getTopicMap(), parentId, false);
 				if (parent == null) {
 					parent = (IName) readHistoryConstruct(parentId);
 				} else {
 					parent = (IName) asReadOnlyConstruct(parent);
 				}
-				return new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore().getConstructFactory()
+				return new JdbcReadOnlyVariant(this, getSession().getTopicMapStore().getConstructFactory()
 						.newVariant(new JdbcIdentity(id), parent));
 			}
 		}
@@ -5297,15 +5273,15 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void openTransaction() throws SQLException {
-		getWriterConnection().setAutoCommit(false);
+		getConnection().setAutoCommit(false);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commit() throws SQLException {
-		getWriterConnection().commit();
-		getWriterConnection().setAutoCommit(true);
+		getConnection().commit();
+		getConnection().setAutoCommit(true);
 	}
 
 	/**

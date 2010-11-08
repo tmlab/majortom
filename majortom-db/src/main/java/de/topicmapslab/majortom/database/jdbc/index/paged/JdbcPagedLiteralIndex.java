@@ -31,6 +31,7 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Variant;
 
 import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedLiteralIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -80,8 +81,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetBooleans(boolean value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN, offset,
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN, offset,
 					limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -105,7 +109,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCharacteristics(Locator datatype, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getCharacteristicsByDatatype(getTopicMapStore().getTopicMap(), datatype.getReference(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getCharacteristicsByDatatype(getTopicMapStore().getTopicMap(), datatype.getReference(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -129,7 +136,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCharacteristics(String value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -153,7 +163,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCharacteristics(String value, Locator datatype, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -177,7 +190,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCharacteristicsMatches(Pattern regExp, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -202,8 +218,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), datatype.getReference(), offset,
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), datatype.getReference(), offset,
 					limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -247,8 +266,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetCoordinates(Wgs84Coordinate value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.WGS84_COORDINATE, offset,
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.WGS84_COORDINATE, offset,
 					limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -272,7 +294,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<IDatatypeAware> doGetDatatypeAwares(Locator dataType, int offset, int limit) {
 		try {
 			List<IDatatypeAware> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getDatatypeAwaresByDatatype(getTopicMapStore().getTopicMap(), dataType.getReference(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getDatatypeAwaresByDatatype(getTopicMapStore().getTopicMap(), dataType.getReference(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -302,7 +327,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 				upper.add(field, deviance.get(field));
 			}
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), lower, upper, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), lower, upper, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -326,8 +354,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetDateTime(Calendar value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
 					XmlSchemeDatatypes.XSD_DATETIME, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -351,7 +382,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetDoubles(double value, double deviance, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -375,8 +409,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetDoubles(double value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor()
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor()
 					.getOccurrences(getTopicMapStore().getTopicMap(), Double.toString(value), XmlSchemeDatatypes.XSD_DOUBLE, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -401,7 +438,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -425,7 +465,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetFloats(float value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -449,7 +492,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetIntegers(int value, double deviance, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -473,7 +519,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetIntegers(int value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -497,7 +546,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetLongs(long value, double deviance, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -521,7 +573,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetLongs(long value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -545,7 +600,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<Name> doGetNames(int offset, int limit) {
 		try {
 			List<Name> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getNames(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getNames(getTopicMapStore().getTopicMap(), offset, limit));
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -569,7 +625,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<Occurrence> doGetOccurrences(int offset, int limit) {
 		try {
 			List<Occurrence> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -593,7 +652,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<ICharacteristics> doGetUris(URI value, int offset, int limit) {
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI, offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -617,7 +679,10 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	protected List<Variant> doGetVariants(int offset, int limit) {
 		try {
 			List<Variant> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getVariants(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

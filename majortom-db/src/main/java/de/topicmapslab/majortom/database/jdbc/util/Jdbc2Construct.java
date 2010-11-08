@@ -513,7 +513,7 @@ public class Jdbc2Construct {
 		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
 		while (rs.next()) {
 			RevisionChangeData data = new RevisionChangeData();
-			data.revision = new RevisionImpl(processor.getConnectionProvider().getTopicMapStore(),
+			data.revision = new RevisionImpl(processor.getSession().getTopicMapStore(),
 					rs.getLong("id_revision")) {
 			};
 			data.idNotifier = rs.getLong("id_notifier");

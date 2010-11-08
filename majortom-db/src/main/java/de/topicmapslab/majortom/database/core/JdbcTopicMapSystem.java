@@ -28,6 +28,8 @@ import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemImpl;
 import de.topicmapslab.majortom.database.jdbc.core.ConnectionProviderFactory;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMap;
@@ -59,14 +61,7 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 	public JdbcTopicMapSystem(TopicMapSystemFactoryImpl factory) {
 		super(factory);
 	}
-
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	public Set<Locator> getLocators() {
-//		return loadLocatorsFromDatabase();
-//	}
-
+	
 	/**
 	 * Internal method to load all locators from database
 	 */
@@ -94,13 +89,13 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 				 * load locators
 				 */
 				IConnectionProvider provider = ConnectionProviderFactory.getFactory().newConnectionProvider(
-						dialect.toString());
-				provider.openConnections(host.toString(), database.toString(), user.toString(), password == null ? ""
-						: password.toString());
-				for (ILocator loc : provider.getProcessor().getLocators()) {
+						dialect.toString(), host.toString(), database.toString(), user.toString(), password == null ? ""
+								: password.toString());
+				ISession session = provider.openSession();
+				for (ILocator loc : session.getProcessor().getLocators()) {
 					storedTopicMapLocators.add(loc);
 				}
-				provider.closeConnections();
+				session.close();
 			} catch (SQLException e) {
 				throw new TMAPIRuntimeException("Connection or communiation with database failed!", e);
 			}
@@ -172,5 +167,12 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 			storedTopicMapLocators.remove(locator);
 		}
 		return super.removeTopicMap(locator);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Class<? extends ITopicMapStore> getHandledClass() {
+		return JdbcTopicMapStore.class;
 	}
 }

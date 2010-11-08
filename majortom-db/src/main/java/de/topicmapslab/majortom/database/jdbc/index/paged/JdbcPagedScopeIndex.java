@@ -30,6 +30,7 @@ import org.tmapi.core.Scoped;
 import org.tmapi.core.Topic;
 import org.tmapi.core.Variant;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedScopeIndexImpl;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -55,11 +56,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit, Comparator<Association> comparator) {
+	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit,
+			Comparator<Association> comparator) {
 		return super.doGetAssociations(scopes, offset, limit, comparator);
 	}
 
@@ -69,7 +71,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationsByScopes(getTopicMapStore().getTopicMap(), scopes, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -79,11 +85,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Association> doGetAssociations(IScope scope, int offset, int limit, Comparator<Association> comparator) {
+	protected List<Association> doGetAssociations(IScope scope, int offset, int limit,
+			Comparator<Association> comparator) {
 		return super.doGetAssociations(scope, offset, limit, comparator);
 	}
 
@@ -93,7 +100,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(IScope scope, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationsByScope(getTopicMapStore().getTopicMap(), scope, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -103,8 +114,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Association> doGetAssociations(Topic theme, int offset, int limit, Comparator<Association> comparator) {
@@ -117,7 +128,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Topic theme, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationsByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationsByTheme(getTopicMapStore().getTopicMap(), theme, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -127,11 +142,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Association> doGetAssociations(Topic[] themes, boolean all, int offset, int limit, Comparator<Association> comparator) {
+	protected List<Association> doGetAssociations(Topic[] themes, boolean all, int offset, int limit,
+			Comparator<Association> comparator) {
 		return super.doGetAssociations(themes, all, offset, limit, comparator);
 	}
 
@@ -141,7 +157,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Association> doGetAssociations(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Association> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationsByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationsByThemes(getTopicMapStore().getTopicMap(), themes, all,
+					offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -151,8 +171,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<IScope> doGetAssociationScopes(int offset, int limit, Comparator<IScope> comparator) {
@@ -165,7 +185,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetAssociationScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -175,8 +198,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetAssociationThemes(int offset, int limit, Comparator<Topic> comparator) {
@@ -189,7 +212,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetAssociationThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getAssociationThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getAssociationThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -199,11 +225,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit, Comparator<ICharacteristics> comparator) {
+	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit,
+			Comparator<ICharacteristics> comparator) {
 		return super.doGetCharacteristics(scope, offset, limit, comparator);
 	}
 
@@ -213,7 +240,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit) {
 		try {
 			List<ICharacteristics> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getCharacteristicsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getCharacteristicsByScope(getTopicMapStore().getTopicMap(), scope,
+					offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -223,8 +254,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(Collection<IScope> scopes, int offset, int limit, Comparator<Name> comparator) {
@@ -237,7 +268,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNamesByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -247,8 +281,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(IScope scope, int offset, int limit, Comparator<Name> comparator) {
@@ -261,7 +295,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(IScope scope, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNamesByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -271,8 +308,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(Topic theme, int offset, int limit, Comparator<Name> comparator) {
@@ -285,7 +322,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Name> doGetNames(Topic theme, int offset, int limit) {
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNamesByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNamesByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -295,8 +335,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(Topic[] themes, boolean all, int offset, int limit, Comparator<Name> comparator) {
@@ -310,7 +350,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 
 		try {
 			List<Name> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNamesByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNamesByThemes(getTopicMapStore().getTopicMap(), themes, all, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -320,8 +364,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<IScope> doGetNameScopes(int offset, int limit, Comparator<IScope> comparator) {
@@ -334,7 +378,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetNameScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNameScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNameScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -344,8 +391,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetNameThemes(int offset, int limit, Comparator<Topic> comparator) {
@@ -358,7 +405,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetNameThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getNameThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getNameThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -368,11 +418,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit, Comparator<Occurrence> comparator) {
+	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit,
+			Comparator<Occurrence> comparator) {
 		return super.doGetOccurrences(scopes, offset, limit, comparator);
 	}
 
@@ -382,7 +433,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrencesByScopes(getTopicMapStore().getTopicMap(), scopes, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -392,8 +447,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Occurrence> doGetOccurrences(IScope scope, int offset, int limit, Comparator<Occurrence> comparator) {
@@ -406,7 +461,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(IScope scope, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrencesByScope(getTopicMapStore().getTopicMap(), scope, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -416,8 +475,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Occurrence> doGetOccurrences(Topic theme, int offset, int limit, Comparator<Occurrence> comparator) {
@@ -430,7 +489,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Topic theme, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrencesByTheme(getTopicMapStore().getTopicMap(), theme, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -440,11 +503,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Occurrence> doGetOccurrences(Topic[] themes, boolean all, int offset, int limit, Comparator<Occurrence> comparator) {
+	protected List<Occurrence> doGetOccurrences(Topic[] themes, boolean all, int offset, int limit,
+			Comparator<Occurrence> comparator) {
 		return super.doGetOccurrences(themes, all, offset, limit, comparator);
 	}
 
@@ -454,7 +518,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Occurrence> doGetOccurrences(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Occurrence> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrencesByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrencesByThemes(getTopicMapStore().getTopicMap(), themes, all,
+					offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -464,8 +532,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<IScope> doGetOccurrenceScopes(int offset, int limit, Comparator<IScope> comparator) {
@@ -478,7 +546,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetOccurrenceScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrenceScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrenceScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -488,8 +559,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetOccurrenceThemes(int offset, int limit, Comparator<Topic> comparator) {
@@ -502,7 +573,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetOccurrenceThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getOccurrenceThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getOccurrenceThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -512,8 +586,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Scoped> doGetScopables(IScope scope, int offset, int limit, Comparator<Scoped> comparator) {
@@ -526,7 +600,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Scoped> doGetScopables(IScope scope, int offset, int limit) {
 		try {
 			List<Scoped> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getScopables(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getScopables(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -536,11 +613,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit, Comparator<Variant> comparator) {
+	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit,
+			Comparator<Variant> comparator) {
 		return super.doGetVariants(scopes, offset, limit, comparator);
 	}
 
@@ -550,7 +628,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantsByScopes(getTopicMapStore().getTopicMap(), scopes, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getVariantsByScopes(getTopicMapStore().getTopicMap(), scopes, offset,
+					limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -560,8 +642,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Variant> doGetVariants(IScope scope, int offset, int limit, Comparator<Variant> comparator) {
@@ -574,7 +656,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(IScope scope, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor()
+					.getVariantsByScope(getTopicMapStore().getTopicMap(), scope, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -584,8 +670,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Variant> doGetVariants(Topic theme, int offset, int limit, Comparator<Variant> comparator) {
@@ -598,7 +684,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Topic theme, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantsByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor()
+					.getVariantsByTheme(getTopicMapStore().getTopicMap(), theme, offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -608,11 +698,12 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Variant> doGetVariants(Topic[] themes, boolean all, int offset, int limit, Comparator<Variant> comparator) {
+	protected List<Variant> doGetVariants(Topic[] themes, boolean all, int offset, int limit,
+			Comparator<Variant> comparator) {
 		return super.doGetVariants(themes, all, offset, limit, comparator);
 	}
 
@@ -622,7 +713,11 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Variant> doGetVariants(Topic[] themes, boolean all, int offset, int limit) {
 		try {
 			List<Variant> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantsByThemes(getTopicMapStore().getTopicMap(), themes, all, offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getVariantsByThemes(getTopicMapStore().getTopicMap(), themes, all,
+					offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -632,8 +727,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<IScope> doGetVariantScopes(int offset, int limit, Comparator<IScope> comparator) {
@@ -646,7 +741,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<IScope> doGetVariantScopes(int offset, int limit) {
 		try {
 			List<IScope> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getVariantScopes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -656,8 +754,8 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Topic> doGetVariantThemes(int offset, int limit, Comparator<Topic> comparator) {
@@ -670,7 +768,10 @@ public class JdbcPagedScopeIndex extends PagedScopeIndexImpl<JdbcTopicMapStore> 
 	protected List<Topic> doGetVariantThemes(int offset, int limit) {
 		try {
 			List<Topic> col = HashUtil.getList();
-			col.addAll(getTopicMapStore().getProcessor().getVariantThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			col.addAll(session.getProcessor().getVariantThemes(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return col;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

@@ -27,6 +27,7 @@ import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.index.paged.PagedIdentityIndexImpl;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -50,11 +51,12 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Construct> doGetConstructsByIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
+	protected List<Construct> doGetConstructsByIdentifier(Pattern regExp, int offset, int limit,
+			Comparator<Construct> comparator) {
 		return super.doGetConstructsByIdentifier(regExp, offset, limit, comparator);
 	}
 
@@ -64,7 +66,11 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Construct> doGetConstructsByIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Construct> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getConstructsByIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getConstructsByIdentitifer(getTopicMapStore().getTopicMap(),
+					regExp.pattern(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -74,11 +80,12 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Construct> doGetConstructsByItemIdentifier(Pattern regExp, int offset, int limit, Comparator<Construct> comparator) {
+	protected List<Construct> doGetConstructsByItemIdentifier(Pattern regExp, int offset, int limit,
+			Comparator<Construct> comparator) {
 		return super.doGetConstructsByItemIdentifier(regExp, offset, limit, comparator);
 	}
 
@@ -88,7 +95,11 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Construct> doGetConstructsByItemIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Construct> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getConstructsByItemIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getConstructsByItemIdentitifer(getTopicMapStore().getTopicMap(),
+					regExp.pattern(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -98,8 +109,8 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Locator> doGetItemIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
@@ -112,7 +123,10 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetItemIdentifiers(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getItemIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getItemIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -122,8 +136,8 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Locator> doGetSubjectIdentifiers(int offset, int limit, Comparator<Locator> comparator) {
@@ -136,7 +150,10 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetSubjectIdentifiers(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getSubjectIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getSubjectIdentifiers(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -146,8 +163,8 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Locator> doGetSubjectLocators(int offset, int limit, Comparator<Locator> comparator) {
@@ -160,7 +177,10 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Locator> doGetSubjectLocators(int offset, int limit) {
 		try {
 			List<Locator> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getSubjectLocators(getTopicMapStore().getTopicMap(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getSubjectLocators(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -170,11 +190,12 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
+	protected List<Topic> doGetTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit,
+			Comparator<Topic> comparator) {
 		return super.doGetTopicsBySubjectIdentifier(regExp, offset, limit, comparator);
 	}
 
@@ -184,7 +205,11 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Topic> doGetTopicsBySubjectIdentifier(Pattern regExp, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectIdentitifer(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getTopicsBySubjectIdentitifer(getTopicMapStore().getTopicMap(),
+					regExp.pattern(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -194,11 +219,12 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<Topic> doGetTopicsBySubjectLocator(Pattern regExp, int offset, int limit, Comparator<Topic> comparator) {
+	protected List<Topic> doGetTopicsBySubjectLocator(Pattern regExp, int offset, int limit,
+			Comparator<Topic> comparator) {
 		return super.doGetTopicsBySubjectLocator(regExp, offset, limit, comparator);
 	}
 
@@ -208,7 +234,11 @@ public class JdbcPagedIdentityIndex extends PagedIdentityIndexImpl<JdbcTopicMapS
 	protected List<Topic> doGetTopicsBySubjectLocator(Pattern regExp, int offset, int limit) {
 		try {
 			List<Topic> list = HashUtil.getList();
-			list.addAll(getTopicMapStore().getProcessor().getTopicsBySubjectLocator(getTopicMapStore().getTopicMap(), regExp.pattern(), offset, limit));
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().getTopicsBySubjectLocator(getTopicMapStore().getTopicMap(),
+					regExp.pattern(), offset, limit));
+			session.commit();
+			session.close();
 			return list;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);

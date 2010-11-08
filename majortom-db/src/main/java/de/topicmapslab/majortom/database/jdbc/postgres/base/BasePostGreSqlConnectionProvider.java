@@ -18,9 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.base;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,9 +28,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
-import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -44,10 +42,6 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public abstract class BasePostGreSqlConnectionProvider implements IConnectionProvider {
 
-	/**
-	 * 
-	 */
-	private static final String WORKAROUND = "SELECT id FROM topics OFFSET 0 LIMIT 1";
 	protected static final Map<String, List<String>> schemaInformation = HashUtil.getHashMap();
 
 	static {
@@ -101,40 +95,69 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "value",
 						"id_datatype" }));
 	}
-
-	/**
-	 * the JDBC connection to modify database
-	 */
-	private Connection writerConnection;
-	/**
-	 * the JDBC connection to read from database
-	 */
-	private Connection readerConnection;
 	/**
 	 * the meta data
 	 */
 	private DatabaseMetaData metaData;
-	/**
-	 * the internal query processor
-	 */
-	private Sql99QueryProcessor processor;
+	private ISession globalSession;
 
 	/**
 	 * internal reference of the topic map store
 	 */
 	private JdbcTopicMapStore store;
 
-	// storing some connection data in case it's needed after the db closed the
-	// connection
 	private String user;
 	private String password;
-	private String database;
-	private String host;
+	private String url;
 
 	/**
 	 * constructor
 	 */
 	protected BasePostGreSqlConnectionProvider() {
+		// VOID
+	}
+
+	/**
+	 * Constructor
+	 * @param host
+	 *            the host
+	 * @param database database
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
+	 */
+	public BasePostGreSqlConnectionProvider(String host, String database, String user, String password) {
+		this.user = user;
+		this.password = password;
+		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
+	}
+
+	/**
+	 * Returns the URL to the database
+	 * 
+	 * @return the URl
+	 */
+	protected String getUrl() {
+		return url;
+	}
+
+	/**
+	 * Returns the user database property
+	 * 
+	 * @return the user
+	 */
+	protected String getUser() {
+		return user;
+	}
+
+	/**
+	 * Returns the password database property
+	 * 
+	 * @return the passwords
+	 */
+	protected String getPassword() {
+		return password;
 	}
 
 	/**
@@ -143,6 +166,37 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 */
 	public void setTopicMapStore(JdbcTopicMapStore store) {
 		this.store = store;
+		/*
+		 * load connection properties from topic map system
+		 */
+		Object host = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
+		Object database = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
+		Object user = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
+		Object password = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
+		if (database == null || host == null || user == null) {
+			throw new TopicMapStoreException("Missing connection properties!");
+		}
+		/*
+		 * store connection properties
+		 */
+		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
+		this.user = user.toString();
+		this.password = password == null ? "" : password.toString();
+		globalSession = openSession();
+		try {
+			metaData = globalSession.getConnection().getMetaData();
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Cannot establish global session!", e);
+		}
+	}
+
+	/**
+	 * Returns the internal session of the connection provider
+	 * 
+	 * @return the internal session of the connection provider
+	 */
+	protected ISession getGlobalSession() {
+		return globalSession;
 	}
 
 	/**
@@ -152,129 +206,6 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	public JdbcTopicMapStore getTopicMapStore() {
 		return store;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void closeConnections() throws SQLException {
-		if (((readerConnection != null && !readerConnection.isClosed()))
-				|| (writerConnection != null && !writerConnection.isClosed())) {
-			processor.close();
-		}
-		if (readerConnection != null && !readerConnection.isClosed()) {
-			readerConnection.close();
-			readerConnection = null;
-		}
-		if (writerConnection != null && !writerConnection.isClosed()) {
-			writerConnection.close();
-			writerConnection = null;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public IQueryProcessor getProcessor() throws TopicMapStoreException {
-		try {
-			if (writerConnection == null || readerConnection == null) {
-				throw new TopicMapStoreException("Connection is not established!");
-			} else if (writerConnection.isClosed() || readerConnection.isClosed()) {
-				openConnections(host, database, user, password);
-			}
-			/*
-			 * check if connections are really valid XXX: isValid(int) does not works currently
-			 */
-			try {
-				writerConnection.createStatement().execute(WORKAROUND);
-				readerConnection.createStatement().execute(WORKAROUND);
-			} catch (Exception e) {
-				/*
-				 * reset
-				 */
-				openConnections(host, database, user, password);
-			}
-		} catch (SQLException e) {
-			throw new TopicMapStoreException(e);
-		}
-		return processor;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void openConnections(String host, String database, String user, String password) throws SQLException,
-			TopicMapStoreException {
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			throw new TopicMapStoreException("Cannot find driver class for PostGreSQL!", e);
-		}
-		this.host = host;
-		this.database = database;
-		this.user = user;
-		this.password = password;
-		/*
-		 * check if old processor is still alive
-		 */
-		if (processor != null) {
-			processor.close();
-		}
-		/*
-		 * check if old connection is established
-		 */
-		if (writerConnection != null && !writerConnection.isClosed()) {
-			writerConnection.close();
-		}
-		/*
-		 * initialize connection
-		 */
-		writerConnection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
-		/*
-		 * check if old connection is established
-		 */
-		if (readerConnection != null && !readerConnection.isClosed()) {
-			readerConnection.close();
-		}
-		/*
-		 * initialize connection
-		 */
-		readerConnection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + database, user, password);
-		metaData = readerConnection.getMetaData();
-		/*
-		 * create new processor
-		 */
-		processor = createProcessor(this, readerConnection, writerConnection);
-
-		int state = getDatabaseState();
-		switch (state) {
-		case STATE_DATABASE_IS_EMPTY: {
-			createSchema();
-		}
-			break;
-		case STATE_DATABASE_IS_VALID: {
-			// NOTHING TO DO
-		}
-			break;
-		case STATE_DATABASE_IS_INVALID:
-		default:
-			throw new TopicMapStoreException("Invalid database schema or unknown database state '" + state + "!");
-		}
-	}
-
-	/**
-	 * Abstract method to create a new query processor.
-	 * 
-	 * @param provider
-	 *            the calling provider instance
-	 * @param readerConnection
-	 *            the connection to read from database
-	 * @param writerConnetion
-	 *            the connection to modify database
-	 * @return the created query processor instance
-	 */
-	protected abstract Sql99QueryProcessor createProcessor(IConnectionProvider provider, Connection readerConnection,
-			Connection writerConnetion);
 
 	/**
 	 * {@inheritDoc}
@@ -290,8 +221,11 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	 * {@inheritDoc}
 	 */
 	public void createSchema() throws SQLException {
-		Statement stmt = writerConnection
-				.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		/*
+		 * execute query
+		 */
+		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
 		stmt.executeUpdate(getSchemaQuery());
 	}
 
@@ -377,11 +311,9 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	}
 
 	/**
-	 * Returns the internal JDBC connection to read from database
-	 * 
-	 * @return the readerConnection
+	 * {@inheritDoc}
 	 */
-	protected Connection getReaderConnection() {
-		return readerConnection;
+	public void close() throws SQLException {
+		getGlobalSession().close();
 	}
 }
