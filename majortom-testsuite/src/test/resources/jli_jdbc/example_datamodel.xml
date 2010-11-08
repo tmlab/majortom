@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datamodel
+	xmlns="http://www.topicmapslab.de/datamodel"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.topicmapslab.de/datamodel datamodel.xsd">
+
+
+	<topic-map base-locator="http://example.mapping.file/database/">
+	
+			<topic id="description">
+				<identifier type="SI">http://localhost/jli/description</identifier>
+				<name>Description</name>
+			</topic>
+	
+			<topic id="person">
+				<identifier type="SI">http://localhost/jli/person</identifier>
+				<name>Person</name>
+				<occurrence type="description">Type for persons in person table.</occurrence>
+			</topic>
+			
+			<topic id="date-of-birth">
+				<identifier type="SI">http://localhost/jli/date-of-birth</identifier>
+				<name>Date of Birth</name>
+			</topic>
+			
+	</topic-map>
+</datamodel>

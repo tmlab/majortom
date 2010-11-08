@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>majortom-parent</artifactId>
+		<groupId>de.topicmapslab.majortom</groupId>
+		<version>1.1.4-SNAPSHOT</version>
+	</parent>	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.topicmapslab.majortom</groupId>
+	<artifactId>majortom-testsuite</artifactId>
+	<name>MaJorTom Testsuite</name>
+	<version>${project.parent.version}</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>tml</id>
+			<url>http://maven.topicmapslab.de/public</url>
+		</repository>
+		<repository>
+			<id>org.tmapi.snapshot</id>
+			<url>http://www.tmapi.org/maven-repository/snapshots/</url>
+		</repository>
+		<repository>
+			<id>org.tmapi</id>
+			<url>http://www.tmapi.org/maven-repository/</url>
+		</repository>
+		<repository>
+			<id>Semagia Snapshot Repository</id>
+			<url>http://repository.semagia.com/snapshots/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.tmapi</groupId>
+			<artifactId>tmapi-tests</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId> junit </groupId>
+			<artifactId> junit </artifactId>
+			<version> 3.8.1 </version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tmapix</groupId>
+			<artifactId>tmapix-io</artifactId>
+			<version>1.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.tmapi</groupId>
+					<artifactId>tmapi</artifactId>
+				</exclusion>
+			</exclusions>
+			
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<!-- dependency>
+			<groupId>gnu.trove</groupId>
+			<artifactId>trove</artifactId>
+			<version>2.0.4</version>
+		</dependency-->
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>topicmapslab-public</id>
+			<name>Topic Maps Lab Repositiory</name>
+			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+		</repository>
+	</distributionManagement>
+</project>

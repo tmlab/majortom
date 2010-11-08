@@ -1,0 +1,4 @@
+include::architecture.txt[]
+include::usage.txt[]
+include::features.txt[]
+include::stores.txt[]

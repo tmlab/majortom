@@ -1,0 +1,14 @@
+== Architecture ==
+
+The MaJorToM engine is designed in a flexible and modular way. The core elements for data storage are independent from the accessing objects used by the upper application. This modular design enables the interchangeability of different Topic Maps stores without any adjustments of the real application. 
+
+=== The Information Objects ===
+
+The TMDM information items represented by the API objects do not store any knowledge or information. An information item are only represent by an object stub with a unique identity and the knowledge about its parent property (e.g. a name item knows its parent topic ). Any other information are encapsulated by the underlying topic map store and can be accessed by the object stubs using a atomic operation with a specific signature to tell the store about the information wanted. If such an object stub use an invalid signature, the request will be rejected by the store with an exception.
+
+=== The Topic Map Store ===
+
+Each Topic Map Store instance is bound to a specific topic map instance. The store provides a communication API to access the information stored in the real data store ( database, in-memory etc.). The data access is transparent for the calling object stubs and enables the interchangeability of topic map stores for an application without adjusting any lines of code. 
+
+The separation of information items and the real data store enables the implemenation of other Topic Map Stores without any effects for the core implemention of MaJorToM. At the moment MaJorToM provides a set of different Topic Map stores based on different data stores like RDBMS, ORDBMS or just in memory.
+
