@@ -18,20 +18,14 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.base;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
-import de.topicmapslab.majortom.database.jdbc.model.ISession;
-import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSConnectionProvider;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -40,8 +34,17 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public abstract class BasePostGreSqlConnectionProvider implements IConnectionProvider {
+@SuppressWarnings("unchecked")
+public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionProvider {
 
+	/**
+	 * constant for database name
+	 */
+	private static final String POSTGRESQL = "postgresql";
+	/**
+	 * constant for driver class
+	 */
+	private static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
 	protected static final Map<String, List<String>> schemaInformation = HashUtil.getHashMap();
 
 	static {
@@ -95,20 +98,6 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 				Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "id_reifier", "id_scope", "value",
 						"id_datatype" }));
 	}
-	/**
-	 * the meta data
-	 */
-	private DatabaseMetaData metaData;
-	private ISession globalSession;
-
-	/**
-	 * internal reference of the topic map store
-	 */
-	private JdbcTopicMapStore store;
-
-	private String user;
-	private String password;
-	private String url;
 
 	/**
 	 * constructor
@@ -119,122 +108,19 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 
 	/**
 	 * Constructor
+	 * 
 	 * @param host
 	 *            the host
-	 * @param database database
+	 * @param database
+	 *            database
 	 * @param user
 	 *            the user
 	 * @param password
 	 *            the password
 	 */
 	public BasePostGreSqlConnectionProvider(String host, String database, String user, String password) {
-		this.user = user;
-		this.password = password;
-		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
+		super(host, database, user, password);
 	}
-
-	/**
-	 * Returns the URL to the database
-	 * 
-	 * @return the URl
-	 */
-	protected String getUrl() {
-		return url;
-	}
-
-	/**
-	 * Returns the user database property
-	 * 
-	 * @return the user
-	 */
-	protected String getUser() {
-		return user;
-	}
-
-	/**
-	 * Returns the password database property
-	 * 
-	 * @return the passwords
-	 */
-	protected String getPassword() {
-		return password;
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	public void setTopicMapStore(JdbcTopicMapStore store) {
-		this.store = store;
-		/*
-		 * load connection properties from topic map system
-		 */
-		Object host = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
-		Object database = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
-		Object user = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
-		Object password = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
-		if (database == null || host == null || user == null) {
-			throw new TopicMapStoreException("Missing connection properties!");
-		}
-		/*
-		 * store connection properties
-		 */
-		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
-		this.user = user.toString();
-		this.password = password == null ? "" : password.toString();
-		globalSession = openSession();
-		try {
-			metaData = globalSession.getConnection().getMetaData();
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Cannot establish global session!", e);
-		}
-	}
-
-	/**
-	 * Returns the internal session of the connection provider
-	 * 
-	 * @return the internal session of the connection provider
-	 */
-	protected ISession getGlobalSession() {
-		return globalSession;
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	public JdbcTopicMapStore getTopicMapStore() {
-		return store;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException {
-		if (metaData == null) {
-			throw new TopicMapStoreException("Connection is not established!");
-		}
-		return metaData;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createSchema() throws SQLException {
-		/*
-		 * execute query
-		 */
-		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
-		stmt.executeUpdate(getSchemaQuery());
-	}
-
-	/**
-	 * Returns the SQL query to create the database schema.
-	 * 
-	 * @return the query
-	 */
-	protected abstract String getSchemaQuery();
 
 	/**
 	 * {@inheritDoc}
@@ -313,7 +199,14 @@ public abstract class BasePostGreSqlConnectionProvider implements IConnectionPro
 	/**
 	 * {@inheritDoc}
 	 */
-	public void close() throws SQLException {
-		getGlobalSession().close();
+	protected String getDriverClassName() {
+		return ORG_POSTGRESQL_DRIVER;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String getRdbmsName() {
+		return POSTGRESQL;
 	}
 }

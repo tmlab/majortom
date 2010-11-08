@@ -19,14 +19,11 @@
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
-import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99ConstraintsQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99DeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99DumpQueries;
@@ -35,6 +32,8 @@ import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99InsertQ
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99RevisionQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99SelectQueries;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.query.ISql99UpdateQueries;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSQueryBuilder;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -42,41 +41,14 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class Sql99QueryBuilder implements IQueryBuilder {
-
-	private ISession session;
+public class Sql99QueryBuilder extends RDBMSQueryBuilder {
 
 	/**
 	 * @param provider
-	 *            the MaJorToM connection provider
+	 *            the MaJorToM connection session
 	 */
-	public <T extends ISession> Sql99QueryBuilder(T session) {
-		this.session = session;
-	}
-
-	/**
-	 * @return the processor
-	 */
-	public Sql99QueryProcessor getProcessor() {
-		return session.getProcessor();
-	}
-
-	/**
-	 * Returns the internal session
-	 * 
-	 * @return the session
-	 */
-	public SQL99Session getSession() {
-		return (SQL99Session) session;
-	}
-
-	/**
-	 * Returns the connection of the connection provider to modify database
-	 * 
-	 * @return the connection
-	 */
-	protected Connection getConnection() {
-		return getProcessor().getConnection();
+	public <T extends RDBMSSession> Sql99QueryBuilder(T session) {
+		super(session);
 	}
 
 	/**
@@ -95,7 +67,7 @@ public class Sql99QueryBuilder implements IQueryBuilder {
 			}
 		} catch (Exception e) {
 			throw new TopicMapStoreException("Cannot close prepared statements!", e);
-		}
+		}		
 	}
 
 	private PreparedStatement preparedStatementReadTopicMapLocators;

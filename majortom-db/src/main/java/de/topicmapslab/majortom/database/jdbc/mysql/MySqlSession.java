@@ -13,61 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/**
- * 
- */
 package de.topicmapslab.majortom.database.jdbc.mysql;
 
-import java.io.InputStream;
-import java.util.Scanner;
+import java.sql.Connection;
 
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
- * Special connection provider for PostGreSQL.
- * 
  * @author Sven Krosse
  * 
  */
-public class MySqlConnectionProvider extends RDBMSConnectionProvider {
+public class MySqlSession extends RDBMSSession {
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor
+	 * 
+	 * @param connectionProvider
+	 *            the parent connection provider
+	 * @param url
+	 *            the database URL
+	 * @param user
+	 *            the user database property
+	 * @param password
+	 *            the password database property
 	 */
-	protected String getDriverClassName() {
-		return "com.mysql.jdbc.Driver";
+	public MySqlSession(RDBMSConnectionProvider connectionProvider, String url, String user, String password) {
+		super(connectionProvider, url, user, password);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String getRdbmsName() {
-		return "mysql";
+	protected MySqlQueryProcessor createProcessor(Connection connection) throws TopicMapStoreException {
+		return new MySqlQueryProcessor(this, connection);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public MySqlSession openSession() {
-		return new MySqlSession(this, getUrl(), getUser(), getPassword());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected String getSchemaQuery() {
-		InputStream is = getClass().getResourceAsStream("script.sql");
-		if (is == null) {
-			throw new TopicMapStoreException("Cannot load database schema!");
-		}
-		StringBuffer buffer = new StringBuffer();
-		Scanner scanner = new Scanner(is);
-		while (scanner.hasNextLine()) {
-			buffer.append(scanner.nextLine() + "\r\n");
-		}
-		scanner.close();
-		return buffer.toString();
-	}
 }

@@ -17,14 +17,14 @@ package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
 import java.sql.Connection;
 
-import de.topicmapslab.majortom.database.jdbc.core.SessionImpl;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
  * @author Sven Krosse
  * 
  */
-public class SQL99Session extends SessionImpl {
+public class SQL99Session extends RDBMSSession {
 
 	/**
 	 * Constructor
@@ -45,7 +45,6 @@ public class SQL99Session extends SessionImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	protected Sql99QueryProcessor createProcessor(Connection connection) throws TopicMapStoreException {
 		return new Sql99QueryProcessor(this, connection);
 	}
