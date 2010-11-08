@@ -1220,6 +1220,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 		PreparedStatement stmt = queryBuilder.getQueryReadConstructById();
 		stmt.setLong(1, id);
+		stmt.setLong(2, id);
+		stmt.setLong(3, id);
+		stmt.setLong(4, id);
+		stmt.setLong(5, id);
+		stmt.setLong(6, id);
+		stmt.setLong(7, id);
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
 		if (c.isEmpty()) {
 			if (lookupHistory) {

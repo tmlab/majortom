@@ -171,8 +171,7 @@ public interface ISelectQueries {
 		public static String QUERY_READ_ASSOCIATIONS_WITH_SCOPE = "SELECT id FROM associations WHERE id_topicmap = ? AND id_scope = ? ";
 
 		/**
-		 * Query to read all associations of a specific type and within a
-		 * specific scope
+		 * Query to read all associations of a specific type and within a specific scope
 		 * <p>
 		 * <b>parameters(3):</b> topic map id, type id, scope id
 		 * </p>
@@ -203,8 +202,7 @@ public interface ISelectQueries {
 		public static String QUERY_READ_PLAYED_ASSOCIATIONS_WITH_SCOPE = "SELECT DISTINCT a.id FROM associations AS a, roles AS r WHERE a.id_topicmap = ? AND r.id_player = ? AND r.id_parent = a.id AND a.id_scope = ?";
 
 		/**
-		 * Query to read all played associations of a specific type and within a
-		 * specific scope
+		 * Query to read all played associations of a specific type and within a specific scope
 		 * <p>
 		 * <b>parameters(4):</b> topic map id, player id, type id, scope id
 		 * </p>
@@ -222,18 +220,19 @@ public interface ISelectQueries {
 		 * <b>parameters(1):</b> the construct id
 		 * </p>
 		 */
-		public static String QUERY_READ_CONSTRUCT = "WITH iis AS ( SELECT id FROM constructs WHERE id = ? )"
-				+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id FROM iis ) "
+		public static String QUERY_READ_CONSTRUCT = "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM iis ) "
+				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id  = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM iis ) "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id  = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM iis ) "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id  = ? "
 				+ "UNION "
-				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM iis ) AND v.id_parent = n.id "
-				+ "UNION " + "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM iis ) " + "UNION "
-				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM iis );";
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id  = ? AND v.id_parent = n.id "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id  = ? "
+				+ "UNION "
+				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id  = ?;";
 
 		/**
 		 * query to read a construct by item-identifier
@@ -426,12 +425,16 @@ public interface ISelectQueries {
 		 * <b>parameters(1):</b> the reifier id
 		 * </p>
 		 */
-		public static final String QUERY_READ_REIFIED = "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_reifier = ? " + "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_reifier = ? " + "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id_reifier = ? " + "UNION "
-				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id_reifier = ? AND v.id_parent = n.id " + "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id_reifier = ? " + "UNION "
-				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id_reifier = ?;";
+		public static final String QUERY_READ_REIFIED = "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_reifier = ? "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_reifier = ? "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id_reifier = ? "
+				+ "UNION "
+				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id_reifier = ? AND v.id_parent = n.id "
+				+ "UNION "
+				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id_reifier = ? "
+				+ "UNION " + "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id_reifier = ?;";
 
 		// **************
 		// * READ ROLES *
@@ -631,11 +634,30 @@ public interface ISelectQueries {
 		/**
 		 * Query to read the scope object by a collection of themes
 		 * <p>
-		 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching
-		 * all, boolean flag exact match, topic map id
+		 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map
+		 * id
 		 * </p>
 		 */
-		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ?;";//; AND ? IN ( SELECT COUNT(*) FROM rel_themes WHERE id_scope = r.id_scope GROUP BY id_scope );";// "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";
+		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ?;";// ;
+																																	// AND
+																																	// ?
+																																	// IN
+																																	// (
+																																	// SELECT
+																																	// COUNT(*)
+																																	// FROM
+																																	// rel_themes
+																																	// WHERE
+																																	// id_scope
+																																	// =
+																																	// r.id_scope
+																																	// GROUP
+																																	// BY
+																																	// id_scope
+																																	// );";// "SELECT
+																																	// unnest(scope_by_themes(?,?,?,?))
+																																	// AS
+																																	// id;";
 
 		public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_topicmap = ?";
 

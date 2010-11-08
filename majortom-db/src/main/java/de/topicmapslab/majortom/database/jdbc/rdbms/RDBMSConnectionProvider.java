@@ -87,7 +87,7 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	public RDBMSConnectionProvider(String host, String database, String user, String password) {
 		this.user = user;
 		this.password = password;
-		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
+		this.url = "jdbc:" + getRdbmsName() +"://" + host.toString() + "/" + database.toString();
 	}
 
 	/**
