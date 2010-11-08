@@ -15,12 +15,15 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.util;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +37,9 @@ import java.util.WeakHashMap;
  */
 public class HashUtil {
 
+	private static int CAPACITY = 16;
+	private static float LOAD_FACTORY = .75F;
+
 	/**
 	 * the found class used as {@link Set} implementation
 	 */
@@ -41,7 +47,7 @@ public class HashUtil {
 	/**
 	 * the found class used as {@link Map} implementation
 	 */
-	private static Class<?> mapClass = HashMap.class;
+	private static Class<?> mapClass = HashMap.class; 
 
 	/**
 	 * hidden constructor
@@ -55,16 +61,40 @@ public class HashUtil {
 	 * 
 	 * @param <T>
 	 *            the type of elements
+	 * @param capacity
+	 *            the initial capacity
+	 * @return the created set
+	 */
+	public static <T> Set<T> getHashSet(int capacity) {
+		return new HashSet<T>(capacity);
+	}
+
+	/**
+	 * Method try to initialize a gnu.trove.THashSet if the library is located in the class path
+	 * 
+	 * @param <T>
+	 *            the type of elements
 	 * @return the created set
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Set<T> getHashSet() {
+
+		try {
+			Constructor<?> constructor = getSetClass().getConstructor(int.class, float.class);
+			return (Set<T>) constructor.newInstance(CAPACITY, LOAD_FACTORY);
+		} catch (SecurityException e1) {
+		} catch (NoSuchMethodException e1) {
+		} catch (IllegalArgumentException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
 		try {
 			return (Set<T>) getSetClass().newInstance();
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
-		return new HashSet<T>();
+		return new HashSet<T>(CAPACITY, LOAD_FACTORY);
 	}
 
 	/**
@@ -82,6 +112,18 @@ public class HashUtil {
 			return getHashSet();
 		}
 		try {
+			Constructor<?> constructor = getSetClass().getConstructor(int.class, float.class);
+			Set<T> set = (Set<T>) constructor.newInstance(CAPACITY, LOAD_FACTORY);
+			set.addAll(initial);
+			return set;
+		} catch (SecurityException e1) {
+		} catch (NoSuchMethodException e1) {
+		} catch (IllegalArgumentException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+		try {
 			return (Set<T>) getSetClass().getConstructor(Collection.class).newInstance(initial);
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
@@ -90,7 +132,9 @@ public class HashUtil {
 		} catch (InvocationTargetException e) {
 		} catch (NoSuchMethodException e) {
 		}
-		return new HashSet<T>(initial);
+		Set<T> set = new HashSet<T>(CAPACITY, LOAD_FACTORY);
+		set.addAll(initial);
+		return set;
 	}
 
 	/**
@@ -121,16 +165,41 @@ public class HashUtil {
 	 *            the key type
 	 * @param <V>
 	 *            the value type
+	 * @param capacity
+	 *            the initial capacity	
+	 * @return the created map
+	 */
+	public static <K, V> Map<K, V> getHashMap(int capacity) {
+		return new HashMap<K, V>(capacity, LOAD_FACTORY);
+	}
+	/**
+	 * Method try to initialize a gnu.trove.THashMap if the library is located in the class path
+	 * 
+	 * @param <K>
+	 *            the key type
+	 * @param <V>
+	 *            the value type
 	 * @return the created map
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V> Map<K, V> getHashMap() {
 		try {
+			Constructor<?> constructor = getMapClass().getConstructor(int.class, float.class);
+			Map<K, V> map = (Map<K, V>) constructor.newInstance(CAPACITY, LOAD_FACTORY);
+			return map;
+		} catch (SecurityException e1) {
+		} catch (NoSuchMethodException e1) {
+		} catch (IllegalArgumentException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+		try {
 			return (Map<K, V>) getMapClass().newInstance();
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
-		return new HashMap<K, V>();
+		return new HashMap<K, V>(CAPACITY, LOAD_FACTORY);
 	}
 
 	/**
@@ -150,6 +219,18 @@ public class HashUtil {
 			return getHashMap();
 		}
 		try {
+			Constructor<?> constructor = getMapClass().getConstructor(int.class, float.class);
+			Map<K, V> map = (Map<K, V>) constructor.newInstance(CAPACITY, LOAD_FACTORY);
+			map.putAll(initial);
+			return map;
+		} catch (SecurityException e1) {
+		} catch (NoSuchMethodException e1) {
+		} catch (IllegalArgumentException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+		try {
 			return (Map<K, V>) getMapClass().getConstructor(Map.class).newInstance(initial);
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
@@ -158,7 +239,9 @@ public class HashUtil {
 		} catch (InvocationTargetException e) {
 		} catch (NoSuchMethodException e) {
 		}
-		return new HashMap<K, V>(initial);
+		Map<K, V> map = new HashMap<K, V>(CAPACITY, LOAD_FACTORY);
+		map.putAll(initial);
+		return map;
 	}
 
 	/**
@@ -277,7 +360,7 @@ public class HashUtil {
 	 * @param clazz
 	 *            the class
 	 */
-	public synchronized static <T extends Set<?>>void overwriteSetImplementationClass(Class<T> clazz) {
+	public synchronized static <T extends Set<?>> void overwriteSetImplementationClass(Class<T> clazz) {
 		setClass = clazz;
 	}
 
@@ -287,7 +370,7 @@ public class HashUtil {
 	 * @param clazz
 	 *            the class
 	 */
-	public synchronized static <T extends Map<?,?>> void overwriteMapImplementationClass(Class<T> clazz) {
+	public synchronized static <T extends Map<?, ?>> void overwriteMapImplementationClass(Class<T> clazz) {
 		mapClass = clazz;
 	}
 

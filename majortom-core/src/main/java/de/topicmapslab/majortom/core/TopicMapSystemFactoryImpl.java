@@ -34,6 +34,7 @@ import org.tmapi.core.TopicMapSystemFactory;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
+import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -104,10 +105,13 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 * {@inheritDoc}
 	 */
 	public TopicMapSystem newTopicMapSystem() throws TMAPIException {
+		final Object classname = getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS);
 		ServiceLoader<ITopicMapSystem> loader = ServiceLoader.load(ITopicMapSystem.class);
 		for (ITopicMapSystem system : loader) {
-			system.setFactory(this);
-			return system;
+			if ( classname == null || classname.equals(system.getHandledClass().getName())){
+				system.setFactory(this);			
+				return system;
+			}
 		}
 		return new TopicMapSystemImpl(this);
 	}
@@ -129,8 +133,8 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setProperty(String arg0, Object arg1) {
-		properties.put(arg0, arg1);
+	public void setProperty(String key, Object value) {
+		properties.put(key, value);
 	}
 
 	/**
