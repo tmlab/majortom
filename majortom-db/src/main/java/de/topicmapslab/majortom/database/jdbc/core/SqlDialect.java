@@ -30,6 +30,10 @@ public enum SqlDialect {
 	
 	POSTGRESQL99,
 	
-	MYSQL
+	MYSQL,
+	
+	MONET_DB, 
+	
+	HSQLDB
 
 }
