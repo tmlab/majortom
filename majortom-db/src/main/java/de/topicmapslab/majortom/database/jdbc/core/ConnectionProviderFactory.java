@@ -20,7 +20,9 @@ package de.topicmapslab.majortom.database.jdbc.core;
 
 import java.util.Map;
 
+import de.topicmapslab.majortom.database.jdbc.hsqldb.HSQLDBConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.monetdb.MonetDBConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.mysql.MySqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.PostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99ConnectionProvider;
@@ -51,6 +53,8 @@ public class ConnectionProviderFactory {
 		protocols.put(SqlDialect.POSTGRESQL99.name(), Sql99ConnectionProvider.class);
 		protocols.put(SqlDialect.MYSQL.name(), MySqlConnectionProvider.class);
 		protocols.put(SqlDialect.RDBMS.name(), RDBMSConnectionProvider.class);
+		protocols.put(SqlDialect.MONET_DB.name(), MonetDBConnectionProvider.class);
+		protocols.put(SqlDialect.HSQLDB.name(), HSQLDBConnectionProvider.class);
 	}
 
 	/**
