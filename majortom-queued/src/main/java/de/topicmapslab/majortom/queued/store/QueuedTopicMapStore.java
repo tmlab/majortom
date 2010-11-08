@@ -100,9 +100,9 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 */
 	public void connect() throws TopicMapStoreException {
 		super.connect();
-		jdbcTopicMapStore.initialize(getBaseLocator());
+		jdbcTopicMapStore.initialize(getTopicMapBaseLocator());
 		jdbcTopicMapStore.connect();
-		inMemoryTopicMapStore.initialize(getBaseLocator());
+		inMemoryTopicMapStore.initialize(getTopicMapBaseLocator());
 		inMemoryTopicMapStore.connect();
 		/*
 		 * initialize queue
