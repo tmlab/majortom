@@ -84,13 +84,11 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
-		if (isReadOnly() && paramType != TopicMapStoreParameterType.LOCATOR
-				&& paramType != TopicMapStoreParameterType.SCOPE) {
+		if (isReadOnly() && paramType != TopicMapStoreParameterType.LOCATOR && paramType != TopicMapStoreParameterType.SCOPE) {
 			throw new UnmodifyableStoreException("Creation not supported by read-only stores!");
 		}
 		((TopicMapStoreMetaDataImpl) getMetaData()).setModificationTime();
@@ -172,18 +170,14 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				/*
 				 * createName(ITopic,String, ITopic[])
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof Topic[]) {
-					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1],
-							convert((Topic[]) params[2]));
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
+					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
 				}
 				/*
 				 * createName(ITopic,String, Collection<ITopic>)
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof Collection<?>) {
-					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1],
-							(Collection<ITopic>) params[2]);
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
+					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
 				}
 			}
 			throw new OperationSignatureException(context, paramType, params);
@@ -205,58 +199,46 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				/*
 				 * createOccurrence(ITopic,String, ILocator)
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof ILocator) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1],
-							(ILocator) params[2]);
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2]);
 				}
 				/*
 				 * createOccurrence(ITopic,String, ITopic[])
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1],
-							convert((Topic[]) params[2]));
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
 				}
 				/*
 				 * createOccurrence(ITopic,String, Collection<?>)
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1],
-							(Collection<ITopic>) params[2]);
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
 				}
 				/*
 				 * createOccurrence(ITopic,Locator, ITopic[])
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator
-						&& params[2] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1],
-							convert((Topic[]) params[2]));
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
 				}
 				/*
 				 * createOccurrence(ITopic,Locator, Collection<?>)
 				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator
-						&& params[2] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1],
-							(Collection<ITopic>) params[2]);
+				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
 				}
 				/*
 				 * createOccurrence(ITopic, String, ILocator, ITopic[])
 				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof ILocator && params[3] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1],
-							(ILocator) params[2], convert((Topic[]) params[3]));
+				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
+						&& params[3] instanceof Topic[]) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], convert((Topic[]) params[3]));
 				}
 				/*
 				 * createOccurrence(ITopic,String, ILocator, Collection<?>)
 				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String
-						&& params[2] instanceof ILocator && params[3] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1],
-							(ILocator) params[2], (Collection<ITopic>) params[3]);
+				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
+						&& params[3] instanceof Collection<?>) {
+					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], (Collection<ITopic>) params[3]);
 				}
 			}
 			throw new OperationSignatureException(context, paramType, params);
@@ -290,32 +272,35 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				/*
 				 * createVariant(String, ILocator,ITopic[])
 				 */
-				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator
-						&& params[2] instanceof Topic[]) {
-					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1],
-							convert((Topic[]) params[2]));
+				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
+					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
 				}
 				/*
 				 * createVariant(String, ILocator,Collection<?>)
 				 */
-				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator
-						&& params[2] instanceof Collection<?>) {
-					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1],
-							(Collection<ITopic>) params[2]);
+				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
+					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
 				}
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
 		case ROLE: {
-			if (context instanceof IAssociation && params.length == 2 && params[0] instanceof ITopic
-					&& params[1] instanceof ITopic) {
+			if (context instanceof IAssociation && params.length == 2 && params[0] instanceof ITopic && params[1] instanceof ITopic) {
 				return doCreateRole((IAssociation) context, (ITopic) params[0], (ITopic) params[1]);
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
 		case TOPIC: {
 			if (context instanceof ITopicMap) {
-				return doCreateTopicByItemIdentifier((ITopicMap) context, doCreateItemIdentifier((ITopicMap) context));
+				long time = System.currentTimeMillis();
+				ILocator ii = doCreateItemIdentifier((ITopicMap) context);
+				if (OUTPUT)
+					System.out.println("doCreateItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
+				time = System.currentTimeMillis();
+				ITopic topic = doCreateTopicByItemIdentifier((ITopicMap) context, ii);
+				if (OUTPUT)
+					System.out.println("doCreateTopicByItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
+				return topic;
 			}
 			throw new OperationSignatureException(context, paramType, params);
 		}
@@ -364,8 +349,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
@@ -393,8 +377,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IName doCreateName(ITopic topic, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new name characteristics item.
@@ -426,8 +409,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
@@ -442,42 +424,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value)
-			throws TopicMapStoreException;
-
-	/**
-	 * Create a new occurrence characteristics item.
-	 * 
-	 * @param topic
-	 *            the parent topic
-	 * @param type
-	 *            the type
-	 * @param value
-	 *            the characteristics value
-	 * @param themes
-	 *            the scoping themes
-	 * @return the created construct
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException;
-
-	/**
-	 * Create a new occurrence characteristics item.
-	 * 
-	 * @param topic
-	 *            the parent topic
-	 * @param type
-	 *            the type
-	 * @param value
-	 *            the characteristics value
-	 * @return the created construct
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value)
-			throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
@@ -494,8 +441,39 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value,
-			Collection<ITopic> themes) throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException;
+
+	/**
+	 * Create a new occurrence characteristics item.
+	 * 
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException;
+
+	/**
+	 * Create a new occurrence characteristics item.
+	 * 
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
@@ -512,8 +490,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype)
-			throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws TopicMapStoreException;
 
 	/**
 	 * Create a new occurrence characteristics item.
@@ -532,8 +509,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype,
-			Collection<ITopic> themes) throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
+			throws TopicMapStoreException;
 
 	/**
 	 * Create a new association role item.
@@ -548,8 +525,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player)
-			throws TopicMapStoreException;
+	protected abstract IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item without any identifier.
@@ -573,8 +549,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier)
-			throws TopicMapStoreException;
+	protected abstract ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
@@ -587,8 +562,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier)
-			throws TopicMapStoreException;
+	protected abstract ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Create a new topic item.
@@ -601,8 +575,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator)
-			throws TopicMapStoreException;
+	protected abstract ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
@@ -617,8 +590,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
@@ -633,8 +605,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new variant for the given name.
@@ -651,8 +622,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	// *********************
 	// * MODIFY OPERATIONS *
@@ -661,8 +631,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -745,8 +714,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		case TAG: {
 			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
 				doModifyTag((ITopicMap) context, (String) params[0]);
-			} else if (context instanceof ITopicMap && params.length == 2 && params[0] instanceof String
-					&& params[1] instanceof Calendar) {
+			} else if (context instanceof ITopicMap && params.length == 2 && params[0] instanceof String && params[1] instanceof Calendar) {
 				doModifyTag((ITopicMap) context, (String) params[0], (Calendar) params[1]);
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -770,8 +738,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				doModifyValue((IDatatypeAware) context, (String) params[0]);
 			} else if (context instanceof IDatatypeAware && params.length == 1) {
 				doModifyValue((IDatatypeAware) context, params[0]);
-			} else if (context instanceof IDatatypeAware && params.length == 2 && params[0] instanceof String
-					&& params[1] instanceof ILocator) {
+			} else if (context instanceof IDatatypeAware && params.length == 2 && params[0] instanceof String && params[1] instanceof ILocator) {
 				doModifyValue((IDatatypeAware) context, (String) params[0], (ILocator) params[1]);
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -779,8 +746,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		}
 			break;
 		case META_DATA: {
-			if (context == null && params.length == 3 && params[0] instanceof IRevision && params[1] instanceof String
-					&& params[2] instanceof String) {
+			if (context == null && params.length == 3 && params[0] instanceof IRevision && params[1] instanceof String && params[2] instanceof String) {
 				doModifyMetaData((IRevision) params[0], params[1].toString(), params[2].toString());
 			} else {
 				throw new OperationSignatureException(context, paramType, params);
@@ -828,14 +794,12 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				/*
 				 * automatic merging disabled
 				 */
-				throw new IdentityConstraintException(c, other, identifier,
-						"Item-Identifier in use but automatic merging is disabled!");
+				throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but automatic merging is disabled!");
 			} else if (other != null) {
 				/*
 				 * item-identifier in use
 				 */
-				throw new IdentityConstraintException(c, other, identifier,
-						"Item-Identifier in use but construct is not a topic!");
+				throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but construct is not a topic!");
 			}
 
 			ITopic t = doReadTopicBySubjectIdentifier(getTopicMap(), identifier);
@@ -853,8 +817,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 				/*
 				 * automatic merging disabled
 				 */
-				throw new IdentityConstraintException(c, other, identifier,
-						"Identifier is used as subject-identifier but automatic merging is disabled!");
+				throw new IdentityConstraintException(c, other, identifier, "Identifier is used as subject-identifier but automatic merging is disabled!");
 			}
 			/*
 			 * modification is allowed
@@ -868,8 +831,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 			/*
 			 * item-identifier in use
 			 */
-			throw new IdentityConstraintException(c, other, identifier,
-					"Item-Identifier in use but construct is not a topic!");
+			throw new IdentityConstraintException(c, other, identifier, "Item-Identifier in use but construct is not a topic!");
 		}
 		/*
 		 * modification is allowed
@@ -911,8 +873,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws ModelConstraintException
 	 *             thrown if constraint check fails
 	 */
-	protected void checkReificationConstraintBeforeModification(IReifiable r, ITopic reifier)
-			throws ModelConstraintException {
+	protected void checkReificationConstraintBeforeModification(IReifiable r, ITopic reifier) throws ModelConstraintException {
 		/*
 		 * check only if new reifier is not null
 		 */
@@ -959,8 +920,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if merging fails
 	 */
-	protected ITopic checkMergeConditionOfSubjectIdentifier(ITopic t, ILocator identifier)
-			throws TopicMapStoreException {
+	protected ITopic checkMergeConditionOfSubjectIdentifier(ITopic t, ILocator identifier) throws TopicMapStoreException {
 		/*
 		 * check if there is topic with the identifier as subject-identifier
 		 */
@@ -985,8 +945,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 			/*
 			 * automatic merging disabled
 			 */
-			throw new IdentityConstraintException(t, other, identifier,
-					"Subject-Identifier in use but automatic merging is disabled!");
+			throw new IdentityConstraintException(t, other, identifier, "Subject-Identifier in use but automatic merging is disabled!");
 		}
 		/*
 		 * check if there is construct with the identifier as item-identifier
@@ -1012,8 +971,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 			/*
 			 * automatic merging disabled
 			 */
-			throw new IdentityConstraintException(t, c, identifier,
-					"Item-Identifier in use but automatic merging is disabled!");
+			throw new IdentityConstraintException(t, c, identifier, "Item-Identifier in use but automatic merging is disabled!");
 		}
 		/*
 		 * modification is allowed
@@ -1031,8 +989,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier)
-			throws TopicMapStoreException;
+	protected abstract void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Method checks if there is another with the subject-locator
@@ -1067,8 +1024,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		 * automatic merging disabled
 		 */
 		else if (other != null) {
-			throw new IdentityConstraintException(t, other, identifier,
-					"Subject-locator in use but automatic merging is disabled!");
+			throw new IdentityConstraintException(t, other, identifier, "Subject-locator in use but automatic merging is disabled!");
 		}
 		/*
 		 * modification is allowed
@@ -1184,8 +1140,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract void doModifyValue(IDatatypeAware t, String value, ILocator datatype)
-			throws TopicMapStoreException;
+	protected abstract void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws TopicMapStoreException;
 
 	/**
 	 * Modify the value and the data type of the given data-type-aware.
@@ -1211,8 +1166,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract void doModifyMetaData(IRevision revision, final String key, final String value)
-			throws TopicMapStoreException;
+	protected abstract void doModifyMetaData(IRevision revision, final String key, final String value) throws TopicMapStoreException;
 
 	// ********************
 	// * MERGE OPERATIONS *
@@ -1302,8 +1256,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -1386,8 +1339,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier)
-			throws TopicMapStoreException;
+	protected abstract void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Remove the subject-locator from the given topic.
@@ -1493,8 +1445,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @return <code>true</code> if the topic is used as type, reifier etc. , <code>false</code> otherwise.
 	 */
 	protected boolean isTopicInUse(final ITopic topic) {
-		if (isTopicUsedAsPlayer(topic) || isTopicUsedAsTheme(topic) || isTopicUsedAsType(topic)
-				|| isTopicUsedAsSupertype(topic) || isTopicUsedAsReifier(topic)) {
+		if (isTopicUsedAsPlayer(topic) || isTopicUsedAsTheme(topic) || isTopicUsedAsType(topic) || isTopicUsedAsSupertype(topic) || isTopicUsedAsReifier(topic)) {
 			return true;
 		}
 		return false;
@@ -1625,8 +1576,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if the topic is used as reifier and reification is restricted for deletion,
-	 *         <code>false</code> otherwise
+	 * @return <code>true</code> if the topic is used as reifier and reification is restricted for deletion, <code>false</code> otherwise
 	 */
 	protected boolean isTopicUsedAsReifier(final ITopic topic) {
 		/*
@@ -1680,8 +1630,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *            flag indicates if the dependent construct should removed too
 	 * @throws TopicMapStoreException
 	 */
-	protected abstract void doRemoveAssociation(IAssociation association, boolean cascade)
-			throws TopicMapStoreException;
+	protected abstract void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException;
 
 	/**
 	 * Remove the association role.
@@ -1727,8 +1676,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	// *******************
 
 	/**
-	 * Create the specific association of the topic maps data model representing a type-instance relation between the
-	 * given topics.
+	 * Create the specific association of the topic maps data model representing a type-instance relation between the given topics.
 	 * 
 	 * @param instance
 	 *            the instance
@@ -1742,8 +1690,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	}
 
 	/**
-	 * Create the specific association of the topic maps data model representing a supertype-subtype relation between
-	 * the given topics.
+	 * Create the specific association of the topic maps data model representing a supertype-subtype relation between the given topics.
 	 * 
 	 * @param type
 	 *            the type
@@ -1766,14 +1713,12 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision)
-			throws TopicMapStoreException {
+	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
 		for (IAssociation association : associations) {
 			try {
 				if (association.getRoles(getTmdmSubtypeRoleType()).iterator().next().getPlayer().equals(type)
-						&& association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer()
-								.equals(supertype)) {
+						&& association.getRoles(getTmdmSupertypeRoleType()).iterator().next().getPlayer().equals(supertype)) {
 					doRemoveAssociation(association, false);
 					break;
 				}
@@ -1794,8 +1739,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision)
-			throws TopicMapStoreException {
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		for (IAssociation association : associations) {
 			try {
@@ -2022,8 +1966,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @param oldValue
 	 *            the old value before change
 	 */
-	public abstract void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context,
-			Object newValue, Object oldValue);
+	public abstract void storeRevision(final IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue);
 
 	/**
 	 * Store a change set for the given revision. The change set will be created by the given arguments.

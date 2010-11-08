@@ -45,7 +45,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	 * @param reference
 	 *            the reference
 	 */
-	public LocatorImpl(final String reference) throws MalformedIRIException {
+	public LocatorImpl(String reference) throws MalformedIRIException {
 		this(reference, UUID.randomUUID().toString());
 	}
 
