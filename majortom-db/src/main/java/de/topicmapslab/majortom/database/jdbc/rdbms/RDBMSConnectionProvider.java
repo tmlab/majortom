@@ -19,16 +19,16 @@
 package de.topicmapslab.majortom.database.jdbc.rdbms;
 
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
+import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 
 /**
@@ -37,29 +37,34 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  * @author Sven Krosse
  * 
  */
-public class RDBMSConnectionProvider implements IConnectionProvider {
+public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 
-	/**
-	 * the JDBC connection to modify database
-	 */
-	private Connection writerConnection;
-	/**
-	 * the JDBC connection to read from database
-	 */
-	private Connection readerConnection;
 	/**
 	 * the meta data
 	 */
 	private DatabaseMetaData metaData;
-	/**
-	 * the internal query processor
-	 */
-	private RDBMSQueryProcessor processor;
 
 	/**
 	 * internal reference of the topic map store
 	 */
 	private JdbcTopicMapStore store;
+
+	/**
+	 * the database user
+	 */
+	private String user;
+	/**
+	 * the database password
+	 */
+	private String password;
+	/**
+	 * the database URL
+	 */
+	private String url;
+	/**
+	 * the global session of the connection provider
+	 */
+	private ISession globalSession;
 
 	/**
 	 * constructor
@@ -68,14 +73,57 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	}
 
 	/**
+	 * Constructor
+	 * 
+	 * @param host
+	 *            the host
+	 * @param database
+	 *            database
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
+	 */
+	public RDBMSConnectionProvider(String host, String database, String user, String password) {
+		this.user = user;
+		this.password = password;
+		this.url = "jdbc:postgresql://" + host.toString() + "/" + database.toString();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public RDBMSQueryProcessor getProcessor() throws TopicMapStoreException {
-		if (processor == null) {
-			throw new TopicMapStoreException("Connection is not established!");
-		}
-		return processor;
+	public RDBMSSession openSession() {
+		return new RDBMSSession(this, getUrl(), getUser(), getPassword());
+	}
+
+	/**
+	 * Returns the URL to the database
+	 * 
+	 * @return the URl
+	 */
+	protected String getUrl() {
+		return url;
+	}
+
+	/**
+	 * Returns the user database property
+	 * 
+	 * @return the user
+	 */
+	protected String getUser() {
+		return user;
+	}
+
+	/**
+	 * Returns the password database property
+	 * 
+	 * @return the passwords
+	 */
+	protected String getPassword() {
+		return password;
 	}
 
 	/**
@@ -84,6 +132,29 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 */
 	public void setTopicMapStore(JdbcTopicMapStore store) {
 		this.store = store;
+
+		/*
+		 * load connection properties from topic map system
+		 */
+		Object host = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_HOST);
+		Object database = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
+		Object user = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
+		Object password = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
+		if (database == null || host == null || user == null) {
+			throw new TopicMapStoreException("Missing connection properties!");
+		}
+		/*
+		 * store connection properties
+		 */
+		this.url = "jdbc:" + getRdbmsName() + "://" + host.toString() + "/" + database.toString();
+		this.user = user.toString();
+		this.password = password == null ? "" : password.toString();
+		globalSession = openSession();
+		try {
+			metaData = globalSession.getConnection().getMetaData();
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Cannot establish global session!", e);
+		}
 	}
 
 	/**
@@ -97,19 +168,17 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void closeConnections() throws SQLException {
-		if (((readerConnection != null && !readerConnection.isClosed()))
-				|| (writerConnection != null && !writerConnection.isClosed())) {
-			processor.close();
-		}
-		if (readerConnection != null && !readerConnection.isClosed()) {
-			readerConnection.close();
-			readerConnection = null;
-		}
-		if (writerConnection != null && !writerConnection.isClosed()) {
-			writerConnection.close();
-			writerConnection = null;
-		}
+	public void close() throws SQLException {
+		getGlobalSession().close();
+	}
+
+	/**
+	 * Returns the internal session of the connection provider
+	 * 
+	 * @return the internal session of the connection provider
+	 */
+	protected ISession getGlobalSession() {
+		return globalSession;
 	}
 
 	/**
@@ -117,82 +186,20 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 * 
 	 * @return the name of the RDBMS
 	 */
-	protected String getRdbmsName() {
-		return "mysql";
-	}
-	
+	protected abstract String getRdbmsName();
+
 	/**
 	 * Returning the name of the used driver class
 	 * 
 	 * @return the name of the used driver class
 	 */
-	protected String getDriverClassName() {
-		return "com.mysql.jdbc.Driver";
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void openConnections(String host, String database, String user,
-			String password) throws SQLException, TopicMapStoreException {
-		try {
-			Class.forName(getDriverClassName());
-		} catch (ClassNotFoundException e) {
-			throw new TopicMapStoreException("Cannot find driver class for "
-					+ getRdbmsName() + "!", e);
-		}		
-		if (writerConnection == null || writerConnection.isClosed()) {
-			writerConnection = DriverManager.getConnection("jdbc:postgresql://"
-					+ host + "/" + database, user, password);
-		}
-		if (readerConnection == null || readerConnection.isClosed()) {
-			readerConnection = DriverManager.getConnection("jdbc:postgresql://"
-					+ host + "/" + database, user, password);
-		}
-		if (metaData == null) {
-			metaData = readerConnection.getMetaData();
-		}
-		if (processor == null) {
-			processor = createProcessor(this, readerConnection, writerConnection);
-		}
-		int state = getDatabaseState();
-		switch (state) {
-		case STATE_DATABASE_IS_EMPTY: {
-			createSchema();
-		}
-			break;
-		case STATE_DATABASE_IS_VALID: {
-			// NOTHING TO DO
-		}
-			break;
-		case STATE_DATABASE_IS_INVALID:
-		default:
-			throw new TopicMapStoreException(
-					"Invalid database schema or unknown database state '"
-							+ state + "!");
-		}
-	}
-
-	/**
-	 * Abstract method to create a new query processor.
-	 * 
-	 * @param provider
-	 *            the calling provider instance
-	 * @param connection
-	 *            the connection
-	 * @return the created query processor instance
-	 */
-	protected RDBMSQueryProcessor createProcessor(
-			RDBMSConnectionProvider provider, Connection readerConnection,
-			Connection writerConnetion) {
-		return new RDBMSQueryProcessor(provider, readerConnection, writerConnetion);
-	}
+	protected abstract String getDriverClassName();
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException {
-		if (readerConnection == null) {
+		if (metaData == null) {
 			throw new TopicMapStoreException("Connection is not established!");
 		}
 		return metaData;
@@ -202,8 +209,8 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	public void createSchema() throws SQLException {
-		Statement stmt = writerConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
 		stmt.executeUpdate(getSchemaQuery());
 	}
 
@@ -234,8 +241,7 @@ public class RDBMSConnectionProvider implements IConnectionProvider {
 		/*
 		 * extract all tables
 		 */
-		ResultSet rs = getDatabaseMetaData().getTables(null, null, null,
-				new String[] { "TABLE" });
+		ResultSet rs = getDatabaseMetaData().getTables(null, null, null, new String[] { "TABLE" });
 		rs.beforeFirst();
 		/*
 		 * check if each table of the database is valid for the given schema

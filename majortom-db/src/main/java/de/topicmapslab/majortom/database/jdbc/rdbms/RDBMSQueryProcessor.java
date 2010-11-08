@@ -91,32 +91,47 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 
 	public static String GENERATED_KEY_COLUMN_NAME = "GENERATED_KEY";
 	private final RDBMSQueryBuilder queryBuilder;
-	private final RDBMSConnectionProvider provider;
-	private final Connection writerConnection;
-	private final Connection readerConnection;
+	private final RDBMSSession session;
+	private final Connection connection;
 
 	/**
 	 * constructor
 	 * 
-	 * @param processor
-	 *            the query processor
+	 * @param session
+	 *            the session
 	 * @param connection
-	 *            the JDBC connection
+	 *            the database connection for this query processor
 	 */
-	public RDBMSQueryProcessor(RDBMSConnectionProvider provider, Connection readerConnection,
-			Connection writerConnection) {
-		this.provider = provider;
-		this.readerConnection = readerConnection;
-		this.writerConnection = writerConnection;
+	public RDBMSQueryProcessor(RDBMSSession session, Connection connection) {
+		this.session = session;
+		this.connection = connection;
 		this.queryBuilder = createQueryBuilder();
 	}
 
+	/**
+	 * Creates the query builder
+	 * 
+	 * @return the query builder
+	 */
 	protected RDBMSQueryBuilder createQueryBuilder() {
-		return new RDBMSQueryBuilder(provider);
+		return new RDBMSQueryBuilder(session);
 	}
 
+	/**
+	 * Returns the query builder
+	 * 
+	 * @return the query builder
+	 */
 	protected RDBMSQueryBuilder getQueryBuilder() {
 		return queryBuilder;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public RDBMSSession getSession() {
+		return session;
 	}
 
 	/**
@@ -125,22 +140,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * @return the connection the connection
 	 */
 	public Connection getConnection() {
-		return writerConnection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Connection getReaderConnection() {
-		return readerConnection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public RDBMSConnectionProvider getConnectionProvider() {
-		return provider;
+		return connection;
 	}
 
 	/**
@@ -1729,9 +1729,9 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * check if default name type exists
 		 */
-		if (getConnectionProvider().getTopicMapStore().existsTmdmDefaultNameType()) {
+		if (getSession().getTopicMapStore().existsTmdmDefaultNameType()) {
 			Set<IName> tmp = HashUtil.getHashSet(names);
-			tmp.retainAll(doReadNames(topic, getConnectionProvider().getTopicMapStore().getTmdmDefaultNameType()));
+			tmp.retainAll(doReadNames(topic, getSession().getTopicMapStore().getTmdmDefaultNameType()));
 			/*
 			 * at least one default name
 			 */
@@ -1918,7 +1918,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
 		doRemoveAssociation(association, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -1962,12 +1962,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
 				association.getTopicMap(), null, association);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
 				association.getTopicMap(), null, association);
 	}
 
@@ -1985,8 +1985,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveName(IName name, boolean cascade) throws SQLException {
-		doRemoveName(name, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.NAME_REMOVED));
+		doRemoveName(name, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.NAME_REMOVED));
 		return true;
 	}
 
@@ -2038,13 +2037,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(),
-				null, name);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED,
-				name.getParent(), null, name);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null,
+				name);
 	}
 
 	/**
@@ -2052,7 +2050,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException {
 		doRemoveOccurrence(occurrence, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -2095,12 +2093,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED,
-				occurrence.getParent(), null, occurrence);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(),
+				null, occurrence);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
 				occurrence.getParent(), null, occurrence);
 	}
 
@@ -2108,8 +2106,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException {
-		doRemoveRole(role, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.ROLE_REMOVED));
+		doRemoveRole(role, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.ROLE_REMOVED));
 		return true;
 	}
 
@@ -2152,13 +2149,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(),
-				null, role);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED,
-				role.getParent(), null, role);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
+				role);
 	}
 
 	/**
@@ -2219,8 +2215,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException {
-		doRemoveTopic(topic, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
+		doRemoveTopic(topic, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.TOPIC_REMOVED));
 		return true;
 	}
 
@@ -2389,13 +2384,13 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED,
-				topic.getTopicMap(), null, topic);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null,
+				topic);
 		/*
 		 * store revision
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED,
-				topic.getTopicMap(), null, topic);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
+				null, topic);
 	}
 
 	public void doRemoveScope(IScope s) throws SQLException {
@@ -2472,7 +2467,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public boolean doRemoveVariant(IVariant variant, boolean cascade) throws SQLException {
 		doRemoveVariant(variant, cascade,
-				getConnectionProvider().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
+				getSession().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -2503,13 +2498,13 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getConnectionProvider().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED,
-				variant.getParent(), null, variant);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null,
+				variant);
 		/*
 		 * store history
 		 */
-		getConnectionProvider().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED,
-				variant.getParent(), null, variant);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
+				null, variant);
 	}
 
 	// ****************
@@ -2707,7 +2702,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset,
 			long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
@@ -2719,7 +2714,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toAssociations(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id");
+		return Jdbc2Construct.toAssociations(getSession().getTopicMapStore().getTopicMap(), set, "id");
 	}
 
 	/**
@@ -2735,7 +2730,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toCharacteristics(getConnectionProvider().getTopicMapStore().getTopicMap(), set);
+		return Jdbc2Construct.toCharacteristics(getSession().getTopicMapStore().getTopicMap(), set);
 	}
 
 	/**
@@ -2757,7 +2752,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toCharacteristics(getConnectionProvider().getTopicMapStore().getTopicMap(), set);
+		return Jdbc2Construct.toCharacteristics(getSession().getTopicMapStore().getTopicMap(), set);
 	}
 
 	/**
@@ -2781,7 +2776,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
@@ -2793,7 +2788,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toNames(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
+		return Jdbc2Construct.toNames(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -2817,7 +2812,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
@@ -2829,8 +2824,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toOccurrences(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id",
-				"id_parent");
+		return Jdbc2Construct.toOccurrences(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -2854,7 +2848,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypes(offset != -1);
-		stmt.setLong(1, Long.parseLong(getConnectionProvider().getTopicMapStore().getTopicMap().getId()));
+		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
@@ -2866,7 +2860,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toRoles(getConnectionProvider().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
+		return Jdbc2Construct.toRoles(getSession().getTopicMapStore().getTopicMap(), set, "id", "id_parent");
 	}
 
 	/**
@@ -3474,7 +3468,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3523,7 +3517,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3623,7 +3617,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3671,7 +3665,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3754,7 +3748,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3801,7 +3795,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(t.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3902,7 +3896,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			ids[n++] = Long.parseLong(s.getId());
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setArray(2, getReaderConnection().createArrayOf("bigint", ids));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -3941,7 +3935,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (Topic t : themes) {
 			ids[n++] = Long.parseLong(t.getId());
 		}
-		Array array = getReaderConnection().createArrayOf("bigint", ids);
+		Array array = getConnection().createArrayOf("bigint", ids);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setArray(2, array);
 		n = 3;
@@ -4743,7 +4737,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		ResultSet rs = stmt.getGeneratedKeys();
 		try {
 			rs.next();
-			return new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong(GENERATED_KEY_COLUMN_NAME)) {
+			return new RevisionImpl(getSession().getTopicMapStore(), rs.getLong(GENERATED_KEY_COLUMN_NAME)) {
 			};
 		} finally {
 			rs.close();
@@ -4993,7 +4987,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			revisions.add(new RevisionImpl(getSession().getTopicMapStore(), rs.getLong("id")) {
 			});
 		}
 		return revisions;
@@ -5011,7 +5005,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		List<IRevision> revisions = new LinkedList<IRevision>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			revisions.add(new RevisionImpl(getConnectionProvider().getTopicMapStore(), rs.getLong("id")) {
+			revisions.add(new RevisionImpl(getSession().getTopicMapStore(), rs.getLong("id")) {
 			});
 		}
 		return revisions;
@@ -5101,7 +5095,6 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -5134,10 +5127,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmtSelect = queryBuilder.getQueryRoleDumpSelect();
 		stmtSelect.setLong(1, Long.parseLong(role.getId()));
 		ResultSet rs = stmtSelect.executeQuery();
-		
-		if(!rs.next())
+
+		if (!rs.next())
 			System.out.println("no result!");
-		//rs.next();
+		// rs.next();
 
 		// do updates
 		PreparedStatement stmtIns = queryBuilder.getQueryRoleDumpInsertIntoHistory();
@@ -5252,8 +5245,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		}
 	}
 
-	public void dumpFallback(IRevision revision, IVariant variant)
-			throws SQLException {
+	public void dumpFallback(IRevision revision, IVariant variant) throws SQLException {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(variant)) {
@@ -5378,7 +5370,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setString(4, doReadDataType(occurrence).getId());
 			stmt.setLong(5, Long.parseLong(occurrence.getId()));
 			stmt.execute();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			System.err.println("trying fallback (occ)");
 			dumpFallback(revision, occurrence);
@@ -5400,7 +5392,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, Long.parseLong(occurrence.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
-		
+
 		PreparedStatement stmtIns = queryBuilder.getQueryOccurrenceDumpInsertIntoHistory();
 		stmtIns.setLong(1, rs.getLong(1));
 		stmtIns.setLong(2, revision.getId());
@@ -5463,7 +5455,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 				associations += a.getId() + (!associations.isEmpty() ? "," : "");
 			}
 			Reifiable r = doReadReification(topic);
-	
+
 			PreparedStatement stmt = queryBuilder.getQueryTopicDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setString(2, ii);
@@ -5536,7 +5528,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			stmt.setLong(1, Long.parseLong(topic.getId()));
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-		
+
 			PreparedStatement stmtIns = queryBuilder.getQueryTopicDumpInsertIntoHistory();
 			stmtIns.setLong(1, rs.getLong(1));
 			stmtIns.setLong(2, revision.getId());
@@ -5579,7 +5571,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			 * read data from store
 			 */
 			for (TopicMapStoreParameterType type : arguments) {
-				results.put(type, getConnectionProvider().getTopicMapStore().doRead(c_, type));
+				results.put(type, getSession().getTopicMapStore().doRead(c_, type));
 			}
 		}
 		/*
@@ -5592,137 +5584,136 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			if (rs.next()) {
 				for (TopicMapStoreParameterType type : arguments) {
 					switch (type) {
-					case ITEM_IDENTIFIER: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("itemidentifiers");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
+						case ITEM_IDENTIFIER: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("itemidentifiers");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case SUBJECT_IDENTIFIER: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("subjectidentifiers");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
+							break;
+						case SUBJECT_IDENTIFIER: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("subjectidentifiers");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case SUBJECT_LOCATOR: {
-						Collection<ILocator> set = HashUtil.getHashSet();
-						Array a = rs.getArray("subjectlocators");
-						for (String ref : (String[]) a.getArray()) {
-							set.add(new LocatorImpl(ref));
+							break;
+						case SUBJECT_LOCATOR: {
+							Collection<ILocator> set = HashUtil.getHashSet();
+							Array a = rs.getArray("subjectlocators");
+							for (String ref : (String[]) a.getArray()) {
+								set.add(new LocatorImpl(ref));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case NAME: {
-						Collection<IName> set = HashUtil.getHashSet();
-						Array a = rs.getArray("names");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyName(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
+							break;
+						case NAME: {
+							Collection<IName> set = HashUtil.getHashSet();
+							Array a = rs.getArray("names");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyName(this, getSession().getTopicMapStore()
+										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case OCCURRENCE: {
-						Collection<IOccurrence> set = HashUtil.getHashSet();
-						Array a = rs.getArray("occurrences");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyOccurrence(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
+							break;
+						case OCCURRENCE: {
+							Collection<IOccurrence> set = HashUtil.getHashSet();
+							Array a = rs.getArray("occurrences");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyOccurrence(this, getSession().getTopicMapStore()
+										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case VARIANT: {
-						Collection<IVariant> set = HashUtil.getHashSet();
-						Array a = rs.getArray("variants");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
+							break;
+						case VARIANT: {
+							Collection<IVariant> set = HashUtil.getHashSet();
+							Array a = rs.getArray("variants");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyVariant(this, getSession().getTopicMapStore()
+										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case ASSOCIATION: {
-						Collection<IAssociation> set = HashUtil.getHashSet();
-						Array a = rs.getArray("associations");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
+							break;
+						case ASSOCIATION: {
+							Collection<IAssociation> set = HashUtil.getHashSet();
+							Array a = rs.getArray("associations");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore()
+										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case TYPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("types");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							break;
+						case TYPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("types");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case SUPERTYPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("supertypes");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							break;
+						case SUPERTYPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("supertypes");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, set);
 						}
-						results.put(type, set);
-					}
-						break;
-					case ROLE: {
-						Collection<IAssociationRole> set = HashUtil.getHashSet();
-						Array a = rs.getArray("roles");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyAssociationRole(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
-						}
-						results.put(type, set);
-					}
-						break;
-					case PLAYER: {
-						results.put(
-								type,
-								new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
+							break;
+						case ROLE: {
+							Collection<IAssociationRole> set = HashUtil.getHashSet();
+							Array a = rs.getArray("roles");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyAssociationRole(this, getSession().getTopicMapStore()
 										.getConstructFactory()
-										.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
-					}
-						break;
-					case REIFICATION: {
-						results.put(type, rs.getLong("id_reification"));
-					}
-						break;
-					case VALUE: {
-						results.put(type, rs.getString("value"));
-					}
-						break;
-					case DATATYPE: {
-						results.put(type, new LocatorImpl(rs.getString("datatype")));
-					}
-						break;
-					case SCOPE: {
-						Collection<ITopic> set = HashUtil.getHashSet();
-						Array a = rs.getArray("themes");
-						for (Long id : (Long[]) a.getArray()) {
-							set.add(new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
+							}
+							results.put(type, set);
 						}
-						results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
-					}
-						break;
-					case BEST_LABEL: {
-						results.put(type, rs.getString("bestlabel"));
-					}
-						break;
+							break;
+						case PLAYER: {
+							results.put(type,
+									new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
+											.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
+						}
+							break;
+						case REIFICATION: {
+							results.put(type, rs.getLong("id_reification"));
+						}
+							break;
+						case VALUE: {
+							results.put(type, rs.getString("value"));
+						}
+							break;
+						case DATATYPE: {
+							results.put(type, new LocatorImpl(rs.getString("datatype")));
+						}
+							break;
+						case SCOPE: {
+							Collection<ITopic> set = HashUtil.getHashSet();
+							Array a = rs.getArray("themes");
+							for (Long id : (Long[]) a.getArray()) {
+								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+							}
+							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
+						}
+							break;
+						case BEST_LABEL: {
+							results.put(type, rs.getString("bestlabel"));
+						}
+							break;
 					}
 				}
 			}
@@ -5748,9 +5739,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 				 * calling object is not a topic -> reification value represents the reifier topic
 				 */
 				else {
-					results.put(TopicMapStoreParameterType.REIFICATION,
-							new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore()
-									.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+					results.put(TopicMapStoreParameterType.REIFICATION, new JdbcReadOnlyTopic(this, getSession()
+							.getTopicMapStore().getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 				}
 			}
 		}
@@ -5777,54 +5767,52 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		rs.close();
 		if (type != null) {
 			if (type.equalsIgnoreCase("n")) {
-				return new JdbcReadOnlyName(this, getConnectionProvider()
+				return new JdbcReadOnlyName(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newName(
 								new JdbcIdentity(id),
-								getConnectionProvider()
+								getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newTopic(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap())));
+												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("o")) {
-				return new JdbcReadOnlyOccurrence(this, getConnectionProvider()
+				return new JdbcReadOnlyOccurrence(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newOccurrence(
 								new JdbcIdentity(id),
-								getConnectionProvider()
+								getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newTopic(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap())));
+												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("t")) {
-				return new JdbcReadOnlyTopic(this, getConnectionProvider().getTopicMapStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(id), getConnectionProvider().getTopicMapStore().getTopicMap()));
+				return new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
+						.newTopic(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("a")) {
-				return new JdbcReadOnlyAssociation(this, getConnectionProvider().getTopicMapStore()
-						.getConstructFactory()
-						.newAssociation(new JdbcIdentity(id), getConnectionProvider().getTopicMapStore().getTopicMap()));
+				return new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore().getConstructFactory()
+						.newAssociation(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("r")) {
-				return new JdbcReadOnlyAssociationRole(this, getConnectionProvider()
+				return new JdbcReadOnlyAssociationRole(this, getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newAssociationRole(
 								new JdbcIdentity(id),
-								new JdbcReadOnlyAssociation(this, getConnectionProvider()
+								new JdbcReadOnlyAssociation(this, getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newAssociation(new JdbcIdentity(parentId),
-												getConnectionProvider().getTopicMapStore().getTopicMap()))));
+												getSession().getTopicMapStore().getTopicMap()))));
 			} else if (type.equalsIgnoreCase("v")) {
-				IName parent = (IName) doReadConstruct(getConnectionProvider().getTopicMapStore().getTopicMap(),
-						parentId, false);
+				IName parent = (IName) doReadConstruct(getSession().getTopicMapStore().getTopicMap(), parentId, false);
 				if (parent == null) {
 					parent = (IName) readHistoryConstruct(parentId);
 				} else {
 					parent = (IName) asReadOnlyConstruct(parent);
 				}
-				return new JdbcReadOnlyVariant(this, getConnectionProvider().getTopicMapStore().getConstructFactory()
+				return new JdbcReadOnlyVariant(this, getSession().getTopicMapStore().getConstructFactory()
 						.newVariant(new JdbcIdentity(id), parent));
 			}
 		}

@@ -48,7 +48,7 @@ import de.topicmapslab.majortom.comparator.NameByValueComparator;
 import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSQueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -86,11 +86,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class Sql99QueryProcessor implements IQueryProcessor {
-
-	private final Sql99QueryBuilder queryBuilder;
-	private final SQL99Session session;
-	private final Connection connection;
+public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 
 	/**
 	 * constructor
@@ -101,48 +97,23 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 *            the database connection for this query processor
 	 */
 	public Sql99QueryProcessor(SQL99Session session, Connection connection) {
-		this.session = session;
-		this.connection = connection;
-		this.queryBuilder = createQueryBuilder();
-	}
-
-	protected Sql99QueryBuilder createQueryBuilder() {
-		return new Sql99QueryBuilder(session);
-	}
-
-	protected Sql99QueryBuilder getQueryBuilder() {
-		return queryBuilder;
+		super(session, connection);
 	}
 
 	/**
-	 * Returns the internal connection
+	 * Creates the query builder
 	 * 
-	 * @return the connection the connection
+	 * @return the query builder
 	 */
-	public Connection getConnection() {
-		return connection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public SQL99Session getSession() {
-		return session;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void close() {
-		queryBuilder.close();
+	protected Sql99QueryBuilder createQueryBuilder() {
+		return new Sql99QueryBuilder(getSession());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateAssociation();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateAssociation();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
@@ -157,7 +128,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes)
 			throws SQLException {
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateAssociationWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateAssociationWithScope();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
@@ -171,7 +142,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ILocator doCreateLocator(ITopicMap topicMap, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateLocator();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateLocator();
 		stmt.setString(1, reference);
 		stmt.setString(2, reference);
 		stmt.execute();
@@ -215,7 +186,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IName doCreateName(ITopic topic, ITopic type, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateName();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateName();
 		ITopicMap topicMap = topic.getTopicMap();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topic.getId()));
@@ -231,7 +202,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateNameWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateNameWithScope();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topic.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
@@ -246,7 +217,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -265,7 +236,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -283,7 +254,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -302,7 +273,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -321,7 +292,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype)
 			throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrence();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
 		stmt.setString(1, datatype.getReference());
 		stmt.setString(2, datatype.getReference());
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -340,7 +311,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			Collection<ITopic> themes) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateOccurrenceWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
 		stmt.setString(1, datatype.getReference());
 		stmt.setString(2, datatype.getReference());
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -358,7 +329,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws SQLException {
 		ITopicMap topicMap = association.getTopicMap();
-		PreparedStatement stmt = queryBuilder.getQueryCreateRole();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateRole();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(association.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
@@ -369,7 +340,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 
 	protected IScope readScopeByThemes(ITopicMap topicMap, Collection<ITopic> themes) throws SQLException {
 		if (themes.isEmpty()) {
-			PreparedStatement stmt = queryBuilder.getQueryReadEmptyScope();
+			PreparedStatement stmt = getQueryBuilder().getQueryReadEmptyScope();
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 			ResultSet set = stmt.executeQuery();
 			if (set.next()) {
@@ -383,7 +354,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * read scope by themes
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryReadScopeByThemes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
 		boolean first = true;
 		for (ITopic theme : themes) {
 			Collection<Long> ids = HashUtil.getHashSet();
@@ -428,7 +399,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * create scope
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryCreateScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateScope();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.execute();
 		/*
@@ -441,7 +412,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * add all themes
 		 */
-		stmt = queryBuilder.getQueryAddThemes(themes.size());
+		stmt = getQueryBuilder().getQueryAddThemes(themes.size());
 		int i = 0;
 		for (ITopic theme : themes) {
 			stmt.setLong(i * 2 + 1, id);
@@ -463,7 +434,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * get string to create new topic map
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryCreateTopicMap();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateTopicMap();
 		stmt.setString(1, baseLocator.getReference());
 		stmt.setString(2, baseLocator.getReference());
 		stmt.setString(3, baseLocator.getReference());
@@ -492,7 +463,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * topic map already exists -> get topic map id by base locator
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryReadTopicMap();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopicMap();
 		stmt.setString(1, baseLocator.getReference());
 		ResultSet set = stmt.executeQuery();
 		set.next();
@@ -514,7 +485,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * get string to create new topic
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryCreateTopic();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateTopic();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		stmt.execute();
@@ -586,7 +557,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws SQLException {
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -604,7 +575,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws SQLException {
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
 		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -623,7 +594,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryCreateVariant();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
 		stmt.setString(1, datatype.getReference());
 		stmt.setString(2, datatype.getReference());
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
@@ -646,7 +617,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getPerformMergeTopics();
+		PreparedStatement stmt = getQueryBuilder().getPerformMergeTopics();
 		long idContext = Long.parseLong(context.getId());
 		long idOther = Long.parseLong(other.getId());
 		int max = 12;
@@ -671,7 +642,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			if (removed.contains(n)) {
 				continue;
 			}
-			PreparedStatement stmt = queryBuilder.getQueryDuplicateName();
+			PreparedStatement stmt = getQueryBuilder().getQueryDuplicateName();
 			stmt.setLong(1, Long.parseLong(topic.getId()));
 			stmt.setLong(2, Long.parseLong(n.getId()));
 			stmt.setLong(3, Long.parseLong(n.getType().getId()));
@@ -695,14 +666,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				/*
 				 * move item-identifier
 				 */
-				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				PreparedStatement stmtMoveII = getQueryBuilder().getQueryMoveItemIdentifiers();
 				stmtMoveII.setLong(1, Long.parseLong(n.getId()));
 				stmtMoveII.setLong(2, Long.parseLong(name.getId()));
 				stmtMoveII.execute();
 				/*
 				 * move variants
 				 */
-				PreparedStatement stmtMoveVariants = queryBuilder.getQueryMoveVariants();
+				PreparedStatement stmtMoveVariants = getQueryBuilder().getQueryMoveVariants();
 				stmtMoveVariants.setLong(1, Long.parseLong(n.getId()));
 				stmtMoveVariants.setLong(2, Long.parseLong(name.getId()));
 				stmtMoveVariants.execute();
@@ -730,7 +701,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			if (removed.contains(v)) {
 				continue;
 			}
-			PreparedStatement stmt = queryBuilder.getQueryDuplicateVariant();
+			PreparedStatement stmt = getQueryBuilder().getQueryDuplicateVariant();
 			stmt.setLong(1, Long.parseLong(name.getId()));
 			stmt.setLong(2, Long.parseLong(v.getId()));
 			stmt.setString(3, v.getValue());
@@ -754,7 +725,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				/*
 				 * move item-identifier
 				 */
-				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				PreparedStatement stmtMoveII = getQueryBuilder().getQueryMoveItemIdentifiers();
 				stmtMoveII.setLong(1, Long.parseLong(v.getId()));
 				stmtMoveII.setLong(2, Long.parseLong(variant.getId()));
 				stmtMoveII.execute();
@@ -776,7 +747,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			if (removed.contains(o)) {
 				continue;
 			}
-			PreparedStatement stmt = queryBuilder.getQueryDuplicateOccurrence();
+			PreparedStatement stmt = getQueryBuilder().getQueryDuplicateOccurrence();
 			stmt.setLong(1, Long.parseLong(topic.getId()));
 			stmt.setLong(2, Long.parseLong(o.getId()));
 			stmt.setLong(3, Long.parseLong(o.getType().getId()));
@@ -801,7 +772,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				/*
 				 * move item-identifier
 				 */
-				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				PreparedStatement stmtMoveII = getQueryBuilder().getQueryMoveItemIdentifiers();
 				stmtMoveII.setLong(1, Long.parseLong(o.getId()));
 				stmtMoveII.setLong(2, Long.parseLong(occurrence.getId()));
 				stmtMoveII.execute();
@@ -823,7 +794,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			if (removed.contains(a)) {
 				continue;
 			}
-			PreparedStatement stmt = queryBuilder.getQueryDuplicateAssociations();
+			PreparedStatement stmt = getQueryBuilder().getQueryDuplicateAssociations();
 			stmt.setLong(1, Long.parseLong(a.getTopicMap().getId()));
 			stmt.setLong(2, Long.parseLong(a.getId()));
 			stmt.setLong(3, Long.parseLong(a.getId()));
@@ -850,7 +821,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				/*
 				 * move item-identifier
 				 */
-				PreparedStatement stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+				PreparedStatement stmtMoveII = getQueryBuilder().getQueryMoveItemIdentifiers();
 				stmtMoveII.setLong(1, Long.parseLong(a.getId()));
 				stmtMoveII.setLong(2, Long.parseLong(association.getId()));
 				stmtMoveII.execute();
@@ -858,7 +829,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 				 * check role reifier
 				 */
 				for (Role r : a.getRoles()) {
-					PreparedStatement stmtRole = queryBuilder.getQueryDuplicateRoles();
+					PreparedStatement stmtRole = getQueryBuilder().getQueryDuplicateRoles();
 					stmtRole.setLong(1, Long.parseLong(association.getId()));
 					stmtRole.setLong(2, Long.parseLong(r.getType().getId()));
 					stmtRole.setLong(3, Long.parseLong(r.getPlayer().getId()));
@@ -880,7 +851,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 					/*
 					 * move item-identifier
 					 */
-					stmtMoveII = queryBuilder.getQueryMoveItemIdentifiers();
+					stmtMoveII = getQueryBuilder().getQueryMoveItemIdentifiers();
 					stmtMoveII.setLong(1, Long.parseLong(r.getId()));
 					stmtMoveII.setLong(2, Long.parseLong(role.getId()));
 					stmtMoveII.execute();
@@ -898,7 +869,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAddItemIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryAddItemIdentifier();
 		stmt.setString(1, itemIdentifier.getReference());
 		stmt.setString(2, itemIdentifier.getReference());
 		stmt.setLong(3, Long.parseLong(c.getId()));
@@ -910,7 +881,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyPlayer(IAssociationRole role, ITopic player) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyPlayer();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyPlayer();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		stmt.setLong(2, Long.parseLong(role.getId()));
 		stmt.execute();
@@ -920,7 +891,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyReifier(IReifiable r, ITopic reifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyReifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyReifier();
 		if (reifier == null) {
 			stmt.setNull(1, Types.BIGINT);
 		} else {
@@ -937,7 +908,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ITopic> themes = HashUtil.getHashSet(s.getScopeObject().getThemes());
 		themes.add(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyScope();
 		stmt.setLong(1, Long.parseLong(scope.getId()));
 		stmt.setLong(2, Long.parseLong(s.getId()));
 		stmt.execute();
@@ -947,7 +918,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAddSubjectIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryAddSubjectIdentifier();
 		stmt.setString(1, subjectIdentifier.getReference());
 		stmt.setString(2, subjectIdentifier.getReference());
 		stmt.setLong(3, Long.parseLong(t.getId()));
@@ -959,7 +930,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAddSubjectLocator();
+		PreparedStatement stmt = getQueryBuilder().getQueryAddSubjectLocator();
 		stmt.setString(1, subjectLocator.getReference());
 		stmt.setString(2, subjectLocator.getReference());
 		stmt.setLong(3, Long.parseLong(t.getId()));
@@ -971,7 +942,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySupertype(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifySupertypes();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifySupertypes();
 		long subtypeId = Long.parseLong(t.getId());
 		long supertypeId = Long.parseLong(type.getId());
 		stmt.setLong(1, subtypeId);
@@ -999,7 +970,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyType(ITypeable t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyType();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyType();
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.executeUpdate();
@@ -1009,7 +980,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyType(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyTypes();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyTypes();
 		long instanceId = Long.parseLong(t.getId());
 		long typeId = Long.parseLong(type.getId());
 		stmt.setLong(1, instanceId);
@@ -1023,7 +994,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IName n, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyValue();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(n.getId()));
 		stmt.execute();
@@ -1033,7 +1004,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyValueWithDatatype();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyValueWithDatatype();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setString(3, datatype.getReference());
@@ -1047,7 +1018,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopic t, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociation(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedAssociation(offset != -1);
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		if (offset != -1) {
@@ -1061,7 +1032,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedAssociationWithType();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
@@ -1072,7 +1043,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithTypeAndScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedAssociationWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
@@ -1084,7 +1055,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedAssociationWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedAssociationWithScope();
 		stmt.setLong(1, Long.parseLong(t.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(t.getId()));
 		stmt.setLong(3, Long.parseLong(scope.getId()));
@@ -1095,7 +1066,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadAssociation();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadAssociation();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		return Jdbc2Construct.toAssociations(tm, stmt.executeQuery(), "id");
 	}
@@ -1104,7 +1075,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadAssociationWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadAssociationWithType();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toAssociations(tm, stmt.executeQuery(), "id");
@@ -1114,7 +1085,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadAssociationWithTypeAndScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadAssociationWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.setLong(3, Long.parseLong(scope.getId()));
@@ -1183,7 +1154,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (topicMap.getId().equalsIgnoreCase(Long.toString(id))) {
 			return topicMap;
 		}
-		PreparedStatement stmt = queryBuilder.getQueryReadConstructById();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadConstructById();
 		stmt.setLong(1, id);
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
 		if (c.isEmpty()) {
@@ -1199,7 +1170,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IConstruct doReadConstruct(ITopicMap topicMap, ILocator itemIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadConstructByItemIdentifier();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setString(1, itemIdentifier.getReference());
 		stmt.setLong(2, topicMapId);
@@ -1219,7 +1190,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ILocator doReadDataType(IDatatypeAware d) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadDataType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadDataType();
 		stmt.setLong(1, Long.parseLong(d.getId()));
 		return Jdbc2Construct.toLocator(stmt.executeQuery(), "reference");
 	}
@@ -1228,7 +1199,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> doReadItemIdentifiers(IConstruct c) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadItemIdentifiers();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadItemIdentifiers();
 		stmt.setLong(1, Long.parseLong(c.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
 	}
@@ -1244,7 +1215,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> doReadNames(ITopic t, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNames(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNames(offset != -1);
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1257,7 +1228,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> doReadNames(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNamesWithType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toNames(t, stmt.executeQuery(), "id");
@@ -1267,7 +1238,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithTypeAndScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNamesWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.setLong(3, Long.parseLong(scope.getId()));
@@ -1278,7 +1249,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> doReadNames(ITopic t, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNamesWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNamesWithScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toNames(t, stmt.executeQuery(), "id");
@@ -1288,7 +1259,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> doReadOccurrences(ITopic t, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadOccurrences(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadOccurrences(offset != -1);
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1301,7 +1272,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadOccurrencesWithType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toOccurrences(t, stmt.executeQuery(), "id");
@@ -1311,7 +1282,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithTypeAndScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadOccurrencesWithTypeAndScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.setLong(3, Long.parseLong(scope.getId()));
@@ -1322,7 +1293,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadOccurrencesWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadOccurrencesWithScope();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toOccurrences(t, stmt.executeQuery(), "id");
@@ -1332,7 +1303,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadPlayer(IAssociationRole role) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayer();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayer();
 		stmt.setLong(1, Long.parseLong(role.getId()));
 		return Jdbc2Construct.toTopic(role.getTopicMap(), stmt.executeQuery(), "id_player");
 	}
@@ -1341,7 +1312,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IReifiable doReadReification(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadReified();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadReified();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(t.getTopicMap(), stmt.executeQuery());
 		if (c.isEmpty()) {
@@ -1354,7 +1325,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadReification(IReifiable r) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadReifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadReifier();
 		stmt.setLong(1, Long.parseLong(r.getId()));
 		ResultSet result = stmt.executeQuery();
 		return Jdbc2Construct.toTopic(r.getTopicMap(), result, "id_reifier");
@@ -1364,7 +1335,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadRoleTypes(IAssociation association) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRoleTypes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRoleTypes();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		return Jdbc2Construct.toTopics(association.getTopicMap(), stmt.executeQuery(), "id_type");
 	}
@@ -1374,7 +1345,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IAssociationRole> doReadRoles(IAssociation association, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRoles(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRoles(offset != -1);
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1387,7 +1358,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRolesWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRolesWithType();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toRoles(association, stmt.executeQuery(), "id");
@@ -1397,7 +1368,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> doReadRoles(ITopic player, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRoles(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedRoles(offset != -1);
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1410,7 +1381,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRolesWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedRolesWithType();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toRoles(player.getTopicMap(), stmt.executeQuery(), "id", "id_parent");
@@ -1420,7 +1391,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPlayedRolesWithTypeAndAssociationType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPlayedRolesWithTypeAndAssociationType();
 		stmt.setLong(1, Long.parseLong(player.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.setLong(3, Long.parseLong(assocType.getId()));
@@ -1431,7 +1402,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IScope doReadScope(IScopable s) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadScope();
 		stmt.setLong(1, Long.parseLong(s.getId()));
 		ResultSet set = stmt.executeQuery();
 		set.next();
@@ -1445,7 +1416,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadThemes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadThemes();
 		stmt.setLong(1, scopeId);
 		ResultSet set = stmt.executeQuery();
 		Collection<ITopic> themes = HashUtil.getHashSet();
@@ -1461,7 +1432,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> doReadSubjectIdentifiers(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadSubjectIdentifiers();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadSubjectIdentifiers();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
 	}
@@ -1470,7 +1441,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> doReadSubjectLocators(ITopic t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadSubjectLocators();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadSubjectLocators();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toLocators(stmt.executeQuery(), "reference");
 	}
@@ -1487,7 +1458,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTopicBySubjectIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopicBySubjectIdentifier();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectIdentifier.getReference());
 		ResultSet set = stmt.executeQuery();
@@ -1498,7 +1469,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTopicBySubjectLocator();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopicBySubjectLocator();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectLocator.getReference());
 		ResultSet set = stmt.executeQuery();
@@ -1509,7 +1480,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadTopics(ITopicMap t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTopics();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopics();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id");
 	}
@@ -1518,7 +1489,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTopicsWithType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopicsWithType();
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id_instance");
 	}
@@ -1527,7 +1498,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadType(ITypeable typed) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadType();
 		stmt.setLong(1, Long.parseLong(typed.getId()));
 		return Jdbc2Construct.toTopic(typed.getTopicMap(), stmt.executeQuery(), "id_type");
 	}
@@ -1536,7 +1507,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> doReadTypes(ITopic t, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1549,7 +1520,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IName n) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadValue();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadValue();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		ResultSet result = stmt.executeQuery();
 		if (!result.next()) {
@@ -1564,7 +1535,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IDatatypeAware t) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadValue();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadValue();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		ResultSet result = stmt.executeQuery();
 		if (!result.next()) {
@@ -1579,7 +1550,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> doReadVariants(IName n, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadVariants(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryReadVariants(offset != -1);
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -1592,7 +1563,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> doReadVariants(IName n, IScope scope) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadVariantsWithScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadVariantsWithScope();
 		stmt.setLong(1, Long.parseLong(n.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		return Jdbc2Construct.toVariants(n, stmt.executeQuery(), "id");
@@ -1635,7 +1606,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove association
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteAssociation();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteAssociation();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		stmt.execute();
 		/*
@@ -1654,7 +1625,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteItemIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteItemIdentifier();
 		stmt.setLong(1, Long.parseLong(c.getId()));
 		stmt.setString(2, itemIdentifier.getReference());
 		stmt.execute();
@@ -1704,7 +1675,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove name
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteName();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteName();
 		stmt.setLong(1, Long.parseLong(name.getId()));
 		stmt.execute();
 		/*
@@ -1754,7 +1725,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove occurrence
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteOccurrence();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteOccurrence();
 		stmt.setLong(1, Long.parseLong(occurrence.getId()));
 		stmt.execute();
 		/*
@@ -1804,7 +1775,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove role
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteRole();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteRole();
 		stmt.setLong(1, Long.parseLong(role.getId()));
 		stmt.execute();
 		/*
@@ -1826,7 +1797,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		Collection<ITopic> themes = HashUtil.getHashSet(oldScope.getThemes());
 		themes.remove(theme);
 		IScope scope = doCreateScope(s.getTopicMap(), themes);
-		PreparedStatement stmt = queryBuilder.getQueryModifyScope();
+		PreparedStatement stmt = getQueryBuilder().getQueryModifyScope();
 		stmt.setLong(1, Long.parseLong(scope.getId()));
 		stmt.setLong(2, Long.parseLong(s.getId()));
 		stmt.execute();
@@ -1836,7 +1807,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteSubjectIdentifier();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteSubjectIdentifier();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectIdentifier.getReference());
 		stmt.execute();
@@ -1846,7 +1817,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteSubjectLocator();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteSubjectLocator();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setString(2, subjectLocator.getReference());
 		stmt.execute();
@@ -1856,7 +1827,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveSupertype(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteSupertype();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteSupertype();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.execute();
@@ -2000,7 +1971,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove topic
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteTopic();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteTopic();
 		long id = Long.parseLong(topic.getId());
 		stmt.setLong(1, id);
 		stmt.execute();
@@ -2020,7 +1991,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteTopicMap();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
@@ -2033,7 +2004,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryClearTopicMap();
+		PreparedStatement stmt = getQueryBuilder().getQueryClearTopicMap();
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
@@ -2047,7 +2018,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveType(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryDeleteType();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteType();
 		stmt.setLong(1, Long.parseLong(t.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		stmt.execute();
@@ -2077,7 +2048,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * remove variant
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryDeleteVariant();
+		PreparedStatement stmt = getQueryBuilder().getQueryDeleteVariant();
 		stmt.setLong(1, Long.parseLong(variant.getId()));
 		stmt.execute();
 		/*
@@ -2102,7 +2073,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfAssociationsPlayed(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfAssociationsPlayed();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfAssociationsPlayed();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2113,7 +2084,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfNames(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfNames();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfNames();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2124,7 +2095,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfOccurrences(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfOccurrences();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfOccurrences();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2135,7 +2106,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfRoles(IAssociation association) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfRoles();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfRoles();
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2146,7 +2117,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfRolesPlayed(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfRolesPlayed();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfRolesPlayed();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2158,7 +2129,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public long doReadNumberOfSupertypes(ITopic topic) throws SQLException {
 		if (topic == null) {
-			PreparedStatement stmt = queryBuilder.getQueryReadNumberOfTopicsWithoutSupertypes();
+			PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfTopicsWithoutSupertypes();
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			return rs.getLong(1);
@@ -2170,7 +2141,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfTypes(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfTypes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfTypes();
 		stmt.setLong(1, Long.parseLong(topic.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2181,7 +2152,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public long doReadNumberOfVariants(IName name) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfVariants();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadNumberOfVariants();
 		stmt.setLong(1, Long.parseLong(name.getId()));
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -2191,7 +2162,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	// TypeInstanceIndex
 
 	public Collection<ITopic> getAssociationTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -2204,7 +2175,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getNameTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNameTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNameTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -2217,7 +2188,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getOccurrenceTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrenceTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrenceTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -2230,7 +2201,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getCharacteristicsTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
@@ -2244,7 +2215,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getRoleTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectRoleTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectRoleTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -2257,7 +2228,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getTopicTypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -2270,7 +2241,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociation> getAssociationsByType(ITopic type, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByType(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationsByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -2286,7 +2257,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectAssociationsByTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationsByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -2307,7 +2278,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByType(ITopic type, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByType(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -2323,7 +2294,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypes(Collection<T> types, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByTypes(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
 		for (T type : types) {
@@ -2344,7 +2315,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNamesByType(ITopic type, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByType(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -2360,7 +2331,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -2380,7 +2351,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrencesByType(ITopic type, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByType(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -2396,7 +2367,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -2416,7 +2387,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IAssociationRole> getRolesByType(ITopic type, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByType(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectRolesByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getTopicMap().getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
 		if (offset != -1) {
@@ -2432,7 +2403,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectRolesByTypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectRolesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -2453,7 +2424,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(types.size(), all, offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsByTypes(types.size(), all, offset != -1);
 		ITopicMap topicMap = null;
 		int n = 2;
 		for (T type : types) {
@@ -2479,7 +2450,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
+		PreparedStatement stmt = getQueryBuilder()
+				.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (type != null) {
 			stmt.setLong(2, Long.parseLong(type.getId()));
@@ -2958,7 +2930,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			boolean all) throws SQLException {
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		if (themes.isEmpty()) {
-			PreparedStatement stmt = queryBuilder.getQueryReadEmptyScope();
+			PreparedStatement stmt = getQueryBuilder().getQueryReadEmptyScope();
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 			ResultSet set = stmt.executeQuery();
 			if (set.next()) {
@@ -2970,7 +2942,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			/*
 			 * read scope by themes
 			 */
-			PreparedStatement stmt = queryBuilder.getQueryScopesByThemesUsed();
+			PreparedStatement stmt = getQueryBuilder().getQueryScopesByThemesUsed();
 			boolean first = true;
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();
@@ -3004,7 +2976,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScope(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		if (offset != -1) {
@@ -3026,7 +2998,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByScopes(offset != -1);
 		Long ids[] = new Long[scopes.size()];
 		int n = 0;
 		for (IScope s : scopes) {
@@ -3058,7 +3030,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * require non-empty scope
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByTheme(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByTheme(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(theme.getId()));
 		if (offset != -1) {
@@ -3074,7 +3046,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all,
 			long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationsByThemes(all, offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByThemes(all, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[themes.length];
 		int n = 0;
@@ -3095,7 +3067,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IScope> getAssociationScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationScopes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3122,7 +3094,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getAssociationThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryAssociationThemes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryAssociationThemes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3136,7 +3108,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByScope(ITopicMap topicMap, IScope scope, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCharacteristicsByScope(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryCharacteristicsByScope(offset != -1);
 		long scopeId = Long.parseLong(scope.getId());
 		stmt.setLong(1, scopeId);
 		stmt.setLong(2, scopeId);
@@ -3153,7 +3125,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNamesByScope(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNamesByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		if (offset != -1) {
@@ -3175,7 +3147,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryNamesByScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNamesByScopes(offset != -1);
 		Long ids[] = new Long[scopes.size()];
 		int n = 0;
 		for (IScope s : scopes) {
@@ -3207,7 +3179,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * require non-empty scope
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryNamesByTheme(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNamesByTheme(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(theme.getId()));
 		if (offset != -1) {
@@ -3223,7 +3195,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNamesByThemes(all, offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNamesByThemes(all, offset != -1);
 		Long ids[] = new Long[themes.length];
 		int n = 0;
 		for (Topic t : themes) {
@@ -3243,7 +3215,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IScope> getNameScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNameScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNameScopes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3270,7 +3242,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getNameThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryNameThemes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryNameThemes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3284,7 +3256,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScope(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		if (offset != -1) {
@@ -3306,7 +3278,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByScopes(offset != -1);
 		Long ids[] = new Long[scopes.size()];
 		int n = 0;
 		for (IScope s : scopes) {
@@ -3337,7 +3309,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		}/*
 		 * require non-empty scope
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByTheme(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByTheme(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(theme.getId()));
 		if (offset != -1) {
@@ -3353,7 +3325,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrencesByThemes(all, offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByThemes(all, offset != -1);
 		Long ids[] = new Long[themes.length];
 		int n = 0;
 		for (Topic t : themes) {
@@ -3373,7 +3345,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IScope> getOccurrenceScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrenceScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrenceScopes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3400,7 +3372,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getOccurrenceThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryOccurrenceThemes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryOccurrenceThemes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3414,7 +3386,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IScopable> getScopables(ITopicMap topicMap, IScope scope, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryScopables(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryScopables(offset != -1);
 		long scopeId = Long.parseLong(scope.getId());
 		stmt.setLong(1, scopeId);
 		stmt.setLong(2, scopeId);
@@ -3432,7 +3404,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByScope(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
 		if (offset != -1) {
@@ -3454,7 +3426,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		if (scopes.isEmpty()) {
 			return HashUtil.getHashSet();
 		}
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByScopes(offset != -1);
 		Long ids[] = new Long[scopes.size()];
 		int n = 0;
 		for (IScope s : scopes) {
@@ -3475,7 +3447,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByTheme(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByTheme(offset != -1);
 		long themeId = Long.parseLong(theme.getId());
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, themeId);
@@ -3493,7 +3465,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantsByThemes(all, offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByThemes(all, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[themes.length];
 		int n = 0;
@@ -3520,7 +3492,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IScope> getVariantScopes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantScopes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantScopes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3547,7 +3519,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getVariantThemes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryVariantThemes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQueryVariantThemes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
@@ -3569,7 +3541,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			col.addAll(getOccurrences(topicMap, value, reference, offset, limit));
 			return col;
 		}
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristics(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristics(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, value);
@@ -3589,7 +3561,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByValue(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByValue(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, value);
@@ -3613,7 +3585,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			col.addAll(getOccurrencesByDatatype(topicMap, reference, offset, limit));
 			return col;
 		}
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByDatatype(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByDatatype(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, reference);
@@ -3631,7 +3603,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByPattern(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByPattern(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, value);
@@ -3655,7 +3627,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			col.addAll(getOccurrencesByPattern(topicMap, value, reference));
 			return col;
 		}
-		PreparedStatement stmt = queryBuilder.getQuerySelectCharacteristicsByPatternAndDatatype(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByPatternAndDatatype(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, value);
@@ -3675,7 +3647,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IDatatypeAware> getDatatypeAwaresByDatatype(ITopicMap topicMap, String reference, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectDatatypeAwaresByDatatype(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectDatatypeAwaresByDatatype(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setString(2, reference);
@@ -3693,7 +3665,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNames(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNames(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNames(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3707,7 +3679,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNames(ITopicMap topicMap, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByValue();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByValue();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		ResultSet rs = stmt.executeQuery();
@@ -3718,7 +3690,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IName> getNamesByPattern(ITopicMap topicMap, String pattern) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectNamesByPattern();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByPattern();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
 		ResultSet rs = stmt.executeQuery();
@@ -3729,7 +3701,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrences(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrences(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3743,7 +3715,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDateRange(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByDateRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setTimestamp(2, new Timestamp(lower.getTimeInMillis()));
 		stmt.setTimestamp(3, new Timestamp(upper.getTimeInMillis()));
@@ -3759,7 +3731,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance,
 			final String reference, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByRange(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		stmt.setDouble(3, value - deviance);
@@ -3775,7 +3747,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByValue();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByValue();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		ResultSet rs = stmt.executeQuery();
@@ -3787,7 +3759,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByValueAndDatatype(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByValueAndDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		stmt.setString(3, reference);
@@ -3804,7 +3776,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByDatatype(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		if (offset != -1) {
@@ -3819,7 +3791,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByPattern();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByPattern();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
 		ResultSet rs = stmt.executeQuery();
@@ -3831,7 +3803,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern, String reference)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectOccurrencesByPatternAndDatatype();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByPatternAndDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
 		stmt.setString(3, reference);
@@ -3843,7 +3815,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariants(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariants(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariants(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3857,7 +3829,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariants(ITopicMap topicMap, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByValue();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByValue();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		ResultSet rs = stmt.executeQuery();
@@ -3868,7 +3840,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariants(ITopicMap topicMap, String value, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByValueAndDatatype();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByValueAndDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
 		stmt.setString(3, reference);
@@ -3880,7 +3852,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariantsByDatatype(ITopicMap topicMap, String reference) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByDatatype();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
 		ResultSet rs = stmt.executeQuery();
@@ -3891,7 +3863,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<IVariant> getVariantByPattern(ITopicMap topicMap, String pattern) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByPattern();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByPattern();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
 		ResultSet rs = stmt.executeQuery();
@@ -3903,7 +3875,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IVariant> getVariantsByPattern(ITopicMap topicMap, String pattern, String reference)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectVariantsByPatternAndDatatype();
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByPatternAndDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
 		stmt.setString(3, reference);
@@ -3917,7 +3889,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> getItemIdentifiers(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectItemIdentifiers(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectItemIdentifiers(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
@@ -3931,7 +3903,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> getSubjectIdentifiers(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectIdentifiers(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubjectIdentifiers(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3944,7 +3916,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ILocator> getSubjectLocators(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSubjectLocators(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubjectLocators(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -3958,7 +3930,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByIdentitifer(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectConstructsByIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
 		stmt.setString(1, pattern);
@@ -3981,7 +3953,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset,
 			long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByItemIdentitifer(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectConstructsByItemIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
 		stmt.setString(1, pattern);
@@ -4004,7 +3976,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectIdentitifer(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsBySubjectIdentitifer(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");
 		if (offset != -1) {
@@ -4019,7 +3991,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectLocator(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsBySubjectLocator(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");
 		if (offset != -1) {
@@ -4038,10 +4010,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
-			stmt = queryBuilder.getQuerySelectDirectSubtypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectDirectSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(type.getId()));
 		}
 		if (offset != -1) {
@@ -4058,10 +4030,10 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		} else {
-			stmt = queryBuilder.getQuerySelectDirectSupertypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectDirectSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(type.getId()));
 		}
 		if (offset != -1) {
@@ -4077,7 +4049,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	public Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		if (type == null) {
 			PreparedStatement stmt = null;
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSubtypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 			if (offset != -1) {
 				stmt.setLong(2, offset);
@@ -4108,7 +4080,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * get sub-types of given topic
 		 */
 		PreparedStatement stmt = null;
-		stmt = queryBuilder.getQuerySelectSubtypesOfTopic(false);
+		stmt = getQueryBuilder().getQuerySelectSubtypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
@@ -4130,7 +4102,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getSubtypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSubtypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubtypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -4177,7 +4149,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		if (type == null) {
 			PreparedStatement stmt = null;
-			stmt = queryBuilder.getQuerySelectTopicsWithoutSupertypes(offset != -1);
+			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(topicMap.getId()));
 			if (offset != -1) {
 				stmt.setLong(2, offset);
@@ -4222,7 +4194,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * get super-types of given topic
 		 */
 		PreparedStatement stmt = null;
-		stmt = queryBuilder.getQuerySelectSupertypesOfTopic(false);
+		stmt = getQueryBuilder().getQuerySelectSupertypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
@@ -4247,7 +4219,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getSupertypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectSupertypes(offset != -1);
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectSupertypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
 			stmt.setLong(2, offset);
@@ -4295,7 +4267,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doCreateRevision(ITopicMap topicMap, TopicMapEventType type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateRevision();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, type.name());
 		stmt.execute();
@@ -4315,7 +4287,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue,
 			Object oldValue) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateChangeset();
+		PreparedStatement stmt = getQueryBuilder().getQueryCreateChangeset();
 		stmt.setLong(1, revision.getId());
 		stmt.setString(2, type.name());
 		stmt.setLong(3, Long.parseLong(notifier.getId()));
@@ -4360,14 +4332,14 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * try to update time if tag exists
 		 */
-		stmt = queryBuilder.getQueryModifyTag();
+		stmt = getQueryBuilder().getQueryModifyTag();
 		stmt.setTimestamp(1, new Timestamp(time.getTimeInMillis()));
 		stmt.setString(2, tag);
 		/*
 		 * tag was not found -> create tag
 		 */
 		if (stmt.executeUpdate() == 0) {
-			stmt = queryBuilder.getQueryCreateTag();
+			stmt = getQueryBuilder().getQueryCreateTag();
 			stmt.setString(1, tag);
 			stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
 			stmt.execute();
@@ -4382,7 +4354,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		/*
 		 * try to update value if key exists
 		 */
-		stmt = queryBuilder.getQueryModifyMetadata();
+		stmt = getQueryBuilder().getQueryModifyMetadata();
 		stmt.setString(1, value);
 		stmt.setLong(2, revision.getId());
 		stmt.setString(3, key);
@@ -4390,7 +4362,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * key was not found -> create key
 		 */
 		if (stmt.executeUpdate() == 0) {
-			stmt = queryBuilder.getQueryCreateMetadata();
+			stmt = getQueryBuilder().getQueryCreateMetadata();
 			stmt.setLong(1, revision.getId());
 			stmt.setString(2, key);
 			stmt.setString(3, value);
@@ -4402,7 +4374,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangeset(ITopicMap topicMap, IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadChangesets();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadChangesets();
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
 		return Jdbc2Construct.toChangeSet(this, topicMap, rs, revision);
@@ -4412,7 +4384,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public TopicMapEventType doReadChangesetType(ITopicMap topicMap, IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadChangesetType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadChangesetType();
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
 		rs.next();
@@ -4423,7 +4395,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangesetsByAssociationType(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByAssociationType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadChangesetsByAssociationType();
 		long typeId = Long.parseLong(type.getId());
 		stmt.setLong(1, typeId);
 		stmt.setLong(2, typeId);
@@ -4434,7 +4406,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangesetsByTopic(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadChangesetsByTopic();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadChangesetsByTopic();
 		long topicId = Long.parseLong(topic.getId());
 		stmt.setLong(1, topicId);
 		stmt.setString(2, topic.getId());
@@ -4447,7 +4419,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadFirstRevision(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadFirstRevision();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadFirstRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
 		IRevision revision = null;
@@ -4463,7 +4435,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadFutureRevision(ITopicMap topicMap, IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadFutureRevision();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadFutureRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, revision.getId());
 		ResultSet rs = stmt.executeQuery();
@@ -4480,7 +4452,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadLastModification(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadLastModification();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadLastModification();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
 		Calendar c = null;
@@ -4497,7 +4469,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadLastModificationOfTopic(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadLastModificationOfTopic();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadLastModificationOfTopic();
 		long topicId = Long.parseLong(topic.getId());
 		stmt.setLong(1, topicId);
 		stmt.setString(2, topic.getId());
@@ -4517,7 +4489,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadLastRevision(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadLastRevision();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadLastRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		ResultSet rs = stmt.executeQuery();
 		IRevision revision = null;
@@ -4533,7 +4505,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadPastRevision(ITopicMap topicMap, IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadPastRevision();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadPastRevision();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, revision.getId());
 		ResultSet rs = stmt.executeQuery();
@@ -4550,7 +4522,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public List<IRevision> doReadRevisionsByAssociationType(ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByAssociationType();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRevisionsByAssociationType();
 		long typeId = Long.parseLong(type.getId());
 		stmt.setLong(1, typeId);
 		stmt.setLong(2, typeId);
@@ -4567,7 +4539,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public List<IRevision> doReadRevisionsByTopic(ITopic topic) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRevisionsByTopic();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRevisionsByTopic();
 		long topicId = Long.parseLong(topic.getId());
 		stmt.setLong(1, topicId);
 		stmt.setString(2, topic.getId());
@@ -4586,7 +4558,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadTimestamp(IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadTimestamp();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTimestamp();
 		stmt.setLong(1, revision.getId());
 		ResultSet rs = stmt.executeQuery();
 		Calendar c = null;
@@ -4603,7 +4575,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadRevisionByTag(ITopicMap topicMap, String tag) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRevisionByTag();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRevisionByTag();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, tag);
 		ResultSet rs = stmt.executeQuery();
@@ -4620,7 +4592,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadRevisionByTimestamp(ITopicMap topicMap, Calendar time) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadRevisionByTimestamp();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadRevisionByTimestamp();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setTimestamp(2, new Timestamp(time.getTimeInMillis()));
 		ResultSet rs = stmt.executeQuery();
@@ -4637,7 +4609,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Map<String, String> doReadMetadata(IRevision revision) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadMetadata();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadMetadata();
 		stmt.setLong(1, revision.getId());
 		Map<String, String> metadata = HashUtil.getHashMap();
 		ResultSet rs = stmt.executeQuery();
@@ -4652,7 +4624,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public String doReadMetadataByKey(IRevision revision, String key) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadMetadataByKey();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadMetadataByKey();
 		stmt.setLong(1, revision.getId());
 		stmt.setString(2, key);
 		ResultSet rs = stmt.executeQuery();
@@ -4904,7 +4876,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, IAssociationRole role) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryRoleDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryRoleDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setLong(2, Long.parseLong(role.getId()));
 			stmt.execute();
@@ -4916,7 +4888,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, IAssociation association) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryAssociationDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setLong(2, Long.parseLong(association.getId()));
 			stmt.execute();
@@ -4928,7 +4900,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, IVariant variant) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryVariantDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryVariantDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setLong(2, Long.parseLong(variant.getId()));
 			stmt.execute();
@@ -4940,7 +4912,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, IName name) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryNameDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryNameDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setLong(2, Long.parseLong(name.getId()));
 			stmt.execute();
@@ -4952,7 +4924,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, IOccurrence occurrence) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryOccurrenceDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setLong(2, Long.parseLong(occurrence.getId()));
 			stmt.execute();
@@ -4964,7 +4936,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public void dump(IRevision revision, ITopic topic) throws SQLException {
 		if (revision != null) {
-			PreparedStatement stmt = queryBuilder.getQueryTopicDump();
+			PreparedStatement stmt = getQueryBuilder().getQueryTopicDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setString(2, doReadBestLabel(topic));
 			stmt.setLong(3, Long.parseLong(topic.getId()));
@@ -4994,7 +4966,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 		 * removed construct -> load data from history
 		 */
 		else {
-			PreparedStatement stmt = queryBuilder.getQueryReadHistory();
+			PreparedStatement stmt = getQueryBuilder().getQueryReadHistory();
 			stmt.setLong(1, Long.parseLong(c.getId()));
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
@@ -5177,8 +5149,8 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 *            the construct id
 	 * @return the read only construct
 	 */
-	private final IConstruct readHistoryConstruct(final long id) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadHistory();
+	protected final IConstruct readHistoryConstruct(final long id) throws SQLException {
+		PreparedStatement stmt = getQueryBuilder().getQueryReadHistory();
 		stmt.setLong(1, id);
 		ResultSet rs = stmt.executeQuery();
 		long parentId = -1;
@@ -5289,7 +5261,7 @@ public class Sql99QueryProcessor implements IQueryProcessor {
 	 */
 	public Set<ILocator> getLocators() throws SQLException {
 		Set<ILocator> locators = HashUtil.getHashSet();
-		PreparedStatement stmt = queryBuilder.getQueryReadTopicMapLocators();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadTopicMapLocators();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			locators.add(new LocatorImpl(rs.getString("reference"), rs.getString("id")));

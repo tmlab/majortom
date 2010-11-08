@@ -2,6 +2,7 @@ package de.topicmapslab.majortom.database.jdbc.hsqldb;
 
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 
 public class HSQLDBConnectionProvider  extends RDBMSConnectionProvider{
 	
@@ -17,5 +18,12 @@ public class HSQLDBConnectionProvider  extends RDBMSConnectionProvider{
 		return "org.hsqldb.jdbc.JDBCDriver";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public RDBMSSession openSession() {		
+		return super.openSession();
+	}
 
 }

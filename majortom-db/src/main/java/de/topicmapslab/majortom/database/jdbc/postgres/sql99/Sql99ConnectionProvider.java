@@ -43,7 +43,8 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	 * 
 	 * @param host
 	 *            the host
-	 * @param database database
+	 * @param database
+	 *            database
 	 * @param user
 	 *            the user
 	 * @param password
