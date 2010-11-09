@@ -442,7 +442,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		long t = System.currentTimeMillis();
 		String s = Double.toString(Math.round(Math.random() * Double.MAX_VALUE)); // UUID.randomUUID().toString();
 		if ( OUTPUT)
-		System.out.println("Generate an id in " + (System.currentTimeMillis() - t) + " ms");
+			System.out.println("Generate an id in " + (System.currentTimeMillis() - t) + " ms");
 		return s;
 	}
 }

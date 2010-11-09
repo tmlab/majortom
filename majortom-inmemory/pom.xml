@@ -9,7 +9,7 @@
 	<groupId>de.topicmapslab.majortom</groupId>
 	<artifactId>majortom-inMemory</artifactId>
 	<name>MaJorToM InMemory</name>
-	<version>${project.parent.version}</version>	
+	<version>${project.parent.version}</version>
 	<build>
 
 		<!-- copying the resources form the root of the directory, necessary for 
@@ -53,6 +53,10 @@
 			<id>de.topicmapslab</id>
 			<url>http://maven.topicmapslab.de/public</url>
 		</repository>
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -65,6 +69,11 @@
 			<artifactId>majortom-testsuite</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.uncommons</groupId>
+			<artifactId>uncommons-maths</artifactId>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>

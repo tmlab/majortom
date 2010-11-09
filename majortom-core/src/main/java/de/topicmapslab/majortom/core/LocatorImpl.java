@@ -46,7 +46,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	 *            the reference
 	 */
 	public LocatorImpl(String reference) throws MalformedIRIException {
-		this(reference, UUID.randomUUID().toString());
+		this(reference, "");
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 			throw new MalformedIRIException("The given IRI reference is invalid.");
 		}
 		try {
-			this.reference = URLDecoder.decode(reference, "utf-8");
+			this.reference = URLDecoder.decode(reference, "utf-8"); 
 			uri = new URI(this.reference.replace(" ", "%20"));
 		} catch (URISyntaxException e) {
 			throw new MalformedIRIException("The given IRI reference '" + this.reference +"' is invalid.");
