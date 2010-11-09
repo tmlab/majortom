@@ -152,9 +152,17 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		globalSession = openSession();
 		try {
 			metaData = globalSession.getConnection().getMetaData();
+			switch(getDatabaseState()){
+				case STATE_DATABASE_IS_EMPTY:{
+					createSchema();
+				}break;
+				case STATE_DATABASE_IS_INVALID:{
+					throw new TopicMapStoreException("Database schema not valid for majortom jdbc store");
+				}
+			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot establish global session!", e);
-		}
+		}		
 	}
 
 	/**
