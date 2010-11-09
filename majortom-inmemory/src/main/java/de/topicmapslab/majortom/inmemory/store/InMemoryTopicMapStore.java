@@ -15,6 +15,7 @@ import org.tmapi.index.Index;
 import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
+import org.uncommons.maths.random.MersenneTwisterRNG;
 
 import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
 import de.topicmapslab.majortom.comparator.NameByValueComparator;
@@ -89,6 +90,8 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
+	private MersenneTwisterRNG random;
+	
 	private IdentityStore identityStore;
 	private CharacteristicsStore characteristicsStore;
 	private TypedStore typedStore;
@@ -2945,13 +2948,15 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.reificationStore = null;
 		this.associationStore = null;
 		this.revisionStore = null;
+		random = null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public synchronized void connect() throws TopicMapStoreException {
-		super.connect();
+		this.random = new MersenneTwisterRNG();
+		super.connect();		
 		this.identityStore = createIdentityStore(this);
 		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
 		this.typedStore = createTypedStore(this);
@@ -2960,8 +2965,9 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.reificationStore = createReificationStore(this);
 		this.associationStore = createAssociationStore(this);
 		this.revisionStore = createRevisionStore(this);
-
+		
 		this.identity = new InMemoryIdentity(generateId());
+		
 
 		/*
 		 * store topic map creation revision
@@ -3546,5 +3552,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public InMemoryIdentity getTopicMapIdentity() {
 		return identity;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String generateId() {
+		return Long.toString(random.nextLong());
 	}
 }
