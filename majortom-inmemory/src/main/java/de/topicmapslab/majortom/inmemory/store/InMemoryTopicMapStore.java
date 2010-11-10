@@ -15,7 +15,8 @@ import org.tmapi.index.Index;
 import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
-import org.uncommons.maths.random.MersenneTwisterRNG;
+
+import cern.jet.random.engine.MersenneTwister;
 
 import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
 import de.topicmapslab.majortom.comparator.NameByValueComparator;
@@ -90,7 +91,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
-	private MersenneTwisterRNG random;
+	private MersenneTwister random;
 	
 	private IdentityStore identityStore;
 	private CharacteristicsStore characteristicsStore;
@@ -2955,7 +2956,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public synchronized void connect() throws TopicMapStoreException {
-		this.random = new MersenneTwisterRNG();
+		this.random = new MersenneTwister();
 		super.connect();		
 		this.identityStore = createIdentityStore(this);
 		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
