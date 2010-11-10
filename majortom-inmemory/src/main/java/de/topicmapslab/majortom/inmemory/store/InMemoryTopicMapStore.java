@@ -92,7 +92,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
-	private Random random;
+	private RandomEngine random;
 
 	private IdentityStore identityStore;
 	private CharacteristicsStore characteristicsStore;
@@ -2990,7 +2990,8 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public synchronized void connect() throws TopicMapStoreException {	
-		this.random = new Random(System.nanoTime()); // MersenneTwister((new Random()).nextInt());
+		this.random = new MersenneTwister((new Random()).nextInt());
+		
 		super.connect();
 		this.identityStore = createIdentityStore(this);
 		this.characteristicsStore = createCharacteristicsStore(this,
