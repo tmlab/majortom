@@ -330,51 +330,51 @@ public interface ISql99IndexQueries {
 
 		interface Paged {
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_REGEXP_AND_DATATYPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ~* ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value ~* ?) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_REGEXP_AND_DATATYPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ~* ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value ~* ?) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_REGEXP = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_topicmap = ? AND value ~* ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value ~* ? ) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_REGEXP = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_topicmap = ? AND value ~* ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value ~* ? ) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_DATATYPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ?) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_DATATYPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ?) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS_BY_VALUE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_topicmap = ? AND value = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value = ? ) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS_BY_VALUE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_topicmap = ? AND value = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value = ? ) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_CHARACTERISTICS = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value = ?) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_CHARACTERISTICS = "SELECT r.id, r.id_parent, r.type FROM ( SELECT o.id, id_parent, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type FROM names WHERE id_topicmap = ? AND value = ?) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE = "SELECT r.id, r.id_parent, r.other,  r.type FROM ( SELECT o.id, id_parent, NULL AS other, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type FROM variants AS v, locators AS l, names AS n WHERE v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ? AND n.id = v.id_parent) AS r ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE = "SELECT r.id, r.id_parent, r.other,  r.type FROM ( SELECT o.id, id_parent, NULL AS other, 'o' AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type FROM variants AS v, locators AS l, names AS n WHERE v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ? AND n.id = v.id_parent) AS r ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_NAMES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? ORDER BY id OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_NAMES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? ORDER BY value OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_NAMES_BY_VALUE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ILIKE ? ORDER BY id OFFSET ? LIMIT ?  ;";
+			public static final String QUERY_SELECT_NAMES_BY_VALUE = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ILIKE ? ORDER BY value OFFSET ? LIMIT ?  ;";
 
-			public static final String QUERY_SELECT_NAMES_BY_REGEXP = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ~* ?  ORDER BY id OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_NAMES_BY_REGEXP = "SELECT id, id_parent FROM names WHERE id_topicmap = ? AND value ~* ?  ORDER BY value OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_OCCURRENCES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? ORDER BY id OFFSET ? LIMIT ?  ;";
+			public static final String QUERY_SELECT_OCCURRENCES = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? ORDER BY value OFFSET ? LIMIT ?  ;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? ORDER BY o.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? ORDER BY o.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE = "SELECT o.id, id_parent FROM  occurrences AS o WHERE id_topicmap = ? AND ? <= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id ) AND ? >= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id ) ORDER BY o.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_DATERANGE = "SELECT o.id, id_parent FROM  occurrences AS o WHERE id_topicmap = ? AND ? <= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id ) AND ? >= ( SELECT CASE WHEN ( o2.id = o.id AND o2.id_datatype = l2.id AND l2.reference = 'http://www.w3.org/2001/XMLSchema#dateTime' ) THEN ( CAST( value AS timestamp with time zone )) ELSE NULL END FROM occurrences AS o2, locators AS l2 WHERE o.id = o2.id AND o2.id_datatype = l2.id ) ORDER BY o.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_RANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND CAST ( value AS double precision ) BETWEEN ? AND ?  ORDER BY o.id OFFSET ? LIMIT ? ";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_RANGE = "SELECT o.id, id_parent FROM  occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? AND CAST ( value AS double precision ) BETWEEN ? AND ?  ORDER BY o.value OFFSET ? LIMIT ? ";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ILIKE ?   ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ILIKE ?   ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ~* ?   ORDER BY id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND value ~* ?   ORDER BY value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ILIKE ? AND o.id_datatype = l.id AND l.reference = ?   ORDER BY o.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_VALUE_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ILIKE ? AND o.id_datatype = l.id AND l.reference = ?   ORDER BY o.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ~* ? AND o.id_datatype = l.id AND l.reference = ?   ORDER BY o.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCES_BY_REGEXP_AND_DATATYPE = "SELECT o.id, id_parent FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value ~* ? AND o.id_datatype = l.id AND l.reference = ?   ORDER BY o.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_VARIANTS = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ?   ORDER BY v.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANTS = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ?   ORDER BY v.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_VARIANTS_BY_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ?   ORDER BY v.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANTS_BY_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ?   ORDER BY v.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_VARIANTS_BY_VALUE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ?  ORDER BY v.id OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_VARIANTS_BY_VALUE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ?  ORDER BY v.value OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_VARIANTS_BY_REGEXP = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ?  ORDER BY v.id OFFSET ? LIMIT ? ;";
+			public static final String QUERY_SELECT_VARIANTS_BY_REGEXP = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ?  ORDER BY v.value OFFSET ? LIMIT ? ;";
 
-			public static final String QUERY_SELECT_VARIANTS_BY_VALUE_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ? AND v.id_datatype = l.id AND l.reference = ? ORDER BY v.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANTS_BY_VALUE_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ILIKE ? AND v.id_datatype = l.id AND l.reference = ? ORDER BY v.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_VARIANTS_BY_REGEXP_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ? AND v.id_datatype = l.id AND l.reference = ?  ORDER BY v.id OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANTS_BY_REGEXP_AND_DATATYPE = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n, locators AS l  WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.value ~* ? AND v.id_datatype = l.id AND l.reference = ?  ORDER BY v.value OFFSET ? LIMIT ?;";
 		}
 	}
 
