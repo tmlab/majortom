@@ -244,13 +244,17 @@ public class ScopeStore implements IDataStore {
 	 */
 	public Set<IVariant> getScopedVariants(IScope scope) {
 		Set<IVariant> set = HashUtil.getHashSet();
-		if (scopedVariants != null && scopedVariants.containsKey(scope)) {
-			for (IVariant variant : scopedVariants.get(scope)) {
-				Set<ITopic> themes = HashUtil.getHashSet(scope.getThemes());
-				themes.addAll(getScope(variant.getParent()).getThemes());
-				IScope s = getScope(themes);
-				if (scope.equals(s)) {
-					set.add(variant);
+		if (scopedVariants != null) {
+			for ( IScope _scope : scopedVariants.keySet()){
+				if ( scope.getThemes().containsAll(_scope.getThemes())){
+					for ( IVariant variant : scopedVariants.get(_scope)){
+						Set<ITopic> themes = HashUtil.getHashSet(_scope.getThemes());
+						themes.addAll(getScope(variant.getParent()).getThemes());
+						IScope s = getScope(themes);
+						if (scope.equals(s)) {
+							set.add(variant);
+						}
+					}
 				}
 			}
 		}

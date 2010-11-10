@@ -764,7 +764,7 @@ public class TestEventModel extends MaJorToMTestCase {
 			@Override
 			public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue,
 					Object oldValue) {
-				if (event == REIFIER_SET) {
+				if (event == REIFIER_SET && !checked) {
 					assertEquals(reifiable, notifier);
 					assertEquals("Old Reifier for " + reifiable.getClass().getSimpleName() + " is wrong!", oldReifier,
 							oldValue);

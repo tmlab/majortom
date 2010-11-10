@@ -361,7 +361,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void removeItemIdentifer(final IConstruct c, final ILocator identifier) {
 		if (itemIdentifiers == null) {
-			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
+			return;
 		}
 		this.itemIdentifiers.remove(identifier);
 
@@ -384,7 +384,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void removeSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
-			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
+			return;
 		}
 		this.subjectIdentifiers.remove(identifier);
 
@@ -407,7 +407,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void removeSubjectLocator(final ITopic t, final ILocator identifier) {
 		if (subjectLocators == null) {
-			throw new TopicMapStoreException("Identifier is unknown or internal store is empty.");
+			return;
 		}
 		this.subjectLocators.remove(identifier);
 

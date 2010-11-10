@@ -66,8 +66,7 @@
 					<groupId>org.tmapi</groupId>
 					<artifactId>tmapi</artifactId>
 				</exclusion>
-			</exclusions>
-			
+			</exclusions>			
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
