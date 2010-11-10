@@ -46,7 +46,7 @@ public abstract class VirtualTopicMapStore extends InMemoryTopicMapStore {
 	 */
 	public VirtualTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store) {
 		super(topicMapSystem);
-		this.store = store;
+		this.store = store;		
 	}
 
 	/**

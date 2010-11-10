@@ -6,6 +6,7 @@ import org.tmapi.index.Index;
 
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IConstructFactory;
+import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
@@ -297,4 +298,20 @@ public interface ITopicMapStore {
 	 * @return the identity
 	 */
 	public ITopicMapStoreIdentity getTopicMapIdentity();
+	
+	/**
+	 * Returns the base locator of the topic map
+	 * 
+	 * @return the base locator
+	 * @since 1.1.4
+	 */	
+	public ILocator getTopicMapBaseLocator();
+
+	/**
+	 * The topic map base locator reference
+	 * 
+	 * @return the topicMapBaseLocator
+	 * @since 1.1.4
+	 */
+	public String getTopicMapBaseLocatorReference();
 }

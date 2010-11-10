@@ -513,8 +513,7 @@ public class Jdbc2Construct {
 		List<RevisionChangeData> list = new LinkedList<RevisionChangeData>();
 		while (rs.next()) {
 			RevisionChangeData data = new RevisionChangeData();
-			data.revision = new RevisionImpl(processor.getSession().getTopicMapStore(),
-					rs.getLong("id_revision")) {
+			data.revision = new RevisionImpl(processor.getSession().getTopicMapStore(), rs.getLong("id_revision")) {
 			};
 			data.idNotifier = rs.getLong("id_notifier");
 			data.type = TopicMapEventType.valueOf(rs.getString("type"));
@@ -534,181 +533,191 @@ public class Jdbc2Construct {
 			IConstruct notifier = null;
 			Object oldValue = null, newValue = null;
 			switch (data.type) {
-			case ASSOCIATION_ADDED: {
-				notifier = topicMap;
-				newValue = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
-						.newAssociation(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-			}
-				break;
-			case ASSOCIATION_REMOVED: {
-				notifier = topicMap;
-				oldValue = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
-						.newAssociation(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
-			}
-				break;
-			case DATATYPE_SET: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = data.newValue;
-				oldValue = data.oldValue;
-			}
-				break;
-			case ITEM_IDENTIFIER_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = data.newValue;
-			}
-				break;
-			case ITEM_IDENTIFIER_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				oldValue = data.oldValue;
-			}
-				break;
-			case MERGE: {
-				notifier = topicMap;
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
-			}
-				break;
-			case NAME_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = new JdbcReadOnlyName(processor, topicMap.getStore().getConstructFactory()
-						.newName(new JdbcIdentity(Long.parseLong(data.newValue)), (ITopic) notifier));
-			}
-				break;
-			case NAME_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				oldValue = new JdbcReadOnlyName(processor, topicMap.getStore().getConstructFactory()
-						.newName(new JdbcIdentity(Long.parseLong(data.oldValue)), (ITopic) notifier));
-			}
-				break;
-			case OCCURRENCE_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = new JdbcReadOnlyOccurrence(processor, topicMap.getStore().getConstructFactory()
-						.newOccurrence(new JdbcIdentity(Long.parseLong(data.newValue)), (ITopic) notifier));
-			}
-				break;
-			case OCCURRENCE_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				oldValue = new JdbcReadOnlyOccurrence(processor, topicMap.getStore().getConstructFactory()
-						.newOccurrence(new JdbcIdentity(Long.parseLong(data.oldValue)), (ITopic) notifier));
-			}
-				break;
-			case PLAYER_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-				if (data.oldValue != null) {
+				case ASSOCIATION_ADDED: {
+					notifier = topicMap;
+					newValue = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
+							.newAssociation(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
+				}
+					break;
+				case ASSOCIATION_REMOVED: {
+					notifier = topicMap;
+					oldValue = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
+							.newAssociation(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
+				}
+					break;
+				case DATATYPE_SET: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = data.newValue;
+					oldValue = data.oldValue;
+				}
+					break;
+				case ITEM_IDENTIFIER_ADDED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = data.newValue;
+				}
+					break;
+				case ITEM_IDENTIFIER_REMOVED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					oldValue = data.oldValue;
+				}
+					break;
+				case MERGE: {
+					notifier = topicMap;
+					newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
 					oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
 							.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
 				}
-			}
-				break;
-			case REIFIER_SET: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-				if (data.oldValue != null) {
+					break;
+				case NAME_ADDED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = new JdbcReadOnlyName(processor, topicMap.getStore().getConstructFactory()
+							.newName(new JdbcIdentity(Long.parseLong(data.newValue)), (ITopic) notifier));
+				}
+					break;
+				case NAME_REMOVED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					oldValue = new JdbcReadOnlyName(processor, topicMap.getStore().getConstructFactory()
+							.newName(new JdbcIdentity(Long.parseLong(data.oldValue)), (ITopic) notifier));
+				}
+					break;
+				case OCCURRENCE_ADDED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = new JdbcReadOnlyOccurrence(processor, topicMap.getStore().getConstructFactory()
+							.newOccurrence(new JdbcIdentity(Long.parseLong(data.newValue)), (ITopic) notifier));
+				}
+					break;
+				case OCCURRENCE_REMOVED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					oldValue = new JdbcReadOnlyOccurrence(processor, topicMap.getStore().getConstructFactory()
+							.newOccurrence(new JdbcIdentity(Long.parseLong(data.oldValue)), (ITopic) notifier));
+				}
+					break;
+				case PLAYER_MODIFIED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
+					if (data.oldValue != null) {
+						oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+								.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
+					}
+				}
+					break;
+				case REIFIER_SET: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					if (data.newValue != null) {
+						newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+								.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
+					}
+					if (data.oldValue != null) {
+						oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+								.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
+					}
+				}
+					break;
+				case ROLE_ADDED: {
+					notifier = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
+							.newAssociation(new JdbcIdentity(data.idNotifier), topicMap));
+					newValue = new JdbcReadOnlyAssociationRole(processor, topicMap
+							.getStore()
+							.getConstructFactory()
+							.newAssociationRole(new JdbcIdentity(Long.parseLong(data.newValue)),
+									(IAssociation) notifier));
+				}
+					break;
+				case ROLE_REMOVED: {
+					notifier = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
+							.newAssociation(new JdbcIdentity(data.idNotifier), topicMap));
+					oldValue = new JdbcReadOnlyAssociationRole(processor, topicMap
+							.getStore()
+							.getConstructFactory()
+							.newAssociationRole(new JdbcIdentity(Long.parseLong(data.oldValue)),
+									(IAssociation) notifier));
+				}
+					break;
+				case SCOPE_MODIFIED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = new ScopeImpl(data.newValue, processor.doReadThemes(topicMap,
+							Long.parseLong(data.newValue)));
+					if (data.oldValue != null) {
+						oldValue = new ScopeImpl(data.oldValue, processor.doReadThemes(topicMap,
+								Long.parseLong(data.oldValue)));
+					}
+				}
+					break;
+				case SUBJECT_LOCATOR_ADDED:
+				case SUBJECT_IDENTIFIER_ADDED: {
+					notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
+					newValue = data.newValue;
+				}
+					break;
+				case SUBJECT_IDENTIFIER_REMOVED:
+				case SUBJECT_LOCATOR_REMOVED: {
+					notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
+					oldValue = data.oldValue;
+				}
+					break;
+				case TYPE_ADDED:
+				case SUPERTYPE_ADDED: {
+					notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
+					newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
+				}
+					break;
+				case TYPE_REMOVED:
+				case SUPERTYPE_REMOVED: {
+					notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
 					oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
 							.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
 				}
-			}
-				break;
-			case ROLE_ADDED: {
-				notifier = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
-						.newAssociation(new JdbcIdentity(data.idNotifier), topicMap));
-				newValue = new JdbcReadOnlyAssociationRole(processor, topicMap.getStore().getConstructFactory()
-						.newAssociationRole(new JdbcIdentity(Long.parseLong(data.newValue)), (IAssociation) notifier));
-			}
-				break;
-			case ROLE_REMOVED: {
-				notifier = new JdbcReadOnlyAssociation(processor, topicMap.getStore().getConstructFactory()
-						.newAssociation(new JdbcIdentity(data.idNotifier), topicMap));
-				oldValue = new JdbcReadOnlyAssociationRole(processor, topicMap.getStore().getConstructFactory()
-						.newAssociationRole(new JdbcIdentity(Long.parseLong(data.oldValue)), (IAssociation) notifier));
-			}
-				break;
-			case SCOPE_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = new ScopeImpl(data.newValue, processor.doReadThemes(topicMap, Long.parseLong(data.newValue)));
-				if (data.oldValue != null) {
-					oldValue = new ScopeImpl(data.oldValue, processor.doReadThemes(topicMap,
-							Long.parseLong(data.oldValue)));
+					break;
+				case TOPIC_ADDED: {
+					notifier = topicMap;
+					newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
 				}
-			}
-				break;
-			case SUBJECT_LOCATOR_ADDED:
-			case SUBJECT_IDENTIFIER_ADDED: {
-				notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
-				newValue = data.newValue;
-			}
-				break;
-			case SUBJECT_IDENTIFIER_REMOVED:
-			case SUBJECT_LOCATOR_REMOVED: {
-				notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
-				oldValue = data.oldValue;
-			}
-				break;
-			case TYPE_ADDED:
-			case SUPERTYPE_ADDED: {
-				notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-			}
-				break;
-			case TYPE_REMOVED:
-			case SUPERTYPE_REMOVED: {
-				notifier = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(data.idNotifier), topicMap));
-				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
-			}
-				break;
-			case TOPIC_ADDED: {
-				notifier = topicMap;
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-			}
-				break;
-			case TOPIC_REMOVED: {
-				notifier = topicMap;
-				oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
-			}
-				break;
-			case TYPE_SET: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				if (data.oldValue != null) {
+					break;
+				case TOPIC_REMOVED: {
+					notifier = topicMap;
 					oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
 							.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
 				}
-				newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
-						.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
-			}
-				break;
-			case VALUE_MODIFIED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				oldValue = data.oldValue;
-				newValue = data.newValue;
-			}
-				break;
-			case VARIANT_ADDED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				newValue = processor.doReadConstruct(topicMap, Long.parseLong(data.newValue), true);
-			}
-				break;
-			case VARIANT_REMOVED: {
-				notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
-				oldValue = processor.doReadConstruct(topicMap, Long.parseLong(data.oldValue), true);
-			}
-				break;
-			case TOPIC_MAP_CREATED:{
-				notifier = topicMap;
-				newValue = topicMap;
-			}break;
+					break;
+				case TYPE_SET: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					if (data.oldValue != null) {
+						oldValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+								.newTopic(new JdbcIdentity(Long.parseLong(data.oldValue)), topicMap));
+					}
+					newValue = new JdbcReadOnlyTopic(processor, topicMap.getStore().getConstructFactory()
+							.newTopic(new JdbcIdentity(Long.parseLong(data.newValue)), topicMap));
+				}
+					break;
+				case VALUE_MODIFIED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					oldValue = data.oldValue;
+					newValue = data.newValue;
+				}
+					break;
+				case VARIANT_ADDED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					newValue = processor.doReadConstruct(topicMap, Long.parseLong(data.newValue), true);
+				}
+					break;
+				case VARIANT_REMOVED: {
+					notifier = processor.doReadConstruct(topicMap, data.idNotifier, true);
+					oldValue = processor.doReadConstruct(topicMap, Long.parseLong(data.oldValue), true);
+				}
+					break;
+				case TOPIC_MAP_CREATED: {
+					notifier = topicMap;
+					newValue = topicMap;
+				}
+					break;
 			}
 			changeset.add(new RevisionChangeImpl(data.revision, data.type, notifier, newValue, oldValue));
 		}

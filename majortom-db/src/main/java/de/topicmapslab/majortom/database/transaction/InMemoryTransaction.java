@@ -43,6 +43,7 @@ public class InMemoryTransaction extends TransactionImpl {
 		super(parent);
 		this.transactionTopicMapStore = new TransactionTopicMapStore(getTopicMap().getTopicMapSystem(), (ModifableTopicMapStoreImpl) parent.getStore(), this);
 		this.transactionTopicMapStore.setTopicMap(this);
+		this.transactionTopicMapStore.initialize(parent.getStore().getTopicMapBaseLocator());
 		this.transactionTopicMapStore.connect();
 	}
 

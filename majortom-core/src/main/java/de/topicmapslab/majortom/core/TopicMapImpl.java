@@ -294,23 +294,23 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 * {@inheritDoc}
 	 */
 	public Topic createTopicBySubjectIdentifier(Locator identifier) throws ModelConstraintException {
-//		if (identifier == null) {
-//			throw new ModelConstraintException(this, "Subject-identifier cannot be null");
-//		}
-//		Topic topic = getTopicBySubjectIdentifier(identifier);
-//		if (topic != null) {
-//			return topic;
-//		}
-//		Construct c = getConstructByItemIdentifier(identifier);
-//		if (c == null) {
+		if (identifier == null) {
+			throw new ModelConstraintException(this, "Subject-identifier cannot be null");
+		}
+		Topic topic = getTopicBySubjectIdentifier(identifier);
+		if (topic != null) {
+			return topic;
+		}
+		Construct c = getConstructByItemIdentifier(identifier);
+		if (c == null) {
 			return (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, identifier);
-//		} else if (c instanceof Topic) {
-//			topic = (Topic) c;
-//			topic.addSubjectIdentifier(identifier);
-//			return topic;
-//		}
-//		throw new IdentityConstraintException(c, null, identifier,
-//				"Item-Identifier already used by a construct which is not a topic!");
+		} else if (c instanceof Topic) {
+			topic = (Topic) c;
+			topic.addSubjectIdentifier(identifier);
+			return topic;
+		}
+		throw new IdentityConstraintException(c, null, identifier,
+				"Item-Identifier already used by a construct which is not a topic!");
 	}
 
 	/**
