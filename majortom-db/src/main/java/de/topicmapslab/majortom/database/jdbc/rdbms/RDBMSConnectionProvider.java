@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.Vector;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.ISession;
@@ -217,9 +218,15 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	public void createSchema() throws SQLException {
+		String[] allQueries = getSchemaQueries();
 		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_UPDATABLE);
-		stmt.executeUpdate(getSchemaQuery());
+		for(String query : allQueries) {
+			String q = query.trim();
+			if(!q.equals(""))
+				stmt.executeUpdate(query);
+		}
+		stmt.close();
 	}
 
 	/**
@@ -239,6 +246,16 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		}
 		scanner.close();
 		return buffer.toString();
+	}
+	
+	/**
+	 * Returns the queries needed to create the database schema (because mysql does not support multi-statements)
+	 * 
+	 * @return an array of queries
+	 */
+	
+	protected String[] getSchemaQueries() {
+		return getSchemaQuery().split(";");
 	}
 
 	/**
