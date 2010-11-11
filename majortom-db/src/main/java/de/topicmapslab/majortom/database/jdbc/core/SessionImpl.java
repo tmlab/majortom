@@ -69,9 +69,9 @@ public abstract class SessionImpl implements ISession {
 	public <T extends IQueryProcessor> T getProcessor() throws TopicMapStoreException {
 		try {
 			if (!isAlive()) {
-				openConnection();
+				connection = openConnection();
+				processor = createProcessor(connection);
 			}
-			processor = createProcessor(connection);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot initialize session for database!", e);
 		}
@@ -149,7 +149,7 @@ public abstract class SessionImpl implements ISession {
 	 */
 	public Connection getConnection() throws SQLException {
 		if (!isAlive()) {
-			openConnection();
+			connection = openConnection();
 		}
 		return connection;
 	}
