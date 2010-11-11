@@ -16,6 +16,8 @@
 
 package de.topicmapslab.majortom.model.store;
 
+import java.io.Serializable;
+
 /**
  * Interface definition of identity of a topic map construct contained by a
  * {@link ITopicMapStore}.
@@ -23,7 +25,7 @@ package de.topicmapslab.majortom.model.store;
  * @author Sven Krosse
  * 
  */
-public interface ITopicMapStoreIdentity {
+public interface ITopicMapStoreIdentity extends Serializable {
 
 	String getId();
 	

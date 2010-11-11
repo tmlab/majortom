@@ -38,6 +38,11 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public abstract class ConstructImpl implements IConstruct {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3425623439923025704L;
+
+	/**
 	 * removed flag
 	 */
 	private boolean removed = false;
@@ -45,17 +50,17 @@ public abstract class ConstructImpl implements IConstruct {
 	/**
 	 * the topic map
 	 */
-	private final ITopicMap topicMap;
+	private ITopicMap topicMap;
 
 	/**
 	 * the parent of this construct;
 	 */
-	private final IConstruct parent;
+	private IConstruct parent;
 
 	/**
 	 * the identity of this construct
 	 */
-	private final ITopicMapStoreIdentity identity;
+	private ITopicMapStoreIdentity identity;
 
 	/**
 	 * constructor
@@ -99,7 +104,7 @@ public abstract class ConstructImpl implements IConstruct {
 	 * {@inheritDoc}
 	 */
 	public String getId() {
-		return getIdentity().getId();//(String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
+		return getIdentity().getId();// (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
 
 	/**

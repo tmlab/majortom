@@ -1,5 +1,7 @@
 package de.topicmapslab.majortom.model.core;
 
+import java.io.Serializable;
+
 import org.tmapi.core.Construct;
 import org.tmapi.core.TopicInUseException;
 
@@ -9,7 +11,7 @@ import org.tmapi.core.TopicInUseException;
  * @author Sven Krosse
  * 
  */
-public interface IConstruct extends Construct, Comparable<IConstruct> {
+public interface IConstruct extends Construct, Comparable<IConstruct>, Serializable {
 
 	/**
 	 * Removes the current construct from the underlying topic map.

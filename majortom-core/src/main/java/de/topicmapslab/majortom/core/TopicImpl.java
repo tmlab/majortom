@@ -243,8 +243,8 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<Topic> getSupertypes() {		
-		return Collections.unmodifiableCollection((Collection<Topic>)getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUPERTYPE));
+	public Collection<Topic> getSupertypes() {
+		return Collections.unmodifiableSet((Set<Topic>) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.SUPERTYPE));
 	}
 
 	/**
@@ -942,22 +942,22 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 	public String getBestLabel() {
 		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme) {
 		return getBestLabel(theme, false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme, boolean strict) {
-		if ( theme == null ){
+		if (theme == null) {
 			throw new TopicMapStoreException("Theme cannot be null!");
 		}
 		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL, theme, strict);
 	}
-	
+
 }
