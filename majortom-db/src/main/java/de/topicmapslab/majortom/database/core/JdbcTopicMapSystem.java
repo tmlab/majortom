@@ -33,6 +33,7 @@ import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.store.TopicMapStoreFactory;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -83,21 +84,25 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 			if (database == null || host == null || user == null || dialect == null) {
 				throw new TMAPIRuntimeException("Missing connection properties!");
 			}
-
-			try {
-				/*
-				 * load locators
-				 */
-				IConnectionProvider provider = ConnectionProviderFactory.getFactory().newConnectionProvider(
-						dialect.toString(), host.toString(), database.toString(), user.toString(), password == null ? ""
-								: password.toString());
-				ISession session = provider.openSession();
+			/*
+			 * load locators
+			 */
+			IConnectionProvider provider = ConnectionProviderFactory.getFactory().newConnectionProvider(
+					dialect.toString(), host.toString(), database.toString(), user.toString(), password == null ? ""
+							: password.toString());
+			ISession session = provider.openSession();
+			try {				
 				for (ILocator loc : session.getProcessor().getLocators()) {
 					storedTopicMapLocators.add(loc);
 				}
-				session.close();
 			} catch (SQLException e) {
-				throw new TMAPIRuntimeException("Connection or communiation with database failed!", e);
+				// VOID
+			}finally{
+				try {
+					session.close();
+				} catch (SQLException e) {
+					throw new TopicMapStoreException("Session cannot be closed!");
+				}
 			}
 		}
 		return storedTopicMapLocators;

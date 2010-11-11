@@ -1,5 +1,6 @@
 package de.topicmapslab.majortom.model.core;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -13,7 +14,7 @@ import org.tmapi.core.Locator;
  * @author Sven Krosse
  * 
  */
-public interface ILocator extends Locator {
+public interface ILocator extends Locator, Serializable {
 
 	/**
 	 * Returns the locator as instance of {@link URI}.

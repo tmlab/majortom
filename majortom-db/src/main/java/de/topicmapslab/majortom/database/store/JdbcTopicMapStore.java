@@ -106,6 +106,10 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 
 	/**
+	 * 
+	 */
+	private static final String MESSAGE_SESSION_CANNOT_BE_CLOSED = "Session cannot be closed!";
+	/**
 	 * the connection provider
 	 */
 	private IConnectionProvider provider;
@@ -159,11 +163,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IAssociation a = session.getProcessor().doCreateAssociation(topicMap, type, themes);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -178,6 +181,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return a;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -185,25 +194,28 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected ILocator doCreateItemIdentifier(ITopicMap topicMap) {
-		return doCreateLocator(
-				topicMap,
-				getTopicMapBaseLocator().getReference()
-						+ (getTopicMapBaseLocator().getReference().endsWith("/")
-								|| getTopicMapBaseLocator().getReference().endsWith("#") ? "" : "/") + UUID.randomUUID());
+		return doCreateLocator(topicMap, getTopicMapBaseLocator().getReference()
+				+ (getTopicMapBaseLocator().getReference().endsWith("/")
+						|| getTopicMapBaseLocator().getReference().endsWith("#") ? "" : "/") + UUID.randomUUID());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ILocator locator = session.getProcessor().doCreateLocator(topicMap, reference);
 			session.commit();
-			session.close();
 			return locator;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -219,11 +231,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IName n = session.getProcessor().doCreateName(topic, value, themes);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -239,6 +250,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -255,12 +272,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-
-			ISession session = provider.openSession();
 			IName n = session.getProcessor().doCreateName(topic, type, value, themes);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -276,6 +291,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return n;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -329,12 +350,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype,
 			Collection<ITopic> themes) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-
-			ISession session = provider.openSession();
 			IOccurrence o = session.getProcessor().doCreateOccurrence(topic, type, value, datatype, themes);
 			session.commit();
-			session.close();
 
 			/*
 			 * notify listener
@@ -352,6 +371,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -360,12 +385,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-
-			ISession session = provider.openSession();
 			IAssociationRole r = session.getProcessor().doCreateRole(association, type, player);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -380,6 +403,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -387,14 +416,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IScope scope = session.getProcessor().doCreateScope(topicMap, themes);
 			session.commit();
-			session.close();
 			return scope;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -402,12 +436,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doCreateTopicWithoutIdentifier(topicMap);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -419,6 +451,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -427,11 +465,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doCreateTopicByItemIdentifier(topicMap, itemIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -445,6 +482,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -453,11 +496,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doCreateTopicBySubjectIdentifier(topicMap, subjectIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -471,6 +513,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -479,11 +527,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doCreateTopicBySubjectLocator(topicMap, subjectLocator);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -497,6 +544,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -523,11 +576,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IVariant v = session.getProcessor().doCreateVariant(name, value, datatype, themes);
 			session.commit();
-			session.close();
 			/*
 			 * create revision
 			 */
@@ -543,6 +595,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return v;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -557,8 +615,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doMergeTopics(ITopic context, ITopic other) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic newTopic = session.getProcessor().doCreateTopicWithoutIdentifier(getTopicMap());
 			/*
 			 * store history and notify listeners
@@ -585,7 +643,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			oldId = other.getId();
 			((TopicImpl) other).getIdentity().setId(newTopic.getId());
 			session.commit();
-			session.close();
 			/*
 			 * store history and notify listeners
 			 */
@@ -594,6 +651,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.ID_MODIFIED, context, newTopic.getId(), oldId);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -601,11 +664,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doModifyItemIdentifier(c, itemIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -616,6 +678,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -623,12 +691,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyPlayer(IAssociationRole role, ITopic player) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic oldPlayer = session.getProcessor().doReadPlayer(role);
 			session.getProcessor().doModifyPlayer(role, player);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -639,6 +706,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.PLAYER_MODIFIED, role, player, oldPlayer);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -646,12 +719,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyReifier(IReifiable r, ITopic reifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic oldReifier = session.getProcessor().doReadReification(r);
 			session.getProcessor().doModifyReifier(r, reifier);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -662,6 +734,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.REIFIER_SET, r, reifier, oldReifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -669,13 +747,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyScope(IScopable s, ITopic theme) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IScope oldScope = session.getProcessor().doReadScope(s);
 			session.getProcessor().doModifyScope(s, theme);
 			IScope scope = session.getProcessor().doReadScope(s);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -686,6 +763,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, scope, oldScope);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -693,11 +776,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doModifySubjectIdentifier(t, subjectIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -708,6 +790,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -715,11 +803,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doModifySubjectLocator(t, subjectLocator);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -730,6 +817,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_ADDED, t, subjectLocator, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -737,11 +830,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySupertype(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doModifySupertype(t, type);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -759,6 +851,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -766,11 +864,17 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyTag(ITopicMap tm, String tag) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doCreateTag(tag, new GregorianCalendar());
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -778,13 +882,18 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyTag(ITopicMap tm, String tag, Calendar timestamp) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doCreateTag(tag, timestamp);
 			session.commit();
-			session.close();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -792,12 +901,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyType(ITypeable t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic oldType = session.getProcessor().doReadType(t);
 			session.getProcessor().doModifyType(t, type);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -808,6 +916,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.TYPE_SET, t, type, oldType);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -815,11 +929,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyTopicType(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doModifyType(t, type);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -837,6 +950,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -844,12 +963,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyValue(IName n, String value) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			String oldValue = session.getProcessor().doReadValue(n).toString();
 			session.getProcessor().doModifyValue(n, value);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -860,6 +978,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.VALUE_MODIFIED, n, value, oldValue);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -874,13 +998,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Object oldValue = session.getProcessor().doReadValue(t);
 			ILocator oldDatatype = session.getProcessor().doReadDataType(t);
 			session.getProcessor().doModifyValue(t, value, datatype);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -894,6 +1017,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.DATATYPE_SET, t, datatype, oldDatatype);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -929,17 +1058,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(t, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -947,16 +1081,21 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void doModifyMetaData(IRevision revision, String key, String value) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doCreateMetadata(revision, key, value);
 			session.commit();
-			session.close();
 			if (isCachingEnabled()) {
 				getCache().clearMetaData(revision);
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -964,17 +1103,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(t, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -982,17 +1126,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(t, type, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1000,17 +1149,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopic t, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(t, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1018,17 +1172,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopicMap tm) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1036,17 +1195,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1054,17 +1218,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm, type, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1072,17 +1241,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociation> doReadAssociation(ITopicMap tm, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1090,14 +1264,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Changeset doReadChangeSet(IRevision r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Changeset set = session.getProcessor().doReadChangeset(getTopicMap(), r);
 			session.commit();
-			session.close();
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1105,14 +1284,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public TopicMapEventType doReadChangeSetType(IRevision r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			TopicMapEventType type = session.getProcessor().doReadChangesetType(getTopicMap(), r);
 			session.commit();
-			session.close();
 			return type;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1120,17 +1304,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor().doReadCharacteristics(t));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1138,17 +1327,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor().doReadCharacteristics(t, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1157,18 +1351,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor()
 					.doReadCharacteristics(t, type, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1176,17 +1375,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ICharacteristics> doReadCharacteristics(ITopic t, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor().doReadCharacteristics(t, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1194,16 +1398,21 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IConstruct doReadConstruct(ITopicMap t, String id) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IConstruct c = session.getProcessor().doReadConstruct(t, Long.parseLong(id), false);
 			session.commit();
-			session.close();
 			return c;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} catch (NumberFormatException e) {
 			throw new TopicMapStoreException("Given Id is invalid for the current topic map store.", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1211,14 +1420,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IConstruct doReadConstruct(ITopicMap t, ILocator itemIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IConstruct c = session.getProcessor().doReadConstruct(t, itemIdentifier);
 			session.commit();
-			session.close();
 			return c;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1226,14 +1440,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ILocator doReadDataType(IDatatypeAware d) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ILocator loc = session.getProcessor().doReadDataType(d);
 			session.commit();
-			session.close();
 			return loc;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1241,14 +1460,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadFutureRevision(IRevision r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IRevision rev = session.getProcessor().doReadFutureRevision(getTopicMap(), r);
 			session.commit();
-			session.close();
 			return rev;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1266,17 +1490,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ILocator> doReadItemIdentifiers(IConstruct c) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ILocator> set = HashUtil.getHashSet(session.getProcessor().doReadItemIdentifiers(c));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1284,17 +1513,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IName> doReadNames(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IName> set = HashUtil.getHashSet(session.getProcessor().doReadNames(t, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1302,17 +1536,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IName> doReadNames(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IName> set = HashUtil.getHashSet(session.getProcessor().doReadNames(t, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1320,17 +1559,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IName> doReadNames(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IName> set = HashUtil.getHashSet(session.getProcessor().doReadNames(t, type, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1338,17 +1582,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IName> doReadNames(ITopic t, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IName> set = HashUtil.getHashSet(session.getProcessor().doReadNames(t, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1356,17 +1605,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IOccurrence> doReadOccurrences(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IOccurrence> set = HashUtil.getHashSet(session.getProcessor().doReadOccurrences(t, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1374,17 +1628,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IOccurrence> set = HashUtil.getHashSet(session.getProcessor().doReadOccurrences(t, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1392,17 +1651,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IOccurrence> set = HashUtil.getHashSet(session.getProcessor().doReadOccurrences(t, type, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1410,17 +1674,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IOccurrence> doReadOccurrences(ITopic t, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IOccurrence> set = HashUtil.getHashSet(session.getProcessor().doReadOccurrences(t, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1428,14 +1697,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadPlayer(IAssociationRole role) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doReadPlayer(role);
 			session.commit();
-			session.close();
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1443,14 +1717,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IRevision doReadPastRevision(IRevision r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IRevision rev = session.getProcessor().doReadPastRevision(getTopicMap(), r);
 			session.commit();
-			session.close();
 			return rev;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1458,14 +1737,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IReifiable doReadReification(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IReifiable r = session.getProcessor().doReadReification(t);
 			session.commit();
-			session.close();
 			return r;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1473,14 +1757,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadReification(IReifiable r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic t = session.getProcessor().doReadReification(r);
 			session.commit();
-			session.close();
 			return t;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1488,14 +1777,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Calendar doReadRevisionTimestamp(IRevision r) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Calendar c = session.getProcessor().doReadTimestamp(r);
 			session.commit();
-			session.close();
 			return c;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1503,17 +1797,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ITopic> doReadRoleTypes(IAssociation association) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ITopic> set = HashUtil.getHashSet(session.getProcessor().doReadRoleTypes(association));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1521,17 +1820,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociationRole> doReadRoles(IAssociation association) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> set = HashUtil.getHashSet(session.getProcessor().doReadRoles(association, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1539,17 +1843,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> set = HashUtil.getHashSet(session.getProcessor().doReadRoles(association, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1557,17 +1866,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociationRole> doReadRoles(ITopic player) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> set = HashUtil.getHashSet(session.getProcessor().doReadRoles(player, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1575,17 +1889,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> set = HashUtil.getHashSet(session.getProcessor().doReadRoles(player, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1594,18 +1913,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType)
 			throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> set = HashUtil
 					.getHashSet(session.getProcessor().doReadRoles(player, type, assocType));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1613,8 +1937,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public IScope doReadScope(IScopable s) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IScope scope = session.getProcessor().doReadScope(s);
 			/*
 			 * add scope of name if construct is a variant
@@ -1626,10 +1950,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				scope = session.getProcessor().doCreateScope(getTopicMap(), themes);
 			}
 			session.commit();
-			session.close();
 			return scope;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1637,17 +1966,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ILocator> doReadSubjectIdentifiers(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ILocator> set = HashUtil.getHashSet(session.getProcessor().doReadSubjectIdentifiers(t));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1655,17 +1989,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ILocator> doReadSubjectLocators(ITopic t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ILocator> set = HashUtil.getHashSet(session.getProcessor().doReadSubjectLocators(t));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1680,8 +2019,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public List<ITopic> getSuptertypes(ITopic t, int offset, int limit) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			List<ITopic> supertypes = HashUtil.getList(session.getProcessor().doReadSuptertypes(t, offset, limit));
 			if (existsTmdmSupertypeSubtypeAssociationType()) {
 				for (IAssociation association : session.getProcessor().doReadAssociation(t,
@@ -1705,10 +2044,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				}
 			}
 			session.commit();
-			session.close();
 			return supertypes;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1716,14 +2060,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic topic = session.getProcessor().doReadTopicBySubjectIdentifier(t, subjectIdentifier);
 			session.commit();
-			session.close();
 			return topic;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1731,14 +2080,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic topic = session.getProcessor().doReadTopicBySubjectLocator(t, subjectLocator);
 			session.commit();
-			session.close();
 			return topic;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1746,17 +2100,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ITopic> set = HashUtil.getHashSet(session.getProcessor().doReadTopics(t));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1764,17 +2123,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ITopic> doReadTopics(ITopicMap t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ITopic> set = HashUtil.getHashSet(session.getProcessor().doReadTopics(t, type));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1782,14 +2146,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic doReadType(ITypeable typed) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic topic = session.getProcessor().doReadType(typed);
 			session.commit();
-			session.close();
 			return topic;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1804,8 +2173,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<ITopic> getTypes(ITopic t, int offset, int limit) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<ITopic> types = HashUtil.getHashSet(session.getProcessor().doReadTypes(t, offset, limit));
 			if (existsTmdmTypeInstanceAssociationType()) {
 				for (IAssociation association : session.getProcessor().doReadAssociation(t,
@@ -1825,10 +2194,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				}
 			}
 			session.commit();
-			session.close();
 			return types;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1836,14 +2210,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IName n) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Object value = session.getProcessor().doReadValue(n);
 			session.commit();
-			session.close();
 			return value;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1851,14 +2230,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Object doReadValue(IDatatypeAware t) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Object value = session.getProcessor().doReadValue(t);
 			session.commit();
-			session.close();
 			return value;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1867,16 +2251,21 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T doReadValue(IDatatypeAware t, Class<T> type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			T value = (T) DatatypeAwareUtils.toValue(session.getProcessor().doReadValue(t), type);
 			session.commit();
-			session.close();
 			return value;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} catch (Exception e) {
 			throw new TopicMapStoreException("Cannot convert to given type", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1884,17 +2273,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IVariant> doReadVariants(IName n) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IVariant> set = HashUtil.getHashSet(session.getProcessor().doReadVariants(n, -1, -1));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1902,17 +2296,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Set<IVariant> doReadVariants(IName n, IScope scope) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IVariant> set = HashUtil.getHashSet(session.getProcessor().doReadVariants(n, scope));
 			session.commit();
-			session.close();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
 			}
 			return set;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1920,17 +2319,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public Map<String, String> doReadMetaData(IRevision revision) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Map<String, String> map = session.getProcessor().doReadMetadata(revision);
 			session.commit();
-			session.close();
 			if (map.isEmpty()) {
 				return Collections.emptyMap();
 			}
 			return map;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1938,14 +2342,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public String doReadMetaData(IRevision revision, String key) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			String value = session.getProcessor().doReadMetadataByKey(revision, key);
 			session.commit();
-			session.close();
 			return value;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1953,14 +2362,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public String doReadBestLabel(ITopic topic) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			String label = session.getProcessor().doReadBestLabel(topic);
 			session.commit();
-			session.close();
 			return label;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1968,14 +2382,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			String label = session.getProcessor().doReadBestLabel(topic, theme, strict);
 			session.commit();
-			session.close();
 			return label;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -1983,15 +2402,14 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Set<IAssociationRole> roles = HashUtil.getHashSet(session.getProcessor().doReadRoles(association, -1, -1));
 			/*
 			 * remove association
 			 */
 			if (!session.getProcessor().doRemoveAssociation(association, cascade)) {
 				session.commit();
-				session.close();
 				IRevision revision = createRevision(TopicMapEventType.ASSOCIATION_REMOVED);
 				for (IAssociationRole role : roles) {
 					/*
@@ -2013,10 +2431,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
 			} else {
 				session.commit();
-				session.close();
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2024,11 +2447,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveItemIdentifier(c, itemIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2039,6 +2461,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null, itemIdentifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2046,8 +2474,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic parent = name.getParent();
 			ITopic reifier = (ITopic) name.getReifier();
 			Set<IVariant> variants = HashUtil.getHashSet(session.getProcessor().doReadVariants(name, -1, -1));
@@ -2056,7 +2484,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveName(name, cascade)) {
 				session.commit();
-				session.close();
 				IRevision revision = createRevision(TopicMapEventType.NAME_REMOVED);
 				/*
 				 * notify listener
@@ -2091,10 +2518,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
 			} else {
 				session.commit();
-				session.close();
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2102,8 +2534,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			ITopic parent = occurrence.getParent();
 			ITopic reifier = (ITopic) occurrence.getReifier();
 			/*
@@ -2111,7 +2543,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveOccurrence(occurrence, cascade)) {
 				session.commit();
-				session.close();
 				IRevision revision = createRevision(TopicMapEventType.OCCURRENCE_REMOVED);
 				if (reifier != null) {
 					/*
@@ -2133,10 +2564,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
 			} else {
 				session.commit();
-				session.close();
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2144,8 +2580,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IAssociation parent = role.getParent();
 			ITopic reifier = (ITopic) role.getReifier();
 			/*
@@ -2153,7 +2589,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveRole(role, cascade)) {
 				session.commit();
-				session.close();
 				IRevision revision = createRevision(TopicMapEventType.ROLE_REMOVED);
 				if (reifier != null) {
 					/*
@@ -2175,10 +2610,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
 			} else {
 				session.commit();
-				session.close();
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2186,13 +2626,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveScope(IScopable s, ITopic theme) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IScope oldScope = session.getProcessor().doReadScope(s);
 			session.getProcessor().doRemoveScope(s, theme);
 			IScope scope = session.getProcessor().doReadScope(s);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2203,6 +2642,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SCOPE_MODIFIED, s, scope, oldScope);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2210,11 +2655,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveSubjectIdentifier(t, subjectIdentifier);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2225,6 +2669,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SUBJECT_IDENTIFIER_REMOVED, t, null, subjectIdentifier);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2232,11 +2682,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveSubjectLocator(t, subjectLocator);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2247,6 +2696,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			notifyListeners(TopicMapEventType.SUBJECT_LOCATOR_REMOVED, t, null, subjectLocator);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2254,11 +2709,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveSupertype(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveSupertype(t, type);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2276,6 +2730,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2283,13 +2743,18 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveTopic(topic, cascade);
 			session.commit();
-			session.close();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2297,13 +2762,18 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveTopicMap(topicMap, cascade);
 			session.commit();
-			session.close();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2311,11 +2781,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveType(ITopic t, ITopic type) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doRemoveType(t, type);
 			session.commit();
-			session.close();
 			/*
 			 * store history
 			 */
@@ -2333,6 +2802,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2340,8 +2815,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			IName parent = variant.getParent();
 			ITopic reifier = (ITopic) variant.getReifier();
 			/*
@@ -2349,7 +2824,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveVariant(variant, cascade)) {
 				session.commit();
-				session.close();
 				IRevision revision = createRevision(TopicMapEventType.VARIANT_REMOVED);
 				if (reifier != null) {
 					/*
@@ -2371,10 +2845,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 				notifyListeners(TopicMapEventType.VARIANT_REMOVED, parent, null, variant);
 			} else {
 				session.commit();
-				session.close();
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2484,8 +2963,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 		provider = ConnectionProviderFactory.getFactory().newConnectionProvider(dialect.toString());
 		provider.setTopicMapStore(this);
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			Long id = session.getProcessor().doReadExistingTopicMapIdentity(getTopicMapBaseLocator());
 			/*
 			 * create a new topic map
@@ -2495,10 +2974,15 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 
 			}
 			session.commit();
-			session.close();
 			this.identity = new JdbcIdentity(id);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot open connection to database!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2537,11 +3021,19 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public IRevision createRevision(TopicMapEventType type) {
 		if (isRevisionManagementEnabled()) {
+			ISession session = provider.openSession();
 			try {
-				ISession session = provider.openSession();
-				return session.getProcessor().doCreateRevision(getTopicMap(), type);
+				IRevision revision = session.getProcessor().doCreateRevision(getTopicMap(), type);
+				session.commit();
+				return revision;
 			} catch (SQLException e) {
 				throw new TopicMapStoreException("Internal database error!", e);
+			} finally {
+				try {
+					session.close();
+				} catch (SQLException e) {
+					throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+				}
 			}
 		}
 		return null;
@@ -2553,11 +3045,18 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public void storeRevision(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue,
 			Object oldValue) {
 		if (isRevisionManagementEnabled()) {
+			ISession session = provider.openSession();
 			try {
-				ISession session = provider.openSession();
 				session.getProcessor().doCreateChangeSet(revision, type, context, newValue, oldValue);
+				session.commit();
 			} catch (SQLException e) {
 				throw new TopicMapStoreException("Internal database error!", e);
+			} finally {
+				try {
+					session.close();
+				} catch (SQLException e) {
+					throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+				}
 			}
 		}
 	}
@@ -2571,8 +3070,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void createTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			/*
 			 * create association
 			 */
@@ -2585,7 +3084,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 					instance);
 			IAssociationRole roleType = session.getProcessor().doCreateRole(association, getTmdmTypeRoleType(), type);
 			session.commit();
-			session.close();
 			/*
 			 * notify listener
 			 */
@@ -2600,6 +3098,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleType, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2608,8 +3112,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void createSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) {
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			/*
 			 * create association
 			 */
@@ -2623,7 +3127,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			IAssociationRole roleSupertype = session.getProcessor().doCreateRole(association,
 					getTmdmSupertypeRoleType(), supertype);
 			session.commit();
-			session.close();
 			/*
 			 * notify listener
 			 */
@@ -2638,6 +3141,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, roleSupertype, null);
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
 		}
 	}
 
@@ -2649,38 +3158,45 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
-		for (IAssociation association : associations) {
-			try {
-				/*
-				 * get subtype roles
-				 */
-				Collection<IAssociationRole> rolesSubtype = session.getProcessor().doReadRoles(association,
-						getTmdmSubtypeRoleType());
-				/*
-				 * get player
-				 */
-				ITopic player = session.getProcessor().doReadPlayer(rolesSubtype.iterator().next());
-				if (player.equals(type)) {
+		try {
+			for (IAssociation association : associations) {
+				try {
 					/*
-					 * get supertype roles
+					 * get subtype roles
 					 */
-					Collection<IAssociationRole> rolesSupertype = session.getProcessor().doReadRoles(association,
-							getTmdmSupertypeRoleType());
+					Collection<IAssociationRole> rolesSubtype = session.getProcessor().doReadRoles(association,
+							getTmdmSubtypeRoleType());
 					/*
 					 * get player
 					 */
-					player = session.getProcessor().doReadPlayer(rolesSupertype.iterator().next());
-					if (player.equals(supertype)) {
-						session.getProcessor().doRemoveAssociation(association, true, revision);
-						session.commit();
-						session.close();
-						break;
+					ITopic player = session.getProcessor().doReadPlayer(rolesSubtype.iterator().next());
+					if (player.equals(type)) {
+						/*
+						 * get supertype roles
+						 */
+						Collection<IAssociationRole> rolesSupertype = session.getProcessor().doReadRoles(association,
+								getTmdmSupertypeRoleType());
+						/*
+						 * get player
+						 */
+						player = session.getProcessor().doReadPlayer(rolesSupertype.iterator().next());
+						if (player.equals(supertype)) {
+							session.getProcessor().doRemoveAssociation(association, true, revision);
+							session.commit();
+							break;
+						}
 					}
+				} catch (NoSuchElementException e) {
+					throw new TopicMapStoreException("Invalid meta model! Missing supertype or subtype role!", e);
+				} catch (SQLException e) {
+					throw new TopicMapStoreException("Internal database error!", e);
 				}
-			} catch (NoSuchElementException e) {
-				throw new TopicMapStoreException("Invalid meta model! Missing supertype or subtype role!", e);
+			}
+		} finally {
+			try {
+				session.close();
 			} catch (SQLException e) {
-				throw new TopicMapStoreException("Internal database error!", e);
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
 			}
 		}
 	}
@@ -2693,37 +3209,44 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
-		for (IAssociation association : associations) {
-			try {
-				/*
-				 * get subtype roles
-				 */
-				Collection<IAssociationRole> rolesInstances = session.getProcessor().doReadRoles(association,
-						getTmdmInstanceRoleType());/*
-													 * get player
-													 */
-				ITopic player = session.getProcessor().doReadPlayer(rolesInstances.iterator().next());
-				if (player.equals(instance)) {
+		try {
+			for (IAssociation association : associations) {
+				try {
 					/*
-					 * get supertype roles
+					 * get subtype roles
 					 */
-					Collection<IAssociationRole> rolesType = session.getProcessor().doReadRoles(association,
-							getTmdmTypeRoleType());
-					/*
-					 * get player
-					 */
-					player = session.getProcessor().doReadPlayer(rolesType.iterator().next());
-					if (player.equals(type)) {
-						session.getProcessor().doRemoveAssociation(association, true, revision);
-						session.commit();
-						session.close();
-						break;
+					Collection<IAssociationRole> rolesInstances = session.getProcessor().doReadRoles(association,
+							getTmdmInstanceRoleType());/*
+														 * get player
+														 */
+					ITopic player = session.getProcessor().doReadPlayer(rolesInstances.iterator().next());
+					if (player.equals(instance)) {
+						/*
+						 * get supertype roles
+						 */
+						Collection<IAssociationRole> rolesType = session.getProcessor().doReadRoles(association,
+								getTmdmTypeRoleType());
+						/*
+						 * get player
+						 */
+						player = session.getProcessor().doReadPlayer(rolesType.iterator().next());
+						if (player.equals(type)) {
+							session.getProcessor().doRemoveAssociation(association, true, revision);
+							session.commit();
+							break;
+						}
 					}
+				} catch (NoSuchElementException e) {
+					throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
+				} catch (SQLException e) {
+					throw new TopicMapStoreException("Internal database error!", e);
 				}
-			} catch (NoSuchElementException e) {
-				throw new TopicMapStoreException("Invalid meta model! Missing type or instance role!", e);
+			}
+		} finally {
+			try {
+				session.close();
 			} catch (SQLException e) {
-				throw new TopicMapStoreException("Internal database error!", e);
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
 			}
 		}
 	}
