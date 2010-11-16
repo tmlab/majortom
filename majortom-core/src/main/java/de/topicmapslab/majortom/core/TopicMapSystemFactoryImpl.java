@@ -106,7 +106,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 */
 	public TopicMapSystem newTopicMapSystem() throws TMAPIException {
 		final Object classname = getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS);
-		ServiceLoader<ITopicMapSystem> loader = ServiceLoader.load(ITopicMapSystem.class);
+		ServiceLoader<ITopicMapSystem> loader = ServiceLoader.load(ITopicMapSystem.class, getClass().getClassLoader());
 		for (ITopicMapSystem system : loader) {
 			if ( classname == null || classname.equals(system.getHandledClass().getName())){
 				system.setFactory(this);			
