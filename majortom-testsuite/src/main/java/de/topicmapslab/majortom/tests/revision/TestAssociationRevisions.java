@@ -27,6 +27,7 @@ import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.revision.core.ReadOnlyAssociation;
@@ -88,6 +89,9 @@ public class TestAssociationRevisions extends MaJorToMTestCase {
 		IRevision r = index.getLastRevision();
 		assertEquals(3, r.getChangeset().size());
 		assertNull(r.getFuture());
+		assertEquals(TopicMapEventType.ASSOCIATION_ADDED, r.getChangeset().get(0).getType());
+		assertEquals(TopicMapEventType.TYPE_SET, r.getChangeset().get(1).getType());
+		assertEquals(TopicMapEventType.SCOPE_MODIFIED, r.getChangeset().get(2).getType());
 
 	}
 

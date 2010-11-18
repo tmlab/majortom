@@ -150,9 +150,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_ASSOCIATIONS_BY_THEMES_MATCH_ALL = "SELECT id FROM associations AS a WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = a.id_scope ) @> ?; ";
 
-			public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT id_scope FROM associations WHERE id_topicmap = ?  ;";
+			public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT DISTINCT id_scope FROM associations WHERE id_topicmap = ?  ;";
 
-			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ?    );";
+			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT DISTINCT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ?    );";
 
 			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_scope = ? ;";
 
@@ -166,9 +166,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_NAMES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM names AS n WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) @> ?; ";
 
-			public static final String QUERY_SELECT_NAME_SCOPES = "SELECT id_scope FROM names WHERE id_topicmap = ?;";
+			public static final String QUERY_SELECT_NAME_SCOPES = "SELECT DISTINCT  id_scope FROM names WHERE id_topicmap = ?;";
 
-			public static final String QUERY_SELECT_NAME_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? );";
+			public static final String QUERY_SELECT_NAME_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? );";
 
 			public static final String QUERY_SELECT_OCCURRENCES_BY_SCOPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_scope = ?;";
 
@@ -180,9 +180,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_OCCURRENCES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM occurrences AS o WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = o.id_scope ) @> ?; ";
 
-			public static final String QUERY_SELECT_OCCURRENCE_SCOPES = "SELECT id_scope FROM occurrences WHERE id_topicmap = ?;";
+			public static final String QUERY_SELECT_OCCURRENCE_SCOPES = "SELECT DISTINCT  id_scope FROM occurrences WHERE id_topicmap = ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? );";
+			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? );";
 
 			public static final String QUERY_SELECT_SCOPABLES = "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_scope = ? "
 					+ "UNION SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_scope = ? "
@@ -199,9 +199,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_VARIANTS_BY_THEMES_MATCH_ALL = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) || ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = v.id_scope ) @> ?;  ";
 
-			public static final String QUERY_SELECT_VARIANT_SCOPES = "SELECT id_scope FROM variants WHERE id_topicmap = ?;";
+			public static final String QUERY_SELECT_VARIANT_SCOPES = "SELECT DISTINCT  id_scope FROM variants WHERE id_topicmap = ?;";
 
-			public static final String QUERY_SELECT_VARIANT_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM variants WHERE id_topicmap = ? ) OR id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? AND id IN ( SELECT id_parent FROM variants ));";
+			public static final String QUERY_SELECT_VARIANT_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM variants WHERE id_topicmap = ? ) OR id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? AND id IN ( SELECT id_parent FROM variants ));";
 
 		}
 
@@ -217,9 +217,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_ASSOCIATIONS_BY_THEMES_MATCH_ALL = "SELECT id FROM associations AS a WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = a.id_scope ) @> ? ORDER BY id OFFSET ? LIMIT ?; ";
 
-			public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT id_scope FROM associations WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_ASSOCIATION_SCOPES = "SELECT DISTINCT id_scope FROM associations WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?; ;";
+			public static final String QUERY_SELECT_ASSOCIATION_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM associations WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?; ;";
 
 			public static final String QUERY_SELECT_CHARACTERISTICS_BY_SCOPE = "SELECT r.id, r.id_parent, r.type FROM ( SELECT id, id_parent, 'n' AS type FROM names WHERE id_scope = ? UNION SELECT id, id_parent, 'o' AS type FROM occurrences WHERE id_scope = ? ) AS r ORDER BY r OFFSET ? LIMIT ?;";
 
@@ -233,9 +233,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_NAMES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM names AS n WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) @> ? ORDER BY id OFFSET ? LIMIT ?; ";
 
-			public static final String QUERY_SELECT_NAME_SCOPES = "SELECT id_scope FROM names WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_NAME_SCOPES = "SELECT DISTINCT  id_scope FROM names WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_NAME_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_NAME_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_OCCURRENCES_BY_SCOPE = "SELECT id, id_parent FROM occurrences WHERE id_topicmap = ? AND id_scope = ? ORDER BY id OFFSET ? LIMIT ?;";
 
@@ -247,9 +247,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_OCCURRENCES_BY_THEMES_MATCH_ALL = "SELECT id, id_parent FROM occurrences AS o WHERE id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = o.id_scope ) @> ? ORDER BY id OFFSET ? LIMIT ?; ";
 
-			public static final String QUERY_SELECT_OCCURRENCE_SCOPES = "SELECT id_scope FROM occurrences WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCE_SCOPES = "SELECT DISTINCT  id_scope FROM occurrences WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_OCCURRENCE_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM occurrences WHERE id_topicmap = ? ) ORDER BY id_theme OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_SCOPABLES = "SELECT r.id, r.id_parent, r.other, r.type FROM ( SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id_scope = ? "
 					+ "UNION SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id_scope = ? "
@@ -266,9 +266,9 @@ public interface IIndexQueries {
 
 			public static final String QUERY_SELECT_VARIANTS_BY_THEMES_MATCH_ALL = "SELECT v.id, v.id_parent, n.id_parent FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = n.id_scope ) || ARRAY ( SELECT id_theme FROM rel_themes AS r WHERE r.id_scope = v.id_scope ) @> ? ORDER BY v.id OFFSET ? LIMIT ?;  ";
 
-			public static final String QUERY_SELECT_VARIANT_SCOPES = "SELECT id_scope FROM variants WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANT_SCOPES = "SELECT DISTINCT  id_scope FROM variants WHERE id_topicmap = ? ORDER BY id_scope OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_VARIANT_THEMES = "SELECT id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM variants WHERE id_topicmap = ? ) OR id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? AND id IN ( SELECT id_parent FROM variants )) ORDER BY id_theme OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_VARIANT_THEMES = "SELECT DISTINCT  id_theme FROM rel_themes WHERE id_scope IN ( SELECT id_scope FROM variants WHERE id_topicmap = ? ) OR id_scope IN ( SELECT id_scope FROM names WHERE id_topicmap = ? AND id IN ( SELECT id_parent FROM variants )) ORDER BY id_theme OFFSET ? LIMIT ?;";
 		}
 	}
 

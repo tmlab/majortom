@@ -37,4 +37,6 @@ public final class JdbcTopicMapStoreProperty {
 	public static final String DATABASE_USER = JDBC_PREFIX + ".user";
 
 	public static final String SQL_DIALECT = JDBC_PREFIX + ".dialect";
+	
+	public static final String POOL_CONNECTION_COUNT = JDBC_PREFIX + ".pool.count";
 }

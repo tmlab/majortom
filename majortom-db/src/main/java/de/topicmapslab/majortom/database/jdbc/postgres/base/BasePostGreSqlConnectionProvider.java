@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.postgres.base;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -25,7 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.postgresql.ds.PGConnectionPoolDataSource;
+
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSConnectionProvider;
+import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
@@ -46,6 +50,8 @@ public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionPr
 	 */
 	private static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
 	protected static final Map<String, List<String>> schemaInformation = HashUtil.getHashMap();
+
+	private PGConnectionPoolDataSource pool;
 
 	static {
 		schemaInformation.put("associations",
@@ -120,6 +126,28 @@ public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionPr
 	 */
 	public BasePostGreSqlConnectionProvider(String host, String database, String user, String password) {
 		super(host, database, user, password);
+		initializeConnectionPool();
+	}
+
+	/**
+	 * Method is called to initialize the connection pool
+	 */
+	private final void initializeConnectionPool() {
+		if (pool == null) {
+			pool = new PGConnectionPoolDataSource();
+			pool.setPassword(getPassword());
+			pool.setUser(getUser());
+			pool.setServerName(getHost());
+			pool.setDatabaseName(getDatabase());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setTopicMapStore(JdbcTopicMapStore store) {
+		super.setTopicMapStore(store);
+		initializeConnectionPool();
 	}
 
 	/**
@@ -208,5 +236,15 @@ public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionPr
 	 */
 	protected String getRdbmsName() {
 		return POSTGRESQL;
+	}
+
+	/**
+	 * Opens a connection by using the connection pool
+	 * 
+	 * @return the connection from connection pool
+	 */
+	public Connection getConnection() throws SQLException {
+		initializeConnectionPool();
+		return pool.getConnection();
 	}
 }

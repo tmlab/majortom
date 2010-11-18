@@ -58,7 +58,7 @@ public class MaJorToMTestCase extends TestCase {
 		factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 		factory.setFeature(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION,
 				false);
-		topicMapSystem = (ITopicMapSystem) factory.newTopicMapSystem();
+		topicMapSystem = (ITopicMapSystem) factory.newTopicMapSystem();		
 		topicMap = (ITopicMap) topicMapSystem
 				.createTopicMap(BASE);
 	}

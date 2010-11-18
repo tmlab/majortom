@@ -19,6 +19,9 @@
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 import de.topicmapslab.majortom.database.jdbc.postgres.base.BasePostGreSqlConnectionProvider;
@@ -61,6 +64,16 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	@SuppressWarnings("unchecked")
 	public SQL99Session openSession() {
 		return new SQL99Session(this, getUrl(), getUser(), getPassword());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createSchema() throws SQLException {
+		final String query = getSchemaQuery();
+		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+		stmt.executeUpdate(query);
 	}
 
 	/**

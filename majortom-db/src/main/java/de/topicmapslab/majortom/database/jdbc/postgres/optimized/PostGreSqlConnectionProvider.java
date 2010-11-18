@@ -83,6 +83,16 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void createSchema() throws SQLException {
+		final String query = getSchemaQuery();
+		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+		stmt.executeUpdate(query);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected String getSchemaQuery() {
 		/*
 		 * check if language extension already exists
