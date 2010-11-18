@@ -3038,6 +3038,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 		return null;
 	}
+		
 
 	/**
 	 * {@inheritDoc}

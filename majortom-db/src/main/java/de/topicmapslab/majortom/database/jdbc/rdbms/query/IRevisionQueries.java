@@ -49,7 +49,7 @@ public interface IRevisionQueries {
 
 	public static final String QUERY_READ_LAST_MODIFICATION_OF_TOPIC = "SELECT time FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier = ? OR oldValue = ? OR newValue = ? ) ORDER BY time DESC LIMIT 1";
 
-	public static final String QUERY_READ_CHANGESET = "SELECT type, id_notifier, newValue, oldValue FROM changesets WHERE id_revision = ?;";
+	public static final String QUERY_READ_CHANGESET = "SELECT type, id_notifier, newValue, oldValue FROM changesets WHERE id_revision = ? ORDER BY id ASC;";
 
 	public static final String QUERY_READ_TIMESTAMP = "SELECT time FROM revisions WHERE id = ?;";
 	

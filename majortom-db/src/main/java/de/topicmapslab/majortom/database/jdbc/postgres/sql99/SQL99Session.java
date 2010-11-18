@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.database.jdbc.postgres.sql99;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
@@ -54,6 +55,13 @@ public class SQL99Session extends RDBMSSession {
 	 */
 	public Sql99ConnectionProvider getConnectionProvider() {
 		return (Sql99ConnectionProvider) super.getConnectionProvider();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected Connection openConnection() throws SQLException {
+		return getConnectionProvider().getConnection();
 	}
 
 }

@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
-import java.util.Vector;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.ISession;
@@ -39,11 +38,6 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  * 
  */
 public abstract class RDBMSConnectionProvider implements IConnectionProvider {
-
-	/**
-	 * the meta data
-	 */
-	private DatabaseMetaData metaData;
 
 	/**
 	 * internal reference of the topic map store
@@ -62,6 +56,21 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	 * the database URL
 	 */
 	private String url;
+
+	/**
+	 * the database name
+	 */
+	private String database;
+	/**
+	 * the host
+	 */
+	private String host;
+
+	/**
+	 * the number of connections for connection pool
+	 */
+	private long connectionCount;
+
 	/**
 	 * the global session of the connection provider
 	 */
@@ -88,7 +97,10 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	public RDBMSConnectionProvider(String host, String database, String user, String password) {
 		this.user = user;
 		this.password = password;
-		this.url = "jdbc:" + getRdbmsName() +"://" + host.toString() + "/" + database.toString();
+		this.url = "jdbc:" + getRdbmsName() + "://" + host.toString() + "/" + database.toString();
+		this.database = database;
+		this.host = host;
+		this.connectionCount = 10;
 	}
 
 	/**
@@ -128,6 +140,31 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	}
 
 	/**
+	 * Returns the database name
+	 * 
+	 * @return the database
+	 */
+	public String getDatabase() {
+		return database;
+	}
+
+	/**
+	 * Returns the database host server
+	 * 
+	 * @return the host
+	 */
+	public String getHost() {
+		return host;
+	}
+
+	/**
+	 * @return the connectionCount
+	 */
+	public long getConnectionCount() {
+		return connectionCount;
+	}
+
+	/**
 	 * 
 	 * {@inheritDoc}
 	 */
@@ -141,29 +178,42 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		Object database = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_NAME);
 		Object user = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_USER);
 		Object password = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.DATABASE_PASSWORD);
+		Object count = store.getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.POOL_CONNECTION_COUNT);
 		if (database == null || host == null || user == null) {
 			throw new TopicMapStoreException("Missing connection properties!");
 		}
 		/*
 		 * store connection properties
 		 */
+		this.database = database.toString();
+		this.host = host.toString();
 		this.url = "jdbc:" + getRdbmsName() + "://" + host.toString() + "/" + database.toString();
 		this.user = user.toString();
 		this.password = password == null ? "" : password.toString();
+		/*
+		 * set maximum number of connections
+		 */
+		if (count != null) {
+			try {
+				this.connectionCount = Long.parseLong(count.toString());
+			} catch (NumberFormatException e) {
+				this.connectionCount = 10;
+			}
+		}
 		globalSession = openSession();
 		try {
-			metaData = globalSession.getConnection().getMetaData();
-			switch(getDatabaseState()){
-				case STATE_DATABASE_IS_EMPTY:{
+			switch (getDatabaseState()) {
+				case STATE_DATABASE_IS_EMPTY: {
 					createSchema();
-				}break;
-				case STATE_DATABASE_IS_INVALID:{
+				}
+					break;
+				case STATE_DATABASE_IS_INVALID: {
 					throw new TopicMapStoreException("Database schema not valid for majortom jdbc store");
 				}
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Cannot establish global session!", e);
-		}		
+		}
 	}
 
 	/**
@@ -208,10 +258,11 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	 * {@inheritDoc}
 	 */
 	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException {
-		if (metaData == null) {
-			throw new TopicMapStoreException("Connection is not established!");
+		try {
+			return getGlobalSession().getConnection().getMetaData();
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Meta data cannot be resolved!", e);
 		}
-		return metaData;
 	}
 
 	/**
@@ -221,9 +272,9 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		String[] allQueries = getSchemaQueries();
 		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_UPDATABLE);
-		for(String query : allQueries) {
+		for (String query : allQueries) {
 			String q = query.trim();
-			if(!q.equals(""))
+			if (!q.equals(""))
 				stmt.executeUpdate(query);
 		}
 		stmt.close();
@@ -247,13 +298,13 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		scanner.close();
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Returns the queries needed to create the database schema (because mysql does not support multi-statements)
 	 * 
 	 * @return an array of queries
 	 */
-	
+
 	protected String[] getSchemaQueries() {
 		return getSchemaQuery().split(";");
 	}

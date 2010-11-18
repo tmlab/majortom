@@ -79,7 +79,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		List<IScope> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getAssociationScopes(i * 10, 10);
-			assertEquals(10, list.size());
+			assertEquals("Iteration " + i + " failed.", 10, list.size());
 		}
 		list = index.getAssociationScopes(100, 10);
 		assertEquals(1, list.size());
@@ -944,7 +944,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				} else if (j % 4 == 0) {
 					scopeables[j] = (IName) createTopic().createName(createTopic(), c + i, theme);
 				} else if (j % 4 == 0) {
-					scopeables[j] = (IVariant) createTopic().createName(createTopic(), c + i, new Topic[0]).createVariant("Value", theme);
+					scopeables[j] = (IVariant) createTopic().createName(createTopic(), c + i, new Topic[0])
+							.createVariant("Value", theme);
 				} else {
 					scopeables[j] = createAssociation(createTopic());
 					scopeables[j].addTheme(theme);
@@ -986,7 +987,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
 				Topic theme = createTopicBySI(base + c + i);
-				IVariant variant = (IVariant) createTopic().createName("Value", new Topic[0]).createVariant("Value", theme);
+				IVariant variant = (IVariant) createTopic().createName("Value", new Topic[0]).createVariant("Value",
+						theme);
 				scopes[j] = variant.getScopeObject();
 				j++;
 			}
