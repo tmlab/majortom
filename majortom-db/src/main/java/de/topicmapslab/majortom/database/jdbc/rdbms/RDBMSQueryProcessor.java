@@ -400,7 +400,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 
 			Collection<IScope> temp = HashUtil.getHashSet();
 			for (Long id : ids) {
-				temp.add(new ScopeImpl(Long.toString(id), doReadThemes(topicMap, id)));
+				Collection<ITopic> themes_ = doReadThemes(topicMap, id);
+				if ( themes.equals(themes_)){
+					temp.add(new ScopeImpl(Long.toString(id), themes_));
+				}
 			}
 			if (first) {
 				first = false;
