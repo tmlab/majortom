@@ -463,7 +463,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Long doReadExistingTopicMapIdentity(ILocator baseLocator) throws SQLException {
+	public Long doReadTopicMapIdentity(ILocator baseLocator) throws SQLException {
 		doCreateLocator(null, baseLocator.getReference());
 
 		/*
