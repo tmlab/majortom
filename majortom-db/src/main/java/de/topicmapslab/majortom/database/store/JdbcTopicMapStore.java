@@ -2965,7 +2965,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		provider.setTopicMapStore(this);
 		ISession session = provider.openSession();
 		try {
-			Long id = session.getProcessor().doReadExistingTopicMapIdentity(getTopicMapBaseLocator());
+			Long id = session.getProcessor().doReadTopicMapIdentity(getTopicMapBaseLocator());
 			/*
 			 * create a new topic map
 			 */
