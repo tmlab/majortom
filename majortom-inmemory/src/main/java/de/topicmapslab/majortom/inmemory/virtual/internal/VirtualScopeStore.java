@@ -18,6 +18,7 @@ package de.topicmapslab.majortom.inmemory.virtual.internal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -248,8 +249,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			return super.getScope(scoped);
 		}
 		if (!getVirtualIdentityStore().isVirtual(scoped)) {
-			return getVirtualIdentityStore().asVirtualScope(
-					(IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
+			return getVirtualIdentityStore().asVirtualScope((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 		}
 		return getEmptyScope();
 	}
@@ -265,8 +265,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			return super.getScope(scoped);
 		}
 		if (!getVirtualIdentityStore().isVirtual(scoped)) {
-			return getVirtualIdentityStore().asVirtualScope(
-					(IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
+			return getVirtualIdentityStore().asVirtualScope((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 		}
 		return getEmptyScope();
 	}
@@ -279,8 +278,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			return super.getScope(scoped);
 		}
 		if (!getVirtualIdentityStore().isVirtual(scoped)) {
-			return getVirtualIdentityStore().asVirtualScope(
-					(IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
+			return getVirtualIdentityStore().asVirtualScope((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 		}
 		return getEmptyScope();
 	}
@@ -293,8 +291,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			return super.getScope(scoped);
 		}
 		if (!getVirtualIdentityStore().isVirtual(scoped)) {
-			return getVirtualIdentityStore().asVirtualScope(
-					(IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
+			return getVirtualIdentityStore().asVirtualScope((IScope) getStore().getRealStore().doRead(scoped, TopicMapStoreParameterType.SCOPE));
 		}
 		return getEmptyScope();
 	}
@@ -315,8 +312,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 
 		IScope cleaned = scope;
 		try {
-			cleaned = (IScope) getStore().getRealStore().doCreate(getStore().getTopicMap(),
-					TopicMapStoreParameterType.SCOPE, scope.getThemes());
+			cleaned = (IScope) getStore().getRealStore().doCreate(getStore().getTopicMap(), TopicMapStoreParameterType.SCOPE, scope.getThemes());
 		} catch (Exception e) {
 			// VOID
 		}
@@ -424,8 +420,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
-		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore()
-				.asVirtualScope(s));
+		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore().asVirtualScope(s));
 	}
 
 	/**
@@ -441,8 +436,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
-		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore()
-				.asVirtualScope(s));
+		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore().asVirtualScope(s));
 	}
 
 	/**
@@ -458,8 +452,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
-		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore()
-				.asVirtualScope(s));
+		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore().asVirtualScope(s));
 	}
 
 	/**
@@ -475,8 +468,7 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 			}
 			modifiedScopeables.add(scoped.getId());
 		}
-		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore()
-				.asVirtualScope(s));
+		super.setScope(getVirtualIdentityStore().asVirtualConstruct(scoped), getVirtualIdentityStore().asVirtualScope(s));
 	}
 
 	/**
@@ -518,11 +510,122 @@ public class VirtualScopeStore<T extends VirtualTopicMapStore> extends ScopeStor
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * construct is a scoped construct
+		 */
 		if (construct instanceof IScopable) {
-			removeScoped((IScopable) construct);
+			if (construct instanceof IAssociation) {
+				removeVirtualConstruct((IAssociation) construct, (IAssociation) newConstruct);
+			} else if (construct instanceof IName) {
+				removeVirtualConstruct((IName) construct, (IName) newConstruct);
+			} else if (construct instanceof IOccurrence) {
+				removeVirtualConstruct((IOccurrence) construct, (IOccurrence) newConstruct);
+			} else if (construct instanceof IVariant) {
+				removeVirtualConstruct((IVariant) construct, (IVariant) newConstruct);
+			}
 			if (modifiedScopeables != null) {
 				modifiedScopeables.remove(construct.getId());
+			}
+		}
+		/*
+		 * construct is a topic
+		 */
+		else if (construct instanceof ITopic) {
+			removeVirtualConstruct((ITopic) construct, (ITopic) newConstruct);
+		}
+	}
+
+	private void removeVirtualConstruct(ITopic construct, ITopic newConstruct) {
+		Map<IScope, Set<ITopic>> scopesMap = getScopesMap();
+		if (scopesMap != null) {
+			Set<IScope> scopes = getScopes(construct);
+			for (IScope scope : scopes) {
+				Set<ITopic> themes = HashUtil.getHashSet(scope.getThemes());
+				themes.remove(construct);
+				themes.add(newConstruct);
+				IScope newScope = new ScopeImpl(scope.getId(), themes);
+				scopesMap.remove(scope);
+				scopesMap.put(newScope, themes);
+				for ( IScopable scoped : getScoped(scope)){
+					super.setScope(scoped, newScope);
+				}
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IAssociation construct, IAssociation newConstruct) {
+		/*
+		 * copy scope property to new association
+		 */
+		Map<IAssociation, IScope> associationScopes = getAssociationScopeMap();
+		if (associationScopes != null && associationScopes.containsKey(construct)) {
+			IScope scope = associationScopes.remove(construct);
+			associationScopes.put(newConstruct, scope);
+			/*
+			 * replace association as scoped entity
+			 */
+			Map<IScope, Set<IAssociation>> scopedAssociations = getScopedAssociationMap();
+			if (scopedAssociations != null && scopedAssociations.containsKey(scope)) {
+				scopedAssociations.get(scope).remove(construct);
+				scopedAssociations.get(scope).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IName construct, IName newConstruct) {
+		/*
+		 * copy scope property to new name
+		 */
+		Map<IName, IScope> nameScopes = getNameScopesMap();
+		if (nameScopes != null && nameScopes.containsKey(construct)) {
+			IScope scope = nameScopes.remove(construct);
+			nameScopes.put(newConstruct, scope);
+			/*
+			 * replace name as scoped entity
+			 */
+			Map<IScope, Set<IName>> scopedNames = getScopedNamesMap();
+			if (scopedNames != null && scopedNames.containsKey(scope)) {
+				scopedNames.get(scope).remove(construct);
+				scopedNames.get(scope).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IOccurrence construct, IOccurrence newConstruct) {
+		/*
+		 * copy scope property to new occurrence
+		 */
+		Map<IOccurrence, IScope> occurrenceScopes = getOccurrenceScopesMap();
+		if (occurrenceScopes != null && occurrenceScopes.containsKey(construct)) {
+			IScope scope = occurrenceScopes.remove(construct);
+			occurrenceScopes.put(newConstruct, scope);
+			/*
+			 * replace occurrence as scoped entity
+			 */
+			Map<IScope, Set<IOccurrence>> scopedOccurrences = getScopedOccurrencesMap();
+			if (scopedOccurrences != null && scopedOccurrences.containsKey(scope)) {
+				scopedOccurrences.get(scope).remove(construct);
+				scopedOccurrences.get(scope).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IVariant construct, IVariant newConstruct) {
+		/*
+		 * copy scope property to new variant
+		 */
+		Map<IVariant, IScope> variantScopes = getVariantScopesMap();
+		if (variantScopes != null && variantScopes.containsKey(construct)) {
+			IScope scope = variantScopes.remove(construct);
+			variantScopes.put(newConstruct, scope);
+			/*
+			 * replace variant as scoped entity
+			 */
+			Map<IScope, Set<IVariant>> scopedVariants = getScopedVariantsMap();
+			if (scopedVariants != null && scopedVariants.containsKey(scope)) {
+				scopedVariants.get(scope).remove(construct);
+				scopedVariants.get(scope).add(newConstruct);
 			}
 		}
 	}

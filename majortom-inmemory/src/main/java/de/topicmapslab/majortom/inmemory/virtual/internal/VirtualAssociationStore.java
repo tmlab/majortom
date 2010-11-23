@@ -253,11 +253,82 @@ public class VirtualAssociationStore<T extends VirtualTopicMapStore> extends Ass
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
-		if (construct instanceof IAssociation) {
-			removeAssociation((IAssociation) construct);
-		} else if (construct instanceof IAssociationRole) {
-			removeRole((IAssociationRole) construct);
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * if construct is a role  -> replace role 
+		 */
+		if (construct instanceof IAssociationRole) {
+			IAssociationRole newRole = (IAssociationRole)newConstruct;
+			Map<IAssociation, Set<IAssociationRole>> associations = getAssociationMap();
+			/*
+			 * replace as children of parent association
+			 */
+			if ( associations != null && associations.containsKey(construct.getParent())){
+				associations.get(construct.getParent()).remove(construct);				
+				associations.get(construct.getParent()).add(newRole);
+			}
+			/*
+			 * replace player-role binding
+			 */
+			Map<IAssociationRole, ITopic> rolePlayers = getRolePlayersMap();
+			if ( rolePlayers != null && rolePlayers.containsKey(construct)){
+				ITopic player = rolePlayers.remove(construct);
+				rolePlayers.put(newRole, player);
+				/*
+				 * replace reverse binding
+				 */
+				Map<ITopic, Set<IAssociationRole>> playedRoles = getPlayedRolesMap();
+				if ( playedRoles != null && playedRoles.containsKey(player) ){
+					playedRoles.get(player).remove(construct);
+					playedRoles.get(player).remove(newRole);
+				}
+			}
+			
+			/*
+			 * replace modification
+			 */
+			if ( changedPlayers != null && changedPlayers.containsKey(construct)){
+				ITopic player = changedPlayers.remove(construct);
+				changedPlayers.put(newRole, player);
+			}
+		}
+		/*
+		 * if construct is an association -> replace association as parent
+		 */
+		else if ( construct instanceof IAssociation){
+			Map<IAssociation, Set<IAssociationRole>> associations = getAssociationMap();
+			/*
+			 * replace as parent association
+			 */
+			if ( associations != null && associations.containsKey(construct)){
+				Set<IAssociationRole> roles = associations.remove(construct);
+				associations.put((IAssociation) newConstruct, roles);
+			}
+		}
+		/*
+		 * if construct is a topic -> replace player
+		 */
+		else if ( construct instanceof ITopic){
+			ITopic newPlayer = (ITopic)newConstruct;
+			/*
+			 * replace player-role binding
+			 */
+			Map<ITopic, Set<IAssociationRole>> playedRoles = getPlayedRolesMap();
+			if ( playedRoles != null && playedRoles.containsKey(construct) ){
+				/*
+				 * remove reverse binding
+				 */
+				Set<IAssociationRole> roles = playedRoles.get(construct);
+				for ( IAssociationRole role : roles){
+					Map<IAssociationRole, ITopic> rolePlayers = getRolePlayersMap();
+					rolePlayers.put(role, newPlayer);	
+				}
+				/*
+				 * replace playing topic
+				 */
+				playedRoles.remove(construct);
+				playedRoles.put(newPlayer, roles);
+			}
 		}
 	}
 }

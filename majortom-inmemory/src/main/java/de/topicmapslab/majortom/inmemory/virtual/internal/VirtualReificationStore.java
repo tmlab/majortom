@@ -78,13 +78,11 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 	public ITopic getReifier(IReifiable reifiable) {
 		ITopic reifier = super.getReifier(reifiable);
 		if (reifier == null && !getVirtualIdentityStore().isVirtual(reifiable)) {
-			reifier = getVirtualIdentityStore().asVirtualConstruct(
-					(ITopic) getStore().getRealStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
+			reifier = getVirtualIdentityStore().asVirtualConstruct((ITopic) getStore().getRealStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
 			if (getVirtualIdentityStore().isRemovedConstruct(reifier)) {
 				return null;
 			}
-			if (reifier != null && removedReifications != null
-					&& reifiable.getId().equals(removedReifications.get(reifier.getId()))) {
+			if (reifier != null && removedReifications != null && reifiable.getId().equals(removedReifications.get(reifier.getId()))) {
 				return null;
 			}
 		}
@@ -100,13 +98,11 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 		}
 		IReifiable reifiable = super.getReified(reifier);
 		if (reifiable == null && !getVirtualIdentityStore().isVirtual(reifier)) {
-			reifiable = getVirtualIdentityStore().asVirtualConstruct(
-					(IReifiable) getStore().getRealStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
+			reifiable = getVirtualIdentityStore().asVirtualConstruct((IReifiable) getStore().getRealStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
 			if (getVirtualIdentityStore().isRemovedConstruct(reifiable)) {
 				return null;
 			}
-			if (reifiable != null && removedReifications != null
-					&& reifier.getId().equals(removedReifications.getKey(reifiable.getId()))) {
+			if (reifiable != null && removedReifications != null && reifier.getId().equals(removedReifications.getKey(reifiable.getId()))) {
 				return null;
 			}
 		}
@@ -147,12 +143,9 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 		if (!getVirtualIdentityStore().isVirtual(reifiable)) {
 			ITopic nonTransactionReifier = null;
 			if (reifiable instanceof ITransaction) {
-				nonTransactionReifier = getVirtualIdentityStore().asVirtualConstruct(
-						(ITopic) getStore().getRealStore().doRead(reifiable.getTopicMap(),
-								TopicMapStoreParameterType.REIFICATION));
+				nonTransactionReifier = getVirtualIdentityStore().asVirtualConstruct((ITopic) getStore().getRealStore().doRead(reifiable.getTopicMap(), TopicMapStoreParameterType.REIFICATION));
 			} else {
-				nonTransactionReifier = getVirtualIdentityStore().asVirtualConstruct(
-						(ITopic) getStore().getRealStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
+				nonTransactionReifier = getVirtualIdentityStore().asVirtualConstruct((ITopic) getStore().getRealStore().doRead(reifiable, TopicMapStoreParameterType.REIFICATION));
 			}
 
 			if (nonTransactionReifier != null) {
@@ -176,8 +169,7 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 	 */
 	private IReifiable storeOldReification(ITopic reifier) {
 		if (!getVirtualIdentityStore().isVirtual(reifier)) {
-			IReifiable nonTransactionReifiable = getVirtualIdentityStore().asVirtualConstruct(
-					(IReifiable) getStore().getRealStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
+			IReifiable nonTransactionReifiable = getVirtualIdentityStore().asVirtualConstruct((IReifiable) getStore().getRealStore().doRead(reifier, TopicMapStoreParameterType.REIFICATION));
 			if (nonTransactionReifiable != null) {
 				if (removedReifications == null || !removedReifications.containsValue(nonTransactionReifiable.getId())) {
 					if (removedReifications == null) {
@@ -212,16 +204,33 @@ public class VirtualReificationStore<T extends VirtualTopicMapStore> extends Rei
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * construct is a topic
+		 */
 		if (construct instanceof ITopic) {
-			super.removeReifier((ITopic) construct);
-			if (removedReifications != null) {
-				removedReifications.remove(construct.getId());
+			TreeBidiMap reificiation = getReificationMap();
+			if (reificiation != null && reificiation.containsKey(construct)) {
+				Object reified = reificiation.remove(construct);
+				reificiation.put(newConstruct, reified);
 			}
-		} else if (construct instanceof IReifiable) {
-			super.removeReification((IReifiable) construct);
-			if (removedReifications != null) {
-				removedReifications.removeValue(construct.getId());
+			if (removedReifications != null && removedReifications.containsKey(construct.getId())) {
+				IConstruct reified = (IConstruct) removedReifications.remove(construct.getId());
+				removedReifications.put(newConstruct.getId(), reified.getId());
+			}
+		}
+		/*
+		 * construct is an reified construct
+		 */
+		else if (construct instanceof IReifiable) {
+			TreeBidiMap reificiation = getReificationMap();
+			if (reificiation != null && reificiation.containsValue(construct)) {
+				Object reifier = reificiation.removeValue(construct);
+				reificiation.put(reifier, newConstruct);
+			}
+			if (removedReifications != null && removedReifications.containsValue(construct.getId())) {
+				IConstruct reifier = (IConstruct) removedReifications.removeValue(construct.getId());
+				removedReifications.put(reifier.getId(), newConstruct.getId());
 			}
 		}
 

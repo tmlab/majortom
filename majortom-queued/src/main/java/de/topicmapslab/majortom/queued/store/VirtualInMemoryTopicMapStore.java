@@ -54,7 +54,7 @@ public class VirtualInMemoryTopicMapStore extends VirtualTopicMapStore {
 	 * {@inheritDoc}
 	 */
 	protected VirtualIdentityStore<?> createIdentityStore(InMemoryTopicMapStore store) {
-		return new VirtualIdentityStore<VirtualInMemoryTopicMapStore>(this);
+		return new VirtualIdentityStore<VirtualInMemoryTopicMapStore>(this, getCapacityOfCollections());
 	}
 
 	/**

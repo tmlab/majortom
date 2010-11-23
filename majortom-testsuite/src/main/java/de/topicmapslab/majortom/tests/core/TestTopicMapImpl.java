@@ -54,17 +54,14 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class TestTopicMapImpl extends MaJorToMTestCase {
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicMap()}.
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopicMap()}.
 	 */
 	public void testGetTopicMap() {
 		assertEquals(topicMap, topicMap.getTopicMap());
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#addTag(java.lang.String)} .
 	 */
 	public void testAddTagString() {
 		if (topicMap.getStore().isRevisionManagementEnabled()) {
@@ -76,7 +73,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 				IRevision r = index.getRevision("tag");
 				assertNull("Tag should be unknown!", r);
 			} catch (IndexException e) {
-				//NOTHING TO DO
+				// NOTHING TO DO
 			}
 
 			createTopic();
@@ -98,9 +95,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations(org.tmapi.core.Topic)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getAssociations(org.tmapi.core.Topic)} .
 	 */
 	public void testGetAssociations() {
 
@@ -122,8 +117,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertTrue(topicMap.getAssociations(type).contains(otherAssociation));
 
 		ITopic theme = createTopic();
-		IAssociation scopedAssociation = (IAssociation) topicMap
-				.createAssociation(createTopic(), theme);
+		IAssociation scopedAssociation = (IAssociation) topicMap.createAssociation(createTopic(), theme);
 		IScope scope = scopedAssociation.getScopeObject();
 		assertEquals(3, topicMap.getAssociations().size());
 		assertEquals(2, topicMap.getAssociations(type).size());
@@ -180,65 +174,48 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, association.getScope().size());
 		assertEquals(0, association.getScopeObject().getThemes().size());
 
-		IAssociation associationWithTopic = (IAssociation) topicMap
-				.createAssociation(type, theme);
+		IAssociation associationWithTopic = (IAssociation) topicMap.createAssociation(type, theme);
 		assertEquals(type, associationWithTopic.getType());
 		assertEquals(1, associationWithTopic.getScope().size());
 		assertTrue(associationWithTopic.getScope().contains(theme));
-		assertEquals(1, associationWithTopic.getScopeObject().getThemes()
-				.size());
-		assertTrue(associationWithTopic.getScopeObject().getThemes()
-				.contains(theme));
+		assertEquals(1, associationWithTopic.getScopeObject().getThemes().size());
+		assertTrue(associationWithTopic.getScopeObject().getThemes().contains(theme));
 
 		ITopic theme2 = createTopic();
-		IAssociation associationWithTopics = (IAssociation) topicMap
-				.createAssociation(type, theme, theme2);
+		IAssociation associationWithTopics = (IAssociation) topicMap.createAssociation(type, theme, theme2);
 		assertEquals(type, associationWithTopics.getType());
 		assertEquals(2, associationWithTopics.getScope().size());
 		assertTrue(associationWithTopics.getScope().contains(theme));
 		assertTrue(associationWithTopics.getScope().contains(theme2));
-		assertEquals(2, associationWithTopics.getScopeObject().getThemes()
-				.size());
-		assertTrue(associationWithTopics.getScopeObject().getThemes()
-				.contains(theme));
-		assertTrue(associationWithTopics.getScopeObject().getThemes()
-				.contains(theme2));
+		assertEquals(2, associationWithTopics.getScopeObject().getThemes().size());
+		assertTrue(associationWithTopics.getScopeObject().getThemes().contains(theme));
+		assertTrue(associationWithTopics.getScopeObject().getThemes().contains(theme2));
 
-		IAssociation associationWithTopicArray = (IAssociation) topicMap
-				.createAssociation(type, new Topic[] { theme, theme2 });
+		IAssociation associationWithTopicArray = (IAssociation) topicMap.createAssociation(type, new Topic[] { theme, theme2 });
 		assertEquals(type, associationWithTopicArray.getType());
 		assertEquals(2, associationWithTopicArray.getScope().size());
 		assertTrue(associationWithTopicArray.getScope().contains(theme));
 		assertTrue(associationWithTopicArray.getScope().contains(theme2));
-		assertEquals(2, associationWithTopicArray.getScopeObject().getThemes()
-				.size());
-		assertTrue(associationWithTopicArray.getScopeObject().getThemes()
-				.contains(theme));
-		assertTrue(associationWithTopicArray.getScopeObject().getThemes()
-				.contains(theme2));
+		assertEquals(2, associationWithTopicArray.getScopeObject().getThemes().size());
+		assertTrue(associationWithTopicArray.getScopeObject().getThemes().contains(theme));
+		assertTrue(associationWithTopicArray.getScopeObject().getThemes().contains(theme2));
 
 		Set<Topic> themes = HashUtil.getHashSet();
 		themes.add(theme);
 		themes.add(theme2);
 
-		IAssociation associationWithCollection = (IAssociation) topicMap
-				.createAssociation(type, themes);
+		IAssociation associationWithCollection = (IAssociation) topicMap.createAssociation(type, themes);
 		assertEquals(type, associationWithCollection.getType());
 		assertEquals(2, associationWithCollection.getScope().size());
 		assertTrue(associationWithCollection.getScope().contains(theme));
 		assertTrue(associationWithCollection.getScope().contains(theme2));
-		assertEquals(2, associationWithCollection.getScopeObject().getThemes()
-				.size());
-		assertTrue(associationWithCollection.getScopeObject().getThemes()
-				.contains(theme));
-		assertTrue(associationWithCollection.getScopeObject().getThemes()
-				.contains(theme2));
+		assertEquals(2, associationWithCollection.getScopeObject().getThemes().size());
+		assertTrue(associationWithCollection.getScopeObject().getThemes().contains(theme));
+		assertTrue(associationWithCollection.getScopeObject().getThemes().contains(theme2));
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#createLocator(java.lang.String)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createLocator(java.lang.String)} .
 	 */
 	public void testCreateLocator() {
 		final String ref = "http://psi.example.org";
@@ -247,8 +224,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopic()}.
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#createTopic()}.
 	 */
 	public void testCreateTopic() {
 
@@ -258,8 +234,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, topic.getSubjectLocators().size());
 
 		Locator si = createLocator("http://psi.example.org/si");
-		ITopic topicWithSi = (ITopic) topicMap
-				.createTopicBySubjectIdentifier(si);
+		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
 		assertTrue(topicWithSi.getSubjectIdentifiers().contains(si));
 		assertEquals(0, topicWithSi.getItemIdentifiers().size());
@@ -281,9 +256,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructById(java.lang.String)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructById(java.lang.String)} .
 	 */
 	public void testGetConstructById() {
 
@@ -298,8 +271,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		Variant v = n.createVariant("Var", createTopic());
 		assertEquals(v, topicMap.getConstructById(v.getId()));
 
-		Occurrence o = topic.createOccurrence(createTopic(), "Occ",
-				new Topic[0]);
+		Occurrence o = topic.createOccurrence(createTopic(), "Occ", new Topic[0]);
 		assertEquals(o, topicMap.getConstructById(o.getId()));
 
 		Association a = createAssociation(createTopic());
@@ -312,25 +284,20 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructByItemIdentifier(org.tmapi.core.Locator)}
-	 * .
+	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getConstructByItemIdentifier(org.tmapi.core.Locator)} .
 	 */
 	public void testGetConstructOrTopic() {
 		ITopic topic = (ITopic) topicMap.createTopic();
 		assertEquals(0, topic.getSubjectIdentifiers().size());
 		assertEquals(1, topic.getItemIdentifiers().size());
 		assertEquals(0, topic.getSubjectLocators().size());
-		assertEquals(
-				topic,
-				topicMap.getConstructByItemIdentifier(topic
-						.getItemIdentifiers().iterator().next()));
+		assertEquals(topic, topicMap.getConstructByItemIdentifier(topic.getItemIdentifiers().iterator().next()));
 
 		Locator si = createLocator("http://psi.example.org/si");
 		Locator sl = createLocator("http://psi.example.org/sl");
 		Locator ii = createLocator("http://psi.example.org/ii");
 
-		ITopic topicWithSi = (ITopic) topicMap
-				.createTopicBySubjectIdentifier(si);
+		ITopic topicWithSi = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		assertEquals(1, topicWithSi.getSubjectIdentifiers().size());
 		assertTrue(topicWithSi.getSubjectIdentifiers().contains(si));
 		assertEquals(0, topicWithSi.getItemIdentifiers().size());
@@ -359,23 +326,15 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getIndex(java.lang.Class)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getIndex(java.lang.Class)} .
 	 */
 	public void testGetIndex() {
-		for (Class<? extends Index> clazz : new Class[] {
-				ITypeInstanceIndex.class, ITransitiveTypeInstanceIndex.class,
-				IRevisionIndex.class, IScopedIndex.class, ILiteralIndex.class,
+		for (Class<? extends Index> clazz : new Class[] { ITypeInstanceIndex.class, ITransitiveTypeInstanceIndex.class, IRevisionIndex.class, IScopedIndex.class, ILiteralIndex.class,
 				ISupertypeSubtypeIndex.class, IIdentityIndex.class }) {
 			try {
 				Index i = topicMap.getIndex(clazz);
-				assertNotNull("Index of type " + clazz.getSimpleName()
-						+ " should not be null", i);
-				assertTrue(
-						"Invalid type of index, expects "
-								+ clazz.getSimpleName(),
-						clazz.isAssignableFrom(clazz));
+				assertNotNull("Index of type " + clazz.getSimpleName() + " should not be null", i);
+				assertTrue("Invalid type of index, expects " + clazz.getSimpleName(), clazz.isAssignableFrom(clazz));
 				assertFalse(i.isOpen());
 			} catch (UnsupportedOperationException e) {
 				// NOTHING TO DO
@@ -425,8 +384,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopics()}.
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#getTopics()}.
 	 */
 	public void testGetTopics() {
 
@@ -467,51 +425,39 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.topicmapslab.majortom.core.TopicMapImpl#mergeIn(org.tmapi.core.TopicMap)}
-	 * .
+	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#mergeIn(org.tmapi.core.TopicMap)} .
 	 */
 	public void testMergeIn() throws Exception {
 
-		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem()
-				.createTopicMap("http://psi.example.org/merge-in");
+		ITopicMap otherTopicMap = (ITopicMap) factory.newTopicMapSystem().createTopicMap("http://psi.example.org/merge-in");
 		try {
 			Locator si = createLocator("http://psi.example.org/si");
 			ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
-			Name n = topic.createName("Name", new Topic[0]);
-			n.createVariant("Variant", topicMap
-					.createTopicBySubjectIdentifier(topicMap
-							.createLocator("http://psi.example.org/theme")));
-			topic.createOccurrence(topicMap
-					.createTopicByItemIdentifier(topicMap
-							.createLocator("http://psi.example.org/occ-type")),
-					"Occurrence", new Topic[0]);
+			Name n = topic.createName("Name");
+			Topic theme = topicMap.createTopicBySubjectIdentifier(topicMap.createLocator("http://psi.example.org/theme"));
+			n.createVariant("Variant", theme);
+			Topic occType = topicMap.createTopicByItemIdentifier(topicMap.createLocator("http://psi.example.org/occ-type"));
+			topic.createOccurrence(occType, "Occurrence");
 
 			assertEquals(0, topic.getTypes().size());
 
 			IAssociation association = createAssociation(createTopic());
 			association.createRole(createTopic(), topic);
 
+			topicMap.getStore().commit();
 			assertEquals(6, topicMap.getTopics().size());
 
-			ITopic t = (ITopic) otherTopicMap
-					.createTopicBySubjectIdentifier(si);
+			ITopic t = (ITopic) otherTopicMap.createTopicBySubjectIdentifier(si);
 			n = t.createName("Name", new Topic[0]);
-			n.createVariant("Variant", otherTopicMap
-					.createTopicBySubjectIdentifier(otherTopicMap
-							.createLocator("http://psi.example.org/theme")));
-			t.createOccurrence(otherTopicMap
-					.createTopicByItemIdentifier(otherTopicMap
-							.createLocator("http://psi.example.org/occ-type")),
-					"Occurrence", new Topic[0]);
+			n.createVariant("Variant", otherTopicMap.createTopicBySubjectIdentifier(otherTopicMap.createLocator("http://psi.example.org/theme")));
+			t.createOccurrence(otherTopicMap.createTopicByItemIdentifier(otherTopicMap.createLocator("http://psi.example.org/occ-type")), "Occurrence", new Topic[0]);
 			t.addType(otherTopicMap.createTopic());
 
-			association = (IAssociation) otherTopicMap.createAssociation(
-					otherTopicMap.createTopic(), new Topic[0]);
+			association = (IAssociation) otherTopicMap.createAssociation(otherTopicMap.createTopic(), new Topic[0]);
 			association.createRole(otherTopicMap.createTopic(), t);
-
-			if (factory
-					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			
+			otherTopicMap.getStore().commit();
+			if (factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
@@ -519,14 +465,12 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 
 			topicMap.mergeIn(otherTopicMap);
 
-			if (factory
-					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(10, otherTopicMap.getTopics().size());
 			} else {
 				assertEquals(7, otherTopicMap.getTopics().size());
 			}
-			if (factory
-					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(12, topicMap.getTopics().size());
 			} else {
 				assertEquals(9, topicMap.getTopics().size());
@@ -535,12 +479,10 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 			assertEquals(1, t.getNames().size());
 			assertEquals(1, topic.getNames().size());
 			assertEquals(1, t.getNames().iterator().next().getVariants().size());
-			assertEquals(1, topic.getNames().iterator().next().getVariants()
-					.size());
+			assertEquals(1, topic.getNames().iterator().next().getVariants().size());
 			assertEquals(1, t.getOccurrences().size());
 			assertEquals(1, topic.getOccurrences().size());
-			if (factory
-					.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
+			if (factory.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION)) {
 				assertEquals(2, t.getAssociationsPlayed().size());
 				assertEquals(3, topic.getAssociationsPlayed().size());
 				assertEquals(2, t.getRolesPlayed().size());
@@ -591,8 +533,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		topicMap.setReifier(topicMap.createTopic());
 		assertNotNull(topicMap.getReifier());
 
-		topicMap.addItemIdentifier(topicMap
-				.createLocator("http://tmapi.org/test/topicmap"));
+		topicMap.addItemIdentifier(topicMap.createLocator("http://tmapi.org/test/topicmap"));
 		assertEquals(1, topicMap.getItemIdentifiers().size());
 
 		// create topic with name, variant and occurrence
@@ -605,15 +546,13 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		Variant v = n.createVariant("VariantName", topicMap.createTopic());
 		assertNotNull(v);
 
-		Occurrence occ = t.createOccurrence(topicMap.createTopic(),
-				"TestOccurrence");
+		Occurrence occ = t.createOccurrence(topicMap.createTopic(), "TestOccurrence");
 		assertNotNull(occ);
 
 		Association assoc = topicMap.createAssociation(topicMap.createTopic());
 		assertNotNull(assoc);
 
-		Role r = assoc.createRole(topicMap.createTopic(),
-				topicMap.createTopic());
+		Role r = assoc.createRole(topicMap.createTopic(), topicMap.createTopic());
 		assertNotNull(r);
 
 		// checking the literal index
@@ -646,8 +585,7 @@ public class TestTopicMapImpl extends MaJorToMTestCase {
 		assertEquals(0, topicMap.getTopics().size());
 		assertEquals(0, topicMap.getItemIdentifiers().size());
 		assertNull(topicMap.getReifier());
-		assertEquals("http://psi.majortom.test", topicMap.getLocator()
-				.getReference());
+		assertEquals(BASE, topicMap.getLocator().getReference());
 
 		// check index
 		if (!li.isAutoUpdated()) {

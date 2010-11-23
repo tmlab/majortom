@@ -36,7 +36,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends TopicTypeStore implements IVirtualStore{
+public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends TopicTypeStore implements IVirtualStore {
 
 	private Map<String, Set<String>> removedInstances;
 	private Map<String, Set<String>> removedTypes;
@@ -101,8 +101,7 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 		if (getVirtualIdentityStore().isRemovedConstruct(type)) {
 			throw new ConstructRemovedException(type);
 		}
-		super.addType(getVirtualIdentityStore().asVirtualConstruct(t),
-				getVirtualIdentityStore().asVirtualConstruct(type));
+		super.addType(getVirtualIdentityStore().asVirtualConstruct(t), getVirtualIdentityStore().asVirtualConstruct(type));
 	}
 
 	/**
@@ -115,8 +114,7 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 		if (getVirtualIdentityStore().isRemovedConstruct(supertype)) {
 			throw new ConstructRemovedException(supertype);
 		}
-		super.addSupertype(getVirtualIdentityStore().asVirtualConstruct(type), getVirtualIdentityStore()
-				.asVirtualConstruct(supertype));
+		super.addSupertype(getVirtualIdentityStore().asVirtualConstruct(type), getVirtualIdentityStore().asVirtualConstruct(supertype));
 	}
 
 	/**
@@ -251,14 +249,12 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 	public Set<ITopic> getDirectTypes(ITopic instance) {
 		Set<ITopic> set = HashUtil.getHashSet();
 		if (!getVirtualIdentityStore().isVirtual(instance)) {
-			Set<ITopic> types = (Set<ITopic>) getStore().getRealStore().doRead(instance,
-					TopicMapStoreParameterType.TYPE);
+			Set<ITopic> types = (Set<ITopic>) getStore().getRealStore().doRead(instance, TopicMapStoreParameterType.TYPE);
 			for (ITopic type : types) {
 				if (getVirtualIdentityStore().isRemovedConstruct(type)) {
 					continue;
 				}
-				if (removedTypes == null || !removedTypes.containsKey(instance.getId())
-						|| !removedTypes.get(instance.getId()).contains(type.getId())) {
+				if (removedTypes == null || !removedTypes.containsKey(instance.getId()) || !removedTypes.get(instance.getId()).contains(type.getId())) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(type));
 				}
 			}
@@ -314,8 +310,7 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 				/*
 				 * check that is-instance-of relation was not removed in the current transaction context
 				 */
-				if (removedInstances == null || !removedInstances.containsKey(type.getId())
-						|| !removedInstances.get(type.getId()).contains(instance.getId())) {
+				if (removedInstances == null || !removedInstances.containsKey(type.getId()) || !removedInstances.get(type.getId()).contains(instance.getId())) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(instance));
 				}
 			}
@@ -370,8 +365,7 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 				/*
 				 * check that a-kind-of relation was not removed in the current transaction context
 				 */
-				if (removedSupertypes == null || !removedSupertypes.containsKey(subtype.getId())
-						|| !removedSupertypes.get(subtype.getId()).contains(supertype.getId())) {
+				if (removedSupertypes == null || !removedSupertypes.containsKey(subtype.getId()) || !removedSupertypes.get(subtype.getId()).contains(supertype.getId())) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(supertype));
 				}
 			}
@@ -426,8 +420,7 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 				/*
 				 * check that a-kind-of relation was not removed in the current transaction context
 				 */
-				if (removedSubtypes == null || !removedSubtypes.containsKey(type.getId())
-						|| !removedSubtypes.get(type.getId()).contains(subtype.getId())) {
+				if (removedSubtypes == null || !removedSubtypes.containsKey(type.getId()) || !removedSubtypes.get(type.getId()).contains(subtype.getId())) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(subtype));
 				}
 			}
@@ -442,11 +435,126 @@ public class VirtualTopicTypeStore<T extends VirtualTopicMapStore> extends Topic
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
-		if ( construct instanceof ITopic ){
-			removeTopic((ITopic) construct);			
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		if (construct instanceof ITopic) {
+			ITopic newTopic = (ITopic) newConstruct;
+			/*
+			 * copy as supertype
+			 */
+			Map<ITopic, Set<ITopic>> subtypes = getSubtypesMap();
+			if (subtypes != null && subtypes.containsKey(construct)) {
+				Set<ITopic> set = subtypes.remove(construct);
+				subtypes.put(newTopic, set);
+				for (ITopic topic : set) {
+					Map<ITopic, Set<ITopic>> supertypes = getSupertypesMap();
+					if (supertypes != null && supertypes.containsKey(topic)) {
+						supertypes.get(topic).remove(construct);
+						supertypes.get(topic).add(newTopic);
+					}
+				}
+				/*
+				 * copy modification knowledge
+				 */
+				String id = construct.getId();
+				String newId = newConstruct.getId();
+				if (removedSubtypes != null && removedSubtypes.containsKey(id)) {
+					Set<String> ids = removedSubtypes.remove(id);
+					for (String id_ : ids) {
+						if (removedSupertypes != null && removedSupertypes.containsKey(id_)) {
+							removedSupertypes.get(id_).remove(id);
+							removedSupertypes.get(id_).add(newId);
+						}
+					}
+				}
+			}
+			/*
+			 * copy as subtype
+			 */
+			Map<ITopic, Set<ITopic>> supertypes = getSupertypesMap();
+			if (supertypes != null && supertypes.containsKey(construct)) {
+				Set<ITopic> set = supertypes.remove(construct);
+				supertypes.put(newTopic, set);
+				for (ITopic topic : set) {
+					Map<ITopic, Set<ITopic>> subtypes_ = getSubtypesMap();
+					if (subtypes_ != null && subtypes_.containsKey(topic)) {
+						subtypes_.get(topic).remove(construct);
+						subtypes_.get(topic).add(newTopic);
+					}
+				}
+				/*
+				 * copy modification knowledge
+				 */
+				String id = construct.getId();
+				String newId = newConstruct.getId();
+				if (removedSupertypes != null && removedSupertypes.containsKey(id)) {
+					Set<String> ids = removedSupertypes.remove(id);
+					for (String id_ : ids) {
+						if (removedSubtypes != null && removedSubtypes.containsKey(id_)) {
+							removedSubtypes.get(id_).remove(id);
+							removedSubtypes.get(id_).add(newId);
+						}
+					}
+				}
+			}
+			/*
+			 * copy as type
+			 */
+			Map<ITopic, Set<ITopic>> instances = getInstancesMap();
+			if (instances != null && instances.containsKey(construct)) {
+				Set<ITopic> set = instances.remove(construct);
+				instances.put(newTopic, set);
+				for (ITopic topic : set) {
+					Map<ITopic, Set<ITopic>> types = getTypesMap();
+					if (types != null && types.containsKey(topic)) {
+						types.get(topic).remove(construct);
+						types.get(topic).add(newTopic);
+					}
+				}
+				/*
+				 * copy modification knowledge
+				 */
+				String id = construct.getId();
+				String newId = newConstruct.getId();
+				if (removedInstances != null && removedInstances.containsKey(id)) {
+					Set<String> ids = removedInstances.remove(id);
+					for (String id_ : ids) {
+						if (removedTypes != null && removedTypes.containsKey(id_)) {
+							removedTypes.get(id_).remove(id);
+							removedTypes.get(id_).add(newId);
+						}
+					}
+				}
+			}
+			/*
+			 * copy as instance
+			 */
+			Map<ITopic, Set<ITopic>> types = getTypesMap();
+			if (types != null && types.containsKey(construct)) {
+				Set<ITopic> set = types.remove(construct);
+				types.put(newTopic, set);
+				for (ITopic topic : set) {
+					Map<ITopic, Set<ITopic>> instances_ = getInstancesMap();
+					if (instances_ != null && instances_.containsKey(topic)) {
+						instances_.get(topic).remove(construct);
+						instances_.get(topic).add(newTopic);
+					}
+				}
+				/*
+				 * copy modification knowledge
+				 */
+				String id = construct.getId();
+				String newId = newConstruct.getId();
+				if (removedTypes != null && removedTypes.containsKey(id)) {
+					Set<String> ids = removedTypes.remove(id);
+					for (String id_ : ids) {
+						if (removedInstances != null && removedInstances.containsKey(id_)) {
+							removedInstances.get(id_).remove(id);
+							removedInstances.get(id_).add(newId);
+						}
+					}
+				}
+			}
 		}
 	}
-	
-	
+
 }

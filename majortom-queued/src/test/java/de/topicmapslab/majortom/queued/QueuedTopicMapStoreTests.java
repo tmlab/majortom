@@ -26,11 +26,11 @@ import de.topicmapslab.majortom.tests.MaJorToMTestSuite;
 public class QueuedTopicMapStoreTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.queued");				
+		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.queued");
 		// $JUnit-BEGIN$
 		suite.addTest(MaJorToMTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}
-	
+
 }

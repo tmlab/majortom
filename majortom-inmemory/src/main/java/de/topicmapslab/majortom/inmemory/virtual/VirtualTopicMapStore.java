@@ -46,7 +46,7 @@ public abstract class VirtualTopicMapStore extends InMemoryTopicMapStore {
 	 */
 	public VirtualTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store) {
 		super(topicMapSystem);
-		this.store = store;		
+		this.store = store;
 	}
 
 	/**
@@ -79,8 +79,7 @@ public abstract class VirtualTopicMapStore extends InMemoryTopicMapStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected abstract VirtualCharacteristicsStore<?> createCharacteristicsStore(InMemoryTopicMapStore store,
-			ILocator xsdString);
+	protected abstract VirtualCharacteristicsStore<?> createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString);
 
 	/**
 	 * {@inheritDoc}
@@ -154,19 +153,21 @@ public abstract class VirtualTopicMapStore extends InMemoryTopicMapStore {
 	 * 
 	 * @param construct
 	 *            the construct to remove
+	 * @param newConstruct
+	 *            the corresponding new construct
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
 		/*
 		 * handle only virtual constructs and not already removed construct
 		 */
 		if (getIdentityStore().isVirtual(construct) && !getIdentityStore().isRemovedConstruct(construct)) {
-			getAssociationStore().removeVirtualConstruct(construct);
-			getCharacteristicsStore().removeVirtualConstruct(construct);
-			getTopicTypeStore().removeVirtualConstruct(construct);
-			getTypedStore().removeVirtualConstruct(construct);
-			getScopeStore().removeVirtualConstruct(construct);
-			getReificationStore().removeVirtualConstruct(construct);
-			getIdentityStore().removeVirtualConstruct(construct);
+			getAssociationStore().removeVirtualConstruct(construct, newConstruct);
+			getCharacteristicsStore().removeVirtualConstruct(construct, newConstruct);
+			getTopicTypeStore().removeVirtualConstruct(construct, newConstruct);
+			getTypedStore().removeVirtualConstruct(construct, newConstruct);
+			getScopeStore().removeVirtualConstruct(construct, newConstruct);
+			getReificationStore().removeVirtualConstruct(construct, newConstruct);
+			getIdentityStore().removeVirtualConstruct(construct, newConstruct);
 		}
 	}
 

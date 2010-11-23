@@ -5,21 +5,35 @@ package de.topicmapslab.majortom.queued.store;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 import org.tmapi.index.Index;
+import org.tmapi.index.LiteralIndex;
+import org.tmapi.index.ScopedIndex;
+import org.tmapi.index.TypeInstanceIndex;
 
 import de.topicmapslab.majortom.core.ConstructImpl;
+import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.inmemory.transaction.InMemoryTransaction;
 import de.topicmapslab.majortom.model.core.IConstruct;
+import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
+import de.topicmapslab.majortom.model.index.IIdentityIndex;
+import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
+import de.topicmapslab.majortom.model.index.IScopedIndex;
+import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
+import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -32,8 +46,15 @@ import de.topicmapslab.majortom.queued.queue.task.ModifyTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveConstructTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveDuplicatesTask;
 import de.topicmapslab.majortom.queued.queue.task.RemoveTask;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentIdentityIndex;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentLiteralIndex;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentScopedIndex;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentSupertypeSubtypeIndex;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentTransitiveTypeInstanceIndex;
+import de.topicmapslab.majortom.queued.store.index.ConcurrentTypeInstanceIndex;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
+import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * A queued topic map store, which reads and writes any context to memory and creating a task to persist information to
@@ -47,6 +68,14 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	private VirtualInMemoryTopicMapStore inMemoryTopicMapStore;
 	private JdbcTopicMapStore jdbcTopicMapStore;
 	private TopicMapStoreQueue queue;
+	Lock lock = new ReentrantLock(true);
+
+	private ConcurrentScopedIndex scopedIndex;
+	private ConcurrentIdentityIndex identityIndex;
+	private ConcurrentTypeInstanceIndex typeInstanceIndex;
+	private ConcurrentTransitiveTypeInstanceIndex transitiveTypeInstanceIndex;
+	private ConcurrentSupertypeSubtypeIndex supertypeSubtypeIndex;
+	private ConcurrentLiteralIndex literalIndex;
 
 	/**
 	 * constructor
@@ -87,7 +116,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 		 */
 		inMemoryTopicMapStore = new VirtualInMemoryTopicMapStore(getTopicMapSystem(), jdbcTopicMapStore);
 		inMemoryTopicMapStore.setTopicMapSystem(getTopicMapSystem());
-		
+
 		/*
 		 * overwrite set and map class for concurrent modification access
 		 */
@@ -136,12 +165,67 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public <I extends Index> I getIndex(Class<I> clazz) {
 		/*
 		 * revision is handled by the JDBC topic map store
 		 */
 		if (IRevisionIndex.class.isAssignableFrom(clazz)) {
 			return jdbcTopicMapStore.getIndex(clazz);
+		}
+		/*
+		 * get transitive type-instance index
+		 */
+		else if (ITransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (transitiveTypeInstanceIndex == null) {
+				transitiveTypeInstanceIndex = new ConcurrentTransitiveTypeInstanceIndex((ITransitiveTypeInstanceIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) transitiveTypeInstanceIndex;
+		}
+		/*
+		 * get type-instance index
+		 */
+		else if (TypeInstanceIndex.class.isAssignableFrom(clazz)) {
+			if (typeInstanceIndex == null) {
+				typeInstanceIndex = new ConcurrentTypeInstanceIndex((ITypeInstanceIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) typeInstanceIndex;
+		}
+		/*
+		 * get scoped index
+		 */
+		else if (ScopedIndex.class.isAssignableFrom(clazz)) {
+			if (scopedIndex == null) {
+				scopedIndex = new ConcurrentScopedIndex((IScopedIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) scopedIndex;
+		}
+		/*
+		 * get supertype-subtype index
+		 */
+		else if (ISupertypeSubtypeIndex.class.isAssignableFrom(clazz)) {
+			if (supertypeSubtypeIndex == null) {
+				supertypeSubtypeIndex = new ConcurrentSupertypeSubtypeIndex((ISupertypeSubtypeIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) supertypeSubtypeIndex;
+		}
+		/*
+		 * get literal index
+		 */
+		else if (LiteralIndex.class.isAssignableFrom(clazz)) {
+			if (literalIndex == null) {
+				literalIndex = new ConcurrentLiteralIndex((ILiteralIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) literalIndex;
+		}
+		/*
+		 * get identity index
+		 */
+		else if (IIdentityIndex.class.isAssignableFrom(clazz)) {
+			if (identityIndex == null) {
+				identityIndex = new ConcurrentIdentityIndex((IIdentityIndex) inMemoryTopicMapStore.getIndex(clazz), lock);
+			}
+			return (I) identityIndex;
 		}
 		return inMemoryTopicMapStore.getIndex(clazz);
 	}
@@ -163,60 +247,79 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		if (!isConnected()) {
-			throw new TopicMapStoreException("Connection is not established");
-		}
+	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			if (!isConnected()) {
+				throw new TopicMapStoreException("Connection is not established");
+			}
 
-		switch (paramType) {
-			case ID: {
-				if (context instanceof ITopicMap) {
-					return jdbcTopicMapStore.getTopicMapIdentity().getId();
+			switch (paramType) {
+				case ID: {
+					if (context instanceof ITopicMap) {
+						return jdbcTopicMapStore.getTopicMapIdentity().getId();
+					}
 				}
 			}
+			/*
+			 * redirect to virtual layer
+			 */
+			return inMemoryTopicMapStore.doRead(context, paramType, params);
+		} finally {
+			lock.unlock();
 		}
-		/*
-		 * redirect to virtual layer
-		 */
-		return inMemoryTopicMapStore.doRead(context, paramType, params);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public <T extends Construct> void doMerge(T context, T... others) throws TopicMapStoreException {
-		/*
-		 * merge in virtual layer
-		 */
-		inMemoryTopicMapStore.doMerge(context, others);
-		/*
-		 * create new merging task
-		 */
-		MergeTask task = new MergeTask(context, others);
-		/*
-		 * register task
-		 */
-		queue.add(task);
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			/*
+			 * merge in virtual layer
+			 */
+			inMemoryTopicMapStore.doMerge(context, others);
+			/*
+			 * create new merging task
+			 */
+			MergeTask task = new MergeTask(context, others);
+			/*
+			 * register task
+			 */
+			queue.add(task);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		/*
-		 * remove from virtual memory layer
-		 */
-		inMemoryTopicMapStore.doRemove(context, paramType, params);
-		/*
-		 * create new deletion task
-		 */
-		RemoveTask task = new RemoveTask(context, paramType, params);
-		/*
-		 * register task
-		 */
-		queue.add(task);
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			/*
+			 * remove from virtual memory layer
+			 */
+			inMemoryTopicMapStore.doRemove(context, paramType, params);
+			/*
+			 * create new deletion task
+			 */
+			RemoveTask task = new RemoveTask(context, paramType, params);
+			/*
+			 * register task
+			 */
+			queue.add(task);
+		} finally {
+			lock.unlock();
+		}
 
 	}
 
@@ -238,57 +341,76 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 			jdbcTopicMapStore.doRemove(context, cascade);
 			return;
 		}
-		/*
-		 * remove from virtual memory layer
-		 */
-		inMemoryTopicMapStore.doRemove(context, cascade);
-		/*
-		 * create new deletion task
-		 */
-		RemoveConstructTask task = new RemoveConstructTask(context, cascade);
-		/*
-		 * register task
-		 */
-		queue.add(task);
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			/*
+			 * remove from virtual memory layer
+			 */
+			inMemoryTopicMapStore.doRemove(context, cascade);
+			/*
+			 * create new deletion task
+			 */
+			RemoveConstructTask task = new RemoveConstructTask(context, cascade);
+			/*
+			 * register task
+			 */
+			queue.add(task);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		/*
-		 * create in the virtual memory layer
-		 */
-		Object object = inMemoryTopicMapStore.doCreate(context, paramType, params);
-		/*
-		 * create new creation task for worker thread
-		 */
-		CreateTask task = new CreateTask(object, context, paramType, params);
-		/*
-		 * register task
-		 */
-		queue.add(task);
-		return object;
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			/*
+			 * create in the virtual memory layer
+			 */
+			Object object = inMemoryTopicMapStore.doCreate(context, paramType, params);
+			/*
+			 * create new creation task for worker thread
+			 */
+			CreateTask task = new CreateTask(object, context, paramType, params);
+			/*
+			 * register task
+			 */
+			queue.add(task);
+			return object;
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		/*
-		 * modify in virtual memory layer
-		 */
-		inMemoryTopicMapStore.doModify(context, paramType, params);
-		/*
-		 * create new modification task for worker thread
-		 */
-		ModifyTask task = new ModifyTask(context, paramType, params);
-		/*
-		 * register task
-		 */
-		queue.add(task);
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		try {
+			while (!lock.tryLock()) {
+				// WAIT
+			}
+			/*
+			 * modify in virtual memory layer
+			 */
+			inMemoryTopicMapStore.doModify(context, paramType, params);
+			/*
+			 * create new modification task for worker thread
+			 */
+			ModifyTask task = new ModifyTask(context, paramType, params);
+			/*
+			 * register task
+			 */
+			queue.add(task);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	/**
@@ -331,7 +453,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 		/*
 		 * wait for finishing all tasks of the worker tread //
 		 */
-//		commit();
+		// commit();
 		/*
 		 * remove duplicates from virtual store
 		 */
@@ -368,8 +490,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 */
 	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException {
 		if (!isRevisionManagementSupported() && enabled) {
-			throw new TopicMapStoreException(
-					"Revision management not supported by the current store and cannot be enabled!");
+			throw new TopicMapStoreException("Revision management not supported by the current store and cannot be enabled!");
 		}
 		jdbcTopicMapStore.enableRevisionManagement(enabled);
 	}
@@ -384,17 +505,17 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	/**
 	 * {@inheritDoc}
 	 */
-	public void finished(IQueueTask task) {	
-		if (task instanceof CreateTask) {
-			CreateTask ct = (CreateTask) task;
-			Object result = task.getResult();
-			if (result instanceof IConstruct) {
-				ConstructImpl memory = (ConstructImpl) ct.getInMemoryClone();
-				inMemoryTopicMapStore.removeVirtualConstruct(memory);
-				String databaseId = ((ConstructImpl) result).getIdentity().getId();
-				memory.getIdentity().setId(databaseId);
+	public void finished(IQueueTask task) {
+		while (!lock.tryLock()) {
+			// WAIT
+		}
+		try {
+			if (task instanceof CreateTask) {
+				updateVirtualLayer((CreateTask) task);
 			}
-		}		
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	/**
@@ -416,6 +537,25 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 	 */
 	public ITopicMapStoreIdentity getTopicMapIdentity() {
 		return jdbcTopicMapStore.getTopicMapIdentity();
+	}
+
+	private void updateVirtualLayer(CreateTask task) {
+		Object result = task.getResult();
+		if (result instanceof IConstruct) {
+			ConstructImpl memory = (ConstructImpl) task.getInMemoryClone();
+			inMemoryTopicMapStore.removeVirtualConstruct(memory, (IConstruct) result);
+			String databaseId = ((ConstructImpl) result).getIdentity().getId();
+			memory.getIdentity().setId(databaseId);
+
+			if (task.getParameterType() == TopicMapStoreParameterType.NAME && !(task.getParameters()[0] instanceof ITopic)) {
+				ILocator locator = new LocatorImpl(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+				ITopic topic = jdbcTopicMapStore.doReadTopicBySubjectIdentifier(getTopicMap(), locator);
+				ITopic inMemory = inMemoryTopicMapStore.doReadTopicBySubjectIdentifier(getTopicMap(), locator);
+				if (topic != null && inMemory != null) {
+					inMemoryTopicMapStore.removeVirtualConstruct(inMemory, topic);
+				}
+			}
+		}
 	}
 
 }

@@ -38,17 +38,15 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class IdentityStore implements IDataStore {
 
-	public static int CAPACITY = 1000000;
+	/**
+	 * the capacity of internal maps
+	 */
+	public final int capacity;
 
 	/**
 	 * storage map of id-construct relation of the topic map engine
 	 */
 	private Map<String, IConstruct> ids;
-
-	/**
-	 * storage map of the reference-locator mapping of the topic map
-	 */
-	// private Map<String, ILocator> locators;
 
 	/**
 	 * item-identifier mapping of the topic map engine
@@ -95,9 +93,12 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param store
 	 *            the parent store
+	 * @param capacity
+	 *            the capacity of internal sets
 	 */
-	public IdentityStore(final InMemoryTopicMapStore store) {
+	public IdentityStore(final InMemoryTopicMapStore store, final int capacity) {
 		this.store = store;
+		this.capacity = capacity;
 	}
 
 	/**
@@ -107,9 +108,6 @@ public class IdentityStore implements IDataStore {
 		if (ids != null) {
 			ids.clear();
 		}
-		// if (locators != null) {
-		// locators.clear();
-		// }
 		if (itemIdentifiers != null) {
 			itemIdentifiers.clear();
 		}
@@ -241,11 +239,11 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void setId(final IConstruct c, final String id) {
 		if (ids == null) {
-			ids = HashUtil.getHashMap(CAPACITY);
+			ids = HashUtil.getHashMap(capacity);
 		}
 		if (c instanceof ITopic) {
 			if (topics == null) {
-				topics = HashUtil.getHashSet(CAPACITY);
+				topics = HashUtil.getHashSet(capacity);
 			}
 			this.topics.add((ITopic) c);
 		}
@@ -290,7 +288,7 @@ public class IdentityStore implements IDataStore {
 	 */
 	public void addSubjectIdentifier(final ITopic t, final ILocator identifier) {
 		if (subjectIdentifiers == null) {
-			subjectIdentifiers = HashUtil.getHashMap(CAPACITY);
+			subjectIdentifiers = HashUtil.getHashMap(capacity);
 		}
 		this.subjectIdentifiers.put(identifier, t);
 
@@ -298,7 +296,7 @@ public class IdentityStore implements IDataStore {
 		 * store backward relation
 		 */
 		if (topicSubjectIdentifiers == null) {
-			topicSubjectIdentifiers = HashUtil.getHashMap(CAPACITY);
+			topicSubjectIdentifiers = HashUtil.getHashMap(capacity);
 		}
 		Set<ILocator> set = topicSubjectIdentifiers.get(t);
 		if (set == null) {
@@ -723,7 +721,8 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject locator is store for the given topic, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one subject locator is store for the given topic, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsSubjectLocators(ITopic topic) {
 		if (topicSubjectLocators == null) {
@@ -737,7 +736,8 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if at least one subject identifier is store for the given topic, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one subject identifier is store for the given topic, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsSubjectIdentifiers(ITopic topic) {
 		if (topicSubjectIdentifiers == null) {
@@ -751,7 +751,8 @@ public class IdentityStore implements IDataStore {
 	 * 
 	 * @param construct
 	 *            the construct
-	 * @return <code>true</code> if at least one item identifier is store for the given construct, <code>false</code> otherwise.
+	 * @return <code>true</code> if at least one item identifier is store for the given construct, <code>false</code>
+	 *         otherwise.
 	 */
 	protected boolean containsItemIdentifiers(IConstruct construct) {
 		if (constructItemIdentitiers == null) {
@@ -769,5 +770,49 @@ public class IdentityStore implements IDataStore {
 	 */
 	protected final boolean containsConstruct(IConstruct construct) {
 		return ids != null && ids.containsKey(construct.getId());
+	}
+
+	/**
+	 * @return the constructItemIdentitiers
+	 */
+	public Map<IConstruct, Set<ILocator>> getConstructItemIdentitiersMap() {
+		return constructItemIdentitiers;
+	}
+
+	/**
+	 * @return the topicSubjectIdentifiers
+	 */
+	public Map<ITopic, Set<ILocator>> getTopicSubjectIdentifiersMap() {
+		return topicSubjectIdentifiers;
+	}
+
+	/**
+	 * @return the topicSubjectLocators
+	 */
+	protected Map<ITopic, Set<ILocator>> getTopicSubjectLocatorsMap() {
+		return topicSubjectLocators;
+	}
+
+	protected Map<ILocator, ITopic> getSubjectIdentitifersMap() {
+		return subjectIdentifiers;
+	}
+
+	protected Map<ILocator, ITopic> getSubjectLocatorsMap() {
+		return subjectLocators;
+	}
+
+	protected Map<ILocator, IConstruct> getItemIdentifiersMap() {
+		return itemIdentifiers;
+	}
+
+	protected Set<ITopic> getTopicsSet() {
+		return topics;
+	}
+
+	/**
+	 * @return the ids
+	 */
+	protected Map<String, IConstruct> getIdsMap() {
+		return ids;
 	}
 }

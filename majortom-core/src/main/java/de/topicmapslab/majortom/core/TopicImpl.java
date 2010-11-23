@@ -959,5 +959,4 @@ public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 		}
 		return (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.BEST_LABEL, theme, strict);
 	}
-
 }

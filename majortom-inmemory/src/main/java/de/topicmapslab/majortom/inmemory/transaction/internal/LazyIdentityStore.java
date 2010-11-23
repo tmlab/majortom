@@ -37,10 +37,15 @@ public class LazyIdentityStore extends VirtualIdentityStore<InMemoryTransactionT
 	private Set<IScope> lazyScopes;
 
 	/**
+	 * constructor
+	 * 
 	 * @param store
+	 *            the parent store
+	 * @param capacity
+	 *            the capacity of internal sets
 	 */
-	public LazyIdentityStore(InMemoryTransactionTopicMapStore store) {
-		super(store);
+	public LazyIdentityStore(InMemoryTransactionTopicMapStore store, int capacity) {
+		super(store, capacity);
 	}
 
 	/**

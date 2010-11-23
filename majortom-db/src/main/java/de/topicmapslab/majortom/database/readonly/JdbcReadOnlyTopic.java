@@ -18,7 +18,6 @@
  */
 package de.topicmapslab.majortom.database.readonly;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -30,13 +29,12 @@ import org.tmapi.core.Reifiable;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
 import de.topicmapslab.majortom.util.HashUtil;
@@ -47,14 +45,20 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 
-	private final IQueryProcessor processor;
+	private static final long serialVersionUID = 1L;
+	private final IConnectionProvider provider;
 
 	/**
+	 * constructor
+	 * 
+	 * @param provider
+	 *            the connection provider
 	 * @param clone
+	 *            the non-read-only clone
 	 */
-	public JdbcReadOnlyTopic(final IQueryProcessor processor, ITopic clone) {
+	public JdbcReadOnlyTopic(IConnectionProvider provider, ITopic clone) {
 		super(clone);
-		this.processor = processor;
+		this.provider = provider;
 	}
 
 	/**
@@ -170,27 +174,24 @@ public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
-		try {
-			return (T) processor.doReadHistory(this, type).get(type);
-		} catch (SQLException e) {
-			throw new TopicMapStoreException(e);
-		}
+		Object value = ReadOnlyUtils.doReadHistoryValue(provider, this, type);
+		return (T)value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel() {
 		return (String) doReadHistoryValue(TopicMapStoreParameterType.BEST_LABEL);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme) {
 		throw new UnsupportedOperationException("Read only topic does not support best label with theme");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

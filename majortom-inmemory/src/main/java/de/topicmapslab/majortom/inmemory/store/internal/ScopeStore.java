@@ -245,14 +245,17 @@ public class ScopeStore implements IDataStore {
 	public Set<IVariant> getScopedVariants(IScope scope) {
 		Set<IVariant> set = HashUtil.getHashSet();
 		if (scopedVariants != null) {
-			for ( IScope _scope : scopedVariants.keySet()){
-				if ( scope.getThemes().containsAll(_scope.getThemes())){
-					for ( IVariant variant : scopedVariants.get(_scope)){
-						Set<ITopic> themes = HashUtil.getHashSet(_scope.getThemes());
-						themes.addAll(getScope(variant.getParent()).getThemes());
-						IScope s = getScope(themes);
-						if (scope.equals(s)) {
-							set.add(variant);
+			for (IScope _scope : scopedVariants.keySet()) {
+				if (scope.getThemes().containsAll(_scope.getThemes())) {
+					Set<IVariant> variants = scopedVariants.get(_scope);
+					if (variants != null) {
+						for (IVariant variant : variants) {
+							Set<ITopic> themes = HashUtil.getHashSet(_scope.getThemes());
+							themes.addAll(getScope(variant.getParent()).getThemes());
+							IScope s = getScope(themes);
+							if (scope.equals(s)) {
+								set.add(variant);
+							}
 						}
 					}
 				}
@@ -583,7 +586,6 @@ public class ScopeStore implements IDataStore {
 			scopedVariants.put(s, set);
 		}
 		set.add(scoped);
-
 	}
 
 	/**
@@ -838,4 +840,65 @@ public class ScopeStore implements IDataStore {
 		set.add(emptyScope);
 		return set;
 	}
+
+	protected Map<IScope, Set<ITopic>> getScopesMap() {
+		return scopes;
+	}
+
+	/**
+	 * storage map of scope-name relation
+	 */
+	protected Map<IScope, Set<IName>> getScopedNamesMap() {
+		return scopedNames;
+	}
+
+	/**
+	 * storage map of scope-occurrence relation
+	 */
+	protected Map<IScope, Set<IOccurrence>> getScopedOccurrencesMap() {
+		return scopedOccurrences;
+	}
+
+	/**
+	 * storage map of scope-variant relation
+	 */
+	protected Map<IScope, Set<IVariant>> getScopedVariantsMap() {
+		return scopedVariants;
+	}
+
+	/**
+	 * storage map of scope-association relation
+	 */
+	protected Map<IScope, Set<IAssociation>> getScopedAssociationMap() {
+		return scopedAssociations;
+	}
+
+	/**
+	 * storage map of name-scope relation
+	 */
+	protected Map<IName, IScope> getNameScopesMap() {
+		return nameScopes;
+	}
+
+	/**
+	 * storage map of occurrence-scope relation
+	 */
+	protected Map<IOccurrence, IScope> getOccurrenceScopesMap() {
+		return occurrenceScopes;
+	}
+
+	/**
+	 * storage map of variant-scope relation
+	 */
+	protected Map<IVariant, IScope> getVariantScopesMap() {
+		return variantScopes;
+	}
+
+	/**
+	 * storage map of association-scope relation
+	 */
+	protected Map<IAssociation, IScope> getAssociationScopeMap() {
+		return associationScopes;
+	}
+
 }

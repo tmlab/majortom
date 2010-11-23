@@ -43,7 +43,7 @@ public class MaJorToMTestCase extends TestCase {
 	/**
 	 * 
 	 */
-	protected static final String BASE = "http://psi.majortom.test";
+	protected static final String BASE = "http://psi.majortom.test/newTopicMap";
 	protected ITopicMap topicMap;
 	protected TopicMapSystemFactory factory;
 	protected ITopicMapSystem topicMapSystem;

@@ -17,9 +17,10 @@
 package de.topicmapslab.majortom.core;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.tmapi.core.Locator;
@@ -33,12 +34,13 @@ import de.topicmapslab.majortom.model.core.ILocator;
  * @author Sven Krosse
  * 
  */
-public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
+public class LocatorImpl implements ILocator, Comparable<LocatorImpl> {
 
-	private final URI uri;
-	private final String reference;
+	private static final long serialVersionUID = 1L;
+	private URL url;
+	private String reference;
 	private final String id;
-	
+
 	/**
 	 * constructor
 	 * 
@@ -57,19 +59,16 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	 */
 	public LocatorImpl(final String reference, final String id) throws MalformedIRIException {
 		if (reference == null || reference.isEmpty()) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MalformedIRIException("The given reference is invalid.");
 		}
-		try {			
-			uri = new URI(reference.replaceAll(" ", "%20"));
-			this.reference = URLDecoder.decode(reference, "utf-8"); 
-		} catch (URISyntaxException e) {
-			throw new MalformedIRIException("The given IRI reference '" + reference +"' is invalid.");
+		try {
+			this.reference = URLDecoder.decode(reference, "utf-8");			
+			url = new URL(reference);			
+		} catch (MalformedURLException e) {
+			url = null;
+//			throw new MalformedIRIException("The given reference '" + reference + "' is invalid.");
 		} catch (UnsupportedEncodingException e) {
-			throw new MalformedIRIException("The given IRI reference '" + reference +"'is invalid.");
-		}
-
-		if (!uri.isAbsolute()) {
-			throw new MalformedIRIException("Relative URI");
+			throw new MalformedIRIException("The given reference '" + reference + "'is invalid.");
 		}
 		this.id = id;
 	}
@@ -77,15 +76,15 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	/**
 	 * constructor
 	 * 
-	 * @param uri
-	 *            the URI
+	 * @param url
+	 *            the url
 	 */
-	public LocatorImpl(final URI uri) throws MalformedIRIException {
+	public LocatorImpl(final URL url) throws MalformedIRIException {
 		try {
-			this.reference = URLDecoder.decode(uri.toASCIIString(), "utf-8");
-			this.uri = uri;
+			this.reference = URLDecoder.decode(url.toString(), "utf-8");
+			this.url = url;
 		} catch (UnsupportedEncodingException e) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MalformedIRIException("The given reference is invalid.");
 		}
 		this.id = UUID.randomUUID().toString();
 	}
@@ -103,8 +102,8 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	/**
 	 * {@inheritDoc}
 	 */
-	public URI toUri() throws URISyntaxException {
-		return uri;
+	public URL toURL() throws MalformedURLException {
+		return url;
 	}
 
 	/**
@@ -118,14 +117,18 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	 * {@inheritDoc}
 	 */
 	public Locator resolve(String reference) throws MalformedIRIException {
-		return new LocatorImpl(uri.resolve(reference.replace(" ", "%20")));
+		try {
+			return new LocatorImpl(new URL(url, reference));
+		} catch (MalformedURLException e) {
+			throw new MalformedIRIException("The given reference '" + reference + "' is invalid.");
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toExternalForm() {
-		return uri.toASCIIString();
+		return url.toExternalForm();
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	public int hashCode() {
 		return reference.hashCode();
 	}
-	
+
 	/**
 	 * @return the id
 	 */

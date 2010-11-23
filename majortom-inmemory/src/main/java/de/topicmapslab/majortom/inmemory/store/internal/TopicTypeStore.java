@@ -1009,4 +1009,26 @@ public class TopicTypeStore implements IDataStore {
 	protected ITopicMapStore getStore() {
 		return store;
 	}
+	
+	protected Map<ITopic, Set<ITopic>> getSupertypesMap(){
+		return supertypes;
+	}
+	/**
+	 * internal storage of the type-instance relations
+	 */
+	protected Map<ITopic, Set<ITopic>> getInstancesMap(){
+		return instances;
+	}
+	/**
+	 * internal storage of the instance-types relations
+	 */
+	protected Map<ITopic, Set<ITopic>> getTypesMap(){
+		return types;
+	}
+	/**
+	 * internal storage of the type-subtypes relations
+	 */
+	protected Map<ITopic, Set<ITopic>> getSubtypesMap(){
+		return subtypes;
+	}
 }

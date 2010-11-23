@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
@@ -72,6 +73,21 @@ public class CharacteristicsStore implements IDataStore {
 	private Map<IConstruct, Object> values;
 
 	/**
+	 * reverse map to speed up the literal index
+	 */
+	private Map<String, Set<IName>> namesByValue;
+
+	/**
+	 * reverse map to speed up the literal index
+	 */
+	private Map<String, Set<IOccurrence>> occurrencesByValue;
+
+	/**
+	 * reverse map to speed up the literal index
+	 */
+	private Map<String, Set<IVariant>> variantsByValue;
+
+	/**
 	 * the xsd:any locator
 	 */
 	private final ILocator xsdString;
@@ -107,6 +123,15 @@ public class CharacteristicsStore implements IDataStore {
 		}
 		if (variants != null) {
 			variants.clear();
+		}
+		if (namesByValue != null) {
+			namesByValue.clear();
+		}
+		if (occurrencesByValue != null) {
+			occurrencesByValue.clear();
+		}
+		if (variantsByValue != null) {
+			variantsByValue.clear();
 		}
 	}
 
@@ -175,6 +200,54 @@ public class CharacteristicsStore implements IDataStore {
 	}
 
 	/**
+	 * Returns the names matching the given value.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param isRegExp
+	 *            Flag if the value is a regular expression
+	 * @return the names
+	 */
+	public Set<IName> getNamesByValue(final String value, boolean isRegExp) {
+		/*
+		 * redirect if value is regular expression
+		 */
+		if (isRegExp) {
+			return getNamesByValue(Pattern.compile(value));
+		}
+		Set<IName> set = HashUtil.getHashSet();
+		if (namesByValue != null && namesByValue.containsKey(value)) {
+			set.addAll(namesByValue.get(value));
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
+	 * Returns the names matching the given regular expression.
+	 * 
+	 * @param regExp
+	 *            a regular expression
+	 * @return the names
+	 */
+	public Set<IName> getNamesByValue(final Pattern regExp) {
+		Set<IName> set = HashUtil.getHashSet();
+		if (namesByValue != null) {
+			for (Entry<String, Set<IName>> entry : namesByValue.entrySet()) {
+				if (regExp.matcher(entry.getKey()).matches()) {
+					set.addAll(entry.getValue());
+				}
+			}
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
 	 * Returns the occurrences of the given topic.
 	 * 
 	 * @param t
@@ -198,6 +271,54 @@ public class CharacteristicsStore implements IDataStore {
 		if (occurrences != null) {
 			for (Entry<ITopic, Set<IOccurrence>> entry : occurrences.entrySet()) {
 				set.addAll(entry.getValue());
+			}
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
+	 * Returns the occurrence matching the given value.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param isRegExp
+	 *            Flag if the value is a regular expression
+	 * @return the occurrences
+	 */
+	public Set<IOccurrence> getOccurrencesByValue(final String value, boolean isRegExp) {
+		/*
+		 * redirect if value is regular expression
+		 */
+		if (isRegExp) {
+			return getOccurrencesByValue(Pattern.compile(value));
+		}
+		Set<IOccurrence> set = HashUtil.getHashSet();
+		if (occurrencesByValue != null && occurrencesByValue.containsKey(value)) {
+			set.addAll(occurrencesByValue.get(value));
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
+	 * Returns the occurrences matching the given regular expression.
+	 * 
+	 * @param regExp
+	 *            a regular expression
+	 * @return the occurrences
+	 */
+	public Set<IOccurrence> getOccurrencesByValue(final Pattern regExp) {
+		Set<IOccurrence> set = HashUtil.getHashSet();
+		if (occurrencesByValue != null) {
+			for (Entry<String, Set<IOccurrence>> entry : occurrencesByValue.entrySet()) {
+				if (regExp.matcher(entry.getKey()).matches()) {
+					set.addAll(entry.getValue());
+				}
 			}
 		}
 		if (set.isEmpty()) {
@@ -239,20 +360,66 @@ public class CharacteristicsStore implements IDataStore {
 	}
 
 	/**
+	 * Returns the variants matching the given value.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param isRegExp
+	 *            Flag if the value is a regular expression
+	 * @return the variants
+	 */
+	public Set<IVariant> getVariantsByValue(final String value, boolean isRegExp) {
+		/*
+		 * redirect if value is regular expression
+		 */
+		if (isRegExp) {
+			return getVariantsByValue(Pattern.compile(value));
+		}
+		Set<IVariant> set = HashUtil.getHashSet();
+		if (variantsByValue != null && variantsByValue.containsKey(value)) {
+			set.addAll(variantsByValue.get(value));
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
+	 * Returns the variants matching the given regular expression.
+	 * 
+	 * @param regExp
+	 *            a regular expression
+	 * @return the variants
+	 */
+	public Set<IVariant> getVariantsByValue(final Pattern regExp) {
+		Set<IVariant> set = HashUtil.getHashSet();
+		if (variantsByValue != null) {
+			for (Entry<String, Set<IVariant>> entry : variantsByValue.entrySet()) {
+				if (regExp.matcher(entry.getKey()).matches()) {
+					set.addAll(entry.getValue());
+				}
+			}
+		}
+		if (set.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return set;
+	}
+
+	/**
 	 * Remove the given name from the internal data store.
 	 * 
 	 * @param n
 	 *            the name
 	 */
 	public void removeName(IName n) {
-		if (names == null || !names.containsKey(n.getParent())) {
-			return;
-		}
-
-		Set<IName> set = names.get(n.getParent());
-		set.remove(n);
-		if (set.isEmpty()) {
-			names.remove(n.getParent());
+		if (names != null && names.containsKey(n.getParent())) {
+			Set<IName> set = names.get(n.getParent());
+			set.remove(n);
+			if (set.isEmpty()) {
+				names.remove(n.getParent());
+			}
 		}
 
 		/*
@@ -266,7 +433,14 @@ public class CharacteristicsStore implements IDataStore {
 		 * remove value
 		 */
 		if (values != null && values.containsKey(n)) {
-			values.remove(n);
+			Object value = values.remove(n);
+			if (namesByValue != null && namesByValue.containsKey(value.toString())) {
+				Set<IName> constructs = namesByValue.get(value.toString());
+				constructs.remove(n);
+				if (constructs.isEmpty()) {
+					namesByValue.remove(value.toString());
+				}
+			}
 		}
 	}
 
@@ -303,7 +477,14 @@ public class CharacteristicsStore implements IDataStore {
 		 * remove value
 		 */
 		if (values != null && values.containsKey(o)) {
-			values.remove(o);
+			Object value = values.remove(o);
+			if (occurrencesByValue != null && occurrencesByValue.containsKey(value.toString())) {
+				Set<IOccurrence> constructs = occurrencesByValue.get(value.toString());
+				constructs.remove(o);
+				if (constructs.isEmpty()) {
+					occurrencesByValue.remove(value.toString());
+				}
+			}
 		}
 	}
 
@@ -323,14 +504,14 @@ public class CharacteristicsStore implements IDataStore {
 		 */
 		Set<IVariant> set = variants.get(v.getParent());
 		Set<IVariant> newSet = HashUtil.getHashSet();
-		for ( IVariant var : set ){
-			if ( !v.equals(var)){
+		for (IVariant var : set) {
+			if (!v.equals(var)) {
 				newSet.add(var);
 			}
 		}
 		if (newSet.isEmpty()) {
 			variants.remove(v.getParent());
-		}else{
+		} else {
 			variants.put(v.getParent(), newSet);
 		}
 
@@ -350,7 +531,14 @@ public class CharacteristicsStore implements IDataStore {
 		 * remove value
 		 */
 		if (values != null && values.containsKey(v)) {
-			values.remove(v);
+			Object value = values.remove(v);
+			if (variantsByValue != null && variantsByValue.containsKey(value.toString())) {
+				Set<IVariant> constructs = variantsByValue.get(value.toString());
+				constructs.remove(v);
+				if (constructs.isEmpty()) {
+					variantsByValue.remove(value.toString());
+				}
+			}
 		}
 	}
 
@@ -487,8 +675,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public Object getValue(IConstruct obj) {
 		if (values == null || !values.containsKey(obj)) {
-			throw new TopicMapStoreException(
-					"Value for construct does not exist!");
+			throw new TopicMapStoreException("Value for construct does not exist!");
 		}
 		Object value = values.get(obj);
 		if (value instanceof Calendar) {
@@ -509,8 +696,7 @@ public class CharacteristicsStore implements IDataStore {
 		if (obj instanceof IName) {
 			return value.toString();
 		}
-		return DatatypeAwareUtils.toString(value,
-				getDatatype((IDatatypeAware) obj));
+		return DatatypeAwareUtils.toString(value, getDatatype((IDatatypeAware) obj));
 	}
 
 	/**
@@ -535,7 +721,132 @@ public class CharacteristicsStore implements IDataStore {
 		}
 		values.put(obj, value_);
 
+		/*
+		 * update the reverse value-constructs entry
+		 */
+		if (obj instanceof IName) {
+			updateReverseValueMapping((IName) obj, oldValue == null ? null : oldValue.toString(), value.toString());
+		} else if (obj instanceof IOccurrence) {
+			updateReverseValueMapping((IOccurrence) obj, oldValue == null ? null : oldValue.toString(), value.toString());
+		} else if (obj instanceof IVariant) {
+			updateReverseValueMapping((IVariant) obj, oldValue == null ? null : oldValue.toString(), value.toString());
+		}
+
 		return oldValue;
+	}
+
+	/**
+	 * Internal method to update the reverse mapping of a value and the constructs
+	 * 
+	 * @param name
+	 *            the name
+	 * @param oldValue
+	 *            the old value
+	 * @param value
+	 *            the new value
+	 */
+	private void updateReverseValueMapping(IName name, String oldValue, String value) {
+		/*
+		 * initialize construct-value mapping
+		 */
+		if (namesByValue == null) {
+			namesByValue = HashUtil.getHashMap();
+		}
+		/*
+		 * remove old value if exists
+		 */
+		if (oldValue != null && namesByValue.containsKey(oldValue)) {
+			Set<IName> constructs = namesByValue.get(oldValue);
+			constructs.remove(name);
+			if (constructs.isEmpty()) {
+				namesByValue.remove(oldValue.toString());
+			}
+		}
+		/*
+		 * set new value
+		 */
+		Set<IName> constructs = namesByValue.get(value);
+		if (constructs == null) {
+			constructs = HashUtil.getHashSet();
+			namesByValue.put(value, constructs);
+		}
+		constructs.add(name);
+	}
+
+	/**
+	 * Internal method to update the reverse mapping of a value and the constructs
+	 * 
+	 * @param occurrence
+	 *            the occurrence
+	 * @param oldValue
+	 *            the old value
+	 * @param value
+	 *            the new value
+	 */
+	private void updateReverseValueMapping(IOccurrence occurrence, String oldValue, String value) {
+		/*
+		 * initialize construct-value mapping
+		 */
+		if (occurrencesByValue == null) {
+			occurrencesByValue = HashUtil.getHashMap();
+		}
+		/*
+		 * remove old value if exists
+		 */
+		if (oldValue != null && occurrencesByValue.containsKey(oldValue)) {
+			Set<IOccurrence> constructs = occurrencesByValue.get(oldValue);
+			constructs.remove(occurrence);
+			if (constructs.isEmpty()) {
+				occurrencesByValue.remove(oldValue.toString());
+			}
+		}
+		/*
+		 * set new value
+		 */
+		Set<IOccurrence> constructs = occurrencesByValue.get(value);
+		if (constructs == null) {
+			constructs = HashUtil.getHashSet();
+			occurrencesByValue.put(value, constructs);
+		}
+		constructs.add(occurrence);
+	}
+
+	/**
+	 * Internal method to update the reverse mapping of a value and the constructs
+	 * 
+	 * @param variant
+	 *            the variant
+	 * @param oldValue
+	 *            the old value
+	 * @param value
+	 *            the new value
+	 */
+	private void updateReverseValueMapping(IVariant variant, String oldValue, String value) {
+		/*
+		 * initialize construct-value mapping
+		 */
+		if (variantsByValue == null) {
+			variantsByValue = HashUtil.getHashMap();
+		}
+		/*
+		 * remove old value if exists
+		 */
+		if (oldValue != null && variantsByValue.containsKey(oldValue)) {
+			Set<IVariant> constructs = variantsByValue.get(oldValue);
+			constructs.remove(variant);
+			if (constructs.isEmpty()) {
+				variantsByValue.remove(oldValue.toString());
+			}
+		}
+		/*
+		 * set new value
+		 */
+		Set<IVariant> constructs = variantsByValue.get(value);
+		if (constructs == null) {
+			constructs = HashUtil.getHashSet();
+			variantsByValue.put(value, constructs);
+		}
+		constructs.add(variant);
 	}
 
 	/**
@@ -581,16 +892,57 @@ public class CharacteristicsStore implements IDataStore {
 	}
 
 	/**
-	 * Checks if the store contains any locator of the given
-	 * {@link IDatatypeAware}.
+	 * Checks if the store contains any locator of the given {@link IDatatypeAware}.
 	 * 
 	 * @param aware
 	 *            the {@link IDatatypeAware}
-	 * @return <code>true</code> if any locator of the given
-	 *         {@link IDatatypeAware} is stored, <code>false</code> otherwise.
+	 * @return <code>true</code> if any locator of the given {@link IDatatypeAware} is stored, <code>false</code>
+	 *         otherwise.
 	 */
 	protected final boolean containsDatatype(IDatatypeAware aware) {
 		return dataTypes != null && dataTypes.containsKey(aware);
 	}
 
+	/**
+	 * @return the dataTyped
+	 */
+	protected Map<ILocator, Set<IDatatypeAware>> getDataTypedMap() {
+		return dataTyped;
+	}
+	
+	/**
+	 * @return the dataTypes
+	 */
+	protected Map<IDatatypeAware, ILocator> getDataTypesMap() {
+		return dataTypes;
+	}
+		
+	protected Map<IConstruct, Object> getValuesMap() {
+		return values;
+	}
+	
+	protected Map<ITopic, Set<IName>> getNamesMap(){
+		return names;
+	}
+	
+	protected Map<ITopic, Set<IOccurrence>> getOccurrencesMap(){
+		return occurrences;
+	}
+	
+	protected Map<IName, Set<IVariant>> getVariantsMap(){
+		return variants;
+	}
+	
+	protected Map<String, Set<IName>> getNamesByValueMap(){
+		return namesByValue;
+	}
+	
+	protected Map<String, Set<IOccurrence>> getOccurrencesByValueMap(){
+		return occurrencesByValue;
+	}
+	
+	protected Map<String, Set<IVariant>> getVariantsByValueMap(){
+		return variantsByValue;
+	}
 }
+

@@ -50,6 +50,8 @@ public class FeatureStrings {
 	
 	public static final String SUPPORT_HISTORY = MAJORTOM_PREFIX + ".topicmapstore.history";
 	
+	public static final String ENABLE_CACHING = MAJORTOM_PREFIX + ".topicmapstore.caching";
+	
 	public static final String SUPPORT_TRANSACTION = MAJORTOM_PREFIX + ".topicmapstore.transaction";
 
 	public static final String CONSTRAINTS = MAJORTOM_PREFIX + ".constraints";
@@ -74,6 +76,7 @@ public class FeatureStrings {
 		FEATURES.add(READ_ONLY_SYSTEM);
 		
 		FEATURES.add(SUPPORT_HISTORY);
+		FEATURES.add(ENABLE_CACHING);
 		FEATURES.add(SUPPORT_TRANSACTION);
 		FEATURES.add(DELETION_CONSTRAINTS_REIFICATION);
 	}

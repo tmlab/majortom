@@ -46,19 +46,19 @@ public class TmdmSubjectIdentifier {
 	public static final String TMDM_DEFAULT_NAME_TYPE = "http://psi.topicmaps.org/iso13250/model/topic-name";
 
 	/**
-	 * Checks if the given identifier is known as subject-identifier of the
-	 * topic maps meta model
+	 * Checks if the given identifier is known as subject-identifier of the topic maps meta model
 	 * 
 	 * @param identifier
 	 *            the identifier
-	 * @return <code>true</code> if the given identifier is a predefined
-	 *         subject-identifier of the topic maps meta model,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the given identifier is a predefined subject-identifier of the topic maps meta
+	 *         model, <code>false</code> otherwise.
 	 */
 	public static boolean isTmdmSubjectIdentifier(final String identifier) {
-		return identifier.equals(TMDM_DEFAULT_NAME_TYPE) || identifier.equals(TMDM_INSTANCE_ROLE_TYPE) || identifier.equals(TMDM_SUBTYPE_ROLE_TYPE)
-				|| identifier.equals(TMDM_SUPERTYPE_ROLE_TYPE) || identifier.equals(TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION)
-				|| identifier.equals(TMDM_TYPE_INSTANCE_ASSOCIATION) || identifier.equals(TMDM_TYPE_ROLE_TYPE);
+		return identifier.equals(TMDM_DEFAULT_NAME_TYPE) || identifier.equals(TMDM_INSTANCE_ROLE_TYPE) || identifier.equals(TMDM_SUBTYPE_ROLE_TYPE) || identifier.equals(TMDM_SUPERTYPE_ROLE_TYPE)
+				|| identifier.equals(TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION) || identifier.equals(TMDM_TYPE_INSTANCE_ASSOCIATION) || identifier.equals(TMDM_TYPE_ROLE_TYPE);
 	}
+
+	public static String[] TMDM_IDENTIFIERS = { TMDM_DEFAULT_NAME_TYPE, TMDM_INSTANCE_ROLE_TYPE, TMDM_SUBTYPE_ROLE_TYPE, TMDM_SUPERTYPE_ROLE_TYPE, TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION,
+			TMDM_TYPE_INSTANCE_ASSOCIATION, TMDM_TYPE_ROLE_TYPE };
 
 }

@@ -301,4 +301,22 @@ public class AssociationStore implements IDataStore {
 	public void replace(ITopic topic, ITopic replacement, IRevision revision) {
 		// NOTHING TO DO > DONE BY EXTERNAL MERGE UTILS
 	}
+	
+	/**
+	 * @return the playedRoles
+	 */
+	protected Map<ITopic, Set<IAssociationRole>> getPlayedRolesMap() {
+		return playedRoles;
+	}
+	
+	/**
+	 * @return the rolePlayers
+	 */
+	protected  Map<IAssociationRole, ITopic> getRolePlayersMap() {
+		return rolePlayers;
+	}
+	
+	protected Map<IAssociation, Set<IAssociationRole>> getAssociationMap(){
+		return associations;
+	}
 }
