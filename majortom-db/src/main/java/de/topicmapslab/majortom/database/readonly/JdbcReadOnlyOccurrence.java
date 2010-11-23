@@ -18,18 +18,16 @@
  */
 package de.topicmapslab.majortom.database.readonly;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 
-import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
 import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
@@ -41,16 +39,22 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 
+	private static final long serialVersionUID = 1L;
 	private final ReadOnlyTopic parent;
-	private final IQueryProcessor processor;
+	private final IConnectionProvider provider;
 
 	/**
+	 * constructor
+	 * 
+	 * @param provider
+	 *            the connection provider
 	 * @param clone
+	 *            the non-read-only clone
 	 */
-	public JdbcReadOnlyOccurrence(IQueryProcessor processor, IOccurrence clone) {
+	public JdbcReadOnlyOccurrence(IConnectionProvider provider, IOccurrence clone) {
 		super(clone);
-		this.parent = new JdbcReadOnlyTopic(processor, clone.getParent());
-		this.processor = processor;
+		this.parent = new JdbcReadOnlyTopic(provider, clone.getParent());
+		this.provider = provider;
 	}
 
 	/**
@@ -115,13 +119,9 @@ public class JdbcReadOnlyOccurrence extends ReadOnlyOccurrence {
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends Object> T doReadHistoryValue(
-			TopicMapStoreParameterType type) {
-		try {
-			return (T) processor.doReadHistory(this, type).get(type);
-		} catch (SQLException e) {
-			throw new TopicMapStoreException(e);
-		}
+	private <T extends Object> T doReadHistoryValue(TopicMapStoreParameterType type) {
+		Object value = ReadOnlyUtils.doReadHistoryValue(provider, this, type);
+		return (T)value;
 	}
 
 }

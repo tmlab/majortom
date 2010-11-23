@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.topicmapslab.majortom.inmemory.virtual.internal;
+package de.topicmapslab.majortom.queued.store.index;
 
-import de.topicmapslab.majortom.inmemory.store.model.IDataStore;
-import de.topicmapslab.majortom.model.core.IConstruct;
+import java.util.concurrent.locks.Lock;
+
+import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 
 /**
  * @author Sven Krosse
  * 
  */
-public interface IVirtualStore extends IDataStore {
+public class ConcurrentTransitiveTypeInstanceIndex extends ConcurrentTypeInstanceIndex implements ITransitiveTypeInstanceIndex {
 
 	/**
-	 * Removes the virtual construct from the internal memory layer. But does not delete the construct in underlying
-	 * data store.
-	 * 
-	 * @param construct
-	 *            the construct to remove
-	 * @param newConstruct
-	 *            the new construct
+	 * @param parentIndex
+	 * @param lock
 	 */
-	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct);
+	public ConcurrentTransitiveTypeInstanceIndex(ITransitiveTypeInstanceIndex parentIndex, Lock lock) {
+		super(parentIndex, lock);
+	}
+
 }

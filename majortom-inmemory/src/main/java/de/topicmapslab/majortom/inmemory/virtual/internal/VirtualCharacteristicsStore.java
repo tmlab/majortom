@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.inmemory.virtual.internal;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Name;
@@ -41,8 +42,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends CharacteristicsStore implements
-		IVirtualStore {
+public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends CharacteristicsStore implements IVirtualStore {
 
 	private final T store;
 
@@ -235,8 +235,7 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 	public Set<IOccurrence> getOccurrences(ITopic t) {
 		Set<IOccurrence> set = HashUtil.getHashSet();
 		if (!getVirtualIdentityStore().isVirtual(t)) {
-			for (IOccurrence occurrence : (Set<IOccurrence>) getStore().getRealStore().doRead(t,
-					TopicMapStoreParameterType.OCCURRENCE)) {
+			for (IOccurrence occurrence : (Set<IOccurrence>) getStore().getRealStore().doRead(t, TopicMapStoreParameterType.OCCURRENCE)) {
 				if (!getVirtualIdentityStore().isRemovedConstruct(occurrence)) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(occurrence));
 				}
@@ -277,8 +276,7 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 	public Set<IVariant> getVariants(IName n) {
 		Set<IVariant> set = HashUtil.getHashSet();
 		if (!getVirtualIdentityStore().isVirtual(n)) {
-			for (IVariant variant : (Set<IVariant>) getStore().getRealStore().doRead(n,
-					TopicMapStoreParameterType.VARIANT)) {
+			for (IVariant variant : (Set<IVariant>) getStore().getRealStore().doRead(n, TopicMapStoreParameterType.VARIANT)) {
 				if (!getVirtualIdentityStore().isRemovedConstruct(variant)) {
 					set.add(getVirtualIdentityStore().asVirtualConstruct(variant));
 				}
@@ -307,7 +305,7 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 				} catch (TopicMapStoreException ex) {
 					// THROWN IF CONSTRUCT IS NOT CREATED YET
 				}
-			}
+			} 
 		}
 		return null;
 	}
@@ -387,15 +385,158 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
-		if (construct instanceof ITopic) {
-			removeTopic((ITopic) construct);
-		} else if (construct instanceof IOccurrence) {
-			removeOccurrence((IOccurrence) construct);
-		} else if (construct instanceof IName) {
-			removeName((IName) construct);
-		} else if (construct instanceof IVariant) {
-			removeVariant((IVariant) construct);
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * construct is an occurrence
+		 */
+		if (construct instanceof IOccurrence) {
+			IOccurrence newOccurrence = (IOccurrence) construct;
+			/*
+			 * replace occurrences as children of its parent
+			 */
+			Map<ITopic, Set<IOccurrence>> occurrences = getOccurrencesMap();
+			if (occurrences != null && occurrences.containsKey(construct.getParent())) {
+				occurrences.get(construct.getParent()).remove(construct);
+				occurrences.get(construct.getParent()).add(newOccurrence);
+			}
+			replaceValueBinding(construct, newConstruct);
+			replaceDatatypeBinding((IOccurrence) construct, newOccurrence);
+		}
+		/*
+		 * construct is an occurrence
+		 */
+		else if (construct instanceof IName) {
+			IName newName = (IName) construct;
+			/*
+			 * replace name as children of its parent
+			 */
+			Map<ITopic, Set<IName>> names = getNamesMap();
+			if (names != null && names.containsKey(construct.getParent())) {
+				names.get(construct.getParent()).remove(construct);
+				names.get(construct.getParent()).add(newName);
+			}
+			replaceValueBinding(construct, newConstruct);
+			/*
+			 * replace as variant parent
+			 */
+			Map<IName, Set<IVariant>> variants = getVariantsMap();
+			if (variants != null && variants.containsKey(construct)) {
+				Set<IVariant> set = variants.remove(construct);
+				variants.put(newName, set);
+			}
+		}
+		/*
+		 * construct is a variant
+		 */
+		else if (construct instanceof IVariant) {
+			IVariant newVariant = (IVariant) construct;
+			/*
+			 * replace as child of its name
+			 */
+			Map<IName, Set<IVariant>> variants = getVariantsMap();
+			if (variants != null && variants.containsKey(construct.getParent())) {
+				variants.get(construct.getParent()).remove(construct);
+				variants.get(construct.getParent()).add(newVariant);
+			}
+			replaceValueBinding(construct, newConstruct);
+			replaceDatatypeBinding((IVariant) construct, newVariant);
+		}
+		/*
+		 * else if construct is a ITopic
+		 */
+		else if (construct instanceof ITopic) {
+			ITopic newTopic = (ITopic) newConstruct;
+			/*
+			 * copy names to new parent
+			 */
+			Map<ITopic, Set<IName>> names = getNamesMap();
+			if (names != null && names.containsKey(construct)) {
+				Set<IName> set = names.remove(construct);
+				names.put(newTopic, set);
+			}
+			/*
+			 * copy occurrences to new parent
+			 */
+			Map<ITopic, Set<IOccurrence>> occurrences = getOccurrencesMap();
+			if (occurrences != null && occurrences.containsKey(construct)) {
+				Set<IOccurrence> set = occurrences.remove(construct);
+				occurrences.put(newTopic, set);
+			}
+		}
+	}
+
+	/**
+	 * Internal method to replace value mappings
+	 * 
+	 * @param construct
+	 *            the old construct
+	 * @param newConstruct
+	 *            the new construct
+	 */
+	private void replaceValueBinding(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * replace the value of the construct
+		 */
+		Map<IConstruct, Object> values = getValuesMap();
+		if (values != null && values.containsKey(construct)) {
+			Object value = values.remove(construct);
+			values.put(newConstruct, value);
+			/*
+			 * replace the construct as value holder
+			 */
+			if (construct instanceof IOccurrence) {
+				Map<String, Set<IOccurrence>> occurrencesByValue = getOccurrencesByValueMap();
+				if (occurrencesByValue != null && occurrencesByValue.containsKey(value.toString())) {
+					occurrencesByValue.get(value.toString()).remove(construct);
+					occurrencesByValue.get(value.toString()).add((IOccurrence) newConstruct);
+				}
+			} else if (construct instanceof IName) {
+				Map<String, Set<IName>> namesByValue = getNamesByValueMap();
+				if (namesByValue != null && namesByValue.containsKey(value.toString())) {
+					namesByValue.get(value.toString()).remove(construct);
+					namesByValue.get(value.toString()).add((IName) newConstruct);
+				}
+			} else if (construct instanceof IVariant) {
+				Map<String, Set<IVariant>> variantsByValue = getVariantsByValueMap();
+				if (variantsByValue != null && variantsByValue.containsKey(value.toString())) {
+					variantsByValue.get(value.toString()).remove(construct);
+					variantsByValue.get(value.toString()).add((IVariant) newConstruct);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Internal method to replace datatype mappings
+	 * 
+	 * @param construct
+	 *            the old construct
+	 * @param newConstruct
+	 *            the new construct
+	 */
+	private void replaceDatatypeBinding(IDatatypeAware construct, IDatatypeAware newConstruct) {
+		Map<IDatatypeAware, ILocator> datatypes = getDataTypesMap();
+		if (datatypes != null && datatypes.containsKey(construct)) {
+			/*
+			 * copy datatype to new reference
+			 */
+			ILocator datatype = datatypes.remove(construct);
+			datatypes.put(newConstruct, datatype);
+			/*
+			 * replace datatype-construct mapping
+			 */
+			Map<ILocator, Set<IDatatypeAware>> datatyped = getDataTypedMap();
+			if (datatyped != null && datatyped.containsKey(datatype)) {
+				datatyped.get(datatype).remove(construct);
+				datatyped.get(datatype).add(newConstruct);
+			}
+			/*
+			 * replace change datatypes mapping
+			 */
+			if (changedDatatypes != null && changedDatatypes.contains(construct.getId())) {
+				changedDatatypes.remove(construct.getId());
+				changedDatatypes.add(newConstruct.getId());
+			}
 		}
 	}
 }

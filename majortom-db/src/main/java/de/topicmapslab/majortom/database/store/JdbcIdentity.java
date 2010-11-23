@@ -25,6 +25,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
  */
 public class JdbcIdentity implements ITopicMapStoreIdentity {
 
+	private static final long serialVersionUID = 1L;
 	/**
 	 * the internal id
 	 */
@@ -50,7 +51,7 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	}
 
 	/**
-	 * Return the internal id of the constructn as long
+	 * Return the internal id of the construct as long
 	 * 
 	 * @return the id
 	 */

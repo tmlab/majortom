@@ -73,8 +73,7 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	 * @param transaction
 	 *            the transaction
 	 */
-	public InMemoryTransactionTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store,
-			ITransaction transaction) {
+	public InMemoryTransactionTopicMapStore(ITopicMapSystem topicMapSystem, ITopicMapStore store, ITransaction transaction) {
 		super(topicMapSystem, store);
 		this.transaction = transaction;
 	}
@@ -94,8 +93,7 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 			final Map<Object, Object> lazy = HashUtil.getHashMap();
 			lazy.put(transaction, transaction.getTopicMap());
 			ITopicMapListener listener = new ITopicMapListener() {
-				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue,
-						Object oldValue) {
+				public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
 					if (event == TopicMapEventType.MERGE) {
 						Object oldValue_ = null;
 						/* find old value */
@@ -158,10 +156,8 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY,
-				context, paramType, params);
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.MODIFY, context, paramType, params);
 		super.doModify(context, paramType, params);
 		commands.add(command);
 	}
@@ -169,10 +165,8 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE,
-				context, paramType, params);
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, paramType, params);
 		super.doRemove(context, paramType, params);
 		commands.add(command);
 	}
@@ -181,8 +175,7 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	 * {@inheritDoc}
 	 */
 	public void doRemove(IConstruct context, boolean cascade) throws TopicMapStoreException {
-		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE,
-				context, null, cascade);
+		TransactionCommand command = new TransactionCommand(getTransaction(), null, TransactionOperation.REMOVE, context, null, cascade);
 		super.doRemove(context, cascade);
 		commands.add(command);
 	}
@@ -190,11 +183,9 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		Object obj = super.doCreate(context, paramType, params);
-		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType,
-				params));
+		commands.add(new TransactionCommand(getTransaction(), obj, TransactionOperation.CREATE, context, paramType, params));
 		return obj;
 	}
 
@@ -213,7 +204,7 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	 * {@inheritDoc}
 	 */
 	protected VirtualIdentityStore<?> createIdentityStore(InMemoryTopicMapStore store) {
-		return new LazyIdentityStore(this);
+		return new LazyIdentityStore(this, getCapacityOfCollections());
 	}
 
 	/**

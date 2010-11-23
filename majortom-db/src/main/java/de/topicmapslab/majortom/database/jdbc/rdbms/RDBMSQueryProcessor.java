@@ -5586,7 +5586,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * removed construct -> load data from history
 		 */
-		else {
+		else {			
 			PreparedStatement stmt = queryBuilder.getQueryReadHistory();
 			stmt.setLong(1, Long.parseLong(c.getId()));
 			ResultSet rs = stmt.executeQuery();
@@ -5624,7 +5624,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<IName> set = HashUtil.getHashSet();
 							Array a = rs.getArray("names");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyName(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyName(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
@@ -5634,7 +5634,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<IOccurrence> set = HashUtil.getHashSet();
 							Array a = rs.getArray("occurrences");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyOccurrence(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
@@ -5644,7 +5644,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<IVariant> set = HashUtil.getHashSet();
 							Array a = rs.getArray("variants");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyVariant(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyVariant(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
 							}
 							results.put(type, set);
@@ -5654,7 +5654,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<IAssociation> set = HashUtil.getHashSet();
 							Array a = rs.getArray("associations");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
@@ -5664,7 +5664,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("types");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
@@ -5674,7 +5674,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("supertypes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
@@ -5684,7 +5684,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<IAssociationRole> set = HashUtil.getHashSet();
 							Array a = rs.getArray("roles");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociationRole(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory()
 										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
 							}
@@ -5693,7 +5693,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							break;
 						case PLAYER: {
 							results.put(type,
-									new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
+									new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 											.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
 						}
 							break;
@@ -5713,7 +5713,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("themes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(this, getSession().getTopicMapStore()
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
@@ -5748,7 +5748,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 				 * calling object is not a topic -> reification value represents the reifier topic
 				 */
 				else {
-					results.put(TopicMapStoreParameterType.REIFICATION, new JdbcReadOnlyTopic(this, getSession()
+					results.put(TopicMapStoreParameterType.REIFICATION, new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession()
 							.getTopicMapStore().getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 				}
 			}
@@ -5776,7 +5776,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		rs.close();
 		if (type != null) {
 			if (type.equalsIgnoreCase("n")) {
-				return new JdbcReadOnlyName(this, getSession()
+				return new JdbcReadOnlyName(getSession().getConnectionProvider(), getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newName(
@@ -5787,7 +5787,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 										.newTopic(new JdbcIdentity(parentId),
 												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("o")) {
-				return new JdbcReadOnlyOccurrence(this, getSession()
+				return new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newOccurrence(
@@ -5798,18 +5798,18 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 										.newTopic(new JdbcIdentity(parentId),
 												getSession().getTopicMapStore().getTopicMap())));
 			} else if (type.equalsIgnoreCase("t")) {
-				return new JdbcReadOnlyTopic(this, getSession().getTopicMapStore().getConstructFactory()
+				return new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 						.newTopic(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("a")) {
-				return new JdbcReadOnlyAssociation(this, getSession().getTopicMapStore().getConstructFactory()
+				return new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 						.newAssociation(new JdbcIdentity(id), getSession().getTopicMapStore().getTopicMap()));
 			} else if (type.equalsIgnoreCase("r")) {
-				return new JdbcReadOnlyAssociationRole(this, getSession()
+				return new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), getSession()
 						.getTopicMapStore()
 						.getConstructFactory()
 						.newAssociationRole(
 								new JdbcIdentity(id),
-								new JdbcReadOnlyAssociation(this, getSession()
+								new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession()
 										.getTopicMapStore()
 										.getConstructFactory()
 										.newAssociation(new JdbcIdentity(parentId),
@@ -5821,7 +5821,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 				} else {
 					parent = (IName) asReadOnlyConstruct(parent);
 				}
-				return new JdbcReadOnlyVariant(this, getSession().getTopicMapStore().getConstructFactory()
+				return new JdbcReadOnlyVariant(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 						.newVariant(new JdbcIdentity(id), parent));
 			}
 		}
@@ -5837,17 +5837,17 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	private final IConstruct asReadOnlyConstruct(IConstruct c) {
 		if (c instanceof ITopic) {
-			return new JdbcReadOnlyTopic(this, (ITopic) c);
+			return new JdbcReadOnlyTopic(getSession().getConnectionProvider(), (ITopic) c);
 		} else if (c instanceof IName) {
-			return new JdbcReadOnlyName(this, (IName) c);
+			return new JdbcReadOnlyName(getSession().getConnectionProvider(), (IName) c);
 		} else if (c instanceof IOccurrence) {
-			return new JdbcReadOnlyOccurrence(this, (IOccurrence) c);
+			return new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), (IOccurrence) c);
 		} else if (c instanceof IVariant) {
-			return new JdbcReadOnlyVariant(this, (IVariant) c);
+			return new JdbcReadOnlyVariant(getSession().getConnectionProvider(), (IVariant) c);
 		} else if (c instanceof IAssociation) {
-			return new JdbcReadOnlyAssociation(this, (IAssociation) c);
+			return new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), (IAssociation) c);
 		} else if (c instanceof IAssociationRole) {
-			return new JdbcReadOnlyAssociationRole(this, (IAssociationRole) c);
+			return new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), (IAssociationRole) c);
 		}
 		/*
 		 * construct is the topic map itself

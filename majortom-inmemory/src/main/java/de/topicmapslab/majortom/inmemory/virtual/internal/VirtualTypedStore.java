@@ -667,9 +667,141 @@ public class VirtualTypedStore<T extends VirtualTopicMapStore> extends TypedStor
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
 		if (construct instanceof ITypeable) {
-			removeType((ITypeable) construct);
+			if (construct instanceof IAssociation) {
+				removeVirtualConstruct((IAssociation) construct, (IAssociation) newConstruct);
+			} else if (construct instanceof IName) {
+				removeVirtualConstruct((IName) construct, (IName) newConstruct);
+			} else if (construct instanceof IOccurrence) {
+				removeVirtualConstruct((IOccurrence) construct, (IOccurrence) newConstruct);
+			} else if (construct instanceof IAssociationRole) {
+				removeVirtualConstruct((IAssociationRole) construct, (IAssociationRole) newConstruct);
+			}
+			if ( modifiedConstructs != null && modifiedConstructs.contains(construct)){
+				modifiedConstructs.remove(construct);
+				modifiedConstructs.add((ITypeable)newConstruct);
+			}
+		}
+		/*
+		 * construct is a topic
+		 */
+		else if ( construct instanceof ITopic ){
+			ITopic newTopic = (ITopic) newConstruct;
+			/*
+			 * replace as association type
+			 */
+			Map<ITopic, Set<IAssociation>> typedAssociations = getTypedAssociationsMap();
+			if ( typedAssociations != null && typedAssociations.containsKey(construct)){
+				Set<IAssociation> set = typedAssociations.remove(construct);
+				typedAssociations.put(newTopic, set);
+				for ( IAssociation a : set){
+					Map<IAssociation, ITopic> typed = getAssociationTypesMap();
+					if (typed != null && typed.containsKey(a)) {
+						typed.put(a, newTopic);
+					}
+				}
+			}
+			/*
+			 * replace as role type
+			 */
+			Map<ITopic, Set<IAssociationRole>> typedRoles = getTypedRolesMap();
+			if ( typedRoles != null && typedRoles.containsKey(construct)){
+				Set<IAssociationRole> set = typedRoles.remove(construct);
+				typedRoles.put(newTopic, set);
+				for ( IAssociationRole r : set){
+					Map<IAssociationRole, ITopic> typed = getRoleTypesMap();
+					if (typed != null && typed.containsKey(r)) {
+						typed.put(r, newTopic);
+					}
+				}
+			}
+			/*
+			 * replace as name type
+			 */
+			Map<ITopic, Set<IName>> typedNames = getTypedNamesMap();
+			if ( typedNames != null && typedNames.containsKey(construct)){
+				Set<IName> set = typedNames.remove(construct);
+				typedNames.put(newTopic, set);
+				for ( IName n : set){
+					Map<IName, ITopic> typed = getNameTypesMap();
+					if (typed != null && typed.containsKey(n)) {
+						typed.put(n, newTopic);
+					}
+				}
+			}
+			/*
+			 * replace as occurrence type
+			 */
+			Map<ITopic, Set<IOccurrence>> typedOccurrences = getTypedOccurrencesMap();
+			if ( typedOccurrences != null && typedOccurrences.containsKey(construct)){
+				Set<IOccurrence> set = typedOccurrences.remove(construct);
+				typedOccurrences.put(newTopic, set);
+				for ( IOccurrence o : set){
+					Map<IOccurrence, ITopic> typed = getOccurrenceTypesMap();
+					if (typed != null && typed.containsKey(o)) {
+						typed.put(o, newTopic);
+					}
+				}
+			}
+			/*
+			 * copy modification knowledge
+			 */
+			if ( changedTypes != null && changedTypes.containsKey(construct)){
+				changedTypes.put(newTopic, changedTypes.remove(construct));
+			}			
+		}
+	}
+
+	private void removeVirtualConstruct(IAssociation construct, IAssociation newConstruct) {
+		Map<IAssociation, ITopic> associationTypes = getAssociationTypesMap();
+		if (associationTypes != null && associationTypes.containsKey(construct)) {
+			ITopic type = associationTypes.remove(construct);
+			associationTypes.put(newConstruct, type);
+			Map<ITopic, Set<IAssociation>> typedAssociations = getTypedAssociationsMap();
+			if (typedAssociations != null && typedAssociations.containsKey(type)) {
+				typedAssociations.get(type).remove(construct);
+				typedAssociations.get(type).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IAssociationRole construct, IAssociationRole newConstruct) {
+		Map<IAssociationRole, ITopic> associationRoleTypes = getRoleTypesMap();
+		if (associationRoleTypes != null && associationRoleTypes.containsKey(construct)) {
+			ITopic type = associationRoleTypes.remove(construct);
+			associationRoleTypes.put(newConstruct, type);
+			Map<ITopic, Set<IAssociationRole>> typedAssociationRoles = getTypedRolesMap();
+			if (typedAssociationRoles != null && typedAssociationRoles.containsKey(type)) {
+				typedAssociationRoles.get(type).remove(construct);
+				typedAssociationRoles.get(type).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IName construct, IName newConstruct) {
+		Map<IName, ITopic> nameTypes = getNameTypesMap();
+		if (nameTypes != null && nameTypes.containsKey(construct)) {
+			ITopic type = nameTypes.remove(construct);
+			nameTypes.put(newConstruct, type);
+			Map<ITopic, Set<IName>> typedNames = getTypedNamesMap();
+			if (typedNames != null && typedNames.containsKey(type)) {
+				typedNames.get(type).remove(construct);
+				typedNames.get(type).add(newConstruct);
+			}
+		}
+	}
+
+	private void removeVirtualConstruct(IOccurrence construct, IOccurrence newConstruct) {
+		Map<IOccurrence, ITopic> occurrenceTypes = getOccurrenceTypesMap();
+		if (occurrenceTypes != null && occurrenceTypes.containsKey(construct)) {
+			ITopic type = occurrenceTypes.remove(construct);
+			occurrenceTypes.put(newConstruct, type);
+			Map<ITopic, Set<IOccurrence>> typedOccurrences = getTypedOccurrencesMap();
+			if (typedOccurrences != null && typedOccurrences.containsKey(type)) {
+				typedOccurrences.get(type).remove(construct);
+				typedOccurrences.get(type).add(newConstruct);
+			}
 		}
 	}
 }

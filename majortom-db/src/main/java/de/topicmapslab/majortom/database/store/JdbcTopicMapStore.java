@@ -161,8 +161,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IAssociation a = session.getProcessor().doCreateAssociation(topicMap, type, themes);
@@ -195,8 +194,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected ILocator doCreateItemIdentifier(ITopicMap topicMap) {
 		return doCreateLocator(topicMap, getTopicMapBaseLocator().getReference()
-				+ (getTopicMapBaseLocator().getReference().endsWith("/")
-						|| getTopicMapBaseLocator().getReference().endsWith("#") ? "" : "/") + UUID.randomUUID());
+				+ (getTopicMapBaseLocator().getReference().endsWith("/") || getTopicMapBaseLocator().getReference().endsWith("#") ? "" : "/") + UUID.randomUUID());
 	}
 
 	/**
@@ -270,8 +268,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IName n = session.getProcessor().doCreateName(topic, type, value, themes);
@@ -312,8 +309,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		return doCreateOccurrence(topic, type, value, datatype, themes);
 	}
@@ -330,8 +326,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
 		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
 		return doCreateOccurrence(topic, type, value.toExternalForm(), datatype, themes);
 	}
@@ -339,8 +334,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype)
-			throws TopicMapStoreException {
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws TopicMapStoreException {
 		Collection<ITopic> themes = Collections.emptySet();
 		return doCreateOccurrence(topic, type, value, datatype, themes);
 	}
@@ -348,8 +342,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype,
-			Collection<ITopic> themes) throws TopicMapStoreException {
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IOccurrence o = session.getProcessor().doCreateOccurrence(topic, type, value, datatype, themes);
@@ -383,8 +376,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player)
-			throws TopicMapStoreException {
+	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IAssociationRole r = session.getProcessor().doCreateRole(association, type, player);
@@ -463,8 +455,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier)
-			throws TopicMapStoreException {
+	protected ITopic doCreateTopicByItemIdentifier(ITopicMap topicMap, ILocator itemIdentifier) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic t = session.getProcessor().doCreateTopicByItemIdentifier(topicMap, itemIdentifier);
@@ -494,8 +485,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier)
-			throws TopicMapStoreException {
+	protected ITopic doCreateTopicBySubjectIdentifier(ITopicMap topicMap, ILocator subjectIdentifier) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic t = session.getProcessor().doCreateTopicBySubjectIdentifier(topicMap, subjectIdentifier);
@@ -525,8 +515,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator)
-			throws TopicMapStoreException {
+	protected ITopic doCreateTopicBySubjectLocator(ITopicMap topicMap, ILocator subjectLocator) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic t = session.getProcessor().doCreateTopicBySubjectLocator(topicMap, subjectLocator);
@@ -556,8 +545,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
 		return doCreateVariant(name, value, datatype, themes);
 	}
@@ -565,8 +553,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
 		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
 		return doCreateVariant(name, value.toExternalForm(), datatype, themes);
 	}
@@ -574,8 +561,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IVariant v = session.getProcessor().doCreateVariant(name, value, datatype, themes);
@@ -1037,8 +1023,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		/*
 		 * avoid caching of transaction constructs
 		 */
@@ -1349,12 +1334,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope)
-			throws TopicMapStoreException {
+	public Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor()
-					.doReadCharacteristics(t, type, scope));
+			Set<ICharacteristics> set = HashUtil.getHashSet(session.getProcessor().doReadCharacteristics(t, type, scope));
 			session.commit();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
@@ -1911,12 +1894,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType)
-			throws TopicMapStoreException {
+	public Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			Set<IAssociationRole> set = HashUtil
-					.getHashSet(session.getProcessor().doReadRoles(player, type, assocType));
+			Set<IAssociationRole> set = HashUtil.getHashSet(session.getProcessor().doReadRoles(player, type, assocType));
 			session.commit();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
@@ -2023,12 +2004,9 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		try {
 			List<ITopic> supertypes = HashUtil.getList(session.getProcessor().doReadSuptertypes(t, offset, limit));
 			if (existsTmdmSupertypeSubtypeAssociationType()) {
-				for (IAssociation association : session.getProcessor().doReadAssociation(t,
-						getTmdmSupertypeSubtypeAssociationType())) {
-					Collection<IAssociationRole> rSubtypes = session.getProcessor().doReadRoles(association,
-							getTmdmSubtypeRoleType());
-					Collection<IAssociationRole> rSupertypes = session.getProcessor().doReadRoles(association,
-							getTmdmSupertypeRoleType());
+				for (IAssociation association : session.getProcessor().doReadAssociation(t, getTmdmSupertypeSubtypeAssociationType())) {
+					Collection<IAssociationRole> rSubtypes = session.getProcessor().doReadRoles(association, getTmdmSubtypeRoleType());
+					Collection<IAssociationRole> rSupertypes = session.getProcessor().doReadRoles(association, getTmdmSupertypeRoleType());
 					if (rSubtypes.size() == 1 && rSupertypes.size() == 1) {
 						IAssociationRole rSubtype = rSubtypes.iterator().next();
 						if (session.getProcessor().doReadPlayer(rSubtype).equals(t)) {
@@ -2177,12 +2155,9 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		try {
 			Set<ITopic> types = HashUtil.getHashSet(session.getProcessor().doReadTypes(t, offset, limit));
 			if (existsTmdmTypeInstanceAssociationType()) {
-				for (IAssociation association : session.getProcessor().doReadAssociation(t,
-						getTmdmTypeInstanceAssociationType())) {
-					Collection<IAssociationRole> rInstances = session.getProcessor().doReadRoles(association,
-							getTmdmInstanceRoleType());
-					Collection<IAssociationRole> rTypes = session.getProcessor().doReadRoles(association,
-							getTmdmTypeRoleType());
+				for (IAssociation association : session.getProcessor().doReadAssociation(t, getTmdmTypeInstanceAssociationType())) {
+					Collection<IAssociationRole> rInstances = session.getProcessor().doReadRoles(association, getTmdmInstanceRoleType());
+					Collection<IAssociationRole> rTypes = session.getProcessor().doReadRoles(association, getTmdmTypeRoleType());
 					if (rInstances.size() == 1 && rTypes.size() == 1) {
 						if (rInstances.contains(t)) {
 							IAssociationRole rType = rTypes.iterator().next();
@@ -2877,8 +2852,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public <I extends Index> I getIndex(Class<I> clazz) {
 		if (IPagedTransitiveTypeInstanceIndex.class.isAssignableFrom(clazz)) {
 			if (this.pagedTransitiveTypeInstanceIndex == null) {
-				this.pagedTransitiveTypeInstanceIndex = new JdbcPagedTransitiveTypeInstanceIndex(this,
-						getIndex(ITransitiveTypeInstanceIndex.class));
+				this.pagedTransitiveTypeInstanceIndex = new JdbcPagedTransitiveTypeInstanceIndex(this, getIndex(ITransitiveTypeInstanceIndex.class));
 			}
 			return (I) pagedTransitiveTypeInstanceIndex;
 		} else if (IPagedTypeInstanceIndex.class.isAssignableFrom(clazz)) {
@@ -2898,8 +2872,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			return (I) pagedLiteralIndex;
 		} else if (IPagedSupertypeSubtypeIndex.class.isAssignableFrom(clazz)) {
 			if (this.pagedSupertypeSubtypeIndex == null) {
-				this.pagedSupertypeSubtypeIndex = new JdbcPagedSupertypeSubtypeIndex(this,
-						getIndex(ISupertypeSubtypeIndex.class));
+				this.pagedSupertypeSubtypeIndex = new JdbcPagedSupertypeSubtypeIndex(this, getIndex(ISupertypeSubtypeIndex.class));
 			}
 			return (I) pagedSupertypeSubtypeIndex;
 		} else if (IPagedConstructIndex.class.isAssignableFrom(clazz)) {
@@ -2948,8 +2921,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 			return (I) this.revisionIndex;
 		}
-		throw new UnsupportedOperationException("The index class '"
-				+ (clazz == null ? "null" : clazz.getCanonicalName()) + "' is not supported by the current engine.");
+		throw new UnsupportedOperationException("The index class '" + (clazz == null ? "null" : clazz.getCanonicalName()) + "' is not supported by the current engine.");
 	}
 
 	/**
@@ -3004,8 +2976,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public void connect() throws TopicMapStoreException {
 		super.connect();
 		if (isRevisionManagementEnabled()) {
-			IRevision r = createRevision(TopicMapEventType.TOPIC_MAP_CREATED);
-			storeRevision(r, TopicMapEventType.TOPIC_MAP_CREATED, getTopicMap(), getTopicMap(), null);
+			try {
+				ISession session = provider.openSession();
+				try {
+					IRevision r = session.getProcessor().doReadFirstRevision(getTopicMap());
+					/*
+					 * topic map creation is not part of the history
+					 */
+					if (r == null) {
+						r = createRevision(TopicMapEventType.TOPIC_MAP_CREATED);
+						storeRevision(r, TopicMapEventType.TOPIC_MAP_CREATED, getTopicMap(), getTopicMap(), null);
+					}
+				} finally {
+					session.close();
+				}
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Cannot establish connection to database", e);
+			}
 		}
 	}
 
@@ -3038,13 +3025,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 		return null;
 	}
-		
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void storeRevision(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue,
-			Object oldValue) {
+	public void storeRevision(IRevision revision, TopicMapEventType type, IConstruct context, Object newValue, Object oldValue) {
 		if (isRevisionManagementEnabled()) {
 			ISession session = provider.openSession();
 			try {
@@ -3076,13 +3061,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create association
 			 */
-			IAssociation association = session.getProcessor().doCreateAssociation(getTopicMap(),
-					getTmdmTypeInstanceAssociationType());
+			IAssociation association = session.getProcessor().doCreateAssociation(getTopicMap(), getTmdmTypeInstanceAssociationType());
 			/*
 			 * create roles
 			 */
-			IAssociationRole roleInstance = session.getProcessor().doCreateRole(association, getTmdmInstanceRoleType(),
-					instance);
+			IAssociationRole roleInstance = session.getProcessor().doCreateRole(association, getTmdmInstanceRoleType(), instance);
 			IAssociationRole roleType = session.getProcessor().doCreateRole(association, getTmdmTypeRoleType(), type);
 			session.commit();
 			/*
@@ -3118,15 +3101,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create association
 			 */
-			IAssociation association = session.getProcessor().doCreateAssociation(getTopicMap(),
-					getTmdmSupertypeSubtypeAssociationType());
+			IAssociation association = session.getProcessor().doCreateAssociation(getTopicMap(), getTmdmSupertypeSubtypeAssociationType());
 			/*
 			 * create roles
 			 */
-			IAssociationRole roleSubtype = session.getProcessor().doCreateRole(association, getTmdmSubtypeRoleType(),
-					type);
-			IAssociationRole roleSupertype = session.getProcessor().doCreateRole(association,
-					getTmdmSupertypeRoleType(), supertype);
+			IAssociationRole roleSubtype = session.getProcessor().doCreateRole(association, getTmdmSubtypeRoleType(), type);
+			IAssociationRole roleSupertype = session.getProcessor().doCreateRole(association, getTmdmSupertypeRoleType(), supertype);
 			session.commit();
 			/*
 			 * notify listener
@@ -3155,8 +3135,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * 
 	 * {@inheritDoc}
 	 */
-	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision)
-			throws TopicMapStoreException {
+	protected void removeSupertypeSubtypeAssociation(ITopic type, ITopic supertype, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmSupertypeSubtypeAssociationType());
 		try {
@@ -3165,8 +3144,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 					/*
 					 * get subtype roles
 					 */
-					Collection<IAssociationRole> rolesSubtype = session.getProcessor().doReadRoles(association,
-							getTmdmSubtypeRoleType());
+					Collection<IAssociationRole> rolesSubtype = session.getProcessor().doReadRoles(association, getTmdmSubtypeRoleType());
 					/*
 					 * get player
 					 */
@@ -3175,8 +3153,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 						/*
 						 * get supertype roles
 						 */
-						Collection<IAssociationRole> rolesSupertype = session.getProcessor().doReadRoles(association,
-								getTmdmSupertypeRoleType());
+						Collection<IAssociationRole> rolesSupertype = session.getProcessor().doReadRoles(association, getTmdmSupertypeRoleType());
 						/*
 						 * get player
 						 */
@@ -3206,8 +3183,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * 
 	 * {@inheritDoc}
 	 */
-	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision)
-			throws TopicMapStoreException {
+	protected void removeTypeInstanceAssociation(ITopic instance, ITopic type, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		Collection<IAssociation> associations = doReadAssociation(type, getTmdmTypeInstanceAssociationType());
 		try {
@@ -3216,17 +3192,16 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 					/*
 					 * get subtype roles
 					 */
-					Collection<IAssociationRole> rolesInstances = session.getProcessor().doReadRoles(association,
-							getTmdmInstanceRoleType());/*
-														 * get player
-														 */
+					Collection<IAssociationRole> rolesInstances = session.getProcessor().doReadRoles(association, getTmdmInstanceRoleType());/*
+																																			 * get
+																																			 * player
+																																			 */
 					ITopic player = session.getProcessor().doReadPlayer(rolesInstances.iterator().next());
 					if (player.equals(instance)) {
 						/*
 						 * get supertype roles
 						 */
-						Collection<IAssociationRole> rolesType = session.getProcessor().doReadRoles(association,
-								getTmdmTypeRoleType());
+						Collection<IAssociationRole> rolesType = session.getProcessor().doReadRoles(association, getTmdmTypeRoleType());
 						/*
 						 * get player
 						 */

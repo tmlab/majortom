@@ -731,4 +731,56 @@ public class TypedStore implements IDataStore {
 	protected InMemoryTopicMapStore getStore() {
 		return store;
 	}
+	
+	/**
+	 * storage map of the type-name relation
+	 */
+	protected Map<ITopic, Set<IName>> getTypedNamesMap(){
+		return typedNames;
+	}
+	/**
+	 * storage map of the name-type relation
+	 */
+	protected Map<IName, ITopic> getNameTypesMap(){
+		return nameTypes;
+	}
+
+	/**
+	 * storage map of the type-occurrence relation
+	 */
+	protected Map<ITopic, Set<IOccurrence>> getTypedOccurrencesMap(){
+		return typedOccurrences;
+	}
+	/**
+	 * storage map of the occurrence-type relation
+	 */
+	protected Map<IOccurrence, ITopic> getOccurrenceTypesMap(){
+		return occurrenceTypes;
+	}
+
+	/**
+	 * storage map of the type-association relation
+	 */
+	protected Map<ITopic, Set<IAssociation>> getTypedAssociationsMap(){
+		return typedAssociations;
+	}
+	/**
+	 * storage map of the association-type relation
+	 */
+	protected Map<IAssociation, ITopic> getAssociationTypesMap(){
+		return associationTypes;
+	}
+
+	/**
+	 * storage map of the type-role relation
+	 */
+	protected Map<ITopic, Set<IAssociationRole>> getTypedRolesMap(){
+		return typedRoles;
+	}
+	/**
+	 * storage map of the role-type relation
+	 */
+	protected Map<IAssociationRole, ITopic> getRoleTypesMap(){
+		return roleTypes;
+	}
 }

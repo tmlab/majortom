@@ -32,7 +32,7 @@ public class PagedIndexTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged");
 		// $JUnit-BEGIN$
 		suite.addTest(PagedNonComparedIndexTestSuite.suite());
-		// suite.addTest(PagedComparedIndexTestSuite.suite());
+//		 suite.addTest(PagedComparedIndexTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

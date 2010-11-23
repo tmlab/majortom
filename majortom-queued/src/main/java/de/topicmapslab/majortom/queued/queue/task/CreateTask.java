@@ -68,5 +68,12 @@ public class CreateTask extends QueueTaskImpl {
 	public Object getInMemoryClone() {
 		return inMemoryClone;
 	}
+	
+	/**
+	 * @return the parameters
+	 */
+	public Object[] getParameters() {
+		return parameters;
+	}
 
 }

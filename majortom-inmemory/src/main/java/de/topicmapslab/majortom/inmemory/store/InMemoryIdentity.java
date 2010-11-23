@@ -26,6 +26,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
  */
 public class InMemoryIdentity implements ITopicMapStoreIdentity {
 
+	private static final long serialVersionUID = 1L;
 	/**
 	 * the internal id
 	 */

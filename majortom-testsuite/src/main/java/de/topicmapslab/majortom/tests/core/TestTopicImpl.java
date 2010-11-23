@@ -77,16 +77,17 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		assertTrue(topic.getAssociationsPlayed(type).contains(typedAsso));
 		assertTrue(topic.getAssociationsPlayed(type).contains(scopedAsso));
 
+		IScope scopeObject = scopedAsso.getScopeObject();
 		assertEquals(1, topic
-				.getAssociationsPlayed(scopedAsso.getScopeObject()).size());
-		assertTrue(topic.getAssociationsPlayed(scopedAsso.getScopeObject())
+				.getAssociationsPlayed(scopeObject).size());
+		assertTrue(topic.getAssociationsPlayed(scopeObject)
 				.contains(scopedAsso));
 
 		assertEquals(1,
-				topic.getAssociationsPlayed(type, scopedAsso.getScopeObject())
+				topic.getAssociationsPlayed(type, scopeObject)
 						.size());
 		assertTrue(topic.getAssociationsPlayed(type,
-				scopedAsso.getScopeObject()).contains(scopedAsso));
+				scopeObject).contains(scopedAsso));
 	}
 
 	/**
@@ -290,60 +291,80 @@ public class TestTopicImpl extends MaJorToMTestCase {
 		Name name1 = topic.createName("Name");
 		assertEquals("Best label should be the name", name1.getValue(),
 				topic.getBestLabel());
+		
 		Name name2 = topic.createName("NameZZZ");
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the the lexicographically smallest name value",
 				name1.getValue(), topic.getBestLabel());
 
 		name1.setType(type);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals("Best label should be the default name", name2.getValue(),
 				topic.getBestLabel());
+		
 		name2.setType(type);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals("Best label should be the default name", name1.getValue(),
 				topic.getBestLabel());
 
 		name1.addTheme(theme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the unconstained scope",
 				name2.getValue(), topic.getBestLabel());
+		
 		name2.addTheme(otherTheme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
+		
 		name2.setValue(name1.getValue());
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
 
 		name2.setValue("NameZZZ");
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
 
 		name2.removeTheme(otherTheme);
 		name2.addTheme(theme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the unconstained scope",
 				name1.getValue(), topic.getBestLabel());
 
 		name1.addTheme(otherTheme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name2.getValue(), topic.getBestLabel());
-		name2.addTheme(otherTheme);
+		
+		name2.addTheme(otherTheme);		
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
 
 		name1.removeTheme(otherTheme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
+		
 		name2.removeTheme(theme);
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes",
 				name1.getValue(), topic.getBestLabel());
+		
 		name2.setValue("A");
+		System.out.println("Topic-ID:" + topic.getId() + "  name1-ID: " + name1.getId() + "  name2-ID: " + name2.getId());
 		assertEquals(
 				"Best label should be the name with the scope with the smallest number of themes and shortest value",
 				name2.getValue(), topic.getBestLabel());

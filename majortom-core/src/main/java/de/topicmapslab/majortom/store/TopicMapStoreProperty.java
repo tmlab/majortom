@@ -23,4 +23,6 @@ public interface TopicMapStoreProperty {
 	
 	public static final String THREADPOOL_MAXIMUM = PREFIX + ".threadpool.maximum";
 	
+	public static final String INITIAL_COLLECTION_CAPACITY = PREFIX + ".collection.capacity";
+	
 }

@@ -181,4 +181,11 @@ public class ReificationStore implements IDataStore {
 	protected InMemoryTopicMapStore getStore() {
 		return store;
 	}
+	
+	/**
+	 * @return the reification
+	 */
+	protected TreeBidiMap getReificationMap() {
+		return reification;
+	}
 }

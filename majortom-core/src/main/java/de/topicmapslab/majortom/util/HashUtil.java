@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +45,7 @@ public class HashUtil {
 	/**
 	 * the found class used as {@link Map} implementation
 	 */
-	private static Class<?> mapClass = HashMap.class; 
+	private static Class<?> mapClass = HashMap.class;
 
 	/**
 	 * hidden constructor
@@ -166,12 +164,13 @@ public class HashUtil {
 	 * @param <V>
 	 *            the value type
 	 * @param capacity
-	 *            the initial capacity	
+	 *            the initial capacity
 	 * @return the created map
 	 */
 	public static <K, V> Map<K, V> getHashMap(int capacity) {
 		return new HashMap<K, V>(capacity, LOAD_FACTORY);
 	}
+
 	/**
 	 * Method try to initialize a gnu.trove.THashMap if the library is located in the class path
 	 * 

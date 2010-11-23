@@ -37,6 +37,8 @@ import de.topicmapslab.majortom.model.transaction.ITransactionTopicMapStore;
  */
 public abstract class TransactionImpl extends TopicMapImpl implements ITransaction {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * the topic map
 	 */
@@ -63,6 +65,10 @@ public abstract class TransactionImpl extends TopicMapImpl implements ITransacti
 	 */
 	public void commit() throws TransactionException {
 		getStore().commit();
+		/*
+		 * await termination of parent store queue
+		 */
+		getStore().getRealStore().commit();
 		close = true;
 	}
 

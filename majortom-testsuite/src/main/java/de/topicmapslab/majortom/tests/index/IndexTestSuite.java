@@ -34,7 +34,7 @@ public class IndexTestSuite {
 		suite.addTestSuite(TestSupertypeSubtypeIndex.class);
 		suite.addTestSuite(TestTransitiveTypeInstanceIndex.class);
 		suite.addTestSuite(TestScopeIndex.class);
-		suite.addTest(PagedIndexTestSuite.suite());
+//		suite.addTest(PagedIndexTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

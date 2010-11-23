@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Construct;
+import org.tmapi.core.FeatureNotRecognizedException;
 
 import de.topicmapslab.majortom.cache.Cache;
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -48,6 +49,7 @@ import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
+import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
  * Base implementation of a read only {@link ITopicMapStore}.
@@ -75,6 +77,11 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 */
 	public ReadOnlyTopicMapStoreImpl(final ITopicMapSystem topicMapSystem) {
 		super(topicMapSystem);
+		try {
+			enableCaching = topicMapSystem.getFeature(FeatureStrings.ENABLE_CACHING);
+		} catch (FeatureNotRecognizedException e) {
+			enableCaching = true;
+		}
 	}
 
 	/**

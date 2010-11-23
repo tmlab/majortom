@@ -48,10 +48,15 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	private Map<ITopic, Set<ILocator>> removedSubjectLocators;
 
 	/**
+	 * constructor
+	 * 
 	 * @param store
+	 *            the parent store
+	 * @param capacity
+	 *            the capacity of internal sets
 	 */
-	public VirtualIdentityStore(T store) {
-		super(store);
+	public VirtualIdentityStore(T store, int capacity) {
+		super(store, capacity);
 	}
 
 	/**
@@ -118,8 +123,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 			/*
 			 * copy to internal store
 			 */
-			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t,
-					TopicMapStoreParameterType.SUBJECT_LOCATOR));
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t, TopicMapStoreParameterType.SUBJECT_LOCATOR));
 		}
 		/*
 		 * add internal subject locators
@@ -147,8 +151,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		 */
 		ITopic topic = super.bySubjectLocator(l);
 		if (topic == null) {
-			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(),
-					TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
+			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, l);
 			if (topic != null && !isRemovedConstruct(topic)) {
 				topic = asVirtualConstruct(topic);
 			} else {
@@ -161,8 +164,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		/*
 		 * check if locator was removed from the topic
 		 */
-		if (removedSubjectLocators != null && removedSubjectLocators.containsKey(topic)
-				&& removedSubjectLocators.get(topic).contains(l)) {
+		if (removedSubjectLocators != null && removedSubjectLocators.containsKey(topic) && removedSubjectLocators.get(topic).contains(l)) {
 			return null;
 		}
 		return topic;
@@ -225,8 +227,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 			/*
 			 * copy to internal store
 			 */
-			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t,
-					TopicMapStoreParameterType.SUBJECT_IDENTIFIER));
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(t, TopicMapStoreParameterType.SUBJECT_IDENTIFIER));
 		}
 		/*
 		 * add internal subject locators
@@ -254,8 +255,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		 */
 		ITopic topic = super.bySubjectIdentifier(l);
 		if (topic == null) {
-			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(),
-					TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
+			topic = (ITopic) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_SUBJECT_IDENTIFER, l);
 			if (topic != null && !isRemovedConstruct(topic)) {
 				topic = asVirtualConstruct(topic);
 			} else {
@@ -268,8 +268,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		/*
 		 * check if locator was removed from the topic
 		 */
-		if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(topic)
-				&& removedSubjectIdentifiers.get(topic).contains(l)) {
+		if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(topic) && removedSubjectIdentifiers.get(topic).contains(l)) {
 			return null;
 		}
 		return topic;
@@ -332,8 +331,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 			/*
 			 * copy to internal store
 			 */
-			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(c,
-					TopicMapStoreParameterType.ITEM_IDENTIFIER));
+			set.addAll((Collection<ILocator>) getStore().getRealStore().doRead(c, TopicMapStoreParameterType.ITEM_IDENTIFIER));
 		}
 		/*
 		 * add internal subject locators
@@ -362,8 +360,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		IConstruct construct = super.byItemIdentifier(l);
 		if (construct == null) {
 
-			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(),
-					TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
+			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_ITEM_IDENTIFER, l);
 			if (construct != null && !isRemovedConstruct(construct)) {
 				construct = asVirtualConstruct(construct);
 			} else {
@@ -376,8 +373,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		/*
 		 * check if locator was removed from the topic
 		 */
-		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(construct)
-				&& removedItemIdentifiers.get(construct).contains(l)) {
+		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(construct) && removedItemIdentifiers.get(construct).contains(l)) {
 			return null;
 		}
 		return construct;
@@ -420,8 +416,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		 */
 		IConstruct construct = super.byId(id);
 		if (construct == null) {
-			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(),
-					TopicMapStoreParameterType.BY_ID, id);
+			construct = (IConstruct) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.BY_ID, id);
 			if (construct != null && !isRemovedConstruct(construct)) {
 				construct = asVirtualConstruct(construct);
 			} else {
@@ -475,8 +470,7 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	@SuppressWarnings("unchecked")
 	public Set<ITopic> getTopics() {
 		Set<ITopic> topics = HashUtil.getHashSet();
-		for (ITopic topic : (Collection<ITopic>) getStore().getRealStore().doRead(getStore().getTopicMap(),
-				TopicMapStoreParameterType.TOPIC)) {
+		for (ITopic topic : (Collection<ITopic>) getStore().getRealStore().doRead(getStore().getTopicMap(), TopicMapStoreParameterType.TOPIC)) {
 			if (!isRemovedConstruct(topic)) {
 				topics.add(asVirtualConstruct(topic));
 			}
@@ -576,12 +570,91 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeVirtualConstruct(IConstruct construct) {
-
+	public void removeVirtualConstruct(IConstruct construct, IConstruct newConstruct) {
+		/*
+		 * additional handling if construct is a topic
+		 */
 		if (construct instanceof ITopic) {
-			super.removeTopic((ITopic) construct);
-		} else {
-			super.removeConstruct(construct);
+			ITopic newTopic = (ITopic) newConstruct;
+			/*
+			 * update subject-identifier bindings
+			 */
+			Map<ITopic, Set<ILocator>> topicSubjectIdentifiers = getTopicSubjectIdentifiersMap();
+			if (topicSubjectIdentifiers != null && topicSubjectIdentifiers.containsKey(construct)) {
+				Set<ILocator> set = topicSubjectIdentifiers.remove(construct);
+				for (ILocator locator : set) {
+					Map<ILocator, ITopic> subjectIdentifiers = getSubjectIdentitifersMap();
+					if (subjectIdentifiers != null && subjectIdentifiers.containsKey(locator)) {
+						subjectIdentifiers.put(locator, newTopic);
+					}
+				}
+				topicSubjectIdentifiers.put(newTopic, set);
+			}
+			/*
+			 * copy modification knowledge
+			 */
+			if (removedSubjectIdentifiers != null && removedSubjectIdentifiers.containsKey(construct)) {
+				Set<ILocator> set = removedSubjectIdentifiers.remove(construct);
+				removedSubjectIdentifiers.put(newTopic, set);
+			}
+			/*
+			 * update subject-locators bindings
+			 */
+			Map<ITopic, Set<ILocator>> topicSubjectLocators = getTopicSubjectLocatorsMap();
+			if (topicSubjectLocators != null && topicSubjectLocators.containsKey(construct)) {
+				Set<ILocator> set = topicSubjectLocators.remove(construct);
+				for (ILocator locator : set) {
+					Map<ILocator, ITopic> subjectLocators = getSubjectLocatorsMap();
+					if (subjectLocators != null && subjectLocators.containsKey(locator)) {
+						subjectLocators.put(locator, newTopic);
+					}
+				}
+				topicSubjectLocators.put(newTopic, set);
+			}
+			/*
+			 * copy modification knowledge
+			 */
+			if (removedSubjectLocators != null && removedSubjectLocators.containsKey(construct)) {
+				Set<ILocator> set = removedSubjectLocators.remove(construct);
+				removedSubjectLocators.put(newTopic, set);
+			}
+
+			/*
+			 * replace topic instance
+			 */
+			Set<ITopic> topics = getTopicsSet();
+			if (topics != null) {
+				topics.remove(construct);
+			}
+		}
+
+		/*
+		 * update item-identifier bindings
+		 */
+		Map<IConstruct, Set<ILocator>> constructItemIdentifiers = getConstructItemIdentitiersMap();
+		if (constructItemIdentifiers != null && constructItemIdentifiers.containsKey(construct)) {
+			Set<ILocator> set = constructItemIdentifiers.remove(construct);
+			for (ILocator locator : set) {
+				Map<ILocator, IConstruct> itemIdentifiers = getItemIdentifiersMap();
+				if (itemIdentifiers != null && itemIdentifiers.containsKey(locator)) {
+					itemIdentifiers.put(locator, newConstruct);
+				}
+			}
+			constructItemIdentifiers.put(newConstruct, set);
+		}
+		/*
+		 * copy modification knowledge
+		 */
+		if (removedItemIdentifiers != null && removedItemIdentifiers.containsKey(construct)) {
+			Set<ILocator> set = removedItemIdentifiers.remove(construct);
+			removedItemIdentifiers.put(newConstruct, set);
+		}
+		/*
+		 * remove id binding
+		 */
+		Map<String, IConstruct> ids = getIdsMap();
+		if (ids != null) {
+			ids.remove(construct.getId());
 		}
 
 		/*
@@ -589,6 +662,12 @@ public class VirtualIdentityStore<T extends VirtualTopicMapStore> extends Identi
 		 */
 		if (removedIds != null) {
 			removedIds.remove(construct.getId());
+		}
+		/*
+		 * remove virtual link
+		 */
+		if (virtualConstructs != null) {
+			virtualConstructs.remove(construct.getId());
 		}
 
 	}
