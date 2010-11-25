@@ -1340,6 +1340,7 @@ public class TestTopicImpl extends AbstractTest{
 		assertNotNull(topic1);
 		assertEquals("aa", topic1.getBestLabel(theme1,true));
 		assertNull(topic1.getBestLabel(theme2,true));
+		assertNotNull(topic1.getBestLabel(theme2, false));
 		
 		ITopic topic2 = (ITopic)map.getTopicBySubjectIdentifier(map.createLocator("http://TestTopicImpl/testGetBestLabelTopic/topic/2"));
 		assertNotNull(topic2);
