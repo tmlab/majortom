@@ -42,7 +42,7 @@ public class InMemoryReadOnlyOccurrence extends ReadOnlyOccurrence {
 	private final String reifierId;
 	private String parentId;
 	private final Set<String> themeIds = HashUtil.getHashSet();
-	private final Object value;
+	private Object value;
 	private final Locator datatype;
 
 	/*
@@ -76,7 +76,7 @@ public class InMemoryReadOnlyOccurrence extends ReadOnlyOccurrence {
 		try {
 			this.value = DatatypeAwareUtils.toValue(clone);
 		} catch (Exception e) {
-			throw new TopicMapStoreException(e);
+			this.value = clone.getValue();
 		}
 		this.datatype = new LocatorImpl(clone.getDatatype().getReference());
 	}

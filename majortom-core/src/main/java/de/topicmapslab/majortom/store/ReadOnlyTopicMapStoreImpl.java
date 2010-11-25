@@ -144,7 +144,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes)
+	public abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes)
 			throws TopicMapStoreException;
 
 	/**

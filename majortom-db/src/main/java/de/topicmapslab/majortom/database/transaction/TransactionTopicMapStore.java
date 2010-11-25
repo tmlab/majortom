@@ -637,7 +637,7 @@ public class TransactionTopicMapStore extends ModifableTopicMapStoreImpl impleme
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+	public IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
 		return getScopeStore().getScope(themes);
 	}
 
