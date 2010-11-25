@@ -930,7 +930,7 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 	}
 
 	@Override
-	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+	public IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
 		throw new UnsupportedOperationException("Do create scope not supported by cache");
 	}
 

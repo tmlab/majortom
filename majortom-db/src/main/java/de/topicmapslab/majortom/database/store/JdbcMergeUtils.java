@@ -73,8 +73,7 @@ public class JdbcMergeUtils {
 	 *            a set of themes
 	 * @return the merging candidate-name combination or <code>null</code>
 	 */
-	public static NameMergeCandidate detectMergeByNameCandidate(JdbcTopicMapStore store, ITopic topic, ITopic nameType,
-			String value, Collection<ITopic> themes) {
+	public static NameMergeCandidate detectMergeByNameCandidate(JdbcTopicMapStore store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
 		IName duplette = getDuplette(store, topic, nameType, value, themes);
 		if (duplette != null) {
 			return new NameMergeCandidate(topic, duplette);
@@ -150,8 +149,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IName getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic type, String value,
-			Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IName getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -184,8 +182,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IVariant getDuplette(JdbcTopicMapStore store, IName name, String value, ILocator locator,
-			Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IVariant getDuplette(JdbcTopicMapStore store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -220,8 +217,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IOccurrence getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic type, String value,
-			ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
+	public static IOccurrence getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		/*
 		 * get scope as filter
 		 */
@@ -252,8 +248,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IAssociation getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic other, IAssociation association)
-			throws TopicMapStoreException {
+	public static IAssociation getDuplette(JdbcTopicMapStore store, ITopic topic, ITopic other, IAssociation association) throws TopicMapStoreException {
 		ITopic type = store.doReadType(association);
 		IScope scope = store.doReadScope(association);
 		/*
@@ -319,8 +314,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IAssociation getDuplette(JdbcTopicMapStore store, IAssociation association, Set<IAssociation> excluded)
-			throws TopicMapStoreException {
+	public static IAssociation getDuplette(JdbcTopicMapStore store, IAssociation association, Set<IAssociation> excluded) throws TopicMapStoreException {
 		ITopic type = store.doReadType(association);
 		IScope scope = store.doReadScope(association);
 		/*
@@ -387,8 +381,7 @@ public class JdbcMergeUtils {
 	 *            the revision to store changes
 	 * @throws TopicMapStoreException
 	 */
-	public static void doMerge(JdbcTopicMapStore store, ITopic topic, ITopic other, IRevision revision)
-			throws TopicMapStoreException {
+	public static void doMerge(JdbcTopicMapStore store, ITopic topic, ITopic other, IRevision revision) throws TopicMapStoreException {
 		/*
 		 * move names
 		 */
@@ -396,8 +389,7 @@ public class JdbcMergeUtils {
 			/*
 			 * check if name already contained by the other topic
 			 */
-			IName duplette = getDuplette(store, topic, store.doReadType(name), store.doReadValue(name).toString(),
-					store.doReadScope(name).getThemes());
+			IName duplette = getDuplette(store, topic, store.doReadType(name), store.doReadValue(name).toString(), store.doReadScope(name).getThemes());
 			/*
 			 * duplicated name found
 			 */
@@ -410,8 +402,7 @@ public class JdbcMergeUtils {
 					/*
 					 * check if variant already contained by the other name
 					 */
-					IVariant dup = getDuplette(store, duplette, store.doReadValue(v).toString(),
-							store.doReadDataType(v), store.doReadScope(v).getThemes());
+					IVariant dup = getDuplette(store, duplette, store.doReadValue(v).toString(), store.doReadDataType(v), store.doReadScope(v).getThemes());
 					/*
 					 * duplicated variant found
 					 */
@@ -432,8 +423,7 @@ public class JdbcMergeUtils {
 					 * no duplicated variant found
 					 */
 					else {
-						IVariant newVariant = (IVariant) store.doCreateVariant(duplette, store.doReadValue(v)
-								.toString(), store.doReadDataType(v), store.doReadScope(v).getThemes());
+						IVariant newVariant = store.doCreateVariant(duplette, store.doReadValue(v).toString(), store.doReadDataType(v), store.doReadScope(v).getThemes());
 						/*
 						 * copy all item identifiers
 						 */
@@ -467,8 +457,7 @@ public class JdbcMergeUtils {
 			 * no duplicated name found
 			 */
 			else {
-				IName newName = store.doCreateName(topic, store.doReadType(name), store.doReadValue(name).toString(),
-						store.doReadScope(name).getThemes());
+				IName newName = store.doCreateName(topic, store.doReadType(name), store.doReadValue(name).toString(), store.doReadScope(name).getThemes());
 				/*
 				 * copy all item identifiers
 				 */
@@ -488,8 +477,7 @@ public class JdbcMergeUtils {
 				 * copy variants
 				 */
 				for (IVariant v : store.doReadVariants(name)) {
-					IVariant newVariant = (IVariant) store.doCreateVariant(duplette, store.doReadValue(v).toString(),
-							store.doReadDataType(v), store.doReadScope(v).getThemes());
+					IVariant newVariant = store.doCreateVariant(duplette, store.doReadValue(v).toString(), store.doReadDataType(v), store.doReadScope(v).getThemes());
 					/*
 					 * copy all item identifiers
 					 */
@@ -541,8 +529,7 @@ public class JdbcMergeUtils {
 			 * no duplicated occurrence found
 			 */
 			else {
-				IOccurrence newOccurrence = store.doCreateOccurrence(topic, type, value.toString(), datatype,
-						scope.getThemes());
+				IOccurrence newOccurrence = store.doCreateOccurrence(topic, type, value.toString(), datatype, scope.getThemes());
 				/*
 				 * copy all item identifiers
 				 */
@@ -568,7 +555,7 @@ public class JdbcMergeUtils {
 			/*
 			 * check if association is already played by the other topic
 			 */
-			IAssociation duplette = getDuplette(store, topic, other, (IAssociation) association);
+			IAssociation duplette = getDuplette(store, topic, other, association);
 			/*
 			 * duplicated association found
 			 */
@@ -636,8 +623,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceIdentity(JdbcTopicMapStore store, ITopic topic, ITopic other)
-			throws TopicMapStoreException {
+	public static void replaceIdentity(JdbcTopicMapStore store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		/*
 		 * item-identifier
 		 */
@@ -673,8 +659,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceAsTypeOrSupertype(JdbcTopicMapStore store, ITopic topic, ITopic other)
-			throws TopicMapStoreException {
+	public static void replaceAsTypeOrSupertype(JdbcTopicMapStore store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		ITypeInstanceIndex typeIndex = store.getIndex(ITypeInstanceIndex.class);
 		if (!typeIndex.isOpen()) {
 			typeIndex.open();
@@ -736,8 +721,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void replaceAsTheme(JdbcTopicMapStore store, ITopic topic, ITopic other)
-			throws TopicMapStoreException {
+	public static void replaceAsTheme(JdbcTopicMapStore store, ITopic topic, ITopic other) throws TopicMapStoreException {
 		IScopedIndex scopeIndex = store.getIndex(IScopedIndex.class);
 		if (!scopeIndex.isOpen()) {
 			scopeIndex.open();
@@ -787,8 +771,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void doMergeReifiable(JdbcTopicMapStore store, IReifiable reifiable, IReifiable other,
-			IRevision revision) throws TopicMapStoreException {
+	public static void doMergeReifiable(JdbcTopicMapStore store, IReifiable reifiable, IReifiable other, IRevision revision) throws TopicMapStoreException {
 		ITopic reifierOfOther = store.doReadReification(other);
 		if (reifierOfOther != null) {
 			ITopic reifier = store.doReadReification(reifiable);
@@ -831,8 +814,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void doMergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other)
-			throws TopicMapStoreException {
+	public static void doMergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
 		Set<Topic> topics = other.getTopics();
 		/*
 		 * copy identifies
@@ -927,7 +909,7 @@ public class JdbcMergeUtils {
 				IScope scope = getCorrespondingScope(store, name.getScope());
 				IName n = getDuplette(store, duplette, type, name.getValue(), scope.getThemes());
 				if (n == null) {
-					n = (IName) store.doCreateName(duplette, type, name.getValue(), scope.getThemes());
+					n = store.doCreateName(duplette, type, name.getValue(), scope.getThemes());
 				}
 
 				/*
@@ -987,8 +969,7 @@ public class JdbcMergeUtils {
 			}
 
 			ITopic type = getDuplette(store, ass.getType());
-			IAssociation association = store.doCreateAssociation(topicMap, type,
-					getCorrespondingScope(store, ass.getScope()).getThemes());
+			IAssociation association = store.doCreateAssociation(topicMap, type, getCorrespondingScope(store, ass.getScope()).getThemes());
 
 			/*
 			 * copy item-identifiers of the association
@@ -1049,8 +1030,7 @@ public class JdbcMergeUtils {
 	}
 
 	/**
-	 * Method checks if the association is a TMDM association. Such associations will not be copied into the new topic
-	 * map to avoid duplicated entries.
+	 * Method checks if the association is a TMDM association. Such associations will not be copied into the new topic map to avoid duplicated entries.
 	 * 
 	 * @param store
 	 *            the store
@@ -1063,12 +1043,9 @@ public class JdbcMergeUtils {
 	 * @return <code>true</code> if the association is an TMDM association, <code>false</code> otherwise.
 	 * @throws TopicMapStoreException
 	 */
-	private static boolean checkTmdmAssociation(JdbcTopicMapStore store, Association association, ITopicMap topicMap,
-			TopicMap other) throws TopicMapStoreException {
-		Locator typeInstanceLocator = store.doCreateLocator(topicMap,
-				TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
-		Locator supertypeSubtypeLocator = store.doCreateLocator(topicMap,
-				TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+	private static boolean checkTmdmAssociation(JdbcTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+		Locator typeInstanceLocator = store.doCreateLocator(topicMap, TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		Locator supertypeSubtypeLocator = store.doCreateLocator(topicMap, TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
 
 		/*
 		 * is tmdm:supertype-subtype-association
@@ -1077,16 +1054,13 @@ public class JdbcMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic supertypeRole = other.getTopicBySubjectIdentifier(other
-					.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE));
-			Topic subtypeRole = other.getTopicBySubjectIdentifier(other
-					.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE));
+			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE));
+			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */
 			if (supertypeRole == null || subtypeRole == null) {
-				throw new TopicMapStoreException(
-						"Invalid supertype-subtype-association, missing at least one role-type");
+				throw new TopicMapStoreException("Invalid supertype-subtype-association, missing at least one role-type");
 			}
 			/*
 			 * get equivalent players contained by the topic map, information merged in
@@ -1107,10 +1081,8 @@ public class JdbcMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic typeRole = other.getTopicBySubjectIdentifier(other
-					.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE));
-			Topic instanceRole = other.getTopicBySubjectIdentifier(other
-					.createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE));
+			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE));
+			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */
@@ -1150,8 +1122,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void removeDuplicates(final JdbcTopicMapStore store, final ITopicMap topicMap)
-			throws TopicMapStoreException {
+	public static void removeDuplicates(final JdbcTopicMapStore store, final ITopicMap topicMap) throws TopicMapStoreException {
 
 		for (ITopic topic : store.doReadTopics(store.getTopicMap())) {
 			Set<Construct> removed = HashUtil.getHashSet();
@@ -1170,8 +1141,7 @@ public class JdbcMergeUtils {
 					/*
 					 * names are equal if the value, the type and scope property are equal
 					 */
-					if (store.doReadType(name).equals(store.doReadType(duplicate))
-							&& store.doReadValue(duplicate).equals(store.doReadValue(name))
+					if (store.doReadType(name).equals(store.doReadType(duplicate)) && store.doReadValue(duplicate).equals(store.doReadValue(name))
 							&& store.doReadScope(duplicate).equals(store.doReadScope(name))) {
 						/*
 						 * copy item-identifier
@@ -1207,7 +1177,7 @@ public class JdbcMergeUtils {
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, (IName) name, (IName) duplicate, null);
+						doMergeReifiable(store, name, duplicate, null);
 						/*
 						 * remove duplicate
 						 */
@@ -1222,8 +1192,7 @@ public class JdbcMergeUtils {
 					if (removed.contains(v)) {
 						continue;
 					}
-					for (IVariant dup : getDuplettes(store, name, store.doReadValue(v).toString(),
-							store.doReadDataType(v), store.doReadScope(v).getThemes())) {
+					for (IVariant dup : getDuplettes(store, name, store.doReadValue(v).toString(), store.doReadDataType(v), store.doReadScope(v).getThemes())) {
 						if (v.equals(dup) || removed.contains(dup)) {
 							continue;
 						}
@@ -1262,10 +1231,8 @@ public class JdbcMergeUtils {
 					/*
 					 * occurrences are equal if the value, datatype, the type and scope property are equal
 					 */
-					if (store.doReadType(duplicate).equals(store.doReadType(occurrence))
-							&& store.doReadValue(duplicate).equals(store.doReadValue(occurrence))
-							&& store.doReadScope(duplicate).equals(store.doReadScope(occurrence))
-							&& store.doReadDataType(duplicate).equals(store.doReadDataType(occurrence))) {
+					if (store.doReadType(duplicate).equals(store.doReadType(occurrence)) && store.doReadValue(duplicate).equals(store.doReadValue(occurrence))
+							&& store.doReadScope(duplicate).equals(store.doReadScope(occurrence)) && store.doReadDataType(duplicate).equals(store.doReadDataType(occurrence))) {
 						/*
 						 * copy item-identifier
 						 */
@@ -1385,8 +1352,7 @@ public class JdbcMergeUtils {
 	 *            the role
 	 * @return a set of duplicated roles
 	 */
-	public static Set<IAssociationRole> getDuplettes(JdbcTopicMapStore store, IAssociation association,
-			IAssociationRole role) {
+	public static Set<IAssociationRole> getDuplettes(JdbcTopicMapStore store, IAssociation association, IAssociationRole role) {
 		Set<IAssociationRole> set = HashUtil.getHashSet();
 		for (IAssociationRole r : store.doReadRoles(association, store.doReadType(role))) {
 			if (role.equals(r)) {
@@ -1410,14 +1376,12 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static Set<IAssociation> getDuplettes(JdbcTopicMapStore store, IAssociation association)
-			throws TopicMapStoreException {
+	public static Set<IAssociation> getDuplettes(JdbcTopicMapStore store, IAssociation association) throws TopicMapStoreException {
 		Set<IAssociation> associations = HashUtil.getHashSet();
 		/*
 		 * iterate over all filtered associations
 		 */
-		for (IAssociation a : store.doReadAssociation(store.getTopicMap(), store.doReadType(association),
-				store.doReadScope(association))) {
+		for (IAssociation a : store.doReadAssociation(store.getTopicMap(), store.doReadType(association), store.doReadScope(association))) {
 			if (a.equals(association)) {
 				continue;
 			}
@@ -1482,8 +1446,7 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static Set<IVariant> getDuplettes(JdbcTopicMapStore store, IName name, String value, ILocator locator,
-			Collection<ITopic> themes) throws TopicMapStoreException {
+	public static Set<IVariant> getDuplettes(JdbcTopicMapStore store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IVariant> variants = HashUtil.getHashSet();
 		/*
 		 * get scope as filter

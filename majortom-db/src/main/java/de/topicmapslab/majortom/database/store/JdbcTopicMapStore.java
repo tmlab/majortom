@@ -407,7 +407,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
+	public IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IScope scope = session.getProcessor().doCreateScope(topicMap, themes);
