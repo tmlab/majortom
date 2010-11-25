@@ -209,15 +209,6 @@ public class TestTopicMapImpl extends AbstractTest {
 		assertEquals(2, topics.size());
 	}
 
-//	/**
-//	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#removeTopicMapListener(de.topicmapslab.majortom.model.event.ITopicMapListener)}.
-//	 */
-//	@Test
-//	public void testRemoveTopicMapListener() {
-//
-//		fail("Not yet implemented");
-//	}
-
 	/**
 	 * Test method for {@link de.topicmapslab.majortom.core.TopicMapImpl#close()}.
 	 */
