@@ -150,6 +150,7 @@ public abstract class SessionImpl implements ISession {
 	public Connection getConnection() throws SQLException {
 		if (!isAlive()) {
 			connection = openConnection();
+			processor = createProcessor(connection);
 		}
 		return connection;
 	}

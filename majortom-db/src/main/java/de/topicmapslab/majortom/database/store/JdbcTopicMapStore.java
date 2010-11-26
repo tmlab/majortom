@@ -3325,6 +3325,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		if (session.getProcessor().canPerformRemoveDuplicates()) {
 			try {
 				session.getProcessor().doRemoveDuplicates();
+				clearCache();
 			} catch (SQLException e) {
 				throw new TopicMapStoreException("Execution of remove-duplicates failed!", e);
 			} finally {

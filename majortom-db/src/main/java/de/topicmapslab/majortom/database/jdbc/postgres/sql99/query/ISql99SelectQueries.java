@@ -557,6 +557,13 @@ public interface ISql99SelectQueries {
 		 * </p>
 		 */
 		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";// "SELECT unnest(scope_by_themes(?,?,?,?)) AS id;";
+		
+		/**
+		 * Query to read the scope object by themes
+		 * <p>
+		 * <b>parameter(2): an array of theme-IDs as bigint[], the number of themes as bigint
+		 */
+		public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE ( SELECT ARRAY( SELECT id_theme FROM rel_themes WHERE id_scope = r.id_scope  ) ) @> ? AND ? IN ( SELECT count( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope  );";
 
 		public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_topicmap = ?";
 

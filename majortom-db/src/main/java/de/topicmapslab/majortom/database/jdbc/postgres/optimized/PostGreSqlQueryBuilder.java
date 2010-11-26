@@ -319,6 +319,7 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	private PreparedStatement preparedStatementIndexSupertypesOfTopicPaged;
 	private PreparedStatement preparedStatementIndexSupertypesOfTopicsPaged;
 	private PreparedStatement preparedStatementRemoveDuplicates;
+	private PreparedStatement preparedStatementRemoveDuplicateTopicContent;
 
 	/**
 	 * {@inheritDoc}
@@ -420,5 +421,19 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 			preparedStatementRemoveDuplicates = getConnection().prepareStatement(IPostGreSqlPerformQueries.PERFORM_REMOVE_DUPLICATES);
 		}
 		return preparedStatementRemoveDuplicates;
+	}
+	
+	/**
+	 * Returns the prepared SQL statement to perform method 'remove_duplicate_topiccontent'
+	 * 
+	 * @return the prepared statement and never <code>null</code>
+	 * @throws SQLException
+	 *             thrown if the statement cannot be created
+	 */
+	public PreparedStatement getPerformRemoveDuplicateTopicContent() throws SQLException {
+		if (preparedStatementRemoveDuplicateTopicContent == null) {
+			preparedStatementRemoveDuplicateTopicContent = getConnection().prepareStatement(IPostGreSqlPerformQueries.PERFORM_REMOVE_DUPLICATE_TOPIC_CONTENT);
+		}
+		return preparedStatementRemoveDuplicateTopicContent;
 	}
 }
