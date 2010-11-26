@@ -340,7 +340,11 @@ public interface ISql99IndexQueries {
 
 			public static final String QUERY_SELECT_CHARACTERISTICS = "SELECT r.id, r.id_parent, r.type, r.value  FROM ( SELECT o.id, id_parent, 'o' AS type, value FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND value = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT id, id_parent, 'n' AS type, value FROM names WHERE id_topicmap = ? AND value = ?) AS r ORDER BY r.value OFFSET ? LIMIT ?;";
 
-			public static final String QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE = "SELECT r.id, r.id_parent, r.other,  r.type, r.value FROM ( SELECT o.id, id_parent, NULL AS other, 'o', value AS type FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? UNION SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type, v.value FROM variants AS v, locators AS l, names AS n WHERE v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ? AND n.id = v.id_parent) AS r ORDER BY r.value OFFSET ? LIMIT ?;";
+			public static final String QUERY_SELECT_DATATYPEAWARES_BY_DATATYPE = "SELECT r.id, r.id_parent, r.other,  r.type, r.value FROM ( " +
+																					"SELECT o.id, id_parent, NULL AS other, 'o' AS type, o.value FROM occurrences AS o, locators AS l WHERE id_topicmap = ? AND o.id_datatype = l.id AND l.reference = ? " +
+																					"UNION " +
+																					"SELECT v.id, v.id_parent, n.id_parent AS other, 'v' AS type, v.value FROM variants AS v, locators AS l, names AS n WHERE v.id_topicmap = ? AND v.id_datatype = l.id AND l.reference = ? AND n.id = v.id_parent" +
+																					") AS r ORDER BY r.value OFFSET ? LIMIT ?;";
 
 			public static final String QUERY_SELECT_NAMES = "SELECT id, id_parent FROM names WHERE id_topicmap = ? ORDER BY value OFFSET ? LIMIT ? ;";
 

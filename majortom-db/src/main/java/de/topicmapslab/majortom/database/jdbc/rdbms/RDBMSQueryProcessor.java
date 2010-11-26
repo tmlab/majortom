@@ -5883,4 +5883,18 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		rs.close();
 		return locators;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean canPerformRemoveDuplicates() {		
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doRemoveDuplicates() throws SQLException, UnsupportedOperationException {
+		throw new UnsupportedOperationException("The function 'remove_dupliates' is not provided by the underlying database!");		
+	}
 }

@@ -24,34 +24,47 @@ package de.topicmapslab.majortom.database.jdbc.postgres.optimized.query;
  */
 public interface IPostGreSqlSelectQueries {
 
-		
-	/**
-	 * Query to read the super types of a topic
-	 * <p>
-	 * <b>parameters(1):</b> topic id
-	 * </p>
-	 */
-	public static final String QUERY_READ_SUPERTYPES = "SELECT unnest(transitive_supertypes(?)) AS id;";
+	interface NonPaged {
 
-	// **************
-	// * READ SCOPE *
-	// **************
-	
-	/**
-	 * Query to read the scope object by a collection of themes
-	 * <p>
-	 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map id 
-	 * </p>
-	 */
-	public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT r.id, ARRAY ( SELECT id_theme FROM rel_themes WHERE id_scope = r.id ) AS themes FROM ( SELECT unnest(scope_by_themes(?,?,?,?)) AS id ) AS r;";
-	
-	/**
-	 * @since 1.1.2
-	 */
-	public static final String QUERY_READ_BEST_LABEL = "SELECT best_label(?,?);";
-	
-	/**
-	 * @since 1.1.2
-	 */
-	public static final String QUERY_READ_BEST_LABEL_WITH_THEME = "SELECT best_label(?,?,?,?);";
+		/**
+		 * Query to read the super types of a topic
+		 * <p>
+		 * <b>parameters(1):</b> topic id
+		 * </p>
+		 */
+		public static final String QUERY_READ_SUPERTYPES = "SELECT unnest(transitive_supertypes(?)) AS id;";
+
+		// **************
+		// * READ SCOPE *
+		// **************
+
+		/**
+		 * Query to read the scope object by a collection of themes
+		 * <p>
+		 * <b>parameters(4):</b> an array of theme-IDs, boolean-flag matching all, boolean flag exact match, topic map
+		 * id
+		 * </p>
+		 */
+		public static final String QUERY_READ_SCOPES_BY_THEMES = "SELECT r.id, ARRAY ( SELECT id_theme FROM rel_themes WHERE id_scope = r.id ) AS themes FROM ( SELECT unnest(scope_by_themes(?,?,?,?)) AS id ) AS r;";
+
+		/**
+		 * @since 1.1.2
+		 */
+		public static final String QUERY_READ_BEST_LABEL = "SELECT best_label(?,?);";
+
+		/**
+		 * @since 1.1.2
+		 */
+		public static final String QUERY_READ_BEST_LABEL_WITH_THEME = "SELECT best_label(?,?,?,?);";
+	}
+
+	interface Paged {
+		/**
+		 * Query to read the super types of a topic
+		 * <p>
+		 * <b>parameters(3):</b> topic id, offset, limit
+		 * </p>
+		 */
+		public static final String QUERY_READ_SUPERTYPES = "SELECT unnest(transitive_supertypes(?)) AS id OFFSET ? LIMIT ?;";
+	}
 }

@@ -3234,8 +3234,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		super.clearCache();
 		boolean wasCachingEnabled = isCachingEnabled();
 		enableCaching(false);
+		ISession session = provider.openSession();
 		try {
-			ISession session = provider.openSession();
 			session.getProcessor().doClearTopicMap(getTopicMap());
 			if (typeInstanceIndex != null) {
 				typeInstanceIndex.clear();
@@ -3283,6 +3283,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Session cannot be closed!", e);
+			}
 		}
 		enableCaching(wasCachingEnabled);
 	}
@@ -3312,7 +3318,29 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
-		JdbcMergeUtils.removeDuplicates(this, getTopicMap());
+		ISession session = openSession();
+		/*
+		 * check if the processor provides special mechanism or functions to remove duplicates
+		 */
+		if (session.getProcessor().canPerformRemoveDuplicates()) {
+			try {
+				session.getProcessor().doRemoveDuplicates();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException("Execution of remove-duplicates failed!", e);
+			} finally {
+				try {
+					session.close();
+				} catch (SQLException e) {
+					throw new TopicMapStoreException("Session cannot be closed!", e);
+				}
+			}
+		}
+		/*
+		 * fall-back -> remove by iteration
+		 */
+		else {
+			JdbcMergeUtils.removeDuplicates(this, getTopicMap());
+		}
 	}
 
 }
