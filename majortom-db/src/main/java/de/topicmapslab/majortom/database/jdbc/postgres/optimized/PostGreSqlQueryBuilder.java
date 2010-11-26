@@ -89,12 +89,12 @@ public class PostGreSqlQueryBuilder extends Sql99QueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
+	public PreparedStatement getQueryReadScopeByTheme() throws SQLException {
 		/*
 		 * check if optimization procedure exists
 		 */
 		if (!getSession().getConnectionProvider().existsProcedureScopeByThemes()) {
-			return super.getQueryReadScopeByThemes();
+			return super.getQueryReadScopeByTheme();
 		}
 		if (preparedStatementReadScopeByThemes == null) {
 			this.preparedStatementReadScopeByThemes = getConnection().prepareStatement(IPostGreSqlSelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEMES);

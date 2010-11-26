@@ -387,7 +387,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * read scope by themes
 		 */
-		PreparedStatement stmt = queryBuilder.getQueryReadScopeByThemes();
+		PreparedStatement stmt = queryBuilder.getQueryReadScopeByTheme();
 		boolean first = true;
 		for (ITopic theme : themes) {
 			Collection<Long> ids = HashUtil.getHashSet();
@@ -3394,7 +3394,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			/*
 			 * read scope by themes
 			 */
-			PreparedStatement stmt = queryBuilder.getQueryReadScopeByThemes();
+			PreparedStatement stmt = queryBuilder.getQueryReadScopeByTheme();
 			boolean first = true;
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();

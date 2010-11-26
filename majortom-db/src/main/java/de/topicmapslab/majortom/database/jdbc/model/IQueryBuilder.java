@@ -145,7 +145,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadScope() throws SQLException;
 
-	public PreparedStatement getQueryReadScopeByThemes() throws SQLException;
+	public PreparedStatement getQueryReadScopeByTheme() throws SQLException;
 
 	public PreparedStatement getQueryReadValue() throws SQLException;
 

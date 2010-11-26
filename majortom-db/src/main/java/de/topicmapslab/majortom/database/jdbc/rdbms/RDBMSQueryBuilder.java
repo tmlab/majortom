@@ -821,7 +821,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
+	public PreparedStatement getQueryReadScopeByTheme() throws SQLException {
 		if (preparedStatementReadScopeByThemes == null) {
 			this.preparedStatementReadScopeByThemes = getConnection().prepareStatement(
 					ISelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEME);
