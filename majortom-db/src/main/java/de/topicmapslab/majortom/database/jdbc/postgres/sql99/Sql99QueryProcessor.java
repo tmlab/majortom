@@ -349,7 +349,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * read scope by themes
 		 */
-		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByTheme();
 		boolean first = true;
 		for (ITopic theme : themes) {
 			Collection<Long> ids = HashUtil.getHashSet();

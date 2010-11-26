@@ -346,7 +346,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * read scope by themes
 		 */
-		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByTheme();
 		boolean first = true;
 		for (ITopic theme : themes) {
 			Collection<Long> ids = HashUtil.getHashSet();
@@ -3009,7 +3009,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 			/*
 			 * read scope by themes
 			 */
-			PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
+			PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByTheme();
 			boolean first = true;
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();

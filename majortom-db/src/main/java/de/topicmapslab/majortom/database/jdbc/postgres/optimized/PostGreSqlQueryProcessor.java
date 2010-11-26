@@ -118,7 +118,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		if (!getSession().getConnectionProvider().existsProcedureScopeByThemes()) {
 			return super.readScopeByThemes(topicMap, themes);
 		}
-		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByThemes();
+		PreparedStatement stmt = getQueryBuilder().getQueryReadScopeByTheme();
 		List<Long> ids = HashUtil.getList();
 		for (ITopic theme : themes) {
 			ids.add(Long.parseLong(theme.getId()));

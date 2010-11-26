@@ -783,7 +783,7 @@ public class MySqlQueryBuilder extends RDBMSQueryBuilder {
 	/**
 	 * {@inheritDoc}
 	 */
-	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
+	public PreparedStatement getQueryReadScopeByTheme() throws SQLException {
 		if (preparedStatementReadScopeByThemes == null) {
 			this.preparedStatementReadScopeByThemes = getConnection().prepareStatement(
 					IMySqlSelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEME);

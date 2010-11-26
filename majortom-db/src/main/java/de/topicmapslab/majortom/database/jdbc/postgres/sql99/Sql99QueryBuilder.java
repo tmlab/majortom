@@ -288,6 +288,7 @@ public class Sql99QueryBuilder extends RDBMSQueryBuilder {
 	private PreparedStatement preparedStatementReadTypes;
 	private PreparedStatement preparedStatementReadTypesPaged;
 	private PreparedStatement preparedStatementReadScope;
+	private PreparedStatement preparedStatementReadScopeByTheme;
 	private PreparedStatement preparedStatementReadScopeByThemes;
 	private PreparedStatement preparedStatementReadEmptyScope;
 	private PreparedStatement preparedStatementReadValue;
@@ -648,16 +649,29 @@ public class Sql99QueryBuilder extends RDBMSQueryBuilder {
 		}
 		return this.preparedStatementReadScope;
 	}
-
+	
 	/**
-	 * {@inheritDoc}
+	 * Returns the query to read scope by an array of themes
+	 * @return the query
+	 * @throws SQLException thrown if query cannot be initialized
 	 */
 	public PreparedStatement getQueryReadScopeByThemes() throws SQLException {
 		if (preparedStatementReadScopeByThemes == null) {
 			this.preparedStatementReadScopeByThemes = getConnection().prepareStatement(
-					ISql99SelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEME);
+					ISql99SelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEMES);
 		}
 		return preparedStatementReadScopeByThemes;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public PreparedStatement getQueryReadScopeByTheme() throws SQLException {
+		if (preparedStatementReadScopeByTheme == null) {
+			this.preparedStatementReadScopeByTheme = getConnection().prepareStatement(
+					ISql99SelectQueries.NonPaged.QUERY_READ_SCOPES_BY_THEME);
+		}
+		return preparedStatementReadScopeByTheme;
 	}
 
 	public PreparedStatement getQueryReadEmptyScope() throws SQLException {
