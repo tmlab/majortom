@@ -47,6 +47,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	private boolean procedureBestLabelWithTheme = false;
 	private boolean procedureTypesAndSubtypes = false;
 	private boolean procedureTypesAndSubtypesArray = false;
+	private boolean procedureRemoveDuplicates = false;
 
 	/**
 	 * constructor
@@ -85,8 +86,7 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 */
 	public void createSchema() throws SQLException {
 		final String query = getSchemaQuery();
-		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
+		Statement stmt = getGlobalSession().getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		stmt.executeUpdate(query);
 	}
 
@@ -225,6 +225,13 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 			procedureBestLabel = true;
 		}
 		rs.close();
+
+		/*
+		 * Check if procedure 'best_label' exists
+		 */
+		rs = getDatabaseMetaData().getProcedureColumns(null, null, "remove_duplicates", "%");
+		procedureRemoveDuplicates = rs.next();
+		rs.close();
 	}
 
 	/**
@@ -324,6 +331,15 @@ public class PostGreSqlConnectionProvider extends Sql99ConnectionProvider {
 	 */
 	protected boolean existsProcedureBestLabelWithTheme() {
 		return procedureBestLabelWithTheme;
+	}
+
+	/**
+	 * Method checks if the procedure 'remove_duplicates' exists.
+	 * 
+	 * @return <code>true</code> if the procedure exists, <code>false</code> otherwise.
+	 */
+	protected boolean existsProcedureRemoveDuplicates() {
+		return procedureRemoveDuplicates;
 	}
 
 }

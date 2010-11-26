@@ -77,16 +77,20 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected PostGreSqlQueryBuilder getQueryBuilder() {
+		return (PostGreSqlQueryBuilder) super.getQueryBuilder();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Collection<ITopic> doReadSuptertypes(ITopic t, long offset, long limit) throws SQLException {
 		/*
-		 * check if optimisation procedure exists
+		 * check if optimization procedure exists
 		 */
 		if (getSession().getConnectionProvider().existsProcedureTransitiveSupertypes()) {
-			PreparedStatement stmt = getQueryBuilder().getQueryReadSupertypes();
-			stmt.setLong(1, Long.parseLong(t.getId()));
-			List<ITopic> topics = Jdbc2Construct.toTopics(t.getTopicMap(), stmt.executeQuery(), "id");
-			return topics;
-
+			Collection<ITopic> set = HashUtil.getHashSet(getSupertypes(t.getTopicMap(), t, offset, limit));
+			return set;
 		}
 		return super.doReadSuptertypes(t, offset, limit);
 	}
@@ -178,8 +182,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -198,8 +201,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -223,8 +225,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -243,8 +244,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -287,8 +287,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types,
-			long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -312,8 +311,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -332,8 +330,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -376,8 +373,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types,
-			boolean all, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit) throws SQLException {
 		/*
 		 * check if optimisation procedure exists
 		 */
@@ -433,8 +429,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll,
-			long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		if (types.isEmpty()) {
 			PreparedStatement stmt = null;
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSubtypes(offset != -1);
@@ -469,8 +464,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		if (type == null) {
 			PreparedStatement stmt = null;
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
@@ -499,8 +493,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types,
-			boolean matchAll, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		if (types.isEmpty()) {
 			PreparedStatement stmt = null;
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
@@ -537,10 +530,9 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes,
-			boolean all) throws SQLException {
+	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException {
 		/*
-		 * check if optimisation method exists
+		 * check if optimization method exists
 		 */
 		if (!getSession().getConnectionProvider().existsProcedureScopeByThemes()) {
 			return super.getScopesByThemes(topicMap, themes, all);
@@ -571,6 +563,25 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 			stmt.setLong(n * 2 + 2, idOther);
 		}
 		stmt.setLong(max * 2 + 1, idOther);
+		stmt.execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean canPerformRemoveDuplicates() {
+		return getSession().getConnectionProvider().existsProcedureRemoveDuplicates();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doRemoveDuplicates() throws SQLException, UnsupportedOperationException {
+		if (!canPerformRemoveDuplicates()) {
+			throw new UnsupportedOperationException("The function 'remove_dupliates' is not provided by the underlying database!");
+		}
+		PreparedStatement stmt = getQueryBuilder().getPerformRemoveDuplicates();
+		stmt.setLong(1, getSession().getTopicMapStore().getTopicMapIdentity().longId());
 		stmt.execute();
 	}
 }
