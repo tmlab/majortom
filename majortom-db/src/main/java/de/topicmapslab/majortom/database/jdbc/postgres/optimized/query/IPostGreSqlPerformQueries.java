@@ -27,5 +27,7 @@ public interface IPostGreSqlPerformQueries {
 	public static final String PERFORM_MERGE_TOPICS = "SELECT merge_topics(?,?);";
 	
 	public static final String PERFORM_REMOVE_DUPLICATES = "SELECT remove_duplicates(?);";
+	
+	public static final String PERFORM_REMOVE_DUPLICATE_TOPIC_CONTENT = "SELECT remove_duplicate_topiccontent(?,?);";
 
 }

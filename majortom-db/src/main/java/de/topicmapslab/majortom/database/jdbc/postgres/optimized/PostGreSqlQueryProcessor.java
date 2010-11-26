@@ -28,10 +28,12 @@ import java.util.List;
 
 import org.tmapi.core.Topic;
 
+import de.topicmapslab.majortom.core.ConstructImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryBuilder;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
+import de.topicmapslab.majortom.database.store.JdbcIdentity;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
 import de.topicmapslab.majortom.model.core.IName;
@@ -564,6 +566,7 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		}
 		stmt.setLong(max * 2 + 1, idOther);
 		stmt.execute();
+		doRemoveDuplicateTopicContent(context);
 	}
 
 	/**
@@ -582,6 +585,19 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 		}
 		PreparedStatement stmt = getQueryBuilder().getPerformRemoveDuplicates();
 		stmt.setLong(1, getSession().getTopicMapStore().getTopicMapIdentity().longId());
+		stmt.execute();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doRemoveDuplicateTopicContent(ITopic topic) throws SQLException, UnsupportedOperationException {
+		if (!getSession().getConnectionProvider().existsProcedureRemoveDuplicateTopicContent()) {
+			getSession().getTopicMapStore().removeDuplicates();
+		}
+		PreparedStatement stmt = getQueryBuilder().getPerformRemoveDuplicateTopicContent();
+		stmt.setLong(1, getSession().getTopicMapStore().getTopicMapIdentity().longId());
+		stmt.setLong(2, ((JdbcIdentity)((ConstructImpl)topic).getIdentity()).longId());
 		stmt.execute();
 	}
 }

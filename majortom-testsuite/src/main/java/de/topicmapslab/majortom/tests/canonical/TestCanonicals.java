@@ -46,7 +46,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		for (int i = 0; i < topics.length; i++) {
 			topics[i] = createTopic();
 			for (int j = 0; j < 10; j++) {
-				Name n = topics[i].createName(type, "Value" + i, new Topic[0]);
+				Name n = topics[i].createName(type, "Value", new Topic[0]);
 				n.addItemIdentifier(topicMap.createLocator("http://psi.example.org/" + UUID.randomUUID().toString()));
 				n.createVariant("Variant", createTopic());
 				ITopic reifier = createTopic();
@@ -83,9 +83,9 @@ public class TestCanonicals extends MaJorToMTestCase {
 		ITopic theme = createTopic();
 		Name[] names = new Name[20];
 		for (int i = 0; i < names.length; i++) {
-			names[i] = parent.createName(type, "Value" + i, new Topic[0]);
+			names[i] = parent.createName(type, "Value", new Topic[0]);
 			for (int j = 0; j < 10; j++) {
-				Variant v = names[i].createVariant("Value" + i, theme);
+				Variant v = names[i].createVariant("Value", theme);
 				v.addItemIdentifier(topicMap.createLocator("http://psi.example.org/" + UUID.randomUUID().toString()));
 				ITopic reifier = createTopic();
 				v.setReifier(reifier);
@@ -117,7 +117,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		for (int i = 0; i < topics.length; i++) {
 			topics[i] = createTopic();
 			for (int j = 0; j < 10; j++) {
-				Occurrence o = topics[i].createOccurrence(type, "Value" + i, new Topic[0]);
+				Occurrence o = topics[i].createOccurrence(type, "Value", new Topic[0]);
 				o.addItemIdentifier(topicMap.createLocator("http://psi.example.org/" + UUID.randomUUID().toString()));
 				ITopic reifier = createTopic();
 				o.setReifier(reifier);
