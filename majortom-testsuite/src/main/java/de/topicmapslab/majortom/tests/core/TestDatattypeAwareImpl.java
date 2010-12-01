@@ -32,6 +32,7 @@ import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
+import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
@@ -153,7 +154,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 	public void testDateTimeValue() throws Exception {
 		Topic topic = createTopic();
 		Calendar calendar = new GregorianCalendar();
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSS+HH:mm");
+		SimpleDateFormat dateTimeFormat = DatatypeAwareUtils.getDateTimeFormat();
 		final String ref = dateTimeFormat.format(calendar.getTime());
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
