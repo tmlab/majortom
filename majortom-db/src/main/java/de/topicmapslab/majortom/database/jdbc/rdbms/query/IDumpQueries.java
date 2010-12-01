@@ -25,14 +25,9 @@ package de.topicmapslab.majortom.database.jdbc.rdbms.query;
 public interface IDumpQueries {
 
 	public static final String QUERY_DUMP_ROLE = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, types, id_reification, id_player, type) "
-			+ "SELECT id_topicmap, ?, id, id_parent, " 
-			+ "?," //ii
-			+ "id_type, id_reifier, id_player, 'r' "
-			+ "FROM roles AS r WHERE id = ?";
+			+ "SELECT id_topicmap, ?, id, id_parent, ?, id_type, id_reifier, id_player, 'r' FROM roles AS r WHERE id = ?";
 	
-	public static final String QUERY_DUMP_ROLE_SELECT = "SELECT id_topicmap, id, id_parent, " 
-			+ "id_type, id_reifier, id_player "
-			+ "FROM roles WHERE id = ?"; 
+	public static final String QUERY_DUMP_ROLE_SELECT = "SELECT id_topicmap, id, id_parent, id_type, id_reifier, id_player FROM roles WHERE id = ?"; 
 	
 	public static final String QUERY_DUMP_ROLE_INSERT_INTO_HISTORY = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, types, id_reification, id_player, type) "
 			+ "VALUES(?,"//id_tm
@@ -46,17 +41,9 @@ public interface IDumpQueries {
 			+ "'r')";//t
 
 	public static final String QUERY_DUMP_ASSOCIATION = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, types, id_reification, id_scope, themes, roles, type) "
-			+ "SELECT id_topicmap, ?, id, id_parent,"  
-			+ "?," // ii
-			+ "id_type, id_reifier, id_scope,"
-			+ "?," // themes
-			+ "?," // roles 
-			+ "'a'"
-			+ "FROM associations AS a WHERE id = ?;";
+			+ "SELECT id_topicmap, ?, id, id_parent, ?, id_type, id_reifier, id_scope, ?, ?, 'a' FROM associations AS a WHERE id = ?;";
 	
-	public static final String QUERY_DUMP_ASSOCIATION_SELECT = "SELECT id_topicmap, id, id_parent,"  
-			+ "id_type, id_reifier, id_scope "
-			+ "FROM associations WHERE id = ?;";
+	public static final String QUERY_DUMP_ASSOCIATION_SELECT = "SELECT id_topicmap, id, id_parent, id_type, id_reifier, id_scope FROM associations WHERE id = ?;";
 	
 	public static final String QUERY_DUMP_ASSOCIATION_INSERT_INTO_HISTORY = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, types, id_reification, id_scope, themes, roles, type) " 
 			+ "VALUES(?,"//id_tm
@@ -72,13 +59,7 @@ public interface IDumpQueries {
 			+ "'t')";//t
 
 	public static final String QUERY_DUMP_VARIANT = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, id_reification, id_scope,themes, datatype, value, type) "
-			+ "SELECT id_topicmap, ?, id, id_parent, "  
-			+ "?," // ii
-			+ "id_reifier, id_scope, "
-			+ "?," // themes
-			+ "?," //datatype
-			+ " value, 'v' "
-			+ "FROM variants AS v WHERE id = ?";
+			+ "SELECT id_topicmap, ?, id, id_parent, ?, id_reifier, id_scope, ?, (SELECT reference FROM locators WHERE id = ?), value, 'v' FROM variants AS v WHERE id = ?";
 	
 	public static final String QUERY_DUMP_VARIANT_SELECT = "SELECT id_topicmap, id, id_parent, "  
 			+ "id_reifier, id_scope, "
@@ -94,19 +75,12 @@ public interface IDumpQueries {
 			+ "?,"//if_rei
 			+ "?,"//id_sc
 			+ "?,"//id_th
-			+ "?,"//dt
+			+ "(SELECT reference FROM locators WHERE id = ?),"//dt
 			+ "?,"//val
 			+ "'v')";//t
 	
 	public static final String QUERY_DUMP_NAME = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, types, variants, id_reification, id_scope, themes, value, type) "
-			+ "SELECT id_topicmap, ?, id, id_parent, " 
-			+ "?," //ii
-			+ "id_type, "
-			+ "?," // variants
-			+ "id_reifier, id_scope,  "
-			+ "?," // themes
-			+ "value, 'n' "
-			+ "FROM names AS n WHERE id = ?";
+			+ "SELECT id_topicmap, ?, id, id_parent, ?, id_type, ?, id_reifier, id_scope, ?, value, 'n' FROM names AS n WHERE id = ?";
 
 	public static final String QUERY_DUMP_NAME_SELECT = "SELECT id_topicmap, id, id_parent, " 
 			+ "id_type, "
@@ -134,7 +108,7 @@ public interface IDumpQueries {
 			+ "id_type, id_reifier, id_scope,  "
 			+ "?," // themes
 			+ "value, "
-			+ "?," //datatype
+			+ "(SELECT reference FROM locators WHERE id = ?)," //datatype
 			+ "'o' "
 			+ "FROM occurrences AS o WHERE id = ?";
 
@@ -154,7 +128,7 @@ public interface IDumpQueries {
 			+ "?,"//id_sco
 			+ "?,"//themes
 			+ "?,"//val
-			+ "?,"//dt
+			+ "(SELECT reference FROM locators WHERE id = ?),"//dt
 			+ "'o')";//t
 	
 	public static final String QUERY_DUMP_TOPIC = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, subjectidentifiers, subjectlocators, types, supertypes, names, occurrences, associations, id_reification, type, bestlabel) "

@@ -30,7 +30,7 @@ public interface IUpdateQueries {
 	 * of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_SUBJECT_LOCATOR = "INSERT INTO rel_subject_locators(id_topic, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
+	public static final String QUERY_ADD_SUBJECT_LOCATOR = "INSERT INTO rel_subject_locators(id_topic, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
 	/**
 	 * query to add a item-identifier for a construct
 	 * <p>
@@ -38,7 +38,7 @@ public interface IUpdateQueries {
 	 * reference of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_ITEM_IDENTIFIER = "INSERT INTO rel_item_identifiers(id_construct, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
+	public static final String QUERY_ADD_ITEM_IDENTIFIER = "INSERT INTO rel_item_identifiers(id_construct, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
 	/**
 	 * query to add a subject-identifier for a topic
 	 * <p>
@@ -46,7 +46,7 @@ public interface IUpdateQueries {
 	 * of the locator
 	 * </p>
 	 */
-	public static final String QUERY_ADD_SUBJECT_IDENTIFIER ="INSERT INTO rel_subject_identifiers(id_topic, id_locator) VALUES( ?, (SELECT id FROM locators WHERE reference LIKE ?));";
+	public static final String QUERY_ADD_SUBJECT_IDENTIFIER ="INSERT INTO rel_subject_identifiers(id_topic, id_locator) SELECT ? , id FROM locators WHERE reference LIKE ?;";
 
 	/**
 	 * query to add a theme to an existing scope
@@ -178,8 +178,12 @@ public interface IUpdateQueries {
 	 * <b>parameters(4):</b> subtype id, supertype id, subtype id, supertype id
 	 * </p>
 	 */
+//	public static final String QUERY_MODIFY_SUPERTYPES = "MERGE INTO rel_kind_of USING (VALUES (CAST (? AS BIGINT), CAST (? AS BIGINT))) AS vals(x,y) ON (rel_kind_of.id_subtype = vals.x AND rel_kind_of.id_supertype = vals.y) WHEN NOT MATCHED THEN INSERT VALUES (vals.x, vals.y);";
 	public static final String QUERY_MODIFY_SUPERTYPES = "INSERT INTO rel_kind_of(id_subtype, id_supertype) VALUES (?,?) WHERE NOT EXISTS ( SELECT id_subtype, id_supertype  FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ? );";
 
+	public static final String QUERY_MODIFY_SUPERTYPES_SELECT = "SELECT * FROM rel_kind_of WHERE id_subtype = ? AND id_supertype = ?;";
+	public static final String QUERY_MODIFY_SUPERTYPES_INSERT = "INSERT INTO rel_kind_of VALUES(?,?);";
+	
 	/**
 	 * query to modify the value of a name, occurrence or variant
 	 * <p>
@@ -187,6 +191,8 @@ public interface IUpdateQueries {
 	 * </p>
 	 */
 	public static final String QUERY_MODIFY_VALUE = "UPDATE literals SET value = ? WHERE id = ?;";
+	
+	public static final String QUERY_MODIFY_NAME_VALUE = "UPDATE names set value = ? WHERE id = ?;";
 
 	/**
 	 * query to modify the value of an occurrence or variant and the datatype
@@ -196,6 +202,9 @@ public interface IUpdateQueries {
 	 * </p>
 	 */
 	public static final String QUERY_MODIFY_VALUE_WITH_DATATYPE = QUERY_MODIFY_VALUE + "UPDATE datatypeawares SET id_datatype = ( SELECT id FROM locators WHERE reference LIKE ? ) WHERE id = ?;";
+
+	public static final String QUERY_MODIFY_OCCURRENCE_VALUE_WITH_DATATYPE = "UPDATE occurrences set value = ?, id_datatype = ( SELECT id FROM locators WHERE reference LIKE ? ) WHERE id = ?;";
+	public static final String QUERY_MODIFY_VARIANT_VALUE_WITH_DATATYPE = "UPDATE variants set value = ?, id_datatype = ( SELECT id FROM locators WHERE reference LIKE ? ) WHERE id = ?;";
 
 	interface QueryMerge{
 		
@@ -222,8 +231,40 @@ public interface IUpdateQueries {
 														+	" UPDATE rel_subject_identifiers SET id_topic = ? WHERE id_topic = ?; "
 														+	" UPDATE rel_subject_locators SET id_topic = ? WHERE id_topic = ?; "
 														+	" UPDATE roles SET id_player = ? WHERE id_player = ?; "
-														+	" UPDATE constructs SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE variants SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE scopes SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE names SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE topics SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE associations SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE roles SET id_parent = ? WHERE id_parent = ?; "
+														+	" UPDATE occurrences SET id_parent = ? WHERE id_parent = ?; "
 														+	" DELETE FROM topics WHERE id = ?; ";
+		
+		public static final String QUERY_UPDATE_KIND_OF_SUBTYPE = "UPDATE rel_kind_of SET id_subtype = ? WHERE id_subtype = ?;";
+		public static final String QUERY_UPDATE_KIND_OF_SUPERTYPE = "UPDATE rel_kind_of SET id_supertype = ? WHERE id_supertype = ?;";
+		public static final String QUERY_UPDATE_INSTANCE_OF_INSTANCE = "UPDATE rel_instance_of SET id_instance = ? WHERE id_instance = ?;";
+		public static final String QUERY_UPDATE_INSTANCE_OF_TYPE = "UPDATE rel_instance_of SET id_type = ? WHERE id_type = ?;";
+		public static final String QUERY_UPDATE_THEMES = "UPDATE rel_themes SET id_theme = ? WHERE id_theme = ?;";
+		public static final String QUERY_UPDATE_NAMES_TYPE = "UPDATE names SET id_type = ? WHERE id_type = ?;";
+		public static final String QUERY_UPDATE_NAMES_REIFIER = "UPDATE names SET id_reifier = ? WHERE id_reifier = ?;";
+		public static final String QUERY_UPDATE_NAMES_PARENT = "UPDATE names SET id_parent = ? WHERE id_parent = ?;";
+		public static final String QUERY_UPDATE_OCCURRENCES_TYPE = "UPDATE occurrences SET id_type = ? WHERE id_type = ?;";
+		public static final String QUERY_UPDATE_OCCURRENCES_REIFIER = "UPDATE occurrences SET id_reifier = ? WHERE id_reifier = ?;";
+		public static final String QUERY_UPDATE_OCCURRENCES_PARENT = "UPDATE occurrences SET id_parent = ? WHERE id_parent = ?;";
+		public static final String QUERY_UPDATE_ASSOCIATIONS_TYPE = "UPDATE associations SET id_type = ? WHERE id_type = ?;";
+		public static final String QUERY_UPDATE_ASSOCIATIONS_REIFIER = "UPDATE associations SET id_reifier = ? WHERE id_reifier = ?;";
+		public static final String QUERY_UPDATE_ASSOCIATIONS_PARENT = "UPDATE associations SET id_parent = ? WHERE id_parent = ?;";
+		public static final String QUERY_UPDATE_ROLES_TYPE = "UPDATE roles SET id_type = ? WHERE id_type = ?;";
+		public static final String QUERY_UPDATE_ROLES_REIFIER = "UPDATE roles SET id_reifier = ? WHERE id_reifier = ?;";
+		//public static final String QUERY_UPDATE_ROLES_PARENT = "UPDATE roles SET id_parent = ? WHERE id_parent = ?;";
+		public static final String QUERY_UPDATE_ROLES_PLAYER = "UPDATE roles SET id_player = ? WHERE id_player = ?;";
+		public static final String QUERY_UPDATE_VARIANTS_PARENT = "UPDATE variants SET id_parent = ? WHERE id_parent = ?;";
+		//public static final String QUERY_UPDATE_SCOPES_PARENT = "UPDATE scopes SET id_parent = ? WHERE id_parent = ?;";
+		//public static final String QUERY_UPDATE_TOPICS_PARENT = "UPDATE topics SET id_parent = ? WHERE id_parent = ?;";
+		public static final String QUERY_UPDATE_ITEM_IDENTIFIERS = "UPDATE rel_item_identifiers SET id_construct = ? WHERE id_construct = ?;";
+		public static final String QUERY_UPDATE_SUBJECT_IDENTIFIERS = "UPDATE rel_subject_identifiers SET id_topic = ? WHERE id_topic = ?;";
+		public static final String QUERY_UPDATE_SUBJECT_LOCATORS = "UPDATE rel_subject_locators SET id_topic = ? WHERE id_topic = ?;";
+		public static final String QUERY_DELETE_TOPIC = "DELETE FROM topics WHERE id = ?;";
 		
 	}
 	

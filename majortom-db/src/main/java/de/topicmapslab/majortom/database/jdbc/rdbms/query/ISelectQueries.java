@@ -242,7 +242,7 @@ public interface ISelectQueries {
 		 */
 		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
 				+ "UNION "
-				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  )AND id_topicmap = ? "
+				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
 				+ "UNION "
 				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
 				+ "UNION "
@@ -264,7 +264,7 @@ public interface ISelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_OCCURRENCE_DATATYPE = "SELECT l.id,reference FROM locators AS l, occurrences AS d WHERE d.id_datatype = l.id AND d.id = ?";
+		public static final String QUERY_READ_OCCURRENCE_DATATYPE = "SELECT l.id, l.reference FROM locators AS l, occurrences AS d WHERE d.id_datatype = l.id AND d.id = ?";
 
 		/**
 		 * Query to read the data type of an occurrence or variant
@@ -284,7 +284,7 @@ public interface ISelectQueries {
 		 * <b>parameters(1):</b> construct id
 		 * </p>
 		 */
-		public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT l.id,reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ? AND r.id_locator = l.id";
+		public static final String QUERY_READ_ITEM_IDENTIFIERS = "SELECT l.id, l.reference FROM locators AS l, rel_item_identifiers AS r WHERE r.id_construct = ? AND r.id_locator = l.id";
 
 		// **************
 		// * READ NAMES *
@@ -638,7 +638,7 @@ public interface ISelectQueries {
 		 * id
 		 * </p>
 		 */
-		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ?;";// ;
+		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";// ;
 																																	// AND
 																																	// ?
 																																	// IN

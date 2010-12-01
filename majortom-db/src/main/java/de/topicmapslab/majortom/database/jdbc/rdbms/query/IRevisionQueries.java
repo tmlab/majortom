@@ -57,11 +57,11 @@ public interface IRevisionQueries {
 
 	public static final String QUERY_READ_REVISIONS_BY_TOPIC = "SELECT id FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier = ? OR oldValue = ? OR newValue = ? ) ORDER BY id ASC ;";
 
-	public static final String QUERY_READ_REVISIONS_BY_ASSOCIATIONTYPE = "WITH ids AS ( SELECT id FROM associations WHERE id_type = ? ) SELECT id FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN ( SELECT id FROM ids ) OR oldValue IN ( SELECT CAST ( id AS character varying ) FROM ids ) OR newValue IN ( SELECT CAST ( id AS character varying ) FROM ids ) ) ORDER BY id ASC ;";
+	public static final String QUERY_READ_REVISIONS_BY_ASSOCIATIONTYPE = "WITH ids AS ( SELECT id FROM associations WHERE id_type = ? ) SELECT id FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN ( SELECT id FROM ids ) OR oldValue IN ( SELECT CAST ( id AS character varying(256) ) FROM ids ) OR newValue IN ( SELECT CAST ( id AS character varying(256) ) FROM ids ) ) ORDER BY id ASC ;";
 
 	public static final String QUERY_READ_CHANGESETS_BY_TOPIC = "SELECT id_revision, type, id_notifier, newValue, oldValue FROM changesets WHERE id_notifier = ? OR oldValue = ? OR newValue = ? ORDER BY id ASC;";
 
-	public static final String QUERY_READ_CHANGESETS_BY_ASSOCIATIONTYPE = "WITH ids AS ( SELECT id FROM associations WHERE id_type = ? ) SELECT id_revision, type, id_notifier, newValue, oldValue FROM changesets WHERE id_notifier IN ( SELECT id FROM ids ) OR oldValue IN ( SELECT CAST ( id AS character varying ) FROM ids ) OR newValue IN ( SELECT CAST ( id AS character varying ) FROM ids ) ORDER BY id ASC;";
+	public static final String QUERY_READ_CHANGESETS_BY_ASSOCIATIONTYPE = "WITH ids AS ( SELECT id FROM associations WHERE id_type = ? ) SELECT id_revision, type, id_notifier, newValue, oldValue FROM changesets WHERE id_notifier IN ( SELECT id FROM ids ) OR oldValue IN ( SELECT CAST ( id AS character varying(256) ) FROM ids ) OR newValue IN ( SELECT CAST ( id AS character varying(256) ) FROM ids ) ORDER BY id ASC;";
 
 	public static final String QUERY_READ_REVISION_BY_TIMESTAMP = "SELECT id FROM revisions WHERE id_topicmap = ? AND time <= ? ORDER BY time DESC LIMIT 1";
 
