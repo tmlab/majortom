@@ -14,3 +14,6 @@ doc/doc
 .directory
 */\${builder}
 doc/build.properties
+
+syntax: regexp
+^majortom-db/data$
