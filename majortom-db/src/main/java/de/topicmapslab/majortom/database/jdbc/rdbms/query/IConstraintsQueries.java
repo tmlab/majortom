@@ -34,7 +34,7 @@ public interface IConstraintsQueries {
 
 	public static final String QUERY_DUPLICATE_VARIANTS = "SELECT id, id_parent FROM variants WHERE id_parent = ? AND id <> ? AND value = ? AND id_datatype IN ( SELECT id FROM locators WHERE reference = ? ) AND id_scope = ?";
 	
-	public static final String QUERY_DUPLICATE_ASSOCIATIONS = "SELECT DISTINCT  a.id, a.id_reifier FROM roles  AS r, associations AS a WHERE 0 IN ( SELECT COUNT (r) FROM ( SELECT id_type , id_player FROM roles WHERE id_parent = r.id_parent EXCEPT SELECT id_type, id_player FROM roles WHERE id_parent = ? ) AS r ) AND r.id_parent <> ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ?;";
+	public static final String QUERY_DUPLICATE_ASSOCIATIONS = "SELECT DISTINCT a.id, a.id_reifier FROM roles AS r, associations AS a WHERE NOT EXISTS ( SELECT id_type, id_player FROM roles as r2 WHERE r2.id_parent = r.id_parent EXCEPT SELECT id_type, id_player FROM roles AS r3 WHERE r3.id_parent = ? ) AND r.id_parent <> ? AND r.id_parent = a.id AND a.id_type = ? AND a.id_scope = ?;";
 	
 	public static final String QUERY_DUPLICATE_ROLES = "SELECT id FROM roles WHERE id_parent = ? AND id_type = ? AND id_player = ?;";
 

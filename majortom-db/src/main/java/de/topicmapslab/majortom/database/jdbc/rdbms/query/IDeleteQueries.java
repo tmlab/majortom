@@ -28,9 +28,51 @@ public interface IDeleteQueries {
 	// * DELETE CONSTRUCT *
 	// ********************
 
-	public static final String QUERY_DELETE_ALL_ITEM_IDENTIFIERS = "DELETE FROM rel_item_identifiers WHERE id_construct IN ( SELECT id AS id_construct FROM constructs WHERE id_topicmap = ? OR id = ? );";
+	public static final String QUERY_DELETE_ALL_ITEM_IDENTIFIERS = "DELETE FROM rel_item_identifiers WHERE id_construct IN ( SELECT id_construct FROM (" +
+			// topics
+			"SELECT id AS id_construct FROM topics WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// associations
+			"SELECT id AS id_construct FROM associations WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// roles
+			"SELECT id AS id_construct FROM roles WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// occurrences
+			"SELECT id AS id_construct FROM occurrences WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// names
+			"SELECT id AS id_construct FROM names WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// scopes
+			"SELECT id AS id_construct FROM scopes WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// variants
+			"SELECT id AS id_construct FROM variants WHERE id_topicmap = ? OR id = ? " +
+			");";
 	
-	public static final String QUERY_DELETE_HISTORY = "DELETE FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN ( SELECT id FROM constructs WHERE id_topicmap = ? ) OR id_notifier = ? );";
+	public static final String QUERY_DELETE_HISTORY = "DELETE FROM revisions WHERE id IN ( SELECT id_revision FROM changesets WHERE id_notifier IN (  " +
+			// topics
+			"SELECT id AS id_notifier FROM topics WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// associations
+			"SELECT id AS id_notifier FROM associations WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// roles
+			"SELECT id AS id_notifier FROM roles WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// occurrences
+			"SELECT id AS id_notifier FROM occurrences WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// names
+			"SELECT id AS id_notifier FROM names WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// scopes
+			"SELECT id AS id_notifier FROM scopes WHERE id_topicmap = ? OR id = ? " +
+			"UNION " +
+			// variants
+			"SELECT id AS id_notifier FROM variants WHERE id_topicmap = ? OR id = ? " +
+			") OR id_notifier = ? );";
 	
 	public static final String QUERY_DELETE_ALL_THEMES = "DELETE FROM rel_themes WHERE id_scope IN ( SELECT id FROM scopes WHERE id_topicmap = ?);";
 	
@@ -44,21 +86,23 @@ public interface IDeleteQueries {
 
 	public static final String QUERY_DELETE_TOPIC = "DELETE FROM topics WHERE id = ?;";
 
-	public static final String QUERY_DELETE_NAME = "DELETE FROM  names WHERE id = ?;";
+	public static final String QUERY_DELETE_NAME = "DELETE FROM names WHERE id = ?;";
 
-	public static final String QUERY_DELETE_OCCURRENCE = "DELETE FROM  occurrences WHERE id = ?;";
+	public static final String QUERY_DELETE_OCCURRENCE = "DELETE FROM occurrences WHERE id = ?;";
 
-	public static final String QUERY_DELETE_VARIANT = "DELETE FROM  variants WHERE id = ?;";
+	public static final String QUERY_DELETE_VARIANT = "DELETE FROM variants WHERE id = ?;";
 
-	public static final String QUERY_DELETE_ASSOCIATION = "DELETE FROM  associations WHERE id = ?; ";
+	public static final String QUERY_DELETE_ASSOCIATION = "DELETE FROM associations WHERE id = ?; ";
 
-	public static final String QUERY_DELETE_ROLE = "DELETE FROM  roles WHERE id = ?;";
+	public static final String QUERY_DELETE_ROLE = "DELETE FROM roles WHERE id = ?;";
 	
 	public static final String QUERY_DELETE_SCOPE = "DELETE FROM scopes WHERE id = ?;";
 	
 	public static final String QUERY_DELETE_THEMES_OF_SCOPE = "DELETE FROM rel_themes WHERE id_scope = ?;";
 	
-	public static final String QUERY_CLEAR_TOPICMAP = QUERY_DELETE_ALL_ITEM_IDENTIFIERS + QUERY_DELETE_HISTORY + "UPDATE topicmaps SET id_reifier = NULL WHERE id = ?; DELETE FROM constructs WHERE id_topicmap = ?;";
+	public static final String QUERY_UNSET_TOPICMAP_REIFIER = "UPDATE topicmaps SET id_reifier = NULL WHERE id = ?;";
+	
+	public static final String QUERY_CLEAR_TOPICMAP = "DELETE FROM constructs WHERE id_topicmap = ?;";
 
 	// ***************
 	// * DELETE DATA *

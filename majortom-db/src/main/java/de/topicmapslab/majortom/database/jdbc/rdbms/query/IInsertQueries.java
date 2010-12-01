@@ -75,7 +75,7 @@ public interface IInsertQueries {
 	 * value, reference
 	 * </p>
 	 */
-	public static final String QUERY_CREATE_OCCURRENCE =  "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype) VALUES(?,?,?,?, (SELECT l.id FROM locators AS l WHERE l.reference LIKE ?));";
+	public static final String QUERY_CREATE_OCCURRENCE =  "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype) SELECT ?,?,?,?,l.id FROM locators AS l WHERE l.reference LIKE ?;";
 	/**
 	 * query to create an occurrence
 	 * <p>
@@ -83,7 +83,7 @@ public interface IInsertQueries {
 	 * value, id_scope, reference
 	 * </p>
 	 */
-	public static final String QUERY_CREATE_OCCURRENCE_WITH_SCOPE = "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype, id_scope) VALUES( ?,?,?,?, (SELECT id FROM locators WHERE reference LIKE ?), ?);";
+	public static final String QUERY_CREATE_OCCURRENCE_WITH_SCOPE = "INSERT INTO occurrences (id_topicmap, id_parent, id_type, value, id_datatype, id_scope) SELECT ?,?,?,?,id,? FROM locators WHERE reference LIKE ?;";
 	/**
 	 * query to create an association role
 	 * <p>
@@ -112,5 +112,5 @@ public interface IInsertQueries {
 	 * value, id_scope, reference
 	 * </p>
 	 */
-	public static final String QUERY_CREATE_VARIANT = "INSERT INTO variants (id_topicmap, id_parent, value, id_datatype, id_scope) VALUES( ?,?,?, (SELECT id FROM locators WHERE reference LIKE ?), ?);";
+	public static final String QUERY_CREATE_VARIANT = "INSERT INTO variants (id_topicmap, id_parent, value, id_datatype, id_scope) SELECT ?,?,?,id,? FROM locators WHERE reference LIKE ?;";
 }
