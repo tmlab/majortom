@@ -26,7 +26,7 @@ public class HSQLDBSession extends RDBMSSession {
 	
 	@Override
 	protected Connection openConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:hsqldb:file:hsqldb_majortom", "SA", "");
+		return DriverManager.getConnection("jdbc:hsqldb:file:data/" + getConnectionProvider().getDatabase(), "SA", "");
 	}
 
 }
