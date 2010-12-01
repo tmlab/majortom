@@ -18,6 +18,7 @@
  */
 package de.topicmapslab.majortom.database.jdbc.rdbms;
 
+import java.lang.reflect.Field;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
@@ -50,6 +53,7 @@ import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
+import de.topicmapslab.majortom.database.jdbc.rdbms.query.IUpdateQueries;
 import de.topicmapslab.majortom.database.jdbc.util.Jdbc2Construct;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociation;
 import de.topicmapslab.majortom.database.readonly.JdbcReadOnlyAssociationRole;
@@ -93,6 +97,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	private final RDBMSQueryBuilder queryBuilder;
 	private final RDBMSSession session;
 	private final Connection connection;
+	private int doRemoveTopicDepth = 0;
 
 	/**
 	 * constructor
@@ -154,11 +159,14 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryCreateAssociation();
+		PreparedStatement stmt = queryBuilder.getQueryCreateAssociationWithScope();
+		//read empty scope as null values for scopes are not allowed in associations
+		long scopeId = Long.parseLong(doCreateScope(topicMap, new ArrayList<ITopic>()).getId());
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
 		stmt.setLong(2, topicMapId);
 		stmt.setLong(3, Long.parseLong(type.getId()));
+		stmt.setLong(4, scopeId);
 		stmt.execute();
 		return Jdbc2Construct.toAssociation(topicMap, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
@@ -280,8 +288,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(2, Long.parseLong(topic.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value);
-		stmt.setLong(5, Long.parseLong(scope.getId()));
-		stmt.setString(6, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setLong(6, Long.parseLong(scope.getId()));
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
@@ -392,6 +400,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		for (ITopic theme : themes) {
 			Collection<Long> ids = HashUtil.getHashSet();
 			stmt.setLong(1, Long.parseLong(theme.getId()));
+			stmt.setLong(2, themes.size());
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				ids.add(rs.getLong("id_scope"));
@@ -595,8 +604,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.setString(3, value);
-		stmt.setLong(4, Long.parseLong(scope.getId()));
-		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(4, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
@@ -612,8 +621,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.setString(3, value.getReference());
-		stmt.setLong(4, Long.parseLong(scope.getId()));
-		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(4, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setLong(5, Long.parseLong(scope.getId()));
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), GENERATED_KEY_COLUMN_NAME);
 	}
@@ -647,22 +656,42 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getPerformMergeTopics();
 		// stmt.setLong(1, Long.parseLong(context.getId()));
 		// stmt.setLong(2, Long.parseLong(other.getId()));
 		// stmt.execute();
 		long idContext = Long.parseLong(context.getId());
 		long idOther = Long.parseLong(other.getId());
-		int max = 18;
-		for (int n = 0; n < max; n++) {
-			stmt.setLong(n * 2 + 1, idContext);
-			stmt.setLong(n * 2 + 2, idOther);
+
+		Vector<String> queries = new Vector<String>();
+		for(Field f : IUpdateQueries.QueryMerge.class.getFields()) {
+			if(f.getName().startsWith("QUERY_UPDATE")) {
+				try {
+					queries.add((String) f.get(null));
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-		stmt.setLong(max * 2 + 1, idOther);
-		stmt.getConnection().setAutoCommit(false);
-		stmt.execute();
-		stmt.getConnection().commit();
-		stmt.getConnection().setAutoCommit(true);
+		
+		
+		getConnection().setAutoCommit(false);
+		for(String q : queries) {
+			PreparedStatement stmt = getConnection().prepareStatement(q);
+			stmt.setLong(1, idContext);
+			stmt.setLong(2, idOther);
+			stmt.execute();
+			stmt.close();
+		}
+		PreparedStatement s = getConnection().prepareStatement(IUpdateQueries.QueryMerge.QUERY_DELETE_TOPIC);
+		s.setLong(1, idOther);
+		s.execute();
+		s.close();
+		getConnection().commit();
+		getConnection().setAutoCommit(true);
 
 		detectDuplicateNames(context);
 		detectDuplicateOccurrences(context);
@@ -996,14 +1025,29 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifySupertype(ITopic t, ITopic type) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifySupertypes();
+		//TODO : refactor this to be hsqldb specific???
+		PreparedStatement stmt = queryBuilder.getQueryModifySupertypesSelect();
 		long subtypeId = Long.parseLong(t.getId());
 		long supertypeId = Long.parseLong(type.getId());
 		stmt.setLong(1, subtypeId);
 		stmt.setLong(2, supertypeId);
-		stmt.setLong(3, subtypeId);
-		stmt.setLong(4, supertypeId);
-		stmt.execute();
+		ResultSet rs = stmt.executeQuery();
+		if(!rs.next()) {
+			stmt.close();
+			stmt = queryBuilder.getQueryModifySupertypesInsert();
+			stmt.setLong(1, subtypeId);
+			stmt.setLong(2, supertypeId);
+			stmt.execute();
+		}
+		
+//		PreparedStatement stmt = queryBuilder.getQueryModifySupertypes();
+//		long subtypeId = Long.parseLong(t.getId());
+//		long supertypeId = Long.parseLong(type.getId());
+//		stmt.setLong(1, subtypeId);
+//		stmt.setLong(2, supertypeId);
+//		stmt.setLong(3, subtypeId);
+//		stmt.setLong(4, supertypeId);
+//		stmt.execute();
 	}
 
 	/**
@@ -1049,8 +1093,6 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			long typeId = Long.parseLong(type.getId());
 			stmt.setLong(1, instanceId);
 			stmt.setLong(2, typeId);
-			stmt.setLong(3, instanceId);
-			stmt.setLong(4, typeId);
 			stmt.execute();
 		}
 	}
@@ -1059,7 +1101,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IName n, String value) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryModifyValue();
+		PreparedStatement stmt = queryBuilder.getQueryModifyNameValue();
 		stmt.setString(1, value);
 		stmt.setLong(2, Long.parseLong(n.getId()));
 		stmt.execute();
@@ -1069,12 +1111,15 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doModifyValue(IDatatypeAware t, String value, ILocator datatype) throws SQLException {
+		if(!(t instanceof IVariant || t instanceof IOccurrence))
+			throw new TopicMapStoreException("Only occurrences and variants may be modified in this way!");
 		doCreateLocator(t.getTopicMap(), datatype.getReference());
-		PreparedStatement stmt = queryBuilder.getQueryModifyValueWithDatatype();
+		PreparedStatement stmt = queryBuilder.getQueryModifyOccurrenceValueWithDatatype();
+		if(t instanceof IVariant)
+			stmt = queryBuilder.getQueryModifyVariantValueWithDatatype();
 		stmt.setString(1, value);
-		stmt.setLong(2, Long.parseLong(t.getId()));
-		stmt.setString(3, datatype.getReference());
-		stmt.setLong(4, Long.parseLong(t.getId()));
+		stmt.setString(2, datatype.getReference());
+		stmt.setLong(3, Long.parseLong(t.getId()));
 		stmt.execute();
 	}
 
@@ -2241,6 +2286,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 *             thrown if the JDBC command fails
 	 */
 	protected void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
+		doRemoveTopicDepth  ++;
+		if(doRemoveTopicDepth > 999) {
+			//catch cycles and throw an error
+			throw new StackOverflowError();
+		}
 		/*
 		 * dump topic
 		 */
@@ -2319,6 +2369,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			/*
 			 * remove name
 			 */
+			//check if name is still there
+			if(topic.getParent().getConstructById(name.getId()) == null)
+				continue;
+			
 			doRemoveName(name, cascade, revision);
 		}
 		/*
@@ -2418,6 +2472,28 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException {
+		//clear topic map first
+		try {
+			doClearTopicMap(topicMap);
+		} catch (StackOverflowError e) {
+			//ignore this
+		} finally {
+			boolean ac = getConnection().getAutoCommit();
+			getConnection().setAutoCommit(false);
+			getConnection().commit();
+			PreparedStatement stmt = queryBuilder.getQueryDeleteTopicMap();
+			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+			stmt.execute();
+			getConnection().commit();
+			getConnection().setAutoCommit(ac);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
+
 		for (ILocator loc : doReadItemIdentifiers(topicMap)) {
 			doRemoveItemIdentifier(topicMap, loc);
 		}
@@ -2441,24 +2517,28 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.setLong(1, topicMapId);
 		stmt.execute();
 
-		stmt = queryBuilder.getQueryDeleteTopicMap();
+		stmt = queryBuilder.getQueryUnsetTopicMapReifier();
 		stmt.setLong(1, topicMapId);
 		stmt.execute();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void doClearTopicMap(ITopicMap topicMap) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryClearTopicMap();
-		long topicMapId = Long.parseLong(topicMap.getId());
-		stmt.setLong(1, topicMapId);
-		stmt.setLong(2, topicMapId);
-		stmt.setLong(3, topicMapId);
-		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
-		stmt.setLong(6, topicMapId);
-		stmt.execute();
+		
+		
+		
+		
+		
+//		stmt = queryBuilder.getQueryDeleteHistory();
+//		for(int i=1;i>=14;i++) {
+//			stmt.setLong(i, topicMapId);
+//		}
+//		stmt.execute();
+//		
+//		stmt = queryBuilder.getQueryClearTopicMap();
+//		stmt.setLong(1, topicMapId);
+//		stmt.setLong(2, topicMapId);
+//		stmt.setLong(3, topicMapId);
+//		stmt.setLong(4, topicMapId);
+//		stmt.setLong(5, topicMapId);
+//		stmt.setLong(6, topicMapId);
+//		stmt.execute();
 	}
 
 	/**
@@ -2877,12 +2957,20 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all, long offset,
 			long limit) throws SQLException {
+		/*
+		 * empty type set
+		 */
+		if (types == null || types.size() == 0) {
+			return getTopicsByType(null, null, offset, limit);
+		}
+
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(types.size(), all, offset != -1);
 		ITopicMap topicMap = null;
-		int n = 2;
+		Long[] ids = new Long[types.size()];
+		int n = 0;
 		for (T type : types) {
 			topicMap = (ITopicMap) type.getTopicMap();
-			stmt.setLong(n++, Long.parseLong(type.getId()));
+			ids[n++] = Long.parseLong(type.getId());
 		}
 		/*
 		 * empty type set
@@ -2891,11 +2979,40 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			return HashUtil.getHashSet();
 		}
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setArray(2, getConnection().createArrayOf("bigint", ids));
 		if (offset != -1) {
-			stmt.setLong(n++, offset);
-			stmt.setLong(n++, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
+//		HashMap<String, Collection<ITopic>> foundInstances = new HashMap<String, Collection<ITopic>>();
+//		Collection<ITopic> result = new HashSet<ITopic>();
+//		
+//		boolean firstRun = true;
+//		for(T t : types) {
+//			Collection<ITopic> found = getTopicsByType(null, t, -1, -1);
+//			if(all) {
+//				if(firstRun) {
+//					result = found;
+//					firstRun = false;
+//					continue;
+//				}
+//				result.retainAll(found);
+//			}
+//			result.addAll(found);
+//		}
+//		
+//		ArrayList<ITopic> finalResult = new ArrayList<ITopic>();
+//		finalResult.addAll(result);
+//		
+//		if(offset != -1) {
+//			int length = finalResult.size();
+//			if(offset <= length && length - limit >= 0 && offset + limit <= length) {
+//				return finalResult.subList((int)offset, (int)(offset + limit));
+//			}
+//		}
+//		return finalResult;
+		//return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
 	}
 
 	/**
@@ -2903,19 +3020,36 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit)
 			throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		if (type != null) {
-			stmt.setLong(2, Long.parseLong(type.getId()));
-			if (offset != -1) {
-				stmt.setLong(3, offset);
-				stmt.setLong(4, limit);
-			}
-			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
-		}
+//		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
+//		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+//		if (type != null) {
+//			stmt.setLong(2, Long.parseLong(type.getId()));
+//			if (offset != -1) {
+//				stmt.setLong(3, offset);
+//				stmt.setLong(4, limit);
+//			}
+//			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
+//		}
+//		if (offset != -1) {
+//			stmt.setLong(2, offset);
+//			stmt.setLong(3, limit);
+//		}
+//		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
+		if(topicMap == null)
+			topicMap = (ITopicMap) type.getParent();
+		PreparedStatement stmt = queryBuilder.getQuerySelectAllTopicsByTypes(offset != -1);
+		if(type == null) {
+			stmt = queryBuilder.getQuerySelectAllTopicsWithoutType(offset != -1);
+			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		} else 
+			stmt.setLong(1, Long.parseLong(type.getId()));
+		
 		if (offset != -1) {
 			stmt.setLong(2, offset);
 			stmt.setLong(3, limit);
+		}
+		if (type != null) {
+			return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_instance");
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
@@ -3399,6 +3533,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();
 				stmt.setLong(1, Long.parseLong(theme.getId()));
+				stmt.setLong(2, themes.size());
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
 					ids.add(rs.getLong("id_scope"));
@@ -3938,12 +4073,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset,
 			long limit) throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQueryVariantsByThemes(all, offset != -1);
-		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[themes.length];
 		int n = 0;
-		for (Topic t : themes) {
+		for (Topic t : themes)
 			ids[n++] = Long.parseLong(t.getId());
-		}
 		Array array = getConnection().createArrayOf("bigint", ids);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setArray(2, array);
@@ -4402,21 +4535,40 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
 			throws SQLException {
+		PreparedStatement p = queryBuilder.getQuerySelectConstructIdentifiersByPattern();
+		String pattern = "^" + regExp + "$";
+		p.setString(1, pattern);
+		
+		ResultSet rs = p.executeQuery();
+		Vector<Long> results = new Vector<Long>();
+		while(rs.next()) {
+			results.add(rs.getLong(1));
+		}
+		rs.close();
+		p.close();
+		Array resultArray = getConnection().createArrayOf("bigint", results.toArray(new Long[results.size()]));
+		
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
-		String pattern = "^" + regExp + "$";
-		stmt.setString(1, pattern);
+		stmt.setArray(1, resultArray);
 		stmt.setLong(2, topicMapId);
-		stmt.setLong(3, topicMapId);
+		stmt.setArray(3, resultArray);
 		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
+		stmt.setArray(5, resultArray);
 		stmt.setLong(6, topicMapId);
-		stmt.setLong(7, topicMapId);
+		stmt.setArray(7, resultArray);
+		stmt.setLong(8, topicMapId);
+		stmt.setArray(9, resultArray);
+		stmt.setLong(10, topicMapId);
+		stmt.setArray(11, resultArray);
+		stmt.setLong(12, topicMapId);
+		stmt.setArray(13, resultArray);
 		if (offset != -1) {
-			stmt.setLong(8, offset);
-			stmt.setLong(9, limit);
+			stmt.setLong(14, offset);
+			stmt.setLong(15, limit);
 		}
-		ResultSet rs = stmt.executeQuery();
+		
+		rs = stmt.executeQuery();
 		return Jdbc2Construct.toConstructs(topicMap, rs);
 	}
 
@@ -4425,21 +4577,36 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 */
 	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset,
 			long limit) throws SQLException {
+		PreparedStatement p = queryBuilder.getQuerySelectConstructItemIdentifiersByPattern();
+		String pattern = "^" + regExp + "$";
+		p.setString(1, pattern);
+		ResultSet rs = p.executeQuery();
+		Vector<Long> results = new Vector<Long>();
+		while(rs.next())
+			results.add(rs.getLong(1));
+		Array resultArray = getConnection().createArrayOf("bigint", results.toArray(new Long[results.size()]));
+		rs.close();
+		p.close();
 		PreparedStatement stmt = queryBuilder.getQuerySelectConstructsByItemIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
-		String pattern = "^" + regExp + "$";
-		stmt.setString(1, pattern);
+		stmt.setArray(1, resultArray);
 		stmt.setLong(2, topicMapId);
-		stmt.setLong(3, topicMapId);
+		stmt.setArray(3, resultArray);
 		stmt.setLong(4, topicMapId);
-		stmt.setLong(5, topicMapId);
+		stmt.setArray(5, resultArray);
 		stmt.setLong(6, topicMapId);
-		stmt.setLong(7, topicMapId);
+		stmt.setArray(7, resultArray);
+		stmt.setLong(8, topicMapId);
+		stmt.setArray(9, resultArray);
+		stmt.setLong(10, topicMapId);
+		stmt.setArray(11, resultArray);
+		stmt.setLong(12, topicMapId);
+		stmt.setArray(13, resultArray);
 		if (offset != -1) {
-			stmt.setLong(8, offset);
-			stmt.setLong(9, limit);
+			stmt.setLong(14, offset);
+			stmt.setLong(15, limit);
 		}
-		ResultSet rs = stmt.executeQuery();
+		rs = stmt.executeQuery();
 		return Jdbc2Construct.toConstructs(topicMap, rs);
 	}
 
@@ -5108,6 +5275,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociationRole role) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5159,6 +5330,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IAssociation association) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5229,6 +5404,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IVariant variant) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5289,6 +5468,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IName name) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5361,6 +5544,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, IOccurrence occurrence) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5422,6 +5609,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public void dump(IRevision revision, ITopic topic) throws SQLException {
+		if(revision == null) {
+			//omitting revision if null
+			return;
+		}
 		try {
 			// ii
 			String ii = "";
@@ -5586,8 +5777,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		/*
 		 * removed construct -> load data from history
 		 */
-		else {			
+		else {
 			PreparedStatement stmt = queryBuilder.getQueryReadHistory();
+			if(stmt.isClosed())
+				System.err.println("WARNING, statement closed");
 			stmt.setLong(1, Long.parseLong(c.getId()));
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
@@ -5595,8 +5788,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 					switch (type) {
 						case ITEM_IDENTIFIER: {
 							Collection<ILocator> set = HashUtil.getHashSet();
-							Array a = rs.getArray("itemidentifiers");
-							for (String ref : (String[]) a.getArray()) {
+							String a = rs.getString("itemidentifiers");
+							for (String ref : a.split(",")) {
 								set.add(new LocatorImpl(ref));
 							}
 							results.put(type, set);
@@ -5604,8 +5797,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							break;
 						case SUBJECT_IDENTIFIER: {
 							Collection<ILocator> set = HashUtil.getHashSet();
-							Array a = rs.getArray("subjectidentifiers");
-							for (String ref : (String[]) a.getArray()) {
+							String a = rs.getString("subjectidentifiers");
+							for (String ref : a.split(",")) {
 								set.add(new LocatorImpl(ref));
 							}
 							results.put(type, set);
@@ -5613,8 +5806,8 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							break;
 						case SUBJECT_LOCATOR: {
 							Collection<ILocator> set = HashUtil.getHashSet();
-							Array a = rs.getArray("subjectlocators");
-							for (String ref : (String[]) a.getArray()) {
+							String a = rs.getString("subjectlocators");
+							for (String ref : a.split(",")) {
 								set.add(new LocatorImpl(ref));
 							}
 							results.put(type, set);
@@ -5622,71 +5815,78 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							break;
 						case NAME: {
 							Collection<IName> set = HashUtil.getHashSet();
-							Array a = rs.getArray("names");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("names");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyName(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
+										.getConstructFactory().newName(new JdbcIdentity(Long.parseLong(id)), (ITopic) c)));
 							}
 							results.put(type, set);
 						}
 							break;
 						case OCCURRENCE: {
 							Collection<IOccurrence> set = HashUtil.getHashSet();
-							Array a = rs.getArray("occurrences");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("occurrences");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
+										.getConstructFactory().newOccurrence(new JdbcIdentity(Long.parseLong(id)), (ITopic) c)));
 							}
 							results.put(type, set);
 						}
 							break;
 						case VARIANT: {
 							Collection<IVariant> set = HashUtil.getHashSet();
-							Array a = rs.getArray("variants");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("variants");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyVariant(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
+										.getConstructFactory().newVariant(new JdbcIdentity(Long.parseLong(id)), (IName) c)));
 							}
 							results.put(type, set);
 						}
 							break;
 						case ASSOCIATION: {
 							Collection<IAssociation> set = HashUtil.getHashSet();
-							Array a = rs.getArray("associations");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("associations");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
+										.getConstructFactory().newAssociation(new JdbcIdentity(Long.parseLong(id)), c.getTopicMap())));
 							}
 							results.put(type, set);
 						}
 							break;
 						case TYPE: {
 							Collection<ITopic> set = HashUtil.getHashSet();
-							Array a = rs.getArray("types");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("types");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+										.getConstructFactory().newTopic(new JdbcIdentity(Long.parseLong(id)), c.getTopicMap())));
 							}
-							results.put(type, set);
+							/*
+							 * special handling of non-multiple and multiple-types
+							 */
+							if (c instanceof ITopic) {
+								results.put(type, set);
+							} else {
+								results.put(type, set.iterator().next());
+							}
 						}
 							break;
 						case SUPERTYPE: {
 							Collection<ITopic> set = HashUtil.getHashSet();
-							Array a = rs.getArray("supertypes");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("supertypes");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+										.getConstructFactory().newTopic(new JdbcIdentity(Long.parseLong(id)), c.getTopicMap())));
 							}
 							results.put(type, set);
 						}
 							break;
 						case ROLE: {
 							Collection<IAssociationRole> set = HashUtil.getHashSet();
-							Array a = rs.getArray("roles");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("roles");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), getSession().getTopicMapStore()
 										.getConstructFactory()
-										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
+										.newAssociationRole(new JdbcIdentity(Long.parseLong(id)), (IAssociation) c)));
 							}
 							results.put(type, set);
 						}
@@ -5711,10 +5911,10 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 							break;
 						case SCOPE: {
 							Collection<ITopic> set = HashUtil.getHashSet();
-							Array a = rs.getArray("themes");
-							for (Long id : (Long[]) a.getArray()) {
+							String a = rs.getString("themes");
+							for (String id : a.split(",")) {
 								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+										.getConstructFactory().newTopic(new JdbcIdentity(Long.parseLong(id)), c.getTopicMap())));
 							}
 							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
 						}
