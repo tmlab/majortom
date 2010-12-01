@@ -306,7 +306,7 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	 */
 
 	protected String[] getSchemaQueries() {
-		return getSchemaQuery().split(";");
+		return getSchemaQuery().split(";;");
 	}
 
 	/**
