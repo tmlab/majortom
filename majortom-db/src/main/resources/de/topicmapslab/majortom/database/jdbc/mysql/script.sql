@@ -102,7 +102,7 @@ CREATE TABLE changesets
   `type` character varying(128) NOT NULL,
   newvalue character varying(1024),
   oldvalue character varying(1024),
-  cTime timestamp,
+  time timestamp,
   CONSTRAINT pk_changeset PRIMARY KEY (id),
   CONSTRAINT fk_changesets_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE
