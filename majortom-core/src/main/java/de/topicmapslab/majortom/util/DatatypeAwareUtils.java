@@ -44,6 +44,22 @@ public class DatatypeAwareUtils {
 	private final static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSS+HH:mm");
 
 	/**
+	 * Give the possibility to change to datetime format as it differs across several database systems
+	 */
+	public static void setDateTimeFormat(String format) {
+		dateTimeFormat.applyPattern(format);
+	}
+	
+	/**
+	 * retrieve the currently used datetime format
+	 */
+	public static SimpleDateFormat getDateTimeFormat() {
+		return dateTimeFormat;
+	}
+	
+	
+	
+	/**
 	 * Transform the given values to its string representations dependent from
 	 * the given data type.
 	 * 
