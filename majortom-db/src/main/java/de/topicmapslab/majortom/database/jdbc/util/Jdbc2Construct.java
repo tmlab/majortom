@@ -158,15 +158,16 @@ public class Jdbc2Construct {
 	public static List<IConstruct> toConstructs(ITopicMap topicMap, ResultSet result) throws SQLException {
 		List<IConstruct> list = HashUtil.getList();
 		while (result.next()) {
-			if ("t".equalsIgnoreCase(result.getString("type"))) {
+			String type = result.getString("type").trim();
+			if ("t".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id")), topicMap));
-			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("o".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newOccurrence(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("n".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newName(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("v".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("v".equalsIgnoreCase(type)) {
 				list.add(topicMap
 						.getStore()
 						.getConstructFactory()
@@ -174,18 +175,18 @@ public class Jdbc2Construct {
 								new JdbcIdentity(result.getLong(1)),
 								topicMap.getStore().getConstructFactory()
 										.newName(new JdbcIdentity(result.getLong(2)), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong(3)), topicMap))));
-			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("a".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory().newAssociation(new JdbcIdentity(result.getLong("id")), topicMap));
-			} else if ("r".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("r".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newAssociationRole(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newAssociation(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("tm".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("tm".equalsIgnoreCase(type)) {
 				String id = result.getString("id");
 				if (id.equalsIgnoreCase(topicMap.getId())) {
 					list.add(topicMap);
 				}
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException("Unknown characteristics type '" + type + "'.");
 			}
 		}
 		result.close();
@@ -213,14 +214,15 @@ public class Jdbc2Construct {
 	public static List<ICharacteristics> toCharacteristics(ITopicMap topicMap, ResultSet result) throws SQLException {
 		List<ICharacteristics> list = HashUtil.getList();
 		while (result.next()) {
-			if ("n".equalsIgnoreCase(result.getString("type"))) {
+			String type = result.getString("type").trim();
+			if ("n".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newName(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("o".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newOccurrence(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException("Unknown characteristics type '" + type + "'.");
 			}
 		}
 		result.close();
@@ -230,7 +232,8 @@ public class Jdbc2Construct {
 	public static List<IDatatypeAware> toDatatypeAwares(ITopicMap topicMap, ResultSet result) throws SQLException {
 		List<IDatatypeAware> list = HashUtil.getList();
 		while (result.next()) {
-			if ("v".equalsIgnoreCase(result.getString("type"))) {
+			String type = result.getString("type").trim();
+			if ("v".equalsIgnoreCase(type)) {
 				list.add(topicMap
 						.getStore()
 						.getConstructFactory()
@@ -238,11 +241,11 @@ public class Jdbc2Construct {
 								new JdbcIdentity(result.getLong(1)),
 								topicMap.getStore().getConstructFactory()
 										.newName(new JdbcIdentity(result.getLong(2)), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong(3)), topicMap))));
-			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("o".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newOccurrence(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException("Unknown characteristics type '" + type + "'.");
 			}
 		}
 		result.close();
@@ -350,7 +353,8 @@ public class Jdbc2Construct {
 	public static List<IScopable> toScopables(ITopicMap topicMap, ResultSet result) throws SQLException {
 		List<IScopable> list = HashUtil.getList();
 		while (result.next()) {
-			if ("v".equalsIgnoreCase(result.getString("type"))) {
+			String type = result.getString("type").trim();
+			if ("v".equalsIgnoreCase(type)) {
 				list.add(topicMap
 						.getStore()
 						.getConstructFactory()
@@ -358,16 +362,16 @@ public class Jdbc2Construct {
 								new JdbcIdentity(result.getLong(1)),
 								topicMap.getStore().getConstructFactory()
 										.newName(new JdbcIdentity(result.getLong(2)), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong(3)), topicMap))));
-			} else if ("o".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("o".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newOccurrence(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("n".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("n".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory()
 						.newName(new JdbcIdentity(result.getLong("id")), topicMap.getStore().getConstructFactory().newTopic(new JdbcIdentity(result.getLong("id_parent")), topicMap)));
-			} else if ("a".equalsIgnoreCase(result.getString("type"))) {
+			} else if ("a".equalsIgnoreCase(type)) {
 				list.add(topicMap.getStore().getConstructFactory().newAssociation(new JdbcIdentity(result.getLong("id")), topicMap));
 			} else {
-				throw new TopicMapStoreException("Unknown characteristics type '" + result.getString("type") + "'.");
+				throw new TopicMapStoreException("Unknown characteristics type '" + type + "'.");
 			}
 		}
 		result.close();
