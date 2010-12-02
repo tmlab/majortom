@@ -59,6 +59,34 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-inMemory</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tmapix</groupId>
+			<artifactId>tmapix-io</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>tmapi</artifactId>
+					<groupId>org.tmapi</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-api</artifactId>
+  		<version>1.5.8</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-log4j12</artifactId>
+  		<version>1.5.8</version>
+  	</dependency>
 	</dependencies>
 
 	<repositories>
@@ -66,5 +94,9 @@
 			<id>semagia snapshot</id>
 			<url>http://repository.semagia.com/snapshots</url>
 		</repository>
+		<repository>
+   		<id>TMLab Public</id>
+   		<url>http://maven.topicmapslab.de/public/</url>
+   	</repository>
 	</repositories>
 </project>
