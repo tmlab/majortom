@@ -13,12 +13,12 @@ import java.util.List;
  */
 public class Name extends Characteristic {
 	
-	private List<Variants> variants = new ArrayList<Variants>();  
+	private List<Variant> variants = new ArrayList<Variant>();  
 	
 	/**
 	 * @return the list of variants
 	 */
-	public List<Variants> getVariants() {
+	public List<Variant> getVariants() {
 		return variants;
 	}
 	

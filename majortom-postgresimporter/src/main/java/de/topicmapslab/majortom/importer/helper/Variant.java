@@ -12,6 +12,6 @@ package de.topicmapslab.majortom.importer.helper;
  * @author Hannes Niederhausen
  *
  */
-public class Variants extends Occurrence{
+public class Variant extends Occurrence{
 
 }
