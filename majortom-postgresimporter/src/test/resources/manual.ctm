@@ -1,0 +1,13 @@
+%encoding "utf-8"
+%version 1.0
+
+%prefix tmp http://tmp.de/
+%prefix test http://test.de/
+
+<http://test.de/hallo_welt> isa tmp:typ;
+    ^tmp:lala;
+    =<http://dort.isses.de/>;
+    - "Hallo" ("bullshit"@tmp:variante);
+    - test:name : "Welt" .
+
+<http://test.de/maiana/assoc> ( <http://test.de/maiana/role> : <http://test.de/p/1> ) @<http://scope.de/1>, <http://scope.de/2>
