@@ -14,6 +14,7 @@ doc/doc
 .directory
 */\${builder}
 doc/build.properties
+majortom-postgresimporter/src/test/resources/db.properties
 
 syntax: regexp
 ^majortom-db/data$
