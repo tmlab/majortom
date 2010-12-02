@@ -101,6 +101,7 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 		this.database = database;
 		this.host = host;
 		this.connectionCount = 10;
+		this.globalSession = openSession();
 	}
 
 	/**

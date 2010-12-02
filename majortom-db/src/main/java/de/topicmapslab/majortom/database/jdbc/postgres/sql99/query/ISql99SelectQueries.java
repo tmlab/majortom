@@ -241,7 +241,7 @@ public interface ISql99SelectQueries {
 		/**
 		 * query to read a construct by item-identifier
 		 * <p>
-		 * <b>parameters(7):</b> the construct id, the topic map id 6x
+		 * <b>parameters(7):</b> the construct item identifier, the topic map id 6x
 		 * </p>
 		 */
 		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = "WITH iis AS ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ? )"
