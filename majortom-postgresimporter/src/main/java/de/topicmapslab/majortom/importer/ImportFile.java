@@ -4,7 +4,12 @@
 
 package de.topicmapslab.majortom.importer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+
 import com.semagia.mio.IDeserializer;
+import com.semagia.mio.MIOException;
 import com.semagia.mio.Source;
 import com.semagia.mio.ctm.CTMDeserializerFactory;
 
@@ -17,22 +22,19 @@ import com.semagia.mio.ctm.CTMDeserializerFactory;
 public class ImportFile {
 
 	/**
-	 * @param args
+	 * Imports a topic map read by the input stream
+	 * @param is
+	 * @param baseIRI
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws MIOException
 	 */
-	public static void main(String[] args) {
-		try {
-			// TODO readargs
+	public static void importFile(InputStream is, String baseIRI) throws SQLException, IOException, MIOException {
+		CTMDeserializerFactory fac = new CTMDeserializerFactory();
+		IDeserializer deserializer = fac.createDeserializer();
 
-			CTMDeserializerFactory fac = new CTMDeserializerFactory();
-			IDeserializer deserializer = fac.createDeserializer();
-
-			deserializer.setMapHandler(new MapHandler());
-			deserializer.parse(new Source("file:/tmp/manual.ctm"));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		deserializer.setMapHandler(new MapHandler());
+		deserializer.parse(new Source(is, baseIRI));
 	}
 
 }

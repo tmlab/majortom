@@ -3,11 +3,14 @@
  */
 package de.topicmapslab.majortom.importer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +44,24 @@ public class PostgresMapHandler {
 	 * @throws SQLException
 	 */
 	public PostgresMapHandler() throws SQLException {
-		provider = new PostGreSqlConnectionProvider("localhost", "it", "postgres", "lala01");
-		int r = provider.getDatabaseState();
-		if (r == IConnectionProvider.STATE_DATABASE_IS_EMPTY)
-			provider.createSchema();
+		
+		try {
+			InputStream is = getClass().getResourceAsStream("/db.properties");
+			Properties properties = new Properties();
+			properties.load(is);
+			
+			String localhost = properties.getProperty("host");
+			String db = properties.getProperty("database");
+			String user = properties.getProperty("user");
+			String password = properties.getProperty("password");
+			
+			provider = new PostGreSqlConnectionProvider(localhost, db, user, password);
+			int r = provider.getDatabaseState();
+			if (r == IConnectionProvider.STATE_DATABASE_IS_EMPTY)
+				provider.createSchema();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
