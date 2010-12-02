@@ -13,8 +13,12 @@ import com.semagia.mio.IMapHandler;
 import com.semagia.mio.IRef;
 import com.semagia.mio.MIOException;
 
+import de.topicmapslab.majortom.importer.helper.Association;
 import de.topicmapslab.majortom.importer.helper.Characteristic;
 import de.topicmapslab.majortom.importer.helper.Name;
+import de.topicmapslab.majortom.importer.helper.Occurrence;
+import de.topicmapslab.majortom.importer.helper.Role;
+import de.topicmapslab.majortom.importer.helper.Variant;
 
 /**
  * @author Hannes Niederhausen
@@ -30,7 +34,13 @@ public class MapHandler implements IMapHandler {
 	
 	private PostgresMapHandler handler;
 	
-	private Characteristic currentName;
+	private Characteristic currentCharacteristic;
+	
+	private Variant currentVariant = null;
+	
+	private Association currentAssociation;
+	
+	private Role currentRole;
 	
 	private Stack<State> state;
 	
@@ -44,50 +54,50 @@ public class MapHandler implements IMapHandler {
 	}
 	
 	public void endAssociation() throws MIOException {
-		// TODO Auto-generated method stub
+		handler.addAssociation(currentAssociation);
+		currentAssociation = null;
 		state.pop();
 	}
 
 	public void endIsa() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
 	}
 
 	public void endName() throws MIOException {
 		
-		handler.addName(currentName);
-		currentName = null;
+		handler.addName((Name) currentCharacteristic);
+		currentCharacteristic = null;
 		logger.debug("End Name");
 		state.pop();
 	}
 
 	public void endOccurrence() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
+		logger.debug("End Occurrence");
+		handler.addOccurrence((Occurrence) currentCharacteristic);
 	}
 
 	public void endPlayer() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
 	}
 
 	public void endReifier() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
 	}
 
 	public void endRole() throws MIOException {
-		// TODO Auto-generated method stub
+
+		currentAssociation.getRoles().add(currentRole);
+		currentRole = null;
+		
 		state.pop();
 	}
 
 	public void endScope() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
 	}
 
 	public void endTheme() throws MIOException {
-		// TODO Auto-generated method stub
 		state.pop();
 	}
 
@@ -107,14 +117,17 @@ public class MapHandler implements IMapHandler {
 	}
 
 	public void endVariant() throws MIOException {
-		// TODO Auto-generated method stub
+
+		((Name) currentCharacteristic).getVariants().add(currentVariant);
+		currentVariant = null;
 		state.pop();
 	}
 
 	public void startAssociation() throws MIOException {
 		state.push(State.ASSOCIATION);
-		// TODO Auto-generated method stub
 		
+		currentAssociation = new Association();
+		currentAssociation.setTopicmapId(topicMapId);		
 	}
 
 	public void startIsa() throws MIOException {
@@ -123,9 +136,9 @@ public class MapHandler implements IMapHandler {
 
 	public void startName() throws MIOException {
 		state.push(State.NAME);
-		currentName = new Name();
-		currentName.setTopicmapId(topicMapId);
-		currentName.setParentId(currTopicId);
+		currentCharacteristic = new Name();
+		currentCharacteristic.setTopicmapId(topicMapId);
+		currentCharacteristic.setParentId(currTopicId);
 		
 		logger.debug("Start name");
 		
@@ -133,7 +146,8 @@ public class MapHandler implements IMapHandler {
 
 	public void startOccurrence() throws MIOException {
 		state.push(State.OCCURRENCE);
-		
+		currentCharacteristic = new Occurrence();
+		currentCharacteristic.setParentId(currTopicId);
 	}
 
 	public void startPlayer() throws MIOException {
@@ -148,7 +162,7 @@ public class MapHandler implements IMapHandler {
 
 	public void startRole() throws MIOException {
 		state.push(State.ROLE);
-		
+		currentRole = new Role();
 	}
 
 	public void startScope() throws MIOException {
@@ -172,7 +186,7 @@ public class MapHandler implements IMapHandler {
 	public void startTopicMap() throws MIOException {
 		state.push(State.TOPICMAP);
 		handler.start();
-		topicMapId = handler.getTopicMapId("http://test.de");
+		topicMapId = handler.getTopicMapId("http://dbimporter/test/");
 		logger.debug("Found Topic Map with id: "+topicMapId);
 		
 	}
@@ -185,7 +199,7 @@ public class MapHandler implements IMapHandler {
 
 	public void startVariant() throws MIOException {
 		state.push(State.VARIANT);
-		// TODO Auto-generated method stub
+		currentVariant = new Variant();
 		
 	}
 
@@ -206,17 +220,48 @@ public class MapHandler implements IMapHandler {
 	}
 
 	public void topicRef(IRef arg0) throws MIOException {
-		if (currentName!=null) {
+		
+		if (currentAssociation!=null) {
+			switch(state.peek()) {
+			case TYPE:
+				if (currentRole!=null)
+					currentRole.setRoleType(arg0);
+				else
+					currentAssociation.setType(arg0);
+				break;
+			case PLAYER:
+				currentRole.setRolePlayer(arg0);
+				break;
+			case THEME:
+				currentAssociation.getThemes().add(arg0);
+				break;
+			case REIFIER:
+				currentAssociation.setReifier(arg0);
+				break;
+			}
+			return;
+		} else if ( (currentCharacteristic!=null) ){
 
 			switch(state.peek()) {
 			case TYPE:
-				currentName.setTypeRef(arg0);
+				currentCharacteristic.setTypeRef(arg0);
 				break;
 			case THEME:
-				currentName.addTheme(arg0);
+				if (currentVariant==null)
+					currentCharacteristic.addTheme(arg0);
+				else
+					currentVariant.addTheme(arg0);
 				break;
 			case REIFIER:
-				currentName.setReifier(arg0);
+				if (currentVariant==null)
+					currentCharacteristic.setReifier(arg0);
+				else
+					currentVariant.setReifier(arg0);
+				break;
+			}
+		} else {
+			if (state.peek()==State.ISA) {
+				handler.addType(currTopicId, arg0);
 			}
 		}
 		
@@ -226,16 +271,21 @@ public class MapHandler implements IMapHandler {
 	}
 
 	public void value(String arg0) throws MIOException {
-		if (currentName!=null) {
+		if (currentCharacteristic!=null) {
 			// we have a name...
-			currentName.setValue(arg0);
+			currentCharacteristic.setValue(arg0);
 		}
 		logger.debug("Set value:"+arg0);
 	}
 
 	public void value(String arg0, String arg1) throws MIOException {
-		// TODO Auto-generated method stub
-		
+		if (currentCharacteristic instanceof Occurrence) {
+			((Occurrence) currentCharacteristic).setDatatype(arg1);
+			currentCharacteristic.setValue(arg0);
+		} else if (currentVariant != null) {
+			currentVariant.setDatatype(arg1);
+			currentVariant.setValue(arg0);
+		}
 	}
 
 	

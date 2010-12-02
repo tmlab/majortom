@@ -22,8 +22,10 @@ import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.PostGreSqlConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.postgres.optimized.PostGreSqlSession;
 import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryBuilder;
-import de.topicmapslab.majortom.importer.helper.Characteristic;
+import de.topicmapslab.majortom.importer.helper.Association;
+import de.topicmapslab.majortom.importer.helper.Name;
 import de.topicmapslab.majortom.importer.helper.Occurrence;
+import de.topicmapslab.majortom.importer.helper.Variant;
 
 /**
  * @author Hannes Niederhausen
@@ -145,12 +147,22 @@ public class PostgresMapHandler {
 	}
 
 	/**
+	 * Adds the given association to the database.
+	 * 
+	 * @param currentAssociation
+	 */
+	public void addAssociation(Association currentAssociation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
 	 * Adds a name to the topic map
 	 * 
 	 * @param name
 	 * @throws MIOException
 	 */
-	public void addName(Characteristic name) throws MIOException {
+	public void addName(Name name) throws MIOException {
 		try {
 			PreparedStatement stm = builder.getQueryCreateNameWithScope();
 
@@ -167,7 +179,11 @@ public class PostgresMapHandler {
 				if (name.getReifier()!=null) {
 					addReifier(id, name.getReifier());
 				}
+				for (Variant v : name.getVariants()) {
+					addVariant(id, v);
+				}
 			}
+			rs.close();
 			
 			
 		} catch (SQLException e) {
@@ -179,9 +195,35 @@ public class PostgresMapHandler {
 	 * Adds an occurrence
 	 * 
 	 * @param occurrence
+	 * @throws MIOException 
 	 */
-	public void addOccurrence(Occurrence occurrence) {
-		throw new UnsupportedOperationException();
+	public void addOccurrence(Occurrence occurrence) throws MIOException {
+		try {
+			PreparedStatement stm = builder.getQueryCreateOccurrenceWithScope();
+
+			stm.setString(1, occurrence.getDatatype());
+			stm.setString(2, occurrence.getDatatype());
+			stm.setLong(3, occurrence.getTopicMapId());
+			stm.setLong(4, occurrence.getParentId());
+			stm.setLong(5, getTopic(occurrence.getTypeRef()));
+			stm.setString(6, occurrence.getValue());
+			stm.setLong(7, getScopeId(occurrence.getThemeRefs()));
+			stm.setString(8, occurrence.getDatatype());
+			stm.execute();
+
+			if (occurrence.getReifier()!=null) {
+				ResultSet rs = stm.getResultSet();
+				if (rs.next()) {
+					long id = rs.getLong("id");
+					addReifier(id, occurrence.getReifier());
+				}
+				rs.close();
+			}
+
+		} catch (SQLException e) {
+			throw new MIOException(e);
+		}
+
 	}
 
 	/**
@@ -277,6 +319,32 @@ public class PostgresMapHandler {
 		}
 	}
 
+	/**
+	 * Adds a type to the topic with the given id
+	 * 
+	 * @param currTopicId the current topic id
+	 * @param arg0 the reference of the typing topic
+	 * @throws MIOException
+	 * @throws  
+	 */
+	public void addType(long currTopicId, IRef arg0) throws MIOException {
+		try {
+			long typeId = getTopic(arg0);
+			
+			PreparedStatement stmt = builder.getQueryModifyTypes();
+			stmt.setLong(1, currTopicId);
+			stmt.setLong(2, typeId);
+			stmt.setLong(3, currTopicId);
+			stmt.setLong(4, typeId);
+			stmt.execute();
+			
+			
+		} catch (SQLException e) {
+			throw new MIOException(e);
+		}
+		
+	}
+
 	private long createTopic(IRef ref) {
 		long id = -1;
 		try {
@@ -338,6 +406,7 @@ public class PostgresMapHandler {
 					stmt.setLong(i * 2 + 2, themeId);
 					i++;
 				}
+				stmt.execute();
 			}
 
 			return id;
@@ -348,6 +417,40 @@ public class PostgresMapHandler {
 
 	}
 	
+	private void addVariant(long id, Variant variant) throws MIOException {
+		try {
+			long scopeId = getScopeId(variant.getThemeRefs());
+			
+			PreparedStatement stmt = builder.getQueryCreateVariant();
+			stmt.setString(1, variant.getDatatype());
+			stmt.setString(2, variant.getDatatype());
+			stmt.setLong(3, topicMapId);
+			stmt.setLong(4, id);
+			stmt.setString(5, variant.getValue());
+			stmt.setLong(6, scopeId);
+			stmt.setString(7, variant.getDatatype());
+			stmt.execute();
+			
+			
+			if (variant.getReifier() != null) {
+				ResultSet rs = stmt.getResultSet();
+				rs.next();
+				long variantId = rs.getLong("id");
+				rs.close();
+
+				stmt = builder.getQueryModifyVariantReifier();
+
+				stmt.setLong(1, getTopic(variant.getReifier()));
+				stmt.setLong(2, variantId);
+
+				stmt.execute();
+			}
+		} catch (SQLException e) {
+			throw new MIOException(e);
+		}
+		
+	}
+
 	/**
 	 * Adds a reifier
 	 * @param id reifiable id
