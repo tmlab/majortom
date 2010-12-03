@@ -151,6 +151,34 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	}
 
 	/**
+	 * Returns whether the topic map is empty or not
+	 * @return <code>true</code> or <code>false</code>
+	 */
+	protected boolean isTopicMapEmpty(ITopicMap topicMap){
+		
+		ISession session = this.provider.openSession();
+		
+		try{
+		
+			Long num = session.getProcessor().doReadNumberOfTopics(topicMap);
+		
+			if(num == 0)
+				return true;
+			
+			return false;
+			
+		}catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type) throws TopicMapStoreException {

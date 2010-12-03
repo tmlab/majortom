@@ -16,6 +16,7 @@
 package de.topicmapslab.majortom.database.store;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -802,6 +803,7 @@ public class JdbcMergeUtils {
 		}
 	}
 
+	
 	/**
 	 * Merge the one topic map into the other
 	 * 
@@ -814,7 +816,8 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static void doMergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+	private static void mergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+		
 		Set<Topic> topics = other.getTopics();
 		/*
 		 * copy identifies
@@ -1008,6 +1011,237 @@ public class JdbcMergeUtils {
 					store.doModifyReifier(role, getDuplette(store, reifier));
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Copies the one topic map into the other
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topicMap
+	 *            the topic map as target
+	 * @param other
+	 *            the topic map as source
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	private static void copyTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException{
+		
+		Set<Topic> topics = other.getTopics();
+		
+		Map<Topic,ITopic> newTopics = HashUtil.getHashMap(topics.size());
+		
+		// create all topics with all identifier
+		for (Topic topic : topics) {
+			
+			ITopic newTopic = store.doCreateTopicWithoutIdentifier(topicMap);
+			newTopics.put(topic, newTopic); // store relation for later use
+			
+			for (Locator loc : topic.getItemIdentifiers())
+				store.doModifyItemIdentifier(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
+			
+			for (Locator loc : topic.getSubjectIdentifiers()) 
+				store.doModifySubjectIdentifier(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
+			
+			for (Locator loc : topic.getSubjectLocators()) 
+				store.doModifySubjectLocator(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
+		}
+
+		/*
+		 * Copy information
+		 */
+		for (Topic topic : topics) {
+			
+			ITopic newTopic = newTopics.get(topic);
+			
+			/*
+			 * copy types
+			 */
+			for (Topic type : topic.getTypes()) {
+				ITopic t = newTopics.get(type);
+				store.doModifyTopicType(newTopic, t);
+			}
+
+			/*
+			 * copy super types
+			 */
+			if (topic instanceof ITopic) {
+				for (Topic type : ((ITopic) topic).getSupertypes()) {
+					ITopic t = newTopics.get(type); 
+					store.doModifySupertype(newTopic, t);
+				}
+			}
+
+			/*
+			 * copy occurrences
+			 */
+			for (Occurrence occ : topic.getOccurrences()) {
+				
+				ITopic type = newTopics.get(occ.getType());
+				Set<ITopic> themes = HashUtil.getHashSet();
+				for(Topic t:occ.getScope())
+					themes.add(newTopics.get(t));
+				IScope scope = store.doCreateScope(topicMap, themes);
+				ILocator datatype = (ILocator) store.getTopicMap().createLocator(occ.getDatatype().getReference());
+				
+				IOccurrence newOccurrence = store.doCreateOccurrence(newTopic, type, occ.getValue(), datatype, themes);
+								
+				/*
+				 * copy item-identifiers of the occurrence
+				 */
+				for (Locator loc : occ.getItemIdentifiers()) {
+					store.doModifyItemIdentifier(newOccurrence, store.doCreateLocator(topicMap, loc.getReference()));
+				}
+
+				/*
+				 * copy reification
+				 */
+				Topic reifier = occ.getReifier();
+				if (reifier != null) {
+					store.doModifyReifier(newOccurrence, newTopics.get(reifier));
+				}
+
+			}
+
+			/*
+			 * copy names
+			 */
+			for (Name name : topic.getNames()) {
+				ITopic type = newTopics.get(name.getType());
+				Set<ITopic> themes = HashUtil.getHashSet();
+				for(Topic t:name.getScope())
+					themes.add(newTopics.get(t));
+				
+				IName newName = store.doCreateName(newTopic, type, name.getValue(), themes);
+
+				/*
+				 * copy item-identifiers of the name
+				 */
+				for (Locator loc : name.getItemIdentifiers()) {
+					store.doModifyItemIdentifier(newName, store.doCreateLocator(topicMap, loc.getReference()));
+				}
+
+				/*
+				 * copy reification
+				 */
+				Topic reifier = name.getReifier();
+				if (reifier != null) {
+					store.doModifyReifier(newName, newTopics.get(reifier));
+				}
+
+				/*
+				 * copy variants
+				 */
+				for (Variant v : name.getVariants()) {
+					
+					Set<ITopic> vthemes = HashUtil.getHashSet();
+					for(Topic t:v.getScope())
+						vthemes.add(newTopics.get(t));
+					ILocator datatype = (ILocator) store.getTopicMap().createLocator(v.getDatatype().getReference());
+					
+					IVariant variant = store.doCreateVariant(newName, v.getValue(), datatype, vthemes);
+
+					/*
+					 * copy item-identifiers of the variant
+					 */
+					for (Locator loc : v.getItemIdentifiers()) {
+						store.doModifyItemIdentifier(variant, store.doCreateLocator(topicMap, loc.getReference()));
+					}
+
+					/*
+					 * copy reification
+					 */
+					reifier = v.getReifier();
+					if (reifier != null) {
+						store.doModifyReifier(variant, newTopics.get(reifier));
+					}
+				}
+			}
+		}
+
+		/*
+		 * copy associations
+		 */
+		for (Association ass : other.getAssociations()) {
+
+			/*
+			 * filter TMDM associations
+			 */
+			if (checkTmdmAssociation(store, ass, topicMap, other)) {
+				continue;
+			}
+
+			ITopic type = newTopics.get(ass.getType());
+			Set<ITopic> themes = HashUtil.getHashSet();
+			for(Topic t:ass.getScope())
+				themes.add(newTopics.get(t));
+			
+			IAssociation association = store.doCreateAssociation(topicMap, type, themes);
+
+			/*
+			 * copy item-identifiers of the association
+			 */
+			for (Locator loc : ass.getItemIdentifiers()) {
+				store.doModifyItemIdentifier(association, store.doCreateLocator(topicMap, loc.getReference()));
+			}
+
+			/*
+			 * copy reification
+			 */
+			Topic reifier = ass.getReifier();
+			if (reifier != null) {
+				store.doModifyReifier(association, newTopics.get(reifier));
+			}
+
+			/*
+			 * copy roles
+			 */
+			for (Role r : ass.getRoles()) {
+				type = newTopics.get(r.getType());
+				ITopic player = newTopics.get(r.getPlayer());
+				IAssociationRole role = (IAssociationRole) association.createRole(type, player);
+				/*
+				 * copy item-identifiers of the role
+				 */
+				for (Locator loc : r.getItemIdentifiers()) {
+					store.doModifyItemIdentifier(role, store.doCreateLocator(topicMap, loc.getReference()));
+				}
+
+				/*
+				 * copy reification
+				 */
+				reifier = r.getReifier();
+				if (reifier != null) {
+					store.doModifyReifier(role, newTopics.get(reifier));
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * Merge the one topic map into the other. 
+	 * If the source topic map is empty, the other topic map will simply be copied into the new one 
+	 * without checking if specific constructs have to be merged.
+	 * 
+	 * @param store
+	 *            the store
+	 * @param topicMap
+	 *            the topic map as target
+	 * @param other
+	 *            the topic map as source
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	public static void doMergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+	
+		if(store.isTopicMapEmpty(topicMap)){
+			// use copy
+			copyTopicMaps(store, topicMap, other);
+		}else{
+			// use merge
+			mergeTopicMaps(store, topicMap, other);
 		}
 	}
 

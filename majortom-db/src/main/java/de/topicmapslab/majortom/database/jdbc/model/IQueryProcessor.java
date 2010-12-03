@@ -70,6 +70,8 @@ public interface IQueryProcessor {
 	 */
 	public <T extends ISession> T getSession();
 
+	public Long doReadNumberOfTopics(ITopicMap topicMap) throws SQLException;
+	
 	public Long doReadTopicMapIdentity(ILocator baseLocator) throws SQLException;
 
 	public Long doCreateTopicMapIdentity(ILocator baseLocator) throws SQLException;
