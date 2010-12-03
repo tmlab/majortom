@@ -155,6 +155,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		queryBuilder.close();
 	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1123,6 +1124,28 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		stmt.execute();
 	}
 
+	
+	@Override
+	public Long doReadNumberOfTopics(ITopicMap topicMap) throws SQLException {
+
+		PreparedStatement stmt = queryBuilder.getQueryReadNumberOfTopics();
+		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		
+		ResultSet rs = stmt.executeQuery();
+		
+		if(rs == null)
+			throw new TopicMapStoreException("Result set is null");
+		
+		Long count = new Long(0);
+		
+		while(rs.next()){
+			count = Long.parseLong(rs.getString(1));
+		}
+		
+		rs.close();
+		return count;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

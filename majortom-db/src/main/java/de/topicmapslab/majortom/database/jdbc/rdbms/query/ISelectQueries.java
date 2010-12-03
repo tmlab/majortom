@@ -25,6 +25,7 @@ package de.topicmapslab.majortom.database.jdbc.rdbms.query;
 public interface ISelectQueries {
 
 	interface Paged {
+		
 		/**
 		 * Query to read all played associations
 		 * <p>
@@ -128,6 +129,16 @@ public interface ISelectQueries {
 	}
 
 	interface NonPaged {
+		
+		/**
+		 * Query to read the number of topics of a specific topic map.
+		 * <p>
+		 * <b>parameters(1):</b> topic map id
+		 * </p>
+		 */
+		public static String QUERY_READ_NUMBER_OF_TOPICS = "SELECT COUNT(id) FROM topics WHERE id_topicmap= ?;";
+		
+		
 		/**
 		 * Load all locators of topic maps
 		 * 

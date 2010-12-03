@@ -32,6 +32,7 @@ import de.topicmapslab.majortom.database.jdbc.rdbms.query.IDeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IDumpQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IIndexQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IInsertQueries;
+import de.topicmapslab.majortom.database.jdbc.rdbms.query.IQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IRevisionQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.ISelectQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IUpdateQueries;
@@ -131,7 +132,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementCreateTopicMap;
 	private PreparedStatement preparedStatementCreateTopic;
 	private PreparedStatement preparedStatementCreateVariant;
-
+		
 	/**
 	 * {@inheritDoc}
 	 */
@@ -336,7 +337,17 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadVariants;
 	private PreparedStatement preparedStatementReadVariantsPaged;
 	private PreparedStatement preparedStatementReadVariantsWithScope;
-
+	private PreparedStatement preparedStatementReadNumberOfTopics;
+	
+	public PreparedStatement getQueryReadNumberOfTopics() throws SQLException{
+		
+		if(this.preparedStatementReadNumberOfTopics == null){
+			this.preparedStatementReadNumberOfTopics = getConnection().prepareStatement(
+					ISelectQueries.NonPaged.QUERY_READ_NUMBER_OF_TOPICS);
+		}
+		return this.preparedStatementReadNumberOfTopics;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
