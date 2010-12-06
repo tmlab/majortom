@@ -62,7 +62,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 		try {			
 			String tmp = reference.replace("+", "%2B");
 			this.reference = URLDecoder.decode(tmp, "utf-8"); 
-			uri = new URI(this.reference.replace(" ", "%20"));
+			uri = new URI(tmp.replace(" ", "%20"));
 		} catch (URISyntaxException e) {
 			throw new MalformedIRIException("The given IRI reference '" + reference +"' is invalid.");
 		} catch (UnsupportedEncodingException e) {
