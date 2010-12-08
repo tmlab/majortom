@@ -3321,7 +3321,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * @return the characteristicsStore
 	 */
 	protected CharacteristicsStore createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
-		return new CharacteristicsStore(xsdString);
+		return new CharacteristicsStore(xsdString, getCapacityOfCollections());
 	}
 
 	/**

@@ -331,4 +331,11 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 	public String getBestLabel(Topic theme, boolean strict) {
 		throw new UnsupportedOperationException("Read only topic does not support best label with theme");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return bestLabel;
+	}
 }

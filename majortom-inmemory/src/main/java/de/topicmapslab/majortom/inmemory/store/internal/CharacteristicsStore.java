@@ -91,15 +91,19 @@ public class CharacteristicsStore implements IDataStore {
 	 * the xsd:any locator
 	 */
 	private final ILocator xsdString;
+	
+	private final int initialCapacity;
 
 	/**
 	 * constructor
 	 * 
 	 * @param xsdString
 	 *            the xsd:string locator
+	 *            @param initialCapacity the initial capacity
 	 */
-	public CharacteristicsStore(ILocator xsdString) {
+	public CharacteristicsStore(ILocator xsdString, int initialCapacity) {
 		this.xsdString = xsdString;
+		this.initialCapacity = initialCapacity;
 	}
 
 	/**
@@ -313,9 +317,9 @@ public class CharacteristicsStore implements IDataStore {
 	 * @return the occurrences
 	 */
 	public Set<IOccurrence> getOccurrencesByValue(final Pattern regExp) {
-		Set<IOccurrence> set = HashUtil.getHashSet();
+		final Set<IOccurrence> set = HashUtil.getHashSet();
 		if (occurrencesByValue != null) {
-			for (Entry<String, Set<IOccurrence>> entry : occurrencesByValue.entrySet()) {
+			for (final Entry<String, Set<IOccurrence>> entry : occurrencesByValue.entrySet()) {
 				if (regExp.matcher(entry.getKey()).matches()) {
 					set.addAll(entry.getValue());
 				}
@@ -552,7 +556,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public void addName(ITopic t, IName n) {
 		if (names == null) {
-			names = HashUtil.getHashMap();
+			names = HashUtil.getHashMap(initialCapacity);
 		}
 
 		Set<IName> set = names.get(t);
@@ -573,7 +577,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public void addOccurrence(ITopic t, IOccurrence o) {
 		if (occurrences == null) {
-			occurrences = HashUtil.getHashMap();
+			occurrences = HashUtil.getHashMap(initialCapacity);
 		}
 
 		Set<IOccurrence> set = occurrences.get(t);
@@ -595,7 +599,7 @@ public class CharacteristicsStore implements IDataStore {
 	 */
 	public void addVariant(IName n, IVariant v) {
 		if (variants == null) {
-			variants = HashUtil.getHashMap();
+			variants = HashUtil.getHashMap(initialCapacity);
 		}
 
 		Set<IVariant> set = variants.get(n);
@@ -711,7 +715,7 @@ public class CharacteristicsStore implements IDataStore {
 	public Object setValue(IConstruct obj, Object value) {
 		Object oldValue = null;
 		if (values == null) {
-			values = HashUtil.getHashMap();
+			values = HashUtil.getHashMap(initialCapacity);
 		} else {
 			oldValue = values.get(obj);
 		}
@@ -767,7 +771,7 @@ public class CharacteristicsStore implements IDataStore {
 		 */
 		Set<IName> constructs = namesByValue.get(value);
 		if (constructs == null) {
-			constructs = HashUtil.getHashSet();
+			constructs = HashUtil.getHashSet(initialCapacity);
 			namesByValue.put(value, constructs);
 		}
 		constructs.add(name);
@@ -805,7 +809,7 @@ public class CharacteristicsStore implements IDataStore {
 		 */
 		Set<IOccurrence> constructs = occurrencesByValue.get(value);
 		if (constructs == null) {
-			constructs = HashUtil.getHashSet();
+			constructs = HashUtil.getHashSet(initialCapacity);
 			occurrencesByValue.put(value, constructs);
 		}
 		constructs.add(occurrence);
@@ -843,7 +847,7 @@ public class CharacteristicsStore implements IDataStore {
 		 */
 		Set<IVariant> constructs = variantsByValue.get(value);
 		if (constructs == null) {
-			constructs = HashUtil.getHashSet();
+			constructs = HashUtil.getHashSet(initialCapacity);
 			variantsByValue.put(value, constructs);
 		}
 		constructs.add(variant);
@@ -909,40 +913,39 @@ public class CharacteristicsStore implements IDataStore {
 	protected Map<ILocator, Set<IDatatypeAware>> getDataTypedMap() {
 		return dataTyped;
 	}
-	
+
 	/**
 	 * @return the dataTypes
 	 */
 	protected Map<IDatatypeAware, ILocator> getDataTypesMap() {
 		return dataTypes;
 	}
-		
+
 	protected Map<IConstruct, Object> getValuesMap() {
 		return values;
 	}
-	
-	protected Map<ITopic, Set<IName>> getNamesMap(){
+
+	protected Map<ITopic, Set<IName>> getNamesMap() {
 		return names;
 	}
-	
-	protected Map<ITopic, Set<IOccurrence>> getOccurrencesMap(){
+
+	protected Map<ITopic, Set<IOccurrence>> getOccurrencesMap() {
 		return occurrences;
 	}
-	
-	protected Map<IName, Set<IVariant>> getVariantsMap(){
+
+	protected Map<IName, Set<IVariant>> getVariantsMap() {
 		return variants;
 	}
-	
-	protected Map<String, Set<IName>> getNamesByValueMap(){
+
+	protected Map<String, Set<IName>> getNamesByValueMap() {
 		return namesByValue;
 	}
-	
-	protected Map<String, Set<IOccurrence>> getOccurrencesByValueMap(){
+
+	protected Map<String, Set<IOccurrence>> getOccurrencesByValueMap() {
 		return occurrencesByValue;
 	}
-	
-	protected Map<String, Set<IVariant>> getVariantsByValueMap(){
+
+	protected Map<String, Set<IVariant>> getVariantsByValueMap() {
 		return variantsByValue;
 	}
 }
-
