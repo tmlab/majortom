@@ -132,7 +132,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementCreateTopicMap;
 	private PreparedStatement preparedStatementCreateTopic;
 	private PreparedStatement preparedStatementCreateVariant;
-		
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -337,6 +337,8 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadVariants;
 	private PreparedStatement preparedStatementReadVariantsPaged;
 	private PreparedStatement preparedStatementReadVariantsWithScope;
+	private PreparedStatement preparedStatementReadUsedScopeByThemes;
+
 	private PreparedStatement preparedStatementReadNumberOfTopics;
 	
 	public PreparedStatement getQueryReadNumberOfTopics() throws SQLException{
@@ -839,6 +841,15 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		return preparedStatementReadScopeByThemes;
 	}
+	
+	public PreparedStatement getQueryReadUsedScopeByTheme() throws SQLException {
+		if (preparedStatementReadUsedScopeByThemes == null) {
+			this.preparedStatementReadUsedScopeByThemes = getConnection().prepareStatement(
+					ISelectQueries.NonPaged.QUERY_READ_USED_SCOPES_BY_THEME);
+		}
+		return preparedStatementReadUsedScopeByThemes;
+	}
+
 
 	public PreparedStatement getQueryReadEmptyScope() throws SQLException {
 		if (this.preparedStatementReadEmptyScope == null) {

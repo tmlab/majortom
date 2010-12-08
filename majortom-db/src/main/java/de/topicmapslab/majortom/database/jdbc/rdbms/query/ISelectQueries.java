@@ -499,7 +499,7 @@ public interface ISelectQueries {
 		 * </p>
 		 */
 		public static String QUERY_READ_ROLESTYPES = "SELECT DISTINCT id_type FROM roles WHERE id_parent = ? ";
-
+		
 		// *************************
 		// * READ TOPIC IDENTIDIES *
 		// *************************
@@ -649,26 +649,14 @@ public interface ISelectQueries {
 		 * id
 		 * </p>
 		 */
-		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";// ;
-																																	// AND
-																																	// ?
-																																	// IN
-																																	// (
-																																	// SELECT
-																																	// COUNT(*)
-																																	// FROM
-																																	// rel_themes
-																																	// WHERE
-																																	// id_scope
-																																	// =
-																																	// r.id_scope
-																																	// GROUP
-																																	// BY
-																																	// id_scope
-																																	// );";// "SELECT
-																																	// unnest(scope_by_themes(?,?,?,?))
-																																	// AS
-																																	// id;";
+		public static final String QUERY_READ_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND ? IN ( SELECT count ( id_theme ) FROM rel_themes WHERE id_scope = r.id_scope );";
+
+		public static String QUERY_READ_USED_SCOPES_BY_THEME = "SELECT DISTINCT id_scope FROM rel_themes AS r WHERE id_theme = ? AND " +
+				"id_scope IN (" +
+				"SELECT id_scope FROM names UNION " +
+				"SELECT id_scope FROM variants UNION " +
+				"SELECT id_scope FROM occurrences UNION " +
+				"SELECT id_scope FROM associations) ;";
 
 		public static final String QUERY_READ_EMPTY_SCOPE = "SELECT id FROM scopes WHERE id NOT IN ( SELECT DISTINCT id_scope FROM rel_themes ) AND id_topicmap = ?";
 
