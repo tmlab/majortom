@@ -32,9 +32,10 @@ public class LazyCharacteristicsStore extends VirtualCharacteristicsStore<InMemo
 	 *            the transaction store
 	 * @param xsdString
 	 *            the locator of XSD string
+	 *            @param initialCapacity initial capacity
 	 */
-	public LazyCharacteristicsStore(InMemoryTransactionTopicMapStore store, ILocator xsdString) {
-		super(store, xsdString);
+	public LazyCharacteristicsStore(InMemoryTransactionTopicMapStore store, ILocator xsdString, int initialCapacity) {
+		super(store, xsdString, initialCapacity);
 	}
 
 }

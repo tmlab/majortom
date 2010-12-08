@@ -232,7 +232,7 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	 * {@inheritDoc}
 	 */
 	protected VirtualCharacteristicsStore<?> createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
-		return new LazyCharacteristicsStore(this, xsdString);
+		return new LazyCharacteristicsStore(this, xsdString, getCapacityOfCollections());
 	}
 
 	/**

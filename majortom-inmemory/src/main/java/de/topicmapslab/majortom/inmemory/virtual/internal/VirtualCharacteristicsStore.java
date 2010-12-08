@@ -55,9 +55,10 @@ public class VirtualCharacteristicsStore<T extends VirtualTopicMapStore> extends
 	 *            the transaction store
 	 * @param xsdString
 	 *            the locator of XSD string
+	 *            @param initialCapacity the initial capacity
 	 */
-	public VirtualCharacteristicsStore(T store, ILocator xsdString) {
-		super(xsdString);
+	public VirtualCharacteristicsStore(T store, ILocator xsdString, int initialCapacity) {
+		super(xsdString, initialCapacity);
 		this.store = store;
 	}
 

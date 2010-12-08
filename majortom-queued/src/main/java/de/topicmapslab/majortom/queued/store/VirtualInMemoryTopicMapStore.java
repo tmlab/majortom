@@ -82,7 +82,7 @@ public class VirtualInMemoryTopicMapStore extends VirtualTopicMapStore {
 	 * {@inheritDoc}
 	 */
 	protected VirtualCharacteristicsStore<?> createCharacteristicsStore(InMemoryTopicMapStore store, ILocator xsdString) {
-		return new VirtualCharacteristicsStore<VirtualInMemoryTopicMapStore>(this, xsdString);
+		return new VirtualCharacteristicsStore<VirtualInMemoryTopicMapStore>(this, xsdString, getCapacityOfCollections());
 	}
 
 	/**
