@@ -4,6 +4,7 @@
 package de.topicmapslab.majortom.importer;
 
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Stack;
 
 import org.slf4j.Logger;
@@ -48,8 +49,17 @@ public class MapHandler implements IMapHandler {
 	 * Constructor
 	 * @throws SQLException
 	 */
-	public MapHandler() throws SQLException {
+	public MapHandler() throws MIOException {
 		handler = new PostgresMapHandler();
+		state = new Stack<MapHandler.State>();
+	}
+	
+	/**
+	 * Constructor
+	 * @throws SQLException
+	 */
+	public MapHandler(Properties dbProperties) throws MIOException {
+		handler = new PostgresMapHandler(dbProperties);
 		state = new Stack<MapHandler.State>();
 	}
 	
@@ -104,11 +114,13 @@ public class MapHandler implements IMapHandler {
 	public void endTopic() throws MIOException {
 		currTopicId = -1;
 		state.pop();
+		handler.commit();
 	}
 
 	public void endTopicMap() throws MIOException {
 		handler.end();
 		state.pop();
+		handler.commit();
 	}
 
 	public void endType() throws MIOException {

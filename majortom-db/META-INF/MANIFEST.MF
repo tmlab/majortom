@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Name: MajorToM JDBC Store
 Bundle-SymbolicName: de.topicmapslab.majortom.jdbc;singleton=true
-Bundle-Version: 1.1.2
+Bundle-Version: 1.1.4
 Provide-Package: de.topicmapslab.majortom.database.store
 Import-Package: org.apache.commons.collections,
  org.apache.commons.collections.bidimap;specification-version="3.2.1",
@@ -22,7 +22,7 @@ Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.transaction.internal
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: de.topicmapslab.geotype;bundle-version="0.0.2",
- de.topicmapslab.majortom.core;bundle-version="1.1.1",
- de.topicmapslab.majortom.model;bundle-version="1.1.1"
+Require-Bundle: de.topicmapslab.geotype,
+ de.topicmapslab.majortom.core,
+ de.topicmapslab.majortom.model
 Service-Component: OSGI-INF/jdbctopicmapstore.xml

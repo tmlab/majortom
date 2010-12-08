@@ -3,6 +3,7 @@ package de.topicmapslab.majortom.importer.test.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,10 +16,10 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.tmapi.core.Association;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
-import org.tmapi.core.Association;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -27,12 +28,14 @@ import org.tmapi.core.TopicMapSystemFactory;
 import org.tmapi.core.Variant;
 import org.tmapix.io.CTMTopicMapReader;
 
+import de.topicmapslab.format_estimator.FormatEstimator.Format;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
-import de.topicmapslab.majortom.importer.ImportFile;
+import de.topicmapslab.majortom.importer.Importer;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.io.CXTMTopicMapWriter;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.store.TopicMapStoreProperty;
+import de.topicmapslab.majortom.util.FeatureStrings;
 
 /**
  * 
@@ -44,6 +47,7 @@ public class ImportCtmTest {
 
 	private TopicMap db_map;
 	private TopicMap memory_map;
+	private String databaseBaseLocator;
 	
 	
 	/**
@@ -56,12 +60,12 @@ public class ImportCtmTest {
 	@Before
 	public void setUp() throws Exception{
 		
-		
-		String databaseBaseLocator = "http://dbimporter/test/";
+		databaseBaseLocator = "http://dbimporter/test/";
 		String fileName = "manual.ctm";
 		
 		// get database
 		TopicMapSystemFactory db_factory = TopicMapSystemFactory.newInstance();
+		db_factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		
 		db_factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, JdbcTopicMapStore.class.getCanonicalName());
 		
@@ -69,10 +73,10 @@ public class ImportCtmTest {
 		Properties properties = new Properties();
 		properties.load(is);
 		
-		db_factory.setProperty("de.topicmapslab.majortom.jdbc.host", properties.get("host"));
-		db_factory.setProperty("de.topicmapslab.majortom.jdbc.database", properties.get("database"));
-		db_factory.setProperty("de.topicmapslab.majortom.jdbc.user", properties.get("user"));
-		db_factory.setProperty("de.topicmapslab.majortom.jdbc.password", properties.get("password"));
+		db_factory.setProperty("de.topicmapslab.majortom.jdbc.host", properties.get(HOST));
+		db_factory.setProperty("de.topicmapslab.majortom.jdbc.database", properties.get(DATABASE));
+		db_factory.setProperty("de.topicmapslab.majortom.jdbc.user", properties.get(USERNAME));
+		db_factory.setProperty("de.topicmapslab.majortom.jdbc.password", properties.get(PASSWORD));
 		
 		db_factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL");
 		
@@ -87,11 +91,11 @@ public class ImportCtmTest {
 		if (is==null)
 			throw new Exception("Couldn't find " + fileName);
 		
-		ImportFile.importFile(is, databaseBaseLocator);
+		Importer.importStream(is, databaseBaseLocator, Format.CTM);
 		
 		// load file into memory
 		TopicMapSystemFactory memory_factory = TopicMapSystemFactory.newInstance();
-		memory_factory.setFeature("http://tmapi.org/features/type-instance-associations", false);
+		memory_factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
 		memory_factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS, InMemoryTopicMapStore.class.getCanonicalName());
 		
 		TopicMapSystem memory_system = memory_factory.newTopicMapSystem();
@@ -104,25 +108,8 @@ public class ImportCtmTest {
 		CTMTopicMapReader reader = new CTMTopicMapReader(this.memory_map, is, databaseBaseLocator);
 		reader.read();
 		
-		exportTM(this.db_map, "imported.cxtm", databaseBaseLocator);
-		exportTM(this.memory_map, "orig.cxtm", databaseBaseLocator);
-		
 	}
 
-	private void exportTM(TopicMap tm, String filename, String databaseBaseLocator) throws FileNotFoundException, IOException, Exception {
-		String property = "java.io.tmpdir";
-		String tempDir = System.getProperty(property);
-		
-		property = "file.separator";
-		String sep = System.getProperty(property);
-		
-		FileOutputStream fos = new FileOutputStream(new File(tempDir+sep+filename));
-		
-		CXTMTopicMapWriter writer = new CXTMTopicMapWriter(fos, databaseBaseLocator);
-		writer.write(tm);
-		fos.close();
-	}
-	
 	/**
 	 * Test if the hello_welt topic has a type
 	 */
@@ -199,17 +186,64 @@ public class ImportCtmTest {
 	 */
 	@Test
 	public void associations() {
-		String topicSource = "Memory Topic Map: ";
-		
 		checkAssociations(memory_map, "Memory Topic Map: ");
 		checkAssociations(db_map, "Imported Topic Map: ");
 		
 	}
 
+	/**
+	 * Compares the two exported files byte by byte
+	 * @throws IOException if loading or reading fails
+	 */
+	@Test
+	public void test() throws Exception {
+		
+
+		exportTM(this.db_map, "imported.cxtm", databaseBaseLocator);
+		exportTM(this.memory_map, "orig.cxtm", databaseBaseLocator);
+		
+		String property = "java.io.tmpdir";
+		String tempDir = System.getProperty(property);
+		property = "file.separator";
+		String sep = System.getProperty(property);
+		
+		File orig = new File(tempDir+sep+"orig.cxtm");
+		File imported = new File(tempDir+sep+"imported.cxtm");
+		
+		FileInputStream origFi = new FileInputStream(orig);
+		FileInputStream importedFi = new FileInputStream(imported);
+		
+		int c1, c2;
+		
+		int counter = 0;
+		
+		while ( (c1 = origFi.read()) != -1) {
+			c2 = importedFi.read();
+			counter++;
+			if (c1!=c2)
+				fail("Found unequal byte at : "+counter);
+		}
+		
+	}
+
+	private void exportTM(TopicMap tm, String filename, String databaseBaseLocator) throws FileNotFoundException, IOException, Exception {
+		String property = "java.io.tmpdir";
+		String tempDir = System.getProperty(property);
+		
+		property = "file.separator";
+		String sep = System.getProperty(property);
+		
+		FileOutputStream fos = new FileOutputStream(new File(tempDir+sep+filename));
+		
+		CXTMTopicMapWriter writer = new CXTMTopicMapWriter(fos, databaseBaseLocator);
+		writer.write(tm);
+		fos.close();
+	}
+
 	private void checkAssociations(TopicMap topicMap, String topicSource) {
 		Topic assocType1 = topicMap.getTopicBySubjectIdentifier(topicMap.createLocator("http://test.de/maiana/assoc"));
 		
-		assertEquals(1, topicMap.getAssociations().size());
+		assertEquals(2, topicMap.getAssociations().size());
 		
 		for (Association a : topicMap.getAssociations()) {
 			if (a.getType().equals(assocType1)) {
@@ -315,37 +349,6 @@ public class ImportCtmTest {
 			}
 			fail(topicSource+": Unknown name found");
 		}
-	}
-	
-	
-	/**
-	 * Compares the two exported files byte by byte
-	 * @throws IOException if loading or reading fails
-	 */
-	// not working
-	public void test() throws IOException {
-		String property = "java.io.tmpdir";
-		String tempDir = System.getProperty(property);
-		property = "file.separator";
-		String sep = System.getProperty(property);
-		
-		File orig = new File(tempDir+sep+"orig.cxtm");
-		File imported = new File(tempDir+sep+"imported.cxtm");
-		
-		FileInputStream origFi = new FileInputStream(orig);
-		FileInputStream importedFi = new FileInputStream(imported);
-		
-		int c1, c2;
-		
-		int counter = 0;
-		
-		while ( (c1 = origFi.read()) != -1) {
-			c2 = importedFi.read();
-			counter++;
-			if (c1!=c2)
-				fail("Found unequal byte at : "+counter);
-		}
-		
 	}
 	
 }

@@ -5,11 +5,14 @@ package de.topicmapslab.majortom.importer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -25,7 +28,10 @@ import de.topicmapslab.majortom.database.jdbc.postgres.sql99.Sql99QueryBuilder;
 import de.topicmapslab.majortom.importer.helper.Association;
 import de.topicmapslab.majortom.importer.helper.Name;
 import de.topicmapslab.majortom.importer.helper.Occurrence;
+import de.topicmapslab.majortom.importer.helper.Role;
 import de.topicmapslab.majortom.importer.helper.Variant;
+
+import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.*;
 
 /**
  * @author Hannes Niederhausen
@@ -40,29 +46,68 @@ public class PostgresMapHandler {
 	private Long topicMapId;
 	private Sql99QueryBuilder builder;
 
+	private Connection connection;
+	
+	private Map<String, Long> topicCache = new HashMap<String, Long>();
+
 	/**
 	 * Constructor
 	 * 
 	 * @throws SQLException
 	 */
-	public PostgresMapHandler() throws SQLException {
-		
+	public PostgresMapHandler() throws MIOException {
 		try {
 			InputStream is = getClass().getResourceAsStream("/db.properties");
 			Properties properties = new Properties();
+			if (is==null)
+				throw new MIOException("Could not load db.properties!");
 			properties.load(is);
 			
-			String localhost = properties.getProperty("host");
-			String db = properties.getProperty("database");
-			String user = properties.getProperty("user");
-			String password = properties.getProperty("password");
-			
+			init(properties);
+		} catch (IOException e) {
+			throw new MIOException(e);
+		}
+	}
+	
+	private void init(Properties properties) throws MIOException {
+		
+		try {
+			String localhost = properties.getProperty(HOST);
+			String db = properties.getProperty(DATABASE);
+			String user = properties.getProperty(USERNAME);
+			String password = properties.getProperty(PASSWORD);
+
 			provider = new PostGreSqlConnectionProvider(localhost, db, user, password);
 			int r = provider.getDatabaseState();
 			if (r == IConnectionProvider.STATE_DATABASE_IS_EMPTY)
 				provider.createSchema();
-		} catch (IOException e) {
+			connection = provider.getConnection();
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			throw new MIOException(e);
+		}
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @throws SQLException
+	 */
+	public PostgresMapHandler(Properties properties) throws MIOException {
+		init(properties);
+	}
+	
+	/**
+	 * Commits the last statements
+	 * 
+	 * @throws MIOException
+	 */
+	public void commit() throws MIOException {
+		try {
+			connection.commit();
+		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new MIOException(e);
 		}
 	}
 
@@ -83,6 +128,7 @@ public class PostgresMapHandler {
 	 */
 	public void end() throws MIOException {
 		try {
+			commit();
 			session.close();
 			session = null;
 		} catch (SQLException e) {
@@ -149,11 +195,64 @@ public class PostgresMapHandler {
 	/**
 	 * Adds the given association to the database.
 	 * 
-	 * @param currentAssociation
+	 * @param assoc
+	 * @throws MIOException 
 	 */
-	public void addAssociation(Association currentAssociation) {
-		// TODO Auto-generated method stub
-		
+	public void addAssociation(Association assoc) throws MIOException {
+		try {
+			long assocID = -1;
+			PreparedStatement stm = null;
+			stm = builder.getQueryCreateAssociationWithScope();
+
+			stm.setLong(1, topicMapId);
+			stm.setLong(2, topicMapId);
+			stm.setLong(3, getTopic(assoc.getType()));
+			stm.setLong(4, getScopeId(assoc.getThemes()));
+
+			stm.execute();
+			ResultSet rs = stm.getGeneratedKeys();
+			if (rs.next()) {
+				assocID = rs.getLong(1);
+			} else {
+				throw new MIOException("Could not create association for " + assoc.getType().getIRI());
+			}
+			
+			for (Role role : assoc.getRoles()) {
+				addRole(assocID, role);
+			}
+			
+			if (assoc.getReifier()!=null) {
+				addReifier(assocID, assoc.getReifier());
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new MIOException(e);
+		}
+
+	}
+
+	/**
+	 * Adds a role to the association
+	 * 
+	 * @param assocID the id of the parent association
+	 * @param role the role helper 
+	 * @throws MIOException
+	 */
+	private void addRole(long assocID, Role role) throws MIOException {
+		try {
+			PreparedStatement stm = builder.getQueryCreateRole();
+			stm.setLong(1, topicMapId);
+			stm.setLong(2, assocID);
+			stm.setLong(3, getTopic(role.getRoleType()));
+			stm.setLong(4, getTopic(role.getRolePlayer()));
+			
+			stm.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new MIOException(e);
+		}
 	}
 
 	/**
@@ -237,6 +336,12 @@ public class PostgresMapHandler {
 	public long getTopic(IRef ref) throws MIOException {
 		try {
 
+//			// check cache
+//			Long val = topicCache.get(ref.getIRI());
+//			if (val != null)
+//				return val.longValue();
+//			
+			
 			PreparedStatement stm = null;
 
 			// create read statement
@@ -272,12 +377,14 @@ public class PostgresMapHandler {
 			if (rs.next()) {
 				id = rs.getLong(1);
 			}
-
+			rs.close();
+			
 			if (id == -1) {
 				id = createTopic(ref);
 			}
 			
-			rs.close();
+//			topicCache.put(ref.getIRI(), id);
+			
 			return id;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

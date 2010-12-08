@@ -23,6 +23,66 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>de.topicmapslab.majortom.importer.Application</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<silent>false</silent>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<excludeTransitive>false</excludeTransitive>
+							<excludeScope>test</excludeScope>
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>dbimport.sh</include>
+										<include>dbimport.cmd</include>
+										<include>log4j.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -43,7 +103,6 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -78,15 +137,15 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-  		<groupId>org.slf4j</groupId>
-  		<artifactId>slf4j-api</artifactId>
-  		<version>1.5.8</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.slf4j</groupId>
-  		<artifactId>slf4j-log4j12</artifactId>
-  		<version>1.5.8</version>
-  	</dependency>
+			<groupId>de.topicmapslab</groupId>
+			<artifactId>format-estimator</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>argparser</groupId>
+			<artifactId>argparser</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -95,8 +154,8 @@
 			<url>http://repository.semagia.com/snapshots</url>
 		</repository>
 		<repository>
-   		<id>TMLab Public</id>
-   		<url>http://maven.topicmapslab.de/public/</url>
-   	</repository>
+			<id>TMLab Public</id>
+			<url>http://maven.topicmapslab.de/public/</url>
+		</repository>
 	</repositories>
 </project>
