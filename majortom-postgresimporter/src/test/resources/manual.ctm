@@ -15,4 +15,7 @@
     tmp:occ2 : 123 ~tmp:reifier2 ;
     tmp:occ3 : "Dritte" @tmp:scope1, tmp:scope2 .
 
+
+tmp:typ ako tmp:supertyp .
+
 <http://test.de/maiana/assoc> ( <http://test.de/maiana/role> : <http://test.de/p/1> ) @<http://scope.de/1>, <http://scope.de/2> ~tmp:reifier3
