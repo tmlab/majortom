@@ -1599,7 +1599,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		PreparedStatement stmt = queryBuilder.getQueryReadThemes();
 		stmt.setLong(1, scopeId);
 		ResultSet set = stmt.executeQuery();
-		return Jdbc2Construct.toTopics(topicMap, set, "id_theme");
+		return HashUtil.getHashSet(Jdbc2Construct.toTopics(topicMap, set, "id_theme"));
 	}
 
 	/**
@@ -3551,12 +3551,11 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			/*
 			 * read scope by themes
 			 */
-			PreparedStatement stmt = queryBuilder.getQueryReadScopeByTheme();
+			PreparedStatement stmt = queryBuilder.getQueryReadUsedScopeByTheme();
 			boolean first = true;
 			for (T theme : themes) {
 				Collection<Long> ids = HashUtil.getHashSet();
 				stmt.setLong(1, Long.parseLong(theme.getId()));
-				stmt.setLong(2, themes.size());
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
 					ids.add(rs.getLong("id_scope"));
@@ -4103,14 +4102,9 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		Array array = getConnection().createArrayOf("bigint", ids);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setArray(2, array);
-		n = 3;
-		if (!all) {
-			stmt.setArray(3, array);
-			n++;
-		}
 		if (offset != -1) {
-			stmt.setLong(n++, offset);
-			stmt.setLong(n, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toVariants(topicMap, set);
@@ -5306,7 +5300,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(role)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			PreparedStatement stmt = queryBuilder.getQueryRoleDump();
 			stmt.setLong(1, revision.getId());
@@ -5324,7 +5318,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(role)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 		}
 		// copy stuff
 		PreparedStatement stmtSelect = queryBuilder.getQueryRoleDumpSelect();
@@ -5361,17 +5355,17 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(association)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			// themes
 			String themes = "";
 			for (ITopic theme : doReadScope(association).getThemes()) {
-				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+				themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 			}
 			// roles
 			String roles = "";
 			for (IAssociationRole role : doReadRoles(association, -1, -1)) {
-				roles += role.getId() + (!roles.isEmpty() ? "," : "");
+				roles += ((!roles.isEmpty() ? "," : "") + role.getId());
 			}
 			PreparedStatement stmt = queryBuilder.getQueryAssociationDump();
 			stmt.setLong(1, revision.getId());
@@ -5391,17 +5385,17 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(association)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 		}
 		// themes
 		String themes = "";
 		for (ITopic theme : doReadScope(association).getThemes()) {
-			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 		}
 		// roles
 		String roles = "";
 		for (IAssociationRole role : doReadRoles(association, -1, -1)) {
-			roles += role.getId() + (!roles.isEmpty() ? "," : "");
+			roles += ((!roles.isEmpty() ? "," : "") + role.getId());
 		}
 		PreparedStatement stmtSelect = queryBuilder.getQueryAssociationDumpSelect();
 		stmtSelect.setLong(1, Long.parseLong(association.getId()));
@@ -5435,12 +5429,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(variant)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			// themes
 			String themes = "";
 			for (ITopic theme : doReadScope(variant).getThemes()) {
-				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+				themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 			}
 			PreparedStatement stmt = queryBuilder.getQueryVariantDump();
 			stmt.setLong(1, revision.getId());
@@ -5460,12 +5454,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(variant)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += (!ii.isEmpty() ? "," : "") + itemIdentifier.getId();
 		}
 		// themes
 		String themes = "";
 		for (ITopic theme : doReadScope(variant).getThemes()) {
-			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			themes += (!themes.isEmpty() ? "," : "") + theme.getId();
 		}
 		PreparedStatement stmt = queryBuilder.getQueryVariantDumpSelect();
 		stmt.setLong(1, Long.parseLong(variant.getId()));
@@ -5499,17 +5493,17 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(name)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			// themes
 			String themes = "";
 			for (ITopic theme : doReadScope(name).getThemes()) {
-				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+				themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 			}
 			// variants
 			String variants = "";
 			for (IVariant variant : doReadVariants(name, -1, -1)) {
-				variants += variant.getId() + (!variants.isEmpty() ? "," : "");
+				variants += ((!variants.isEmpty() ? "," : "") + variant.getId());
 			}
 			PreparedStatement stmt = queryBuilder.getQueryNameDump();
 			stmt.setLong(1, revision.getId());
@@ -5529,17 +5523,17 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(name)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 		}
 		// themes
 		String themes = "";
 		for (ITopic theme : doReadScope(name).getThemes()) {
-			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 		}
 		// variants
 		String variants = "";
 		for (IVariant variant : doReadVariants(name, -1, -1)) {
-			variants += variant.getId() + (!variants.isEmpty() ? "," : "");
+			variants += ((!variants.isEmpty() ? "," : "") + variant.getId());
 		}
 
 		PreparedStatement stmt = queryBuilder.getQueryNameDumpSelect();
@@ -5575,12 +5569,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(occurrence)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			// themes
 			String themes = "";
 			for (ITopic theme : doReadScope(occurrence).getThemes()) {
-				themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+				themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 			}
 			PreparedStatement stmt = queryBuilder.getQueryOccurrenceDump();
 			stmt.setLong(1, revision.getId());
@@ -5600,12 +5594,12 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(occurrence)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 		}
 		// themes
 		String themes = "";
 		for (ITopic theme : doReadScope(occurrence).getThemes()) {
-			themes += theme.getId() + (!themes.isEmpty() ? "," : "");
+			themes += ((!themes.isEmpty() ? "," : "") + theme.getId());
 		}
 		PreparedStatement stmt = queryBuilder.getQueryOccurrenceDumpSelect();
 		stmt.setLong(1, Long.parseLong(occurrence.getId()));
@@ -5640,42 +5634,42 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			// ii
 			String ii = "";
 			for (ILocator itemIdentifier : doReadItemIdentifiers(topic)) {
-				ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+				ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 			}
 			// si
 			String si = "";
 			for (ILocator loc : doReadSubjectIdentifiers(topic)) {
-				si += loc.getId() + (!si.isEmpty() ? "," : "");
+				si += ((!si.isEmpty() ? "," : "") + loc.getId());
 			}
 			// sl
 			String sl = "";
 			for (ILocator loc : doReadSubjectLocators(topic)) {
-				sl += loc.getId() + (!sl.isEmpty() ? "," : "");
+				sl += ((!sl.isEmpty() ? "," : "") + loc.getId());
 			}
 			// types
 			String types = "";
 			for (ITopic t : doReadTypes(topic, -1, -1)) {
-				types += t.getId() + (!types.isEmpty() ? "," : "");
+				types += ((!types.isEmpty() ? "," : "") + t.getId());
 			}
 			// supertypes
 			String supertypes = "";
 			for (ITopic t : getSupertypes(topic.getTopicMap(), topic, -1, -1)) {
-				supertypes += t.getId() + (!supertypes.isEmpty() ? "," : "");
+				supertypes += ((!supertypes.isEmpty() ? "," : "") + t.getId());
 			}
 			// names
 			String names = "";
 			for (IName n : doReadNames(topic, -1, -1)) {
-				names += n.getId() + (!names.isEmpty() ? "," : "");
+				names += ((!names.isEmpty() ? "," : "") + n.getId());
 			}
 			// occurrences
 			String occurrences = "";
 			for (IOccurrence o : doReadOccurrences(topic, -1, -1)) {
-				occurrences += o.getId() + (!occurrences.isEmpty() ? "," : "");
+				occurrences += ((!occurrences.isEmpty() ? "," : "") + o.getId());
 			}
 			// associations
 			String associations = "";
 			for (IAssociation a : doReadAssociation(topic, -1, -1)) {
-				associations += a.getId() + (!associations.isEmpty() ? "," : "");
+				associations += ((!associations.isEmpty() ? "," : "") + a.getId());
 			}
 			Reifiable r = doReadReification(topic);
 
@@ -5707,42 +5701,42 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		// ii
 		String ii = "";
 		for (ILocator itemIdentifier : doReadItemIdentifiers(topic)) {
-			ii += itemIdentifier.getId() + (!ii.isEmpty() ? "," : "");
+			ii += ((!ii.isEmpty() ? "," : "") + itemIdentifier.getId());
 		}
 		// si
 		String si = "";
 		for (ILocator loc : doReadSubjectIdentifiers(topic)) {
-			si += loc.getId() + (!si.isEmpty() ? "," : "");
+			si += ((!si.isEmpty() ? "," : "") + loc.getId());
 		}
 		// sl
 		String sl = "";
 		for (ILocator loc : doReadSubjectLocators(topic)) {
-			sl += loc.getId() + (!sl.isEmpty() ? "," : "");
+			sl += ((!sl.isEmpty() ? "," : "") + loc.getId());
 		}
 		// types
 		String types = "";
 		for (ITopic t : doReadTypes(topic, -1, -1)) {
-			types += t.getId() + (!types.isEmpty() ? "," : "");
+			types += ((!types.isEmpty() ? "," : "") + t.getId());
 		}
 		// supertypes
 		String supertypes = "";
 		for (ITopic t : getSupertypes(topic.getTopicMap(), topic, -1, -1)) {
-			supertypes += t.getId() + (!supertypes.isEmpty() ? "," : "");
+			supertypes += ((!supertypes.isEmpty() ? "," : "") + t.getId());
 		}
 		// names
 		String names = "";
 		for (IName n : doReadNames(topic, -1, -1)) {
-			names += n.getId() + (!names.isEmpty() ? "," : "");
+			names += ((!names.isEmpty() ? "," : "") + n.getId());
 		}
 		// occurrences
 		String occurrences = "";
 		for (IOccurrence o : doReadOccurrences(topic, -1, -1)) {
-			occurrences += o.getId() + (!occurrences.isEmpty() ? "," : "");
+			occurrences += ((!occurrences.isEmpty() ? "," : "") + o.getId());
 		}
 		// associations
 		String associations = "";
 		for (IAssociation a : doReadAssociation(topic, -1, -1)) {
-			associations += a.getId() + (!associations.isEmpty() ? "," : "");
+			associations += ((!associations.isEmpty() ? "," : "") + a.getId());
 		}
 		Reifiable r = doReadReification(topic);
 
