@@ -18,7 +18,7 @@ Import-Package: org.apache.commons.collections,
  org.osgi.framework;specification-version="1.5.0",
  org.tmapi.core;specification-version="2.0.2",
  org.tmapi.index;specification-version="2.0.2",
- cern.jet.random.engine;
+ cern.jet.random.engine
 Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.index,
  de.topicmapslab.majortom.inmemory.index.paged,
