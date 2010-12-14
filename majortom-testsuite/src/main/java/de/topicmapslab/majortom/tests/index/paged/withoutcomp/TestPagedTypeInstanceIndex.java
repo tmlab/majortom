@@ -67,6 +67,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociationTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -106,6 +108,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfAssociations(type));
+		
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getAssociations(type, i * 10, 10);
@@ -152,6 +156,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfAssociations(types));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -193,6 +199,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfCharacteristicTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -236,6 +244,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfCharacteristics(type));
 
 		List<ICharacteristics> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -284,6 +294,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		types.add(type);
 		types.add(otherType);
 
+		assertEquals(101, index.getNumberOfCharacteristics(types));
+		
 		List<ICharacteristics> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getCharacteristics(types, i * 10, 10);
@@ -322,6 +334,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfNameTypes());
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getNameTypes(i * 10, 10);
@@ -359,6 +373,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNames(type));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -406,6 +422,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfNames(types));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -443,6 +461,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrenceTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -481,6 +501,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrences(type));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -524,10 +546,14 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		
 
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfOccurrences(types));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -566,6 +592,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfRoleTypes());
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getRoleTypes(i * 10, 10);
@@ -604,6 +632,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfRoles(type));
+		
 		List<Role> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getRoles(type, i * 10, 10);
@@ -650,6 +680,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfRoles(types));
 
 		List<Role> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -688,6 +720,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfTopicTypes());
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopicTypes(i * 10, 10);
@@ -726,6 +760,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfTopics(type));
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(type, i * 10, 10);
@@ -772,6 +808,8 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfTopics(types));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -816,6 +854,7 @@ public class TestPagedTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		assertEquals(101, index.getNumberOfTopics(types, true));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {

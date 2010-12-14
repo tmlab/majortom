@@ -135,6 +135,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	private IPagedSupertypeSubtypeIndex pagedSupertypeSubtypeIndex;
 	private IPagedTransitiveTypeInstanceIndex pagedTransitiveTypeInstanceIndex;
 	private IPagedLiteralIndex pagedLiteralIndex;
+	private String dialect;
 
 	/**
 	 * constructor
@@ -2957,11 +2958,12 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public void initialize(Locator topicMapBaseLocator) throws TopicMapStoreException {
 		super.initialize(topicMapBaseLocator);
-		Object dialect = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.SQL_DIALECT);
-		if (dialect == null) {
+		Object oDialect = getTopicMapSystem().getProperty(JdbcTopicMapStoreProperty.SQL_DIALECT);
+		if (oDialect == null) {
 			throw new TopicMapStoreException("Missing connection properties!");
 		}
-		provider = ConnectionProviderFactory.getFactory().newConnectionProvider(dialect.toString());
+		dialect = oDialect.toString();
+		provider = ConnectionProviderFactory.getFactory().newConnectionProvider(dialect);
 		provider.setTopicMapStore(this);
 		ISession session = provider.openSession();
 		try {
@@ -3372,4 +3374,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 		}
 	}
 
+	/**
+	 * @return the dialect
+	 */
+	public String getDialect() {
+		return dialect;
+	}
+	
 }

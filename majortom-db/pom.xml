@@ -84,11 +84,4 @@
 			<version>2.0.1rc2</version>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>topicmapslab-public</id>
-			<name>Topic Maps Lab Repositiory</name>
-			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
-		</repository>
-	</distributionManagement>
 </project>

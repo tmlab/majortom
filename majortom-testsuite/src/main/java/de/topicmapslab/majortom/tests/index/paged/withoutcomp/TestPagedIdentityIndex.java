@@ -198,6 +198,8 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfItemIdentifiers());
+		
 		List<Locator> list = null;
 		/*
 		 * with string
@@ -239,6 +241,8 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfSubjectIdentifiers());
+		
 		List<Locator> list = null;
 		/*
 		 * with string
@@ -280,6 +284,8 @@ public class TestPagedIdentityIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfSubjectLocators());
 
 		List<Locator> list = null;
 		/*

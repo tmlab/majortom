@@ -59,6 +59,8 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 
 	private Map<SupertypeSubtypeCacheKey, Collection<Topic>> cache;
 
+	private Map<SupertypeSubtypeCacheKey, Long> cacheNumberOfConstructs;
+
 	/**
 	 * constructor
 	 * 
@@ -94,45 +96,61 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 		if (cache != null) {
 			cache.clear();
 		}
+		if (cacheNumberOfConstructs != null) {
+			cacheNumberOfConstructs.clear();
+		}
+	}
+	
+	/**
+	 * Returns the number of constructs from the cache
+	 * @param type the type
+	 * @param filter the filter 
+	 * @param multiMatch 
+	 *            flag indicates if the filter is a collection of types if the result should match all types
+	 * @return the number or <code>-1</code>
+	 */
+	protected long readNumberOfConstructs(Type type, Object filter, Boolean multiMatch) {
+		/*
+		 * check main cache for compared type hierarchy
+		 */
+		if (cacheNumberOfConstructs == null) {
+			return -1;
+		}
+		Long value = cacheNumberOfConstructs.get(generateCacheKey(type, filter, multiMatch, null, null, null));
+		return value == null ? -1 : value;
 	}
 
 	/**
-	 * Internal method to read the type-hierarchy topics of the given type from
-	 * cache.
+	 * Internal method to read the type-hierarchy topics of the given type from cache.
 	 * 
 	 * @param type
 	 *            the type
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
-	 * @return the type-hierarchy topics of the given type from cache or
-	 *         <code>null</code> if key is unknown
+	 *            flag indicates if the filter is a collection of types if the result should match all types
+	 * @return the type-hierarchy topics of the given type from cache or <code>null</code> if key is unknown
 	 */
 	protected final Collection<Topic> read(Type type, Object filter, Boolean multiMatch) {
 		return read(type, filter, multiMatch, null, null, null);
 	}
 
 	/**
-	 * Internal method to read the type-hierarchy topics of the given type from
-	 * cache.
+	 * Internal method to read the type-hierarchy topics of the given type from cache.
 	 * 
 	 * @param type
 	 *            the type
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
 	 *            the limit or <code>null</code>
 	 * @param comparator
 	 *            the comparator or <code>null</code>
-	 * @return the type-hierarchy topics of the given type from cache or
-	 *         <code>null</code> if key is unknown
+	 * @return the type-hierarchy topics of the given type from cache or <code>null</code> if key is unknown
 	 */
 	protected final Collection<Topic> read(Type type, Object filter, Boolean multiMatch, Integer offset, Integer limit, Comparator<Topic> comparator) {
 		/*
@@ -142,6 +160,24 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 			return null;
 		}
 		return cache.get(generateCacheKey(type, filter, multiMatch, offset, limit, comparator));
+	}
+	
+	/**
+	 * Store the number of constructs into the cache
+	 * @param type the type
+	 * @param filter the filter 
+	 * @param multiMatch 
+	 *            flag indicates if the filter is a collection of types if the result should match all types
+	 * @param number the number
+	 */
+	protected void cacheNumberOfConstructs(Type type, Object filter, Boolean multiMatch, long number) {
+		/*
+		 * check main cache for compared type hierarchy
+		 */
+		if (cacheNumberOfConstructs == null) {
+			cacheNumberOfConstructs = HashUtil.getHashMap();
+		}
+		cacheNumberOfConstructs.put(generateCacheKey(type, filter, multiMatch, null, null, null), number);	
 	}
 
 	/**
@@ -153,8 +189,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param values
 	 *            the values to store
 	 */
@@ -171,8 +206,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -203,8 +237,7 @@ public abstract class BaseCachedSupertypeSubtypeIndexImpl<T extends ITopicMapSto
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -260,8 +293,7 @@ class SupertypeSubtypeCacheKey {
 	 * @param filter
 	 *            a filter criteria (a type or a collection of type)
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if types
-	 *            should matching all
+	 *            flag indicates if the filter is a collection of types if types should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
