@@ -54,7 +54,7 @@
 		<repository>
 			<id>topicmapslab-public</id>
 			<name>Topic Maps Lab Repositiory</name>
-			<url>scp://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+			<url>scpexe://maven.topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
 		</repository>
 	</distributionManagement>
 	
