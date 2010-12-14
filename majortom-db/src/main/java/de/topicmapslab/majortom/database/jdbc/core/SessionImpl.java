@@ -122,12 +122,12 @@ public abstract class SessionImpl implements ISession {
 		if (connection == null || connection.isClosed()) {
 			return false;
 		}
-		try {
-			connection.createStatement().execute(WORKAROUND);
-		} catch (Exception e) {
-			close();
-			return false;
-		}
+//		try {
+//			connection.createStatement().execute(WORKAROUND);
+//		} catch (Exception e) {
+//			close();
+//			return false;
+//		}
 		return true;
 	}
 

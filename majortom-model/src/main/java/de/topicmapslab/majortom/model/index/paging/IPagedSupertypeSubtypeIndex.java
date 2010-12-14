@@ -32,8 +32,7 @@ import de.topicmapslab.majortom.model.index.IIndex;
 public interface IPagedSupertypeSubtypeIndex extends IIndex {
 
 	/**
-	 * Returns all topic types being a supertype of a topic type contained by
-	 * the topic map.
+	 * Returns all topic types being a supertype of a topic type contained by the topic map.
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -45,8 +44,7 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getSupertypes(int offset, int limit);
 
 	/**
-	 * Returns all topic types being a supertype of a topic type contained by
-	 * the topic map.
+	 * Returns all topic types being a supertype of a topic type contained by the topic map.
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -57,13 +55,19 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 * 
 	 * @return a list of all supertypes within the given range
 	 */
-	public List<Topic> getSupertypes(int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a supertype of the given topic type.If the
-	 * type is <code>null</code> the method returns all topics which have no
-	 * super-types.
+	 * Returns the number of supertypes
+	 * 
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSupertypes();
+
+	/**
+	 * Returns all topic types being a supertype of the given topic type.If the type is <code>null</code> the method
+	 * returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -78,9 +82,8 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getSupertypes(Topic type, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a supertype of the given topic type.If the
-	 * type is <code>null</code> the method returns all topics which have no
-	 * super-types.
+	 * Returns all topic types being a supertype of the given topic type.If the type is <code>null</code> the method
+	 * returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -94,13 +97,21 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 * 
 	 * @return a list of all supertypes of the given type within the given range
 	 */
-	public List<Topic> getSupertypes(Topic type, int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a direct supertype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which have
-	 * no super-types.
+	 * Returns the number of topics being a supertypes of the given topic
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSupertypes(Topic type);
+
+	/**
+	 * Returns all topic types being a direct supertype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -115,9 +126,8 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a direct supertype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which have
-	 * no super-types.
+	 * Returns all topic types being a direct supertype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -131,12 +141,20 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 * 
 	 * @return a list of all supertypes of the given type within the given range
 	 */
-	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a supertype of at least one given topic
-	 * type.
+	 * Returns the number of topics being a direct supertype of the given topic
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfDirectSupertypes(Topic type);
+
+	/**
+	 * Returns all topic types being a supertype of at least one given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
@@ -145,15 +163,12 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all supertypes of at least one given type within the
-	 *         given range
+	 * @return a list of all supertypes of at least one given type within the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types,
-			int offset, int limit);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a supertype of at least one given topic
-	 * type.
+	 * Returns all topic types being a supertype of at least one given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
@@ -164,41 +179,43 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all supertypes of at least one given type within the
-	 *         given range
+	 * @return a list of all supertypes of at least one given type within the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types,
-			int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a supertype of at least one given type or
-	 * of every given topic type.
+	 * Returns the number of topics being the supertype of at least one of the given topics
+	 * 
+	 * @param types
+	 *            the types
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSupertypes(Collection<? extends Topic> types);
+
+	/**
+	 * Returns all topic types being a supertype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an supertype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an supertype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all supertypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all supertypes of at least one of the given type within the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types,
-			boolean all, int offset, int limit);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a supertype of at least one given type or
-	 * of every given topic type.
+	 * Returns all topic types being a supertype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an supertype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an supertype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -206,15 +223,24 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all supertypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all supertypes of at least one of the given type within the given range
 	 */
-	public List<Topic> getSupertypes(Collection<? extends Topic> types,
-			boolean all, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a subtype of a topic type contained by the
-	 * topic map.
+	 * Returns the number of topics being the supertype of at least one of the given topics
+	 * 
+	 * @param types
+	 *            the types
+	 * @param all
+	 *            flag indicates if the found topic types should be an supertype of every given type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSupertypes(Collection<? extends Topic> types, boolean all);
+
+	/**
+	 * Returns all topic types being a subtype of a topic type contained by the topic map.
 	 * 
 	 * 
 	 * @param offset
@@ -226,8 +252,7 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getSubtypes(int offset, int limit);
 
 	/**
-	 * Returns all topic types being a subtype of a topic type contained by the
-	 * topic map.
+	 * Returns all topic types being a subtype of a topic type contained by the topic map.
 	 * 
 	 * 
 	 * @param offset
@@ -238,13 +263,19 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the comparator
 	 * @return a list of all subtypes within the given range
 	 */
-	public List<Topic> getSubtypes(int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a subtype of the given topic type. If the
-	 * type is <code>null</code> the method returns all topics which has no
-	 * sub-types.
+	 * Returns the number of subtypes
+	 * 
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubtypes();
+
+	/**
+	 * Returns all topic types being a subtype of the given topic type. If the type is <code>null</code> the method
+	 * returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -259,22 +290,29 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getSubtypes(Topic type, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a subtype of the given topic type. If the
-	 * type is <code>null</code> the method returns all topics which has no
-	 * sub-types.
+	 * Returns all topic types being a subtype of the given topic type. If the type is <code>null</code> the method
+	 * returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
 	 * 
 	 * @return a list of all subtypes of the given type within the given range
 	 */
-	public List<Topic> getSubtypes(Topic type, int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a direct subtype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which has
-	 * no sub-types.
+	 * Returns the number of topics being a subtypes of the given topic
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubtypes(Topic type);
+
+	/**
+	 * Returns all topic types being a direct subtype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -289,9 +327,8 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a direct subtype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which has
-	 * no sub-types.
+	 * Returns all topic types being a direct subtype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -305,8 +342,17 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 * 
 	 * @return a list of all subtypes of the given type within the given range
 	 */
-	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit,
-			Comparator<Topic> comparator);
+	public List<Topic> getDirectSubtypes(Topic type, int offset, int limit, Comparator<Topic> comparator);
+
+	/**
+	 * Returns the number of topics being a direct subtype of the given topic
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfDirectSubtypes(Topic type);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
@@ -318,11 +364,19 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all subtypes of at least one given type within the
-	 *         given range
+	 * @return a list of all subtypes of at least one given type within the given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types,
-			int offset, int limit);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit);
+
+	/**
+	 * Returns the number of topics being the subtype of at least one of the given topics
+	 * 
+	 * @param types
+	 *            the types
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubtypes(Collection<? extends Topic> types);
 
 	/**
 	 * Returns all topic types being a subtype of at least one given topic type.
@@ -336,41 +390,45 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all subtypes of at least one given type within the
-	 *         given range
+	 * @return a list of all subtypes of at least one given type within the given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types,
-			int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit, Comparator<Topic> comparator);
 
 	/**
-	 * Returns all topic types being a subtype of at least one given type or of
-	 * every given topic type.
+	 * Returns all topic types being a subtype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an subtype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an subtype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all subtypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all subtypes of at least one of the given type within the given range
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types,
-			boolean all, int offset, int limit);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit);
 
 	/**
-	 * Returns all topic types being a subtype of at least one given type or of
-	 * every given topic type.
+	 * Returns the number of topics being the subtype of at least one of the given topics
+	 * 
+	 * @param types
+	 *            the types
+	 * @param all
+	 *            flag indicates if the found topic types should be an subtype of every given type
+	 * @return the number
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubtypes(Collection<? extends Topic> types, boolean all);
+
+	/**
+	 * Returns all topic types being a subtype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an subtype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an subtype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -380,7 +438,6 @@ public interface IPagedSupertypeSubtypeIndex extends IIndex {
 	 *            the comparator
 	 * @return a collection of all subtypes of at least one of the given type
 	 */
-	public List<Topic> getSubtypes(Collection<? extends Topic> types,
-			boolean all, int offset, int limit, Comparator<Topic> comparator);
+	public List<Topic> getSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator);
 
 }

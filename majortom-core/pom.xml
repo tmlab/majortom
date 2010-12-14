@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>de.topicmapslab.majortom</groupId>
 			<artifactId>majortom-model</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -74,11 +74,4 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>topicmapslab-public</id>
-			<name>Topic Maps Lab Repositiory</name>
-			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
-		</repository>
-	</distributionManagement>
 </project>

@@ -62,6 +62,10 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 */
 	private Map<ScopesCacheKey, Collection<Topic>> cachedThemes;
 	/**
+	 * Cache containing the number of matching constructs
+	 */
+	private Map<ScopesCacheKey, Long> cacheNumberOfConstructs;
+	/**
 	 * Cache containing all constructs
 	 */
 	private Map<ScopesCacheKey, Collection<? extends Construct>> cachedConstructs;
@@ -139,6 +143,9 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 		if (scopesByThemes != null) {
 			scopesByThemes.clear();
 		}
+		if (cacheNumberOfConstructs != null) {
+			cacheNumberOfConstructs.clear();
+		}
 	}
 
 	/**
@@ -159,13 +166,15 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 				if (cachedThemes != null) {
 					cachedThemes.remove(key);
 				}
+				if (cacheNumberOfConstructs != null) {
+					cacheNumberOfConstructs.remove(key);
+				}
 			}
 		}
 	}
 
 	/**
-	 * Internal method to read the scopes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the scopes of the specified construct type from the internal cache.
 	 * 
 	 * @param themes
 	 *            the themes
@@ -179,8 +188,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the scopes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the scopes of the specified construct type to internal cache.
 	 * 
 	 * @param themes
 	 *            the themes
@@ -195,8 +203,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the scopes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the scopes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -208,8 +215,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the scopes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the scopes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -221,8 +227,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the scopes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the scopes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -240,16 +245,14 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the scopes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the scopes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -273,16 +276,14 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the scopes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the scopes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @return the scopes or <code>null</code> if the key is unknown
 	 */
 	protected final Collection<IScope> readScopes(Class<? extends IScopable> clazz, Object filter, boolean multiMatch) {
@@ -290,8 +291,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the scopes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the scopes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -302,8 +302,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the scopes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the scopes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -320,16 +319,14 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the scopes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the scopes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -350,8 +347,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the themes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the themes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -362,8 +358,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the themes of the specified construct type from
-	 * the internal cache.
+	 * Internal method to read the themes of the specified construct type from the internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -389,8 +384,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the themes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the themes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -402,8 +396,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the themes of the specified construct type to
-	 * internal cache.
+	 * Internal method to add the themes of the specified construct type to internal cache.
 	 * 
 	 * @param clazz
 	 *            the type of construct
@@ -430,8 +423,8 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the constructs valid in the given theme of the
-	 * specified construct type from the internal cache.
+	 * Internal method to read the constructs valid in the given theme of the specified construct type from the internal
+	 * cache.
 	 * 
 	 * 
 	 * @param clazz
@@ -439,8 +432,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @return the constructs or <code>null</code> if the key is unknown
 	 */
 	protected final <X extends Construct> Collection<X> read(Class<? extends IScopable> clazz, Object filter, boolean multiMatch) {
@@ -448,8 +440,8 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to read the constructs valid in the given theme of the
-	 * specified construct type from the internal cache.
+	 * Internal method to read the constructs valid in the given theme of the specified construct type from the internal
+	 * cache.
 	 * 
 	 * 
 	 * @param clazz
@@ -457,8 +449,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -479,8 +470,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the constructs valid in the given theme of the
-	 * specified construct type to internal cache
+	 * Internal method to add the constructs valid in the given theme of the specified construct type to internal cache
 	 * 
 	 * 
 	 * @param clazz
@@ -488,8 +478,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param valus
 	 *            the values to store
 	 */
@@ -498,8 +487,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	}
 
 	/**
-	 * Internal method to add the constructs valid in the given theme of the
-	 * specified construct type to internal cache
+	 * Internal method to add the constructs valid in the given theme of the specified construct type to internal cache
 	 * 
 	 * 
 	 * @param clazz
@@ -507,8 +495,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -529,6 +516,56 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 		 * store theme-dependent constructs by theme
 		 */
 		cachedConstructs.put(generateScopesCacheKey(clazz, filter, multiMatch, offset, limit, comparator), values);
+	}
+
+	/**
+	 * Returns the number of constructs from cache
+	 * 
+	 * @param clazz
+	 *            the class
+	 * @param filter
+	 *            the filter
+	 * @param matchall
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
+	 * @return the number or <code>-1</code>
+	 */
+	protected final long readNumberOfConstructs(Class<? extends IScopable> clazz, Object filter, Boolean matchall) {
+		/*
+		 * check main cache
+		 */
+		if (cacheNumberOfConstructs == null) {
+			return -1;
+		}
+		/*
+		 * get cached themes of the specific type
+		 */
+		Long value = cacheNumberOfConstructs.get(generateScopesCacheKey(clazz, filter, matchall, null, null, null));
+		return value == null ? -1 : value;
+	}
+
+	/**
+	 * Store the number of constructs into cache
+	 * 
+	 * @param clazz
+	 *            the class
+	 * @param filter
+	 *            the filter
+	 * @param matchall
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
+	 * @param number
+	 *            the number
+	 */
+	protected final void cacheNumberOfConstructs(Class<? extends IScopable> clazz, Object filter, Boolean matchall, long number) {
+		/*
+		 * check main cache
+		 */
+		if (cacheNumberOfConstructs == null) {
+			cacheNumberOfConstructs = HashUtil.getHashMap();
+		}
+		/*
+		 * store cached
+		 */
+		cacheNumberOfConstructs.put(generateScopesCacheKey(clazz, filter, matchall, null, null, null), number);
 	}
 
 	/**
@@ -582,8 +619,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @return the generated key
 	 */
 	protected ScopesCacheKey generateScopesCacheKey(Class<? extends IScopable> clazz, Object filter, boolean multiMatch) {
@@ -598,8 +634,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -618,8 +653,7 @@ public abstract class BaseCachedScopeIndexImpl<T extends ITopicMapStore> extends
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -714,8 +748,7 @@ class ScopesCacheKey {
 	 * @param filter
 	 *            a filter criteria (a theme, a collection, a scope )
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of themes if
-	 *            themes should matching all
+	 *            flag indicates if the filter is a collection of themes if themes should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit

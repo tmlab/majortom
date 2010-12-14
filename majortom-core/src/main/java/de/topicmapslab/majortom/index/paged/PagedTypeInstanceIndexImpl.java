@@ -40,8 +40,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Implementation of the in-memory {@link IPagedTypeInstanceIndex} supporting
- * paging
+ * Implementation of the in-memory {@link IPagedTypeInstanceIndex} supporting paging
  * 
  * @author Sven Krosse
  * 
@@ -118,6 +117,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfAssociationTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfAssociationTypes();
+		}
+		long number = readNumberOfConstructs(IAssociation.class, null, false);
+		if (number == -1) {
+			number = doGetNumberOfAssociationTypes();
+			cacheNumberOfConstructs(IAssociation.class, null, false, number);
+		}
+		return number;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Association> getAssociations(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -164,6 +184,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(IAssociation.class, type, false, offset, limit, comparator, results);
 		}
 		return (List<Association>) results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfAssociations(type);
+		}
+		long value = readNumberOfConstructs(IAssociation.class, type, false);
+		if (value == -1) {
+			value = doGetNumberOfAssociations(type);
+			cacheNumberOfConstructs(IAssociation.class, type, false, value);
+		}
+		return value;
 	}
 
 	/**
@@ -220,6 +264,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfAssociations(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfAssociations(types);
+		}
+		long value = readNumberOfConstructs(IAssociation.class, types, false);
+		if (value == -1) {
+			value = doGetNumberOfAssociations(types);
+			cacheNumberOfConstructs(IAssociation.class, types, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getCharacteristicTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -260,6 +328,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(ICharacteristics.class, offset, limit, comparator, types);
 		}
 		return (List<Topic>) types;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfCharacteristicTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfCharacteristicTypes();
+		}
+		long number = readNumberOfConstructs(ICharacteristics.class, null, false);
+		if (number == -1) {
+			number = doGetNumberOfCharacteristicTypes();
+			cacheNumberOfConstructs(ICharacteristics.class, null, false, number);
+		}
+		return number;
 	}
 
 	/**
@@ -316,6 +405,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfCharacteristics(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfCharacteristics(type);
+		}
+		long value = readNumberOfConstructs(ICharacteristics.class, type, false);
+		if (value == -1) {
+			value = doGetNumberOfCharacteristics(type);
+			cacheNumberOfConstructs(ICharacteristics.class, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<ICharacteristics> getCharacteristics(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -367,6 +480,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfCharacteristics(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfCharacteristics(types);
+		}
+		long value = readNumberOfConstructs(ICharacteristics.class, types, false);
+		if (value == -1) {
+			value = doGetNumberOfCharacteristics(types);
+			cacheNumberOfConstructs(ICharacteristics.class, types, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getNameTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -407,6 +544,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(IName.class, offset, limit, comparator, types);
 		}
 		return (List<Topic>) types;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNameTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfNameTypes();
+		}
+		long number = readNumberOfConstructs(IName.class, null, false);
+		if (number == -1) {
+			number = doGetNumberOfNameTypes();
+			cacheNumberOfConstructs(IName.class, null, false, number);
+		}
+		return number;
 	}
 
 	/**
@@ -463,6 +621,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfNames(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfNames(type);
+		}
+		long value = readNumberOfConstructs(IName.class, type, false);
+		if (value == -1) {
+			value = doGetNumberOfNames(type);
+			cacheNumberOfConstructs(IName.class, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Name> getNames(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -514,6 +696,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfNames(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfNames(types);
+		}
+		long value = readNumberOfConstructs(IName.class, types, false);
+		if (value == -1) {
+			value = doGetNumberOfNames(types);
+			cacheNumberOfConstructs(IName.class, types, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getOccurrenceTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -554,6 +760,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(IOccurrence.class, offset, limit, comparator, types);
 		}
 		return (List<Topic>) types;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrenceTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfOccurrenceTypes();
+		}
+		long number = readNumberOfConstructs(IOccurrence.class, null, false);
+		if (number == -1) {
+			number = doGetNumberOfOccurrenceTypes();
+			cacheNumberOfConstructs(IOccurrence.class, null, false, number);
+		}
+		return number;
 	}
 
 	/**
@@ -610,6 +837,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfOccurrences(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfOccurrences(type);
+		}
+		long value = readNumberOfConstructs(IOccurrence.class, type, false);
+		if (value == -1) {
+			value = doGetNumberOfOccurrences(type);
+			cacheNumberOfConstructs(IOccurrence.class, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Occurrence> getOccurrences(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -661,6 +912,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfOccurrences(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfOccurrences(types);
+		}
+		long value = readNumberOfConstructs(IOccurrence.class, types, false);
+		if (value == -1) {
+			value = doGetNumberOfOccurrences(types);
+			cacheNumberOfConstructs(IOccurrence.class, types, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getRoleTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -701,6 +976,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(IAssociationRole.class, offset, limit, comparator, types);
 		}
 		return (List<Topic>) types;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfRoleTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfRoleTypes();
+		}
+		long number = readNumberOfConstructs(IAssociationRole.class, null, false);
+		if (number == -1) {
+			number = doGetNumberOfRoleTypes();
+			cacheNumberOfConstructs(IAssociationRole.class, null, false, number);
+		}
+		return number;
 	}
 
 	/**
@@ -757,6 +1053,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfRoles(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfRoles(type);
+		}
+		long value = readNumberOfConstructs(IAssociationRole.class, type, false);
+		if (value == -1) {
+			value = doGetNumberOfRoles(type);
+			cacheNumberOfConstructs(IAssociationRole.class, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Role> getRoles(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -808,6 +1128,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfRoles(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfRoles(types);
+		}
+		long value = readNumberOfConstructs(IAssociationRole.class, types, false);
+		if (value == -1) {
+			value = doGetNumberOfRoles(types);
+			cacheNumberOfConstructs(IAssociationRole.class, types, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getTopicTypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -848,6 +1192,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			cache(ITopic.class, offset, limit, comparator, types);
 		}
 		return (List<Topic>) types;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfTopicTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfTopicTypes();
+		}
+		long number = readNumberOfConstructs(ITopic.class, null, null);
+		if (number == -1) {
+			number = doGetNumberOfTopicTypes();
+			cacheNumberOfConstructs(ITopic.class, null, null, number);
+		}
+		return number;
 	}
 
 	/**
@@ -898,6 +1263,27 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfTopics(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfTopics(type);
+		}
+		long results = readNumberOfConstructs(ITopic.class, type, false);
+		if (results == -1) {
+			results = doGetNumberOfTopics(type);
+			cacheNumberOfConstructs(ITopic.class, type, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getTopics(Collection<Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -922,6 +1308,19 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getTopics(types, false, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfTopics(Collection<Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return getNumberOfTopics(types, false);
 	}
 
 	/**
@@ -976,6 +1375,30 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfTopics(Collection<Topic> types, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfTopics(types, all);
+		}
+		long value = readNumberOfConstructs(ITopic.class, types, all);
+		if (value == -1) {
+			value = doGetNumberOfTopics(types, all);
+			cacheNumberOfConstructs(ITopic.class, types, all, value);
+		}
+		return value;
+	}
+
+	/**
 	 * Returns all topic types of the topic map.
 	 * 
 	 * @param offset
@@ -1007,8 +1430,16 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
-	 * Returns all topic instances of the given topic type within the given
-	 * range.
+	 * Returns the number of topic types
+	 * 
+	 * @return the number of topic types
+	 */
+	protected long doGetNumberOfTopicTypes() {
+		return getParentIndex().getTopicTypes().size();
+	}
+
+	/**
+	 * Returns all topic instances of the given topic type within the given range.
 	 * 
 	 * @param type
 	 *            the type
@@ -1026,8 +1457,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
-	 * Returns all topic instances of the given topic type within the given
-	 * range.
+	 * Returns all topic instances of the given topic type within the given range.
 	 * 
 	 * @param type
 	 *            the type
@@ -1044,20 +1474,28 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
-	 * Returns all instances of at least one given type or of every given topic
-	 * type.
+	 * Returns the number of all topic instances of the given topic type within the given range.
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 */
+	protected long doGetNumberOfTopics(Topic type) {
+		return getParentIndex().getTopics(type).size();
+	}
+
+	/**
+	 * Returns all instances of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found instances should be typed by every
-	 *            given type
+	 *            flag indicates if the found instances should be typed by every given type
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all instances typed by at least one or every of the
-	 *         given types within the given range
+	 * @return a list of all instances typed by at least one or every of the given types within the given range
 	 */
 	protected List<Topic> doGetTopics(Collection<Topic> types, boolean all, int offset, int limit) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getTopics(types, all));
@@ -1065,27 +1503,37 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
-	 * Returns all instances of at least one given type or of every given topic
-	 * type.
+	 * Returns all instances of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found instances should be typed by every
-	 *            given type
+	 *            flag indicates if the found instances should be typed by every given type
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all instances typed by at least one or every of the
-	 *         given types within the given range
+	 * @return a list of all instances typed by at least one or every of the given types within the given range
 	 */
 	protected List<Topic> doGetTopics(Collection<Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getTopics(types, all));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of instances of at least one given type or of every given topic type.
+	 * 
+	 * @param types
+	 *            the topic types
+	 * @param all
+	 *            flag indicates if the found instances should be typed by every given type
+	 * @return the number
+	 */
+	protected long doGetNumberOfTopics(Collection<Topic> types, boolean all) {
+		return getParentIndex().getTopics(types, all).size();
 	}
 
 	/**
@@ -1117,6 +1565,15 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		List<Topic> list = HashUtil.getList(getParentIndex().getAssociationTypes());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of association types
+	 * 
+	 * @return the number of association types
+	 */
+	protected long doGetNumberOfAssociationTypes() {
+		return getParentIndex().getAssociationTypes().size();
 	}
 
 	/**
@@ -1155,6 +1612,17 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * Returns the number of associations typed by the given topic
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(Topic type) {
+		return getParentIndex().getAssociations(type).size();
+	}
+
+	/**
 	 * Returns all association items typed by one of the given types.
 	 * 
 	 * @param types
@@ -1163,8 +1631,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association items typed by one of the given types
-	 *         within the given range
+	 * @return a list of all association items typed by one of the given types within the given range
 	 */
 	protected List<Association> doGetAssociations(Collection<? extends Topic> types, int offset, int limit) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(types));
@@ -1182,13 +1649,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association items typed by one of the given types
-	 *         within the given range
+	 * @return a list of all association items typed by one of the given types within the given range
 	 */
 	protected List<Association> doGetAssociations(Collection<? extends Topic> types, int offset, int limit, Comparator<Association> comparator) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(types));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of associations typed by one of the given topics
+	 * 
+	 * @param types
+	 *            the topic types
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(Collection<? extends Topic> types) {
+		return getParentIndex().getAssociations(types).size();
 	}
 
 	/**
@@ -1220,6 +1697,15 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		List<Topic> list = HashUtil.getList(getParentIndex().getRoleTypes());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of role types
+	 * 
+	 * @return the number of role types
+	 */
+	protected long doGetNumberOfRoleTypes() {
+		return getParentIndex().getRoleTypes().size();
 	}
 
 	/**
@@ -1260,6 +1746,17 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * Returns the number of roles typed by the given topic
+	 * 
+	 * @param type
+	 *            the role type
+	 * @return the number
+	 */
+	protected long doGetNumberOfRoles(Topic type) {
+		return getParentIndex().getRoles(type).size();
+	}
+
+	/**
 	 * Returns all association roles typed by one of the given types.
 	 * 
 	 * @param types
@@ -1268,8 +1765,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association roles typed by one of the given types
-	 *         within the given range
+	 * @return a list of all association roles typed by one of the given types within the given range
 	 */
 	protected List<Role> doGetRoles(Collection<? extends Topic> types, int offset, int limit) {
 		List<Role> list = HashUtil.getList(getParentIndex().getRoles(types));
@@ -1287,13 +1783,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association roles typed by one of the given types
-	 *         within the given range
+	 * @return a list of all association roles typed by one of the given types within the given range
 	 */
 	protected List<Role> doGetRoles(Collection<? extends Topic> types, int offset, int limit, Comparator<Role> comparator) {
 		List<Role> list = HashUtil.getList(getParentIndex().getRoles(types));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of roles typed by the given topics
+	 * 
+	 * @param types
+	 *            the role types
+	 * @return the number
+	 */
+	protected long doGetNumberOfRoles(Collection<? extends Topic> types) {
+		return getParentIndex().getRoles(types).size();
 	}
 
 	/**
@@ -1328,6 +1834,15 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * Returns the number of characteristic types
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfCharacteristicTypes() {
+		return getParentIndex().getCharacteristicTypes().size();
+	}
+
+	/**
 	 * Returns all characteristics being typed by the given of topic type.
 	 * 
 	 * @param type
@@ -1337,8 +1852,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all characteristics typed by the given type within the
-	 *         given range
+	 * @return a list of all characteristics typed by the given type within the given range
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(Topic type, int offset, int limit) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(type));
@@ -1357,13 +1871,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all characteristics typed by the given type within the
-	 *         given range
+	 * @return a list of all characteristics typed by the given type within the given range
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(Topic type, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(type));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of all characteristics being typed by the given of topic type.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * @return the number
+	 */
+	protected long doGetNumberOfCharacteristics(Topic type) {
+		return getParentIndex().getCharacteristics(type).size();
 	}
 
 	/**
@@ -1376,8 +1900,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all characteristics typed by one of the given types
-	 *         within the given range
+	 * @return a list of all characteristics typed by one of the given types within the given range
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(Collection<? extends Topic> types, int offset, int limit) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(types));
@@ -1396,13 +1919,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all characteristics typed by one of the given types
-	 *         within the given range
+	 * @return a list of all characteristics typed by one of the given types within the given range
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(Collection<? extends Topic> types, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(types));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of all characteristics being typed by the given of topic types.
+	 * 
+	 * @param types
+	 *            the topic types
+	 * @return the number
+	 */
+	protected long doGetNumberOfCharacteristics(Collection<? extends Topic> types) {
+		return getParentIndex().getCharacteristics(types).size();
 	}
 
 	/**
@@ -1434,6 +1967,15 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		List<Topic> list = HashUtil.getList(getParentIndex().getNameTypes());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of name types
+	 * 
+	 * @return the number of name types
+	 */
+	protected long doGetNumberOfNameTypes() {
+		return getParentIndex().getNameTypes().size();
 	}
 
 	/**
@@ -1474,6 +2016,17 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * Returns the number of all names of the given type.
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(Topic type) {
+		return getParentIndex().getNames(type).size();
+	}
+
+	/**
 	 * Returns all names typed by one of the given types.
 	 * 
 	 * @param types
@@ -1483,8 +2036,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all names typed by one of the given types within the
-	 *         given range
+	 * @return a list of all names typed by one of the given types within the given range
 	 */
 	protected List<Name> doGetNames(Collection<? extends Topic> types, int offset, int limit) {
 		List<Name> list = HashUtil.getList(getParentIndex().getNames(types));
@@ -1503,13 +2055,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all names typed by one of the given types within the
-	 *         given range
+	 * @return a list of all names typed by one of the given types within the given range
 	 */
 	protected List<Name> doGetNames(Collection<? extends Topic> types, int offset, int limit, Comparator<Name> comparator) {
 		List<Name> list = HashUtil.getList(getParentIndex().getNames(types));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of all names of the given types.
+	 * 
+	 * @param types
+	 *            the types
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(Collection<? extends Topic> types) {
+		return getParentIndex().getNames(types).size();
 	}
 
 	/**
@@ -1541,6 +2103,15 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 		List<Topic> list = HashUtil.getList(getParentIndex().getOccurrenceTypes());
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of occurrence types
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrenceTypes() {
+		return getParentIndex().getOccurrenceTypes().size();
 	}
 
 	/**
@@ -1581,6 +2152,17 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	}
 
 	/**
+	 * Returns the number of occurrences typed by the given topic type
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(Topic type) {
+		return getParentIndex().getOccurrences(type).size();
+	}
+
+	/**
 	 * Returns all occurrences typed by one of the given types.
 	 * 
 	 * @param types
@@ -1590,8 +2172,7 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all occurrences typed by one of the given types within
-	 *         the given range
+	 * @return a list of all occurrences typed by one of the given types within the given range
 	 */
 	protected List<Occurrence> doGetOccurrences(Collection<? extends Topic> types, int offset, int limit) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(types));
@@ -1610,13 +2191,23 @@ public abstract class PagedTypeInstanceIndexImpl<E extends ITopicMapStore> exten
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a collection of all occurrences typed by one of the given types
-	 *         within the given range
+	 * @return a collection of all occurrences typed by one of the given types within the given range
 	 */
 	protected List<Occurrence> doGetOccurrences(Collection<? extends Topic> types, int offset, int limit, Comparator<Occurrence> comparator) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(types));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of occurrences typed by the given topic types
+	 * 
+	 * @param types
+	 *            the types
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(Collection<? extends Topic> types) {
+		return getParentIndex().getOccurrences(types).size();
 	}
 
 	/**

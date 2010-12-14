@@ -75,6 +75,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociationScopes());
 
 		List<IScope> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -114,6 +116,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociationThemes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -155,6 +159,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfAssociations(theme));
+		
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getAssociations(theme, i * 10, 10);
@@ -200,6 +206,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociations(new Topic[] { theme, other }, false));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -267,6 +275,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociations(scope));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -322,6 +332,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		scopes.add(scope);
 		scopes.add(otherScope);
+		assertEquals(101, index.getNumberOfAssociations(scopes));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -406,6 +417,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNameScopes());
 
 		List<IScope> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -445,6 +458,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNameThemes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -481,6 +496,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNames(theme));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -524,6 +541,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfNames(new Topic[] { theme, other }, false));
+		
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(new Topic[] { theme, other }, false, i * 10, 10);
@@ -586,6 +605,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNames(scope));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -637,6 +658,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		scopes.add(scope);
 		scopes.add(otherScope);
+		assertEquals(101, index.getNumberOfNames(scopes));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -675,6 +697,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrenceScopes());
 
 		List<IScope> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -713,6 +737,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrenceThemes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -749,6 +775,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrences(theme));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -791,6 +819,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrences(new Topic[] { theme, other }, false));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -855,6 +885,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrences(scope));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -906,6 +938,7 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		scopes.add(scope);
 		scopes.add(otherScope);
+		assertEquals(101, index.getNumberOfOccurrences(scopes));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -957,6 +990,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfScopables(scope));
 
 		List<Scoped> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -994,8 +1029,10 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 			}
 			if (j == 101) {
 				break;
-			}
+			}			
 		}
+		
+		assertEquals(101, index.getNumberOfVariantScopes());
 
 		List<IScope> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -1034,6 +1071,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfVariantThemes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -1070,6 +1109,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfVariants(theme));
 
 		List<Variant> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -1111,6 +1152,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfVariants(new Topic[] { theme, other }, false));
 
 		List<Variant> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -1172,6 +1215,8 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfVariants(scope));
 
 		List<Variant> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -1219,10 +1264,12 @@ public class TestPagedScopedIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
 
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		scopes.add(scope);
 		scopes.add(otherScope);
+		assertEquals(101, index.getNumberOfVariants(scopes));
 
 		List<Variant> list = null;
 		for (int i = 0; i < 10; i++) {
