@@ -1,0 +1,4 @@
+host=localhost
+database=db
+username=user
+password=password 

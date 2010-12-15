@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>majortom-parent</artifactId>
+		<groupId>de.topicmapslab.majortom</groupId>
+		<version>1.1.4-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.topicmapslab.majortom</groupId>
+	<artifactId>majortom-inMemory</artifactId>
+	<name>MaJorToM InMemory</name>
+	<version>${project.parent.version}</version>
+	<build>
+
+		<!-- copying the resources form the root of the directory, necessary for 
+			OSGi testing in eclipse -->
+		<resources>
+			<resource>
+				<directory>META-INF</directory>
+				<targetPath>${project.build.directory}/classes/META-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>OSGI-INF</directory>
+				<targetPath>${project.build.directory}/classes/OSGI-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>de.topicmapslab</id>
+			<url>http://maven.topicmapslab.de/public</url>
+		</repository>
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.topicmapslab.majortom</groupId>
+			<artifactId>majortom-testsuite</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>colt</groupId>
+		  <artifactId>colt</artifactId>
+		  <version>1.2.0</version>
+		</dependency>
+	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>topicmapslab-public</id>
+			<name>Topic Maps Lab Repositiory</name>
+			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+		</repository>
+	</distributionManagement>
+</project>

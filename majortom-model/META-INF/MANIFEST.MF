@@ -1,0 +1,15 @@
+Bundle-SymbolicName: de.topicmapslab.majortom.model;singleton=true
+Bundle-Version: 1.1.4
+Bundle-Name: MajorToM Model
+Provide-Package: de.topicmapslab.majortom.model.core,
+ de.topicmapslab.majortom.model.core.paged,
+ de.topicmapslab.majortom.model.event,
+ de.topicmapslab.majortom.model.exception,
+ de.topicmapslab.majortom.model.index,
+ de.topicmapslab.majortom.model.index.paging,
+ de.topicmapslab.majortom.model.revision,
+ de.topicmapslab.majortom.model.store,
+ de.topicmapslab.majortom.model.transaction
+Import-Package: org.tmapi.core;specification-version="2.0.2",
+ org.tmapi.index;specification-version="2.0.2"
+Require-Bundle: de.topicmapslab.geotype
