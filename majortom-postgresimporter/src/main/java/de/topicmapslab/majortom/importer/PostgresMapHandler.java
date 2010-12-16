@@ -336,11 +336,10 @@ public class PostgresMapHandler {
 	public long getTopic(IRef ref) throws MIOException {
 		try {
 
-//			// check cache
-//			Long val = topicCache.get(ref.getIRI());
-//			if (val != null)
-//				return val.longValue();
-//			
+			// check cache
+			Long val = topicCache.get(ref.getIRI());
+			if (val != null)
+				return val.longValue();
 			
 			PreparedStatement stm = null;
 
@@ -383,7 +382,7 @@ public class PostgresMapHandler {
 				id = createTopic(ref);
 			}
 			
-//			topicCache.put(ref.getIRI(), id);
+			topicCache.put(ref.getIRI(), id);
 			
 			return id;
 		} catch (Exception e) {

@@ -33,6 +33,8 @@ public class MapHandler implements IMapHandler {
 	
 	private long currTopicId = -1;
 	
+	private final String baseIRI;
+	
 	private PostgresMapHandler handler;
 	
 	private Characteristic currentCharacteristic;
@@ -45,22 +47,26 @@ public class MapHandler implements IMapHandler {
 	
 	private Stack<State> state;
 	
+	
+	
 	/**
 	 * Constructor
 	 * @throws SQLException
 	 */
-	public MapHandler() throws MIOException {
-		handler = new PostgresMapHandler();
-		state = new Stack<MapHandler.State>();
+	public MapHandler(String baseIRI) throws MIOException {
+		this.handler = new PostgresMapHandler();
+		this.state = new Stack<MapHandler.State>();
+		this.baseIRI = baseIRI;
 	}
 	
 	/**
 	 * Constructor
 	 * @throws SQLException
 	 */
-	public MapHandler(Properties dbProperties) throws MIOException {
-		handler = new PostgresMapHandler(dbProperties);
-		state = new Stack<MapHandler.State>();
+	public MapHandler(Properties dbProperties, String baseIRI) throws MIOException {
+		this.handler = new PostgresMapHandler(dbProperties);
+		this.state = new Stack<MapHandler.State>();
+		this.baseIRI = baseIRI;
 	}
 	
 	public void endAssociation() throws MIOException {
@@ -200,7 +206,7 @@ public class MapHandler implements IMapHandler {
 	public void startTopicMap() throws MIOException {
 		state.push(State.TOPICMAP);
 		handler.start();
-		topicMapId = handler.getTopicMapId("http://dbimporter/test/");
+		topicMapId = handler.getTopicMapId(baseIRI);
 		logger.debug("Found Topic Map with id: "+topicMapId);
 		
 	}
