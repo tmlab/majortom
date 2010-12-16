@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: MajorToM Testsuite
 Bundle-SymbolicName: de.topicmapslab.majortom.testsuite;singleton=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Version: 1.1.1.SNAPSHOT
+Bundle-Version: 1.2.0
 Provide-Package: de.topicmapslab.majortom.tests
 Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.index,

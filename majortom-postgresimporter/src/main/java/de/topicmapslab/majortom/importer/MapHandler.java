@@ -139,7 +139,8 @@ public class MapHandler implements IMapHandler {
 		state.push(State.ASSOCIATION);
 		
 		currentAssociation = new Association();
-		currentAssociation.setTopicmapId(topicMapId);		
+		currentAssociation.setTopicmapId(topicMapId);
+		
 	}
 
 	public void startIsa() throws MIOException {
@@ -160,6 +161,7 @@ public class MapHandler implements IMapHandler {
 		state.push(State.OCCURRENCE);
 		currentCharacteristic = new Occurrence();
 		currentCharacteristic.setParentId(currTopicId);
+		currentCharacteristic.setTopicmapId(topicMapId);
 	}
 
 	public void startPlayer() throws MIOException {
