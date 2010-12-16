@@ -42,7 +42,7 @@ public class Importer {
 	 */
 	public static void importFile(File file, String baseIRI, Properties dbProperties) throws MIOException {
 		try {
-			MapHandler mapHandler = new MapHandler(dbProperties);
+			MapHandler mapHandler = new MapHandler(dbProperties, baseIRI);
 			
 			Format format = FormatEstimator.guessFormat(new FileReader(file));
 			
@@ -65,7 +65,7 @@ public class Importer {
 	 */
 	public static void importFile(File file, String baseIRI) throws MIOException {
 		try {
-			MapHandler mapHandler = new MapHandler();
+			MapHandler mapHandler = new MapHandler(baseIRI);
 			Format format = FormatEstimator.guessFormat(new FileReader(file));
 			importStream(new FileInputStream(file), baseIRI, mapHandler, format);
 		} catch (FileNotFoundException e) {
@@ -84,7 +84,7 @@ public class Importer {
 	 * @throws MIOException
 	 */
 	public static void importStream(InputStream is, String baseIRI, Format format,  Properties dbProperties) throws MIOException {
-		MapHandler mapHandler = new MapHandler(dbProperties);
+		MapHandler mapHandler = new MapHandler(dbProperties, baseIRI);
 		importStream(is, baseIRI, mapHandler, format);
 	}
 	
@@ -97,7 +97,7 @@ public class Importer {
 	 * @throws MIOException
 	 */
 	public static void importStream(InputStream is, String baseIRI, Format format) throws MIOException {
-		MapHandler mapHandler = new MapHandler();
+		MapHandler mapHandler = new MapHandler(baseIRI);
 		importStream(is, baseIRI, mapHandler, format);
 	}
 
