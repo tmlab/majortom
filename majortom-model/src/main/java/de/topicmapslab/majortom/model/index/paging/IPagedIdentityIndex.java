@@ -62,6 +62,13 @@ public interface IPagedIdentityIndex extends IIndex {
 	 */
 	public List<Locator> getItemIdentifiers(int offset, int limit,
 			Comparator<Locator> comparator);
+	
+	/**
+	 * Returns the total number of item-identifiers
+	 * @return the number of item-identifiers
+	 * @since 1.2.0
+	 */
+	public long getNumberOfItemIdentifiers();
 
 	/**
 	 * Returns all known subject-identifiers of the current topic map
@@ -89,6 +96,13 @@ public interface IPagedIdentityIndex extends IIndex {
 	 */
 	public List<Locator> getSubjectIdentifiers(int offset, int limit,
 			Comparator<Locator> comparator);
+	
+	/**
+	 * Returns the total number of subject-identifiers
+	 * @return the number of subject-identifiers
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubjectIdentifiers();
 
 	/**
 	 * Returns all known subject-locators of the current topic map
@@ -116,6 +130,13 @@ public interface IPagedIdentityIndex extends IIndex {
 	 */
 	public List<Locator> getSubjectLocators(int offset, int limit,
 			Comparator<Locator> comparator);
+	
+	/**
+	 * Returns the total number of subject-locators
+	 * @return the number of subject-locators
+	 * @since 1.2.0
+	 */
+	public long getNumberOfSubjectLocators();
 
 	/**
 	 * The method try to identify all construct using an item-identifier
@@ -152,7 +173,7 @@ public interface IPagedIdentityIndex extends IIndex {
 	 */
 	public List<Construct> getConstructsByItemIdentifier(final String regExp,
 			int offset, int limit, Comparator<Construct> comparator);
-
+	
 	/**
 	 * The method try to identify all construct using an item-identifier
 	 * matching the given regular expression within the given range.
@@ -168,8 +189,8 @@ public interface IPagedIdentityIndex extends IIndex {
 	 *         never <code>null</code>
 	 */
 	public List<Construct> getConstructsByItemIdentifier(final Pattern regExp,
-			int offset, int limit);
-
+			int offset, int limit);	
+	
 	/**
 	 * The method try to identify all construct using an item-identifier
 	 * matching the given regular expression within the given range.

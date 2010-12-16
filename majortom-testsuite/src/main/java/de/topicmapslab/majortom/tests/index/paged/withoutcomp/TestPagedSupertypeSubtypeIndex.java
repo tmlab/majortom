@@ -64,6 +64,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfDirectSubtypes(type));
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getDirectSubtypes(type, i * 10, 10);
@@ -102,6 +104,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfDirectSupertypes(type));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -139,6 +143,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfSubtypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -181,6 +187,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfSubtypes(type));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -232,6 +240,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfSubtypes(types));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -276,6 +286,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		assertEquals(101, index.getNumberOfSubtypes(types, true));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -313,6 +325,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfSupertypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -355,6 +369,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfSupertypes(type));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -406,6 +422,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		
+		
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -414,6 +432,8 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		}
 		list = index.getSupertypes(types, 100, 10);
 		assertEquals(1, list.size());
+		
+		assertEquals(101, index.getNumberOfSupertypes(types));
 	}
 
 	/**
@@ -450,6 +470,7 @@ public class TestPagedSupertypeSubtypeIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(type);
 		types.add(otherType);
+		assertEquals(101, index.getNumberOfSupertypes(types, true));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {

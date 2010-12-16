@@ -5,7 +5,7 @@
 	<groupId>de.topicmapslab.majortom</groupId>
 	
 	<artifactId>majortom-parent</artifactId>
-	<version>1.1.4-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>MaJorToM Parent Project</name>
@@ -54,7 +54,7 @@
 		<repository>
 			<id>topicmapslab-public</id>
 			<name>Topic Maps Lab Repositiory</name>
-			<url>scp://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+			<url>scpexe://maven.topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
 		</repository>
 	</distributionManagement>
 	

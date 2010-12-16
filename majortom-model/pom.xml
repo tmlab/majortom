@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>majortom-parent</artifactId>
 		<groupId>de.topicmapslab.majortom</groupId>
-		<version>1.1.4-SNAPSHOT</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.topicmapslab.majortom</groupId>
@@ -54,13 +54,5 @@
 			<artifactId>tmapi</artifactId>
 			<version>2.0.3-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>topicmapslab-public</id>
-			<name>Topic Maps Lab Repositiory</name>
-			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
-		</repository>
-	</distributionManagement>
+	</dependencies>	
 </project>

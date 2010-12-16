@@ -31,8 +31,8 @@ public class PagedNonComparedIndexTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged.withoutcomp");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestPagedScopedIndex.class);
-		suite.addTestSuite(TestPagedLiteralIndex.class);
-		suite.addTestSuite(TestPagedConstructIndex.class);
+//		suite.addTestSuite(TestPagedLiteralIndex.class);
+//		suite.addTestSuite(TestPagedConstructIndex.class);
 		suite.addTestSuite(TestPagedTrasitiveTypeInstanceIndex.class);
 		suite.addTestSuite(TestPagedIdentityIndex.class);
 		suite.addTestSuite(TestPagedSupertypeSubtypeIndex.class);

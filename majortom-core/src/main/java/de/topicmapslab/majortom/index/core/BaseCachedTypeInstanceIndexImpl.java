@@ -38,8 +38,7 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
- * Implementation of the in-memory {@link IPagedTypeInstanceIndex} supporting
- * paging
+ * Implementation of the in-memory {@link IPagedTypeInstanceIndex} supporting paging
  * 
  * @author Sven Krosse
  * 
@@ -52,6 +51,10 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * internal cache for typed constructs
 	 */
 	private Map<TypeInstanceCacheKey, Collection<?>> cachedConstructs;
+	/**
+	 * internal cache for number of typed constructs
+	 */
+	private Map<TypeInstanceCacheKey, Long> cachedNumberOfConstructs;
 
 	/**
 	 * internal cache for types of constructs
@@ -141,6 +144,9 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 			dependentCacheKeys.clear();
 			dependentCacheKeys = HashUtil.getHashMap();
 		}
+		if (cachedNumberOfConstructs != null) {
+			cachedNumberOfConstructs.clear();
+		}
 	}
 
 	/**
@@ -158,8 +164,36 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 				if (cachedConstructs != null) {
 					cachedConstructs.remove(key);
 				}
+				if (cachedNumberOfConstructs != null) {
+					cachedNumberOfConstructs.remove(key);
+				}
 			}
 		}
+	}
+
+	/**
+	 * Reads the number of matching construct from cache if it exists
+	 * 
+	 * @param clazz
+	 *            the class
+	 * @param filter
+	 *            the filter
+	 * @param matchAll
+	 *            the match all flag
+	 * @return the number of constructs or <code> -1 </code>
+	 */
+	protected long readNumberOfConstructs(Class<? extends Construct> clazz, Object filter, Boolean matchAll) {
+		/*
+		 * check main cache
+		 */
+		if (cachedNumberOfConstructs == null) {
+			return -1;
+		}
+		/*
+		 * get cached types
+		 */
+		Long value = cachedNumberOfConstructs.get(generateCacheKey(clazz, filter, matchAll, null, null, null));
+		return value == null ? -1 : value;
 	}
 
 	/**
@@ -203,6 +237,31 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 		 * get cached types
 		 */
 		return cachedTypes.get(generateCacheKey(clazz, null, false, offset, limit, comparator));
+	}
+
+	/**
+	 * Store the number of matching construct into cache
+	 * 
+	 * @param clazz
+	 *            the class
+	 * @param filter
+	 *            the filter
+	 * @param matchAll
+	 *            the match all flag
+	 * @param number
+	 *            the number of constructs
+	 */
+	protected void cacheNumberOfConstructs(Class<? extends Construct> clazz, Object filter, Boolean matchAll, long number) {
+		/*
+		 * check main cache
+		 */
+		if (cachedNumberOfConstructs == null) {
+			cachedNumberOfConstructs = HashUtil.getHashMap();
+		}
+		/*
+		 * get cached types
+		 */
+		cachedNumberOfConstructs.put(generateCacheKey(clazz, filter, matchAll, null, null, null), number);
 	}
 
 	/**
@@ -252,8 +311,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @return the constructs or <code>null</code> if the key-pair is unknown
 	 */
 	protected <T extends Construct> Collection<T> read(Class<? extends IConstruct> clazz, Object filter, Boolean multiMatch) {
@@ -268,8 +326,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -297,8 +354,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param values
 	 *            the values to store
 	 */
@@ -314,8 +370,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -347,8 +402,7 @@ public abstract class BaseCachedTypeInstanceIndexImpl<E extends ITopicMapStore> 
 	 * @param filter
 	 *            the filter criteria or <code>null</code>
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if the
-	 *            result should match all types
+	 *            flag indicates if the filter is a collection of types if the result should match all types
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit
@@ -431,8 +485,7 @@ class TypeInstanceCacheKey {
 	 * @param filter
 	 *            a filter criteria (a type or a collection of type)
 	 * @param multiMatch
-	 *            flag indicates if the filter is a collection of types if types
-	 *            should matching all
+	 *            flag indicates if the filter is a collection of types if types should matching all
 	 * @param offset
 	 *            the offset or <code>null</code>
 	 * @param limit

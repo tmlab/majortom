@@ -35,6 +35,7 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScopable;
 import de.topicmapslab.majortom.model.core.IScope;
+import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
@@ -1350,6 +1351,579 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations(Collection<IScope> scopes) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetNumberOfAssociations(scopes);
+		}
+		long results = readNumberOfConstructs(IAssociation.class, scopes, false);
+		if (results == -1) {
+			results = doGetNumberOfAssociations(scopes);
+			cacheNumberOfConstructs(IAssociation.class, scopes, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations(IScope scope) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNumberOfAssociations(scope);
+		}
+		long results = readNumberOfConstructs(IAssociation.class, scope, false);
+		if (results == -1) {
+			results = doGetNumberOfAssociations(scope);
+			cacheNumberOfConstructs(IAssociation.class, scope, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations(Topic theme) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (theme == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetNumberOfAssociations(theme);
+		}
+		long results = readNumberOfConstructs(IAssociation.class, theme, false);
+		if (results == -1) {
+			results = doGetNumberOfAssociations(theme);
+			cacheNumberOfConstructs(IAssociation.class, theme, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations(Topic[] themes, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetNumberOfAssociations(themes, all);
+		}
+		long results = readNumberOfConstructs(IAssociation.class, themes, all);
+		if (results == -1) {
+			results = doGetNumberOfAssociations(themes, all);
+			cacheNumberOfConstructs(IAssociation.class, themes, all, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociationScopes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfAssociationScopes();
+		}
+		long results = readNumberOfConstructs(IAssociation.class, IScope.class, false);
+		if (results == -1) {
+			results = doGetNumberOfAssociationScopes();
+			cacheNumberOfConstructs(IAssociation.class, IScope.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociationThemes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfAssociationThemes();
+		}
+		long results = readNumberOfConstructs(IAssociation.class, ITopic.class, false);
+		if (results == -1) {
+			results = doGetNumberOfAssociationThemes();
+			cacheNumberOfConstructs(IAssociation.class, ITopic.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNames(Collection<IScope> scopes) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetNumberOfNames(scopes);
+		}
+		long results = readNumberOfConstructs(IName.class, scopes, false);
+		if (results == -1) {
+			results = doGetNumberOfNames(scopes);
+			cacheNumberOfConstructs(IName.class, scopes, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNames(IScope scope) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNumberOfNames(scope);
+		}
+		long results = readNumberOfConstructs(IName.class, scope, false);
+		if (results == -1) {
+			results = doGetNumberOfNames(scope);
+			cacheNumberOfConstructs(IName.class, scope, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNames(Topic theme) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (theme == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetNumberOfNames(theme);
+		}
+		long results = readNumberOfConstructs(IName.class, theme, false);
+		if (results == -1) {
+			results = doGetNumberOfNames(theme);
+			cacheNumberOfConstructs(IName.class, theme, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNames(Topic[] themes, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetNumberOfNames(themes, all);
+		}
+		long results = readNumberOfConstructs(IName.class, themes, all);
+		if (results == -1) {
+			results = doGetNumberOfNames(themes, all);
+			cacheNumberOfConstructs(IName.class, themes, all, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNameScopes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfNameScopes();
+		}
+		long results = readNumberOfConstructs(IName.class, IScope.class, false);
+		if (results == -1) {
+			results = doGetNumberOfNameScopes();
+			cacheNumberOfConstructs(IName.class, IScope.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfNameThemes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfNameThemes();
+		}
+		long results = readNumberOfConstructs(IName.class, ITopic.class, false);
+		if (results == -1) {
+			results = doGetNumberOfNameThemes();
+			cacheNumberOfConstructs(IName.class, ITopic.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrences(Collection<IScope> scopes) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetNumberOfOccurrences(scopes);
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, scopes, false);
+		if (results == -1) {
+			results = doGetNumberOfOccurrences(scopes);
+			cacheNumberOfConstructs(IOccurrence.class, scopes, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrences(IScope scope) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNumberOfOccurrences(scope);
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, scope, false);
+		if (results == -1) {
+			results = doGetNumberOfOccurrences(scope);
+			cacheNumberOfConstructs(IOccurrence.class, scope, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrences(Topic theme) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (theme == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetNumberOfOccurrences(theme);
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, theme, false);
+		if (results == -1) {
+			results = doGetNumberOfOccurrences(theme);
+			cacheNumberOfConstructs(IOccurrence.class, theme, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrences(Topic[] themes, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetNumberOfOccurrences(themes, all);
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, themes, all);
+		if (results == -1) {
+			results = doGetNumberOfOccurrences(themes, all);
+			cacheNumberOfConstructs(IOccurrence.class, themes, all, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrenceScopes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfOccurrencesScopes();
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, IScope.class, false);
+		if (results == -1) {
+			results = doGetNumberOfOccurrencesScopes();
+			cacheNumberOfConstructs(IOccurrence.class, IScope.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfOccurrenceThemes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfOccurrenceThemes();
+		}
+		long results = readNumberOfConstructs(IOccurrence.class, ITopic.class, false);
+		if (results == -1) {
+			results = doGetNumberOfOccurrenceThemes();
+			cacheNumberOfConstructs(IOccurrence.class, ITopic.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfScopables(IScope scope) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNumberOfScopables(scope);
+		}
+		long results = readNumberOfConstructs(IScopable.class, scope, false);
+		if (results == -1) {
+			results = doGetNumberOfScopables(scope);
+			cacheNumberOfConstructs(IScopable.class, scope, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariants(Collection<IScope> scopes) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scopes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scopes)) {
+			return doGetNumberOfVariants(scopes);
+		}
+		long results = readNumberOfConstructs(IVariant.class, scopes, false);
+		if (results == -1) {
+			results = doGetNumberOfVariants(scopes);
+			cacheNumberOfConstructs(IVariant.class, scopes, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariants(IScope scope) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (scope == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(scope)) {
+			return doGetNumberOfVariants(scope);
+		}
+		long results = readNumberOfConstructs(IVariant.class, scope, false);
+		if (results == -1) {
+			results = doGetNumberOfVariants(scope);
+			cacheNumberOfConstructs(IVariant.class, scope, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariants(Topic theme) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (theme == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(theme)) {
+			return doGetNumberOfVariants(theme);
+		}
+		long results = readNumberOfConstructs(IVariant.class, theme, false);
+		if (results == -1) {
+			results = doGetNumberOfVariants(theme);
+			cacheNumberOfConstructs(IVariant.class, theme, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariants(Topic[] themes, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (themes == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(themes)) {
+			return doGetNumberOfVariants(themes, all);
+		}
+		long results = readNumberOfConstructs(IVariant.class, themes, all);
+		if (results == -1) {
+			results = doGetNumberOfVariants(themes, all);
+			cacheNumberOfConstructs(IVariant.class, themes, all, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariantScopes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfVariantScopes();
+		}
+		long results = readNumberOfConstructs(IVariant.class, IScope.class, false);
+		if (results == -1) {
+			results = doGetNumberOfVariantScopes();
+			cacheNumberOfConstructs(IVariant.class, IScope.class, false, results);
+		}
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfVariantThemes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfVariantThemes();
+		}
+		long results = readNumberOfConstructs(IVariant.class, ITopic.class, false);
+		if (results == -1) {
+			results = doGetNumberOfVariantThemes();
+			cacheNumberOfConstructs(IVariant.class, ITopic.class, false, results);
+		}
+		return results;
+	}
+
+	/**
 	 * Returns all constructs scoped by the given scope object.
 	 * 
 	 * @param scope
@@ -1359,8 +1933,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all constructs within the given range scoped by the
-	 *         given scope
+	 * @return a list of all constructs within the given range scoped by the given scope
 	 */
 	protected List<Scoped> doGetScopables(IScope scope, int offset, int limit) {
 		List<Scoped> list = HashUtil.getList(getParentIndex().getScopables(scope));
@@ -1379,8 +1952,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all constructs within the given range scoped by the
-	 *         given scope
+	 * @return a list of all constructs within the given range scoped by the given scope
 	 */
 	protected List<Scoped> doGetScopables(IScope scope, int offset, int limit, Comparator<Scoped> comparator) {
 		List<Scoped> list = HashUtil.getList(getParentIndex().getScopables(scope));
@@ -1389,8 +1961,8 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	}
 
 	/**
-	 * Returns all scope objects used as scope of an association item. Default
-	 * implementation only calls the parent index.
+	 * Returns all scope objects used as scope of an association item. Default implementation only calls the parent
+	 * index.
 	 * 
 	 * 
 	 * @param offset
@@ -1405,8 +1977,8 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	}
 
 	/**
-	 * Returns all scope objects used as scope of an association item. Default
-	 * implementation only calls the parent index.
+	 * Returns all scope objects used as scope of an association item. Default implementation only calls the parent
+	 * index.
 	 * 
 	 * 
 	 * @param offset
@@ -1424,16 +1996,15 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	}
 
 	/**
-	 * Returning all themes contained by at least one association scope. Default
-	 * implementation only calls the parent index.
+	 * Returning all themes contained by at least one association scope. Default implementation only calls the parent
+	 * index.
 	 * 
 	 * 
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all themes within the given range contained by at least one
-	 *         association scope.
+	 * @return all themes within the given range contained by at least one association scope.
 	 */
 	protected List<Topic> doGetAssociationThemes(int offset, int limit) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getAssociationThemes());
@@ -1441,8 +2012,8 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	}
 
 	/**
-	 * Returning all themes contained by at least one association scope. Default
-	 * implementation only calls the parent index.
+	 * Returning all themes contained by at least one association scope. Default implementation only calls the parent
+	 * index.
 	 * 
 	 * 
 	 * @param offset
@@ -1451,8 +2022,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all themes within the given range contained by at least one
-	 *         association scope.
+	 * @return all themes within the given range contained by at least one association scope.
 	 */
 	protected List<Topic> doGetAssociationThemes(int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getAssociationThemes());
@@ -1548,8 +2118,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association items within the given range scoped by
-	 *         the given scope
+	 * @return a list of all association items within the given range scoped by the given scope
 	 */
 	protected List<Association> doGetAssociations(IScope scope, int offset, int limit) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(scope));
@@ -1568,8 +2137,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association items within the given range scoped by
-	 *         the given scope
+	 * @return a list of all association items within the given range scoped by the given scope
 	 */
 	protected List<Association> doGetAssociations(IScope scope, int offset, int limit, Comparator<Association> comparator) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(scope));
@@ -1587,8 +2155,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all association items within the given range scoped by
-	 *         one of the given scopes
+	 * @return a list of all association items within the given range scoped by one of the given scopes
 	 */
 	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(scopes));
@@ -1607,8 +2174,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all association items within the given range scoped by
-	 *         one of the given scopes
+	 * @return a list of all association items within the given range scoped by one of the given scopes
 	 */
 	protected List<Association> doGetAssociations(Collection<IScope> scopes, int offset, int limit, Comparator<Association> comparator) {
 		List<Association> list = HashUtil.getList(getParentIndex().getAssociations(scopes));
@@ -1626,8 +2192,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all characteristics within the given range scoped by
-	 *         the given scope
+	 * @return a list of all characteristics within the given range scoped by the given scope
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(scope));
@@ -1646,8 +2211,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all characteristics within the given range scoped by
-	 *         the given scope
+	 * @return a list of all characteristics within the given range scoped by the given scope
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(IScope scope, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		List<ICharacteristics> list = HashUtil.getList(getParentIndex().getCharacteristics(scope));
@@ -1696,8 +2260,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all themes within the given range contained by at least one
-	 *         occurrence scope.
+	 * @return all themes within the given range contained by at least one occurrence scope.
 	 */
 	protected List<Topic> doGetOccurrenceThemes(int offset, int limit) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getOccurrenceThemes());
@@ -1714,8 +2277,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all themes within the given range contained by at least one
-	 *         occurrence scope.
+	 * @return all themes within the given range contained by at least one occurrence scope.
 	 */
 	protected List<Topic> doGetOccurrenceThemes(int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getOccurrenceThemes());
@@ -1811,8 +2373,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all occurrences scoped by the given scope object within the given
-	 *         range
+	 * @return all occurrences scoped by the given scope object within the given range
 	 */
 	protected List<Occurrence> doGetOccurrences(IScope scope, int offset, int limit) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(scope));
@@ -1831,8 +2392,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all occurrences scoped by the given scope object within the given
-	 *         range
+	 * @return all occurrences scoped by the given scope object within the given range
 	 */
 	protected List<Occurrence> doGetOccurrences(IScope scope, int offset, int limit, Comparator<Occurrence> comparator) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(scope));
@@ -1850,8 +2410,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all occurrences within the given range scoped by one of the given
-	 *         scope objects
+	 * @return all occurrences within the given range scoped by one of the given scope objects
 	 */
 	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(scopes));
@@ -1870,8 +2429,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all occurrences within the given range scoped by one of the given
-	 *         scope objects
+	 * @return all occurrences within the given range scoped by one of the given scope objects
 	 */
 	protected List<Occurrence> doGetOccurrences(Collection<IScope> scopes, int offset, int limit, Comparator<Occurrence> comparator) {
 		List<Occurrence> list = HashUtil.getList(getParentIndex().getOccurrences(scopes));
@@ -1920,8 +2478,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all themes within the given range contained by at least one name
-	 *         scope.
+	 * @return all themes within the given range contained by at least one name scope.
 	 */
 	protected List<Topic> doGetNameThemes(int offset, int limit) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getNameThemes());
@@ -1938,8 +2495,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all themes within the given range contained by at least one name
-	 *         scope.
+	 * @return all themes within the given range contained by at least one name scope.
 	 */
 	protected List<Topic> doGetNameThemes(int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getNameThemes());
@@ -2091,8 +2647,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all names within the given range scoped by one of the given scope
-	 *         objects
+	 * @return all names within the given range scoped by one of the given scope objects
 	 */
 	protected List<Name> doGetNames(Collection<IScope> scopes, int offset, int limit, Comparator<Name> comparator) {
 		List<Name> list = HashUtil.getList(getParentIndex().getNames(scopes));
@@ -2140,8 +2695,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all themes within the given range contained by at least one
-	 *         variant scope.
+	 * @return all themes within the given range contained by at least one variant scope.
 	 */
 	protected List<Topic> doGetVariantThemes(int offset, int limit) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getVariantThemes());
@@ -2158,8 +2712,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 * @param comparator
 	 *            the comparator
 	 * 
-	 * @return all themes within the given range contained by at least one
-	 *         variant scope.
+	 * @return all themes within the given range contained by at least one variant scope.
 	 */
 	protected List<Topic> doGetVariantThemes(int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(getParentIndex().getVariantThemes());
@@ -2255,8 +2808,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all variants within the given range scoped by the given scope
-	 *         object
+	 * @return all variants within the given range scoped by the given scope object
 	 */
 	protected List<Variant> doGetVariants(IScope scope, int offset, int limit) {
 		List<Variant> list = HashUtil.getList(getParentIndex().getVariants(scope));
@@ -2275,8 +2827,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all variants within the given range scoped by the given scope
-	 *         object
+	 * @return all variants within the given range scoped by the given scope object
 	 */
 	protected List<Variant> doGetVariants(IScope scope, int offset, int limit, Comparator<Variant> comparator) {
 		List<Variant> list = HashUtil.getList(getParentIndex().getVariants(scope));
@@ -2294,8 +2845,7 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return all variants within the given range scoped by one of the given
-	 *         scope objects
+	 * @return all variants within the given range scoped by one of the given scope objects
 	 */
 	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit) {
 		List<Variant> list = HashUtil.getList(getParentIndex().getVariants(scopes));
@@ -2314,13 +2864,280 @@ public abstract class PagedScopeIndexImpl<T extends ITopicMapStore> extends Base
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return all variants within the given range scoped by one of the given
-	 *         scope objects
+	 * @return all variants within the given range scoped by one of the given scope objects
 	 */
 	protected List<Variant> doGetVariants(Collection<IScope> scopes, int offset, int limit, Comparator<Variant> comparator) {
 		List<Variant> list = HashUtil.getList(getParentIndex().getVariants(scopes));
 		Collections.sort(list, comparator);
 		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns the number of associations scoped by the given scopes
+	 * 
+	 * @param scopes
+	 *            the scopes
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(Collection<IScope> scopes) {
+		return getParentIndex().getAssociations(scopes).size();
+	}
+
+	/**
+	 * Returns the number of associations scoped by the given scope
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(IScope scope) {
+		return getParentIndex().getAssociations(scope).size();
+	}
+
+	/**
+	 * Returns the number of associations scoped by the given theme
+	 * 
+	 * @param theme
+	 *            the theme
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(Topic theme) {
+		return getParentIndex().getAssociations(theme).size();
+	}
+
+	/**
+	 * Returns the number of associations scoped by the given themes
+	 * 
+	 * @param themes
+	 *            the themes
+	 * @param all
+	 *            flag indicates full or partial match
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociations(Topic[] themes, boolean all) {
+		return getParentIndex().getAssociations(themes, all).size();
+	}
+
+	/**
+	 * Returns the number of association scopes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociationScopes() {
+		return getParentIndex().getAssociationScopes().size();
+	}
+
+	/**
+	 * Returns the number of association themes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfAssociationThemes() {
+		return getParentIndex().getAssociationThemes().size();
+	}
+
+	/**
+	 * Returns the number of names scoped by the given scopes
+	 * 
+	 * @param scopes
+	 *            the scopes
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(Collection<IScope> scopes) {
+		return getParentIndex().getNames(scopes).size();
+	}
+
+	/**
+	 * Returns the number of names scoped by the given scope
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(IScope scope) {
+		return getParentIndex().getNames(scope).size();
+	}
+
+	/**
+	 * Returns the number of names scoped by the given theme
+	 * 
+	 * @param theme
+	 *            the theme
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(Topic theme) {
+		return getParentIndex().getNames(theme).size();
+	}
+
+	/**
+	 * Returns the number of names scoped by the given themes
+	 * 
+	 * @param themes
+	 *            the scopes
+	 * @param all
+	 *            the flag of partial or full match
+	 * @return the number
+	 */
+	protected long doGetNumberOfNames(Topic[] themes, boolean all) {
+		return getParentIndex().getNames(themes, all).size();
+	}
+
+	/**
+	 * Returns the number of name scopes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfNameScopes() {
+		return getParentIndex().getNameScopes().size();
+	}
+
+	/**
+	 * Returns the number of name themes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfNameThemes() {
+		return getParentIndex().getNameThemes().size();
+	}
+
+	/**
+	 * Returns the number of occurrences scoped by the given scopes
+	 * 
+	 * @param scopes
+	 *            the scopes
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(Collection<IScope> scopes) {
+		return getParentIndex().getOccurrences(scopes).size();
+	}
+
+	/**
+	 * Returns the number of occurrences scoped by the given scope
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(IScope scope) {
+		return getParentIndex().getOccurrences(scope).size();
+	}
+
+	/**
+	 * Returns the number of occurrences scoped by the given theme
+	 * 
+	 * @param theme
+	 *            the theme
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(Topic theme) {
+		return getParentIndex().getOccurrences(theme).size();
+	}
+
+	/**
+	 * Returns the number of occurrences scoped by the given themes
+	 * 
+	 * @param themes
+	 *            the themes
+	 * @param all
+	 *            the flag of partial or full match
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrences(Topic[] themes, boolean all) {
+		return getParentIndex().getOccurrences(themes, all).size();
+	}
+
+	/**
+	 * 
+	 * Returns the number of occurrences scopes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrencesScopes() {
+		return getParentIndex().getOccurrenceScopes().size();
+	}
+
+	/**
+	 * Returns the number of occurrence themes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfOccurrenceThemes() {
+		return getParentIndex().getOccurrenceThemes().size();
+	}
+
+	/**
+	 * Returns the number of constructs scoped by the given scope
+	 * 
+	 * @param scope
+	 *            the scope
+	 * @return the number
+	 */
+	protected long doGetNumberOfScopables(IScope scope) {
+		return getParentIndex().getScopables(scope).size();
+	}
+
+	/**
+	 * Returns the number of variants scoped by the given scopes
+	 * 
+	 * @param scopes
+	 *            the scopes
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariants(IScope scope) {
+		return getParentIndex().getVariants(scope).size();
+	}
+
+	/**
+	 * Returns the number of variants scoped by the given theme
+	 * 
+	 * @param theme
+	 *            the theme
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariants(Topic theme) {
+		return getParentIndex().getVariants(theme).size();
+	}
+
+	/**
+	 * Returns the number of variants scoped by the given themes
+	 * 
+	 * @param themes
+	 *            the themes
+	 * @param all
+	 *            the flag of partial or full match
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariants(Topic[] themes, boolean all) {
+		return getParentIndex().getVariants(themes, all).size();
+	}
+
+	/**
+	 * Returns the number of variant scopes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariantScopes() {
+		return getParentIndex().getVariantScopes().size();
+	}
+
+	/**
+	 * Returns the number of variants scoped by the given scopes
+	 * 
+	 * @param scopes
+	 *            the scopes
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariants(Collection<IScope> scopes) {
+		return getParentIndex().getVariants(scopes).size();
+	}
+
+	/**
+	 * Returns the number of variant themes
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfVariantThemes() {
+		return getParentIndex().getVariantThemes().size();
 	}
 
 	/**

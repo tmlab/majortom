@@ -68,6 +68,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociationTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -109,6 +111,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfAssociations(supertype));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -156,10 +160,13 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+			
 
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(supertype);
 		types.add(supertypeB);
+		
+		assertEquals(101, index.getNumberOfAssociations(types));
 
 		List<Association> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -201,6 +208,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfCharacteristicTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -246,6 +255,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfCharacteristics(supertype));
 
 		List<ICharacteristics> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -297,6 +308,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(supertype);
 		types.add(supertypeB);
+		
+		assertEquals(101, index.getNumberOfCharacteristics(types));
 
 		List<ICharacteristics> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -335,6 +348,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfNameTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -376,6 +391,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfNames(supertype));
+		
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getNames(supertype, i * 10, 10);
@@ -426,6 +443,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(supertype);
 		types.add(supertypeB);
+		
+		assertEquals(101, index.getNumberOfNames(types));
 
 		List<Name> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -464,6 +483,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfOccurrenceTypes());
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrenceTypes(i * 10, 10);
@@ -503,6 +524,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfOccurrences(supertype));
 
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -555,6 +578,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		types.add(supertype);
 		types.add(supertypeB);
 
+		assertEquals(101, index.getNumberOfOccurrences(types));
+		
 		List<Occurrence> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getOccurrences(types, i * 10, 10);
@@ -592,6 +617,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfRoleTypes());
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getRoleTypes(i * 10, 10);
@@ -631,6 +658,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfRoles(supertype));
 
 		List<Role> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -682,6 +711,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(supertype);
 		types.add(supertypeB);
+		
+		assertEquals(101, index.getNumberOfRoles(types));
 
 		List<Role> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -719,6 +750,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 				break;
 			}
 		}
+		
+		assertEquals(101, index.getNumberOfTopicTypes());
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
@@ -760,6 +793,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 			}
 		}
 
+		assertEquals(101, index.getNumberOfTopics(supertype));
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(supertype, i * 10, 10);
@@ -811,6 +846,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		types.add(supertype);
 		types.add(supertypeB);
 
+		assertEquals(101, index.getNumberOfTopics(types));
+		
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
 			list = index.getTopics(types, i * 10, 10);
@@ -858,6 +895,8 @@ public class TestPagedTrasitiveTypeInstanceIndex extends MaJorToMTestCase {
 		Collection<Topic> types = HashUtil.getHashSet();
 		types.add(supertype);
 		types.add(supertypeB);
+		
+		assertEquals(101, index.getNumberOfTopics(types, true));
 
 		List<Topic> list = null;
 		for (int i = 0; i < 10; i++) {
