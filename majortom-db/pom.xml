@@ -83,5 +83,17 @@
 			<artifactId>hsqldb</artifactId>
 			<version>2.0.1rc2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.tmapix</groupId>
+			<artifactId>tmapix-io</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>tmapi</artifactId>
+					<groupId>org.tmapi</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 </project>

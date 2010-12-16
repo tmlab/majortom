@@ -39,6 +39,10 @@
 			<id>tmapi</id>
 			<url>http://www.tmapi.org/maven-repository/</url>
 		</repository>
+		<repository>
+			<id>semagia</id>
+			<url>http://repository.semagia.com/releases/</url>
+		</repository>
 		<!--
 		<repository>
 			<id>ontopia-snapshot</id>
