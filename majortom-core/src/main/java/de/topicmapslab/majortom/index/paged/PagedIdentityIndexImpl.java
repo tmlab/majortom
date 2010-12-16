@@ -69,7 +69,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit);
@@ -82,10 +82,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getConstructsByIdentifier(Pattern.compile(regExp), offset, limit, comparator);
@@ -98,7 +98,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -122,10 +122,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -149,7 +149,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit);
@@ -162,10 +162,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getConstructsByItemIdentifier(Pattern.compile(regExp), offset, limit, comparator);
@@ -178,7 +178,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -202,10 +202,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -256,7 +256,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!getTopicMapStore().isCachingEnabled()) {
 			return doGetItemIdentifiers(offset, limit, comparator);
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		Collection<Locator> locators = readLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, offset, limit, comparator);
@@ -265,6 +265,27 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 			cacheLocators(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, offset, limit, comparator, locators);
 		}
 		return (List<Locator>) locators;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfItemIdentifiers() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfItemIdentifiers();
+		}
+		long number = read(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER);
+		if (number == -1) {
+			number = doGetNumberOfItemIdentifiers();
+			cache(BaseCachedIdentityIndexImpl.Type.ITEM_IDENTIFIER, number);
+		}
+		return number;
 	}
 
 	/**
@@ -295,7 +316,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -310,6 +331,27 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 			cacheLocators(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, offset, limit, comparator, locators);
 		}
 		return (List<Locator>) locators;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSubjectIdentifiers() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfSubjectIdentifiers();
+		}
+		long number = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER);
+		if (number == -1) {
+			number = doGetNumberOfSubjectIdentifiers();
+			cache(BaseCachedIdentityIndexImpl.Type.SUBJECT_IDENTIFIER, number);
+		}
+		return number;
 	}
 
 	/**
@@ -340,7 +382,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -356,6 +398,27 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		}
 		return (List<Locator>) locators;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSubjectLocators() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfSubjectLocators();
+		}
+		long number = read(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR);
+		if (number == -1) {
+			number = doGetNumberOfSubjectLocators();
+			cache(BaseCachedIdentityIndexImpl.Type.SUBJECT_LOCATOR, number);
+		}
+		return number;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -364,7 +427,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit);
@@ -377,10 +440,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getTopicsBySubjectIdentifier(Pattern.compile(regExp), offset, limit, comparator);
@@ -393,7 +456,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -417,10 +480,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -444,7 +507,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit);
@@ -457,10 +520,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getTopicsBySubjectLocator(Pattern.compile(regExp), offset, limit, comparator);
@@ -473,7 +536,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -497,10 +560,10 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( regExp == null ){
+		if (regExp == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -528,8 +591,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all constructs using an identifier matching the given regular
-	 * expression.
+	 * Returning all constructs using an identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -546,8 +608,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all constructs using an identifier matching the given regular
-	 * expression.
+	 * Returning all constructs using an identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -567,8 +628,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all constructs using an item-identifier matching the given
-	 * regular expression.
+	 * Returning all constructs using an item-identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -585,8 +645,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all constructs using an item-identifier matching the given
-	 * regular expression.
+	 * Returning all constructs using an item-identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -606,8 +665,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all topics using a subject-identifier matching the given
-	 * regular expression.
+	 * Returning all topics using a subject-identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -624,8 +682,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all topics using a subject-identifier matching the given
-	 * regular expression.
+	 * Returning all topics using a subject-identifier matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -645,8 +702,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all topics using a subject-locator matching the given regular
-	 * expression.
+	 * Returning all topics using a subject-locator matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -663,8 +719,7 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
-	 * Returning all topics using a subject-locator matching the given regular
-	 * expression.
+	 * Returning all topics using a subject-locator matching the given regular expression.
 	 * 
 	 * @param regExp
 	 *            the regular expression
@@ -717,6 +772,15 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
+	 * Returns the number of item-identifiers in the topic map
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfItemIdentifiers() {
+		return getParentIndex().getItemIdentifiers().size();
+	}
+
+	/**
 	 * Return all subject-identifiers used by any topic of the topic map.
 	 * 
 	 * @param offset
@@ -750,6 +814,15 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 	}
 
 	/**
+	 * Returns the number of subject-identifiers in the topic map
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfSubjectIdentifiers() {
+		return getParentIndex().getSubjectIdentifiers().size();
+	}
+
+	/**
 	 * Return all subject-locators used by any topic of the topic map.
 	 * 
 	 * @param offset
@@ -780,6 +853,15 @@ public abstract class PagedIdentityIndexImpl<T extends ITopicMapStore> extends B
 		List<Locator> locators = HashUtil.getList(getParentIndex().getSubjectLocators());
 		Collections.sort(locators, comparator);
 		return HashUtil.secureSubList(locators, offset, limit);
+	}
+
+	/**
+	 * Returns the number of subject-locators in the topic map
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfSubjectLocators() {
+		return getParentIndex().getSubjectLocators().size();
 	}
 
 }

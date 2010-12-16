@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>majortom-parent</artifactId>
 		<groupId>de.topicmapslab.majortom</groupId>
-		<version>1.1.4-SNAPSHOT</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</parent>	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.topicmapslab.majortom</groupId>
@@ -39,7 +39,16 @@
 		<repository>
 			<id>Semagia Snapshot Repository</id>
 			<url>http://repository.semagia.com/snapshots/</url>
+		</repository><repository>
+			<id>Semagia</id>
+			<name>Semagia</name>
+			<url>http://repository.semagia.com/snapshots/</url>
 		</repository>
+		<repository>
+			<id>Semagia releases</id>
+			<name>Semagia Releases</name>
+			<url>http://repository.semagia.com/releases/</url>
+		</repository>	
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -58,17 +67,6 @@
 			<version>1.2.8</version>
 		</dependency>
 		<dependency>
-			<groupId>org.tmapix</groupId>
-			<artifactId>tmapix-io</artifactId>
-			<version>1.0.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.tmapi</groupId>
-					<artifactId>tmapi</artifactId>
-				</exclusion>
-			</exclusions>			
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
@@ -84,11 +82,4 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>topicmapslab-public</id>
-			<name>Topic Maps Lab Repositiory</name>
-			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
-		</repository>
-	</distributionManagement>
 </project>

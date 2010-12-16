@@ -52,6 +52,7 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 		SUBJECT_LOCATOR
 	}
 
+	private Map<Type, Long> cachedNumberOfIdentifiers;
 	private Map<IdentityCacheKey, Collection<Locator>> cachedIdentifiers;
 	private Map<IdentityCacheKey, Collection<? extends Construct>> cachedConstructs;
 	private Map<Type, Set<IdentityCacheKey>> dependentCacheKeys;
@@ -120,6 +121,9 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 		if (cachedConstructs != null) {
 			cachedConstructs.clear();
 		}
+		if (cachedNumberOfIdentifiers != null) {
+			cachedNumberOfIdentifiers.clear();
+		}
 	}
 
 	/**
@@ -141,6 +145,9 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 					cachedConstructs.remove(key);
 				}
 			}
+		}
+		if (cachedNumberOfIdentifiers != null) {
+			cachedNumberOfIdentifiers.clear();
 		}
 	}
 
@@ -287,8 +294,22 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 	}
 
 	/**
-	 * Store the given values into the internal cache using the given key
-	 * values.
+	 * Store the number of identifiers
+	 * 
+	 * @param type
+	 *            the type
+	 * @param number
+	 *            the number
+	 */
+	protected final void cache(Type type, long number) {
+		if (cachedNumberOfIdentifiers == null) {
+			cachedNumberOfIdentifiers = HashUtil.getHashMap(5);
+		}
+		cachedNumberOfIdentifiers.put(type, number);
+	}
+
+	/**
+	 * Store the given values into the internal cache using the given key values.
 	 * 
 	 * @param type
 	 *            the type
@@ -308,8 +329,7 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 	}
 
 	/**
-	 * Store the given values into the internal cache using the given key
-	 * values.
+	 * Store the given values into the internal cache using the given key values.
 	 * 
 	 * @param type
 	 *            the type
@@ -335,8 +355,21 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 	}
 
 	/**
-	 * Internal method to read all identifiers of a specific type matching the
-	 * given pattern.
+	 * Returns the cached number of identifiers
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the cached number or <code>-1</code>
+	 */
+	protected final long read(Type type) {
+		if (cachedNumberOfIdentifiers == null || !cachedNumberOfIdentifiers.containsKey(type)) {
+			return -1;
+		}
+		return cachedNumberOfIdentifiers.get(type);
+	}
+
+	/**
+	 * Internal method to read all identifiers of a specific type matching the given pattern.
 	 * 
 	 * @param type
 	 *            the type
@@ -347,8 +380,7 @@ public abstract class BaseCachedIdentityIndexImpl<T extends ITopicMapStore> exte
 	}
 
 	/**
-	 * Internal method to read all identifiers of a specific type matching the
-	 * given pattern.
+	 * Internal method to read all identifiers of a specific type matching the given pattern.
 	 * 
 	 * @param type
 	 *            the type

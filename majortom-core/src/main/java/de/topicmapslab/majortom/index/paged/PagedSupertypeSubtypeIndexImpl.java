@@ -113,6 +113,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfDirectSubtypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfDirectSubtypes(type);
+		}
+		long value = readNumberOfConstructs(Type.DIRECT_SUBTYPE, type, false);
+		if (value == -1) {
+			value = doGetNumberOfDirectSubtypes(type);
+			cacheNumberOfConstructs(Type.DIRECT_SUBTYPE, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getDirectSupertypes(Topic type, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -164,6 +188,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfDirectSupertypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfDirectSupertypes(type);
+		}
+		long value = readNumberOfConstructs(Type.DIRECT_SUPERTYPE, type, false);
+		if (value == -1) {
+			value = doGetNumberOfDirectSupertypes(type);
+			cacheNumberOfConstructs(Type.DIRECT_SUPERTYPE, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getSubtypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -204,6 +252,21 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 			cache(Type.SUBTYPE, null, false, offset, limit, comparator, topics);
 		}
 		return (List<Topic>) topics;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSubtypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		long value = readNumberOfConstructs(Type.SUBTYPE, null, null);
+		if (value == -1) {
+			value = doGetNumberOfSubtypes();
+			cacheNumberOfConstructs(Type.SUBTYPE, null, null, value);
+		}
+		return value;
 	}
 
 	/**
@@ -260,6 +323,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfSubtypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfSubtypes(type);
+		}
+		long value = readNumberOfConstructs(Type.SUBTYPE, type, false);
+		if (value == -1) {
+			value = doGetNumberOfSubtypes(type);
+			cacheNumberOfConstructs(Type.SUBTYPE, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getSubtypes(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -284,6 +371,19 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getSubtypes(types, false, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSubtypes(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return getNumberOfSubtypes(types, false);
 	}
 
 	/**
@@ -340,6 +440,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfSubtypes(Collection<? extends Topic> types, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfSubtypes(types, all);
+		}
+		long value = readNumberOfConstructs(Type.SUBTYPE, types, all);
+		if (value == -1) {
+			value = doGetNumberOfSubtypes(types, all);
+			cacheNumberOfConstructs(Type.SUBTYPE, types, all, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getSupertypes(int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -380,6 +504,27 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 			cache(Type.SUPERTYPE, null, false, offset, limit, comparator, topics);
 		}
 		return (List<Topic>) topics;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSupertypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfSupertypes();
+		}
+		long value = readNumberOfConstructs(Type.SUPERTYPE, null, null);
+		if (value == -1) {
+			value = doGetNumberOfSupertypes();
+			cacheNumberOfConstructs(Type.SUPERTYPE, null, null, value);
+		}
+		return value;
 	}
 
 	/**
@@ -436,6 +581,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfSupertypes(Topic type) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(type)) {
+			return doGetNumberOfSupertypes(type);
+		}
+		long value = readNumberOfConstructs(Type.SUPERTYPE, type, false);
+		if (value == -1) {
+			value = doGetNumberOfSupertypes(type);
+			cacheNumberOfConstructs(Type.SUPERTYPE, type, false, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getSupertypes(Collection<? extends Topic> types, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -460,6 +629,19 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		return getSupertypes(types, false, offset, limit, comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfSupertypes(Collection<? extends Topic> types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return getNumberOfSupertypes(types, false);
 	}
 
 	/**
@@ -516,6 +698,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	/**
 	 * {@inheritDoc}
 	 */
+	public long getNumberOfSupertypes(Collection<? extends Topic> types, boolean all) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		/*
+		 * redirect to real store if caching is disabled
+		 */
+		if (!getTopicMapStore().isCachingEnabled() || isOnTransactionContext(types)) {
+			return doGetNumberOfSupertypes(types, all);
+		}
+		long value = readNumberOfConstructs(Type.SUPERTYPE, types, all);
+		if (value == -1) {
+			value = doGetNumberOfSupertypes(types, all);
+			cacheNumberOfConstructs(Type.SUPERTYPE, types, all, value);
+		}
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void open() {
 		if (!parentIndex.isOpen()) {
 			parentIndex.open();
@@ -524,8 +730,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of a topic type contained by
-	 * the topic map.
+	 * Returns all topic types being a supertype of a topic type contained by the topic map.
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -540,8 +745,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of a topic type contained by
-	 * the topic map.
+	 * Returns all topic types being a supertype of a topic type contained by the topic map.
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -559,9 +763,17 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of the given topic type.If the
-	 * type is <code>null</code> the method returns all topics which have no
-	 * super-types.
+	 * Returns the number of supertypes
+	 * 
+	 * @return the number of supertypes
+	 */
+	protected long doGetNumberOfSupertypes() {
+		return getParentIndex().getSupertypes().size();
+	}
+
+	/**
+	 * Returns all topic types being a supertype of the given topic type.If the type is <code>null</code> the method
+	 * returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -579,9 +791,8 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of the given topic type.If the
-	 * type is <code>null</code> the method returns all topics which have no
-	 * super-types.
+	 * Returns all topic types being a supertype of the given topic type.If the type is <code>null</code> the method
+	 * returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -602,9 +813,19 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a direct supertype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which have
-	 * no super-types.
+	 * Returns the number of supertypes
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number of supertypes
+	 */
+	protected long doGetNumberOfSupertypes(Topic type) {
+		return getParentIndex().getSupertypes(type).size();
+	}
+
+	/**
+	 * Returns all topic types being a direct supertype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -622,9 +843,8 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a direct supertype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which have
-	 * no super-types.
+	 * Returns all topic types being a direct supertype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which have no super-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -645,21 +865,29 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of at least one given type or
-	 * of every given topic type.
+	 * Returns the number of direct supertypes
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the number of direct supertypes
+	 */
+	protected long doGetNumberOfDirectSupertypes(Topic type) {
+		return getParentIndex().getDirectSupertypes(type).size();
+	}
+
+	/**
+	 * Returns all topic types being a supertype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an supertype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an supertype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all supertypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all supertypes of at least one of the given type within the given range
 	 */
 	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		List<Topic> cache = HashUtil.getList(getParentIndex().getSupertypes(types, all));
@@ -667,14 +895,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a supertype of at least one given type or
-	 * of every given topic type.
+	 * Returns all topic types being a supertype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an supertype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an supertype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -682,8 +908,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	 *            the maximum count of returned values
 	 * @param comparator
 	 *            the comparator
-	 * @return a list of all supertypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all supertypes of at least one of the given type within the given range
 	 */
 	protected List<Topic> doGetSupertypes(Collection<? extends Topic> types, boolean all, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> cache = HashUtil.getList(getParentIndex().getSupertypes(types, all));
@@ -692,8 +917,21 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of a topic type contained by the
-	 * topic map.
+	 * Returns the number of topic types being a supertype of at least one given type or of every given topic type.
+	 * 
+	 * @param type
+	 *            the types
+	 * @param all
+	 *            flag indicates if the found topic types should be an supertype of every given type
+	 * 
+	 * @return the number of supertypes
+	 */
+	protected long doGetNumberOfSupertypes(Collection<? extends Topic> types, boolean all) {
+		return getParentIndex().getSupertypes(types, all).size();
+	}
+
+	/**
+	 * Returns all topic types being a subtype of a topic type contained by the topic map.
 	 * 
 	 * 
 	 * @param offset
@@ -708,8 +946,7 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of a topic type contained by the
-	 * topic map.
+	 * Returns all topic types being a subtype of a topic type contained by the topic map.
 	 * 
 	 * 
 	 * @param offset
@@ -727,9 +964,17 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of the given topic type. If the
-	 * type is <code>null</code> the method returns all topics which has no
-	 * sub-types.
+	 * Returns the number of all topic types being a subtype of a topic type contained by the topic map.
+	 * 
+	 * @return the number
+	 */
+	protected long doGetNumberOfSubtypes() {
+		return getParentIndex().getSubtypes().size();
+	}
+
+	/**
+	 * Returns all topic types being a subtype of the given topic type. If the type is <code>null</code> the method
+	 * returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -747,9 +992,8 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of the given topic type. If the
-	 * type is <code>null</code> the method returns all topics which has no
-	 * sub-types.
+	 * Returns all topic types being a subtype of the given topic type. If the type is <code>null</code> the method
+	 * returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -763,9 +1007,20 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a direct subtype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which has
-	 * no sub-types.
+	 * Returns the number of all topic types being a subtype of the given topic type. If the type is <code>null</code>
+	 * the method returns all topics which has no sub-types.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * @return the number
+	 */
+	protected long doGetNumberOfSubtypes(Topic type) {
+		return getParentIndex().getSubtypes(type).size();
+	}
+
+	/**
+	 * Returns all topic types being a direct subtype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -783,9 +1038,8 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a direct subtype of the given topic type.
-	 * If the type is <code>null</code> the method returns all topics which has
-	 * no sub-types.
+	 * Returns all topic types being a direct subtype of the given topic type. If the type is <code>null</code> the
+	 * method returns all topics which has no sub-types.
 	 * 
 	 * @param type
 	 *            the topic type
@@ -806,21 +1060,30 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of at least one given type or of
-	 * every given topic type.
+	 * Returns the number of all topic types being a subtype of the given topic type. If the type is <code>null</code>
+	 * the method returns all topics which has no sub-types.
+	 * 
+	 * @param type
+	 *            the topic type
+	 * @return the number
+	 */
+	protected long doGetNumberOfDirectSubtypes(Topic type) {
+		return getParentIndex().getDirectSubtypes(type).size();
+	}
+
+	/**
+	 * Returns all topic types being a subtype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an subtype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an subtype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
 	 * @param limit
 	 *            the maximum count of returned values
-	 * @return a list of all subtypes of at least one of the given type within
-	 *         the given range
+	 * @return a list of all subtypes of at least one of the given type within the given range
 	 */
 	protected List<Topic> doGetSubtypes(Collection<? extends Topic> types, boolean all, int offset, int limit) {
 		List<Topic> cache = HashUtil.getList(getParentIndex().getSubtypes(types, all));
@@ -828,14 +1091,12 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 	}
 
 	/**
-	 * Returns all topic types being a subtype of at least one given type or of
-	 * every given topic type.
+	 * Returns all topic types being a subtype of at least one given type or of every given topic type.
 	 * 
 	 * @param types
 	 *            the topic types
 	 * @param all
-	 *            flag indicates if the found topic types should be an subtype
-	 *            of every given type
+	 *            flag indicates if the found topic types should be an subtype of every given type
 	 * 
 	 * @param offset
 	 *            the index of the first item
@@ -849,6 +1110,19 @@ public abstract class PagedSupertypeSubtypeIndexImpl<T extends ITopicMapStore> e
 		List<Topic> cache = HashUtil.getList(getParentIndex().getSubtypes(types, all));
 		Collections.sort(cache, comparator);
 		return HashUtil.secureSubList(cache, offset, limit);
+	}
+
+	/**
+	 * Returns the number of all topic types being a subtype of at least one given type or of every given topic type.
+	 * 
+	 * @param types
+	 *            the topic types
+	 * @param all
+	 *            flag indicates if the found topic types should be an subtype of every given type
+	 * @return the number
+	 */
+	protected long doGetNumberOfSubtypes(Collection<? extends Topic> types, boolean all) {
+		return getParentIndex().getSubtypes(types, all).size();
 	}
 
 }
