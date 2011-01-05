@@ -244,6 +244,10 @@ public interface ISelectQueries {
 				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id  = ? "
 				+ "UNION "
 				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id  = ?;";
+		
+		public static String QUERY_READ_CONSTRUCT_STD = "SELECT id, id_parent, 0 AS other, '%TYPE%' AS type FROM %COLUMN% WHERE id = ?";
+		
+		public static String QUERY_READ_CONSTRUCT_VARIANT = "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id  = ? AND v.id_parent = n.id;";
 
 		/**
 		 * query to read a construct by item-identifier
@@ -251,6 +255,21 @@ public interface ISelectQueries {
 		 * <b>parameters(7):</b> the construct id, the topic map id 6x
 		 * </p>
 		 */
+//		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = "WITH ids(id) AS (SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ? ) " 
+//				+ "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id FROM ids ) AND id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id FROM ids  ) AND id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT id, id_parent, 0 AS other, 'n' AS type FROM names WHERE id IN ( SELECT id FROM ids  ) AND id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT id, id_parent, 0 AS other, 'o' AS type FROM occurrences WHERE id IN ( SELECT id FROM ids ) AND id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id IN ( SELECT id FROM ids ) AND v.id_parent = n.id AND v.id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id FROM ids  ) AND id_topicmap = ? "
+//				+ "UNION "
+//				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id FROM ids );";
+//		
 		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER = "SELECT id, id_parent, 0 AS other, 't' AS type FROM topics WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
 				+ "UNION "
 				+ "SELECT id, id_parent, 0 AS other, 'a' AS type FROM associations WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
@@ -264,6 +283,12 @@ public interface ISelectQueries {
 				+ "SELECT id, id_parent, 0 AS other, 'r' AS type FROM roles WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  ) AND id_topicmap = ? "
 				+ "UNION "
 				+ "SELECT id, 0 AS id_parent, 0 AS other, 'tm' AS type FROM topicmaps WHERE id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  );";
+		
+		public static final String QUERY_READ_CONSTRUCT_ID_BY_ITEM_IDENTIFIER = "SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?;";
+		
+		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER_STD = "SELECT id, id_parent, 0 AS other, '%TYPE%' AS type FROM %COLUMN% WHERE id_topicmap = ? AND id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ?  );";
+		
+		public static final String QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER_VARIANT = "SELECT v.id, v.id_parent, n.id_parent, 'v' AS type FROM variants AS v, names AS n WHERE v.id_parent = n.id AND v.id_topicmap = ? AND v.id IN ( SELECT id_construct FROM rel_item_identifiers, locators WHERE id = id_locator AND reference = ? );";		
 
 		// ********************
 		// * READ DATATYPE *
