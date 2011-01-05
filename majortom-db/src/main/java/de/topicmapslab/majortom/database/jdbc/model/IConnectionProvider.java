@@ -101,4 +101,18 @@ public interface IConnectionProvider {
 	 *         </p>
 	 */
 	public int getDatabaseState() throws SQLException;
+
+	/**
+	 * Returning the name of the used RDBMS
+	 * 
+	 * @return the name of the RDBMS
+	 */
+	public abstract String getRdbmsName();
+
+	/**
+	 * Returning the name of the used driver class
+	 * 
+	 * @return the name of the used driver class
+	 */
+	public abstract String getDriverClassName();
 }

@@ -35,14 +35,14 @@ public class MySqlConnectionProvider extends RDBMSConnectionProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String getDriverClassName() {
+	public String getDriverClassName() {
 		return "com.mysql.jdbc.Driver";
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String getRdbmsName() {
+	public String getRdbmsName() {
 		return "mysql";
 	}
 
