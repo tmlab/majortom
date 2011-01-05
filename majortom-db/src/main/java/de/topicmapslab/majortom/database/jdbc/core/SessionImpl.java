@@ -16,8 +16,10 @@
 package de.topicmapslab.majortom.database.jdbc.core;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+
+import org.apache.commons.dbcp.BasicDataSource;
 
 import de.topicmapslab.majortom.database.jdbc.model.IConnectionProvider;
 import de.topicmapslab.majortom.database.jdbc.model.IQueryProcessor;
@@ -40,6 +42,8 @@ public abstract class SessionImpl implements ISession {
 	private Connection connection;
 	private final IConnectionProvider connectionProvider;
 	private final boolean autoCommit;
+	private BasicDataSource bds;
+	private HashMap<Connection, IQueryProcessor> processors;
 
 	/**
 	 * Constructor
@@ -60,6 +64,15 @@ public abstract class SessionImpl implements ISession {
 		this.password = password;
 		this.connectionProvider = connectionProvider;
 		this.autoCommit = true;
+		bds = new BasicDataSource();
+		bds.setDriverClassName(connectionProvider.getDriverClassName());
+		bds.setUsername(user);
+		bds.setPassword(password);
+		bds.setUrl(url);
+		bds.setDefaultAutoCommit(isAutoCommit());
+		bds.setMaxActive(20);
+		bds.setPoolPreparedStatements(true);
+		processors = new HashMap<Connection, IQueryProcessor>();
 	}
 
 	/**
@@ -139,7 +152,8 @@ public abstract class SessionImpl implements ISession {
 	 *             thrown if connection cannot be established
 	 */
 	protected Connection openConnection() throws SQLException {
-		connection = DriverManager.getConnection(url, user, password);
+		//connection = DriverManager.getConnection(url, user, password);
+		connection = bds.getConnection();
 		connection.setAutoCommit(isAutoCommit());
 		return connection;
 	}

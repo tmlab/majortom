@@ -95,5 +95,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>topicmapslab-public</id>
+			<name>Topic Maps Lab Repositiory</name>
+			<url>scpexe://topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+		</repository>
+	</distributionManagement>
 </project>
