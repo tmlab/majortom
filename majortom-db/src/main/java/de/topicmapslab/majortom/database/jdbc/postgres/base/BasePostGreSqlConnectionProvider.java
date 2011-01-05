@@ -227,14 +227,14 @@ public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionPr
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String getDriverClassName() {
+	public String getDriverClassName() {
 		return ORG_POSTGRESQL_DRIVER;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String getRdbmsName() {
+	public String getRdbmsName() {
 		return POSTGRESQL;
 	}
 

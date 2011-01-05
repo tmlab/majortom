@@ -242,20 +242,6 @@ public abstract class RDBMSConnectionProvider implements IConnectionProvider {
 	}
 
 	/**
-	 * Returning the name of the used RDBMS
-	 * 
-	 * @return the name of the RDBMS
-	 */
-	protected abstract String getRdbmsName();
-
-	/**
-	 * Returning the name of the used driver class
-	 * 
-	 * @return the name of the used driver class
-	 */
-	protected abstract String getDriverClassName();
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public DatabaseMetaData getDatabaseMetaData() throws TopicMapStoreException {

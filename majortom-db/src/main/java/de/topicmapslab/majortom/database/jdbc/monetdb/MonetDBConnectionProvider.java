@@ -5,11 +5,11 @@ import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 
 public class MonetDBConnectionProvider extends RDBMSConnectionProvider {
 
-	protected String getRdbmsName() {
+	public String getRdbmsName() {
 		return "monetdb";
 	}
 
-	protected String getDriverClassName() {
+	public String getDriverClassName() {
 		return "nl.cwi.monetdb.jdbc.MonetDriver";
 	}
 	
