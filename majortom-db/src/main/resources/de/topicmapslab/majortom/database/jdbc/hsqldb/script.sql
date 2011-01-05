@@ -27,7 +27,7 @@ END;;
 DROP TABLE IF EXISTS locators;;
 CREATE MEMORY TABLE locators (
     id BIGINT GENERATED ALWAYS AS IDENTITY(START WITH 1) PRIMARY KEY,
-    reference character varying(1024) NOT NULL
+    reference character varying(1024) UNIQUE NOT NULL
 );;
 
 DROP TABLE IF EXISTS topicmaps;;
