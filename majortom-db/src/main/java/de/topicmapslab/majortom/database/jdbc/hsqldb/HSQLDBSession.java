@@ -23,10 +23,9 @@ public class HSQLDBSession extends RDBMSSession {
 		numProcessors++;
 		return new RDBMSQueryProcessor(this, connection);
 	}
-	
-	@Override
-	protected Connection openConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:hsqldb:file:data/" + getConnectionProvider().getDatabase(), "SA", "");
-	}
 
+	@Override
+	public boolean isAutoCommit() {
+		return false;
+	}
 }

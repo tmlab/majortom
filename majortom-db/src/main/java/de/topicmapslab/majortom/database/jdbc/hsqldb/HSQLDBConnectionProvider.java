@@ -5,7 +5,9 @@ import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSQueryProcessor;
 import de.topicmapslab.majortom.database.jdbc.rdbms.RDBMSSession;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 
-public class HSQLDBConnectionProvider  extends RDBMSConnectionProvider{
+public class HSQLDBConnectionProvider extends RDBMSConnectionProvider{
+	
+	private static RDBMSSession session;
 	
 	public HSQLDBConnectionProvider() {
 		RDBMSQueryProcessor.GENERATED_KEY_COLUMN_NAME = "ID";
@@ -17,11 +19,16 @@ public class HSQLDBConnectionProvider  extends RDBMSConnectionProvider{
 		DatatypeAwareUtils.setDateTimeFormat("yyyy-MM-dd HH:mm:ss.SSSSS+HH:mm");
 	}
 	
-	protected String getRdbmsName() {
+	public String getRdbmsName() {
 		return "hsqldb:hsql";
 	}
-	
-	protected String getDriverClassName() {
+
+	@Override
+	protected String getUrl() {
+		return "jdbc:hsqldb:file:data/" + getDatabase();
+	}
+
+	public String getDriverClassName() {
 		return "org.hsqldb.jdbc.JDBCDriver";
 	}
 	
@@ -29,8 +36,11 @@ public class HSQLDBConnectionProvider  extends RDBMSConnectionProvider{
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public RDBMSSession openSession() {		
-		return new HSQLDBSession(this, getUrl(), getUser(), getPassword());
+	public RDBMSSession openSession() {	
+		if(session == null) {
+			session = new HSQLDBSession(this, getUrl(), getUser(), getPassword());
+		}
+		return session;
 	}
 
 }
