@@ -1289,14 +1289,41 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 		if (topicMap.getId().equalsIgnoreCase(Long.toString(id))) {
 			return topicMap;
 		}
-		PreparedStatement stmt = queryBuilder.getQueryReadConstructById();
+		int result = (int) (id%8);
+		String column = "", type = "";
+		switch(result) {
+			case 1: column = "topicmaps";
+					type = "tm";
+					break;
+			case 2: column = "topics";
+					type = "t";
+					break;
+			case 4: column = "associations";
+					type = "a";
+					break;
+			case 5: column = "names";
+					type = "n";
+					break;
+			case 6: column = "occurrences";
+					type = "o";
+					break;
+			case 7: column = "roles";
+					type = "r";
+					break;
+		}
+		
+		
+		//PreparedStatement stmt = queryBuilder.getQueryReadConstructById();
+		PreparedStatement stmt = queryBuilder.getQueryReadConstructById(column, type);
 		stmt.setLong(1, id);
-		stmt.setLong(2, id);
-		stmt.setLong(3, id);
-		stmt.setLong(4, id);
-		stmt.setLong(5, id);
-		stmt.setLong(6, id);
-		stmt.setLong(7, id);
+		if (result == 5) {
+			stmt.setLong(2, id);
+		}
+//		stmt.setLong(3, id);
+//		stmt.setLong(4, id);
+//		stmt.setLong(5, id);
+//		stmt.setLong(6, id);
+//		stmt.setLong(7, id);
 		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
 		if (c.isEmpty()) {
 			if (lookupHistory) {
@@ -1311,26 +1338,40 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IConstruct doReadConstruct(ITopicMap topicMap, ILocator itemIdentifier) throws SQLException {
-		PreparedStatement stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
-		long topicMapId = Long.parseLong(topicMap.getId());
+		PreparedStatement stmt = queryBuilder.getQueryReadConstructIdsByItemIdentifier();
 		stmt.setString(1, itemIdentifier.getReference());
-		stmt.setLong(2, topicMapId);
-		stmt.setString(3, itemIdentifier.getReference());
-		stmt.setLong(4, topicMapId);
-		stmt.setString(5, itemIdentifier.getReference());
-		stmt.setLong(6, topicMapId);
-		stmt.setString(7, itemIdentifier.getReference());
-		stmt.setLong(8, topicMapId);
-		stmt.setString(9, itemIdentifier.getReference());
-		stmt.setLong(10, topicMapId);
-		stmt.setString(11, itemIdentifier.getReference());
-		stmt.setLong(12, topicMapId);
-		stmt.setString(13, itemIdentifier.getReference());
-		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
-		if (c.isEmpty()) {
+		
+		ResultSet rs = stmt.executeQuery();
+		Collection<IConstruct> result = HashUtil.getHashSet();
+		while(rs.next()) {
+			result.add(doReadConstruct(topicMap, rs.getLong("id_construct"), false));
+		}
+		
+//		PreparedStatement stmt = queryBuilder.getQueryReadConstructByItemIdentifier();
+//		long topicMapId = Long.parseLong(topicMap.getId());
+//		stmt.setString(1, itemIdentifier.getReference());
+//		stmt.setLong(2, topicMapId);
+//		stmt.setString(3, itemIdentifier.getReference());
+//		stmt.setLong(4, topicMapId);
+//		stmt.setString(5, itemIdentifier.getReference());
+//		stmt.setLong(6, topicMapId);
+//		stmt.setString(7, itemIdentifier.getReference());
+//		stmt.setLong(8, topicMapId);
+//		stmt.setString(9, itemIdentifier.getReference());
+//		stmt.setLong(10, topicMapId);
+//		stmt.setString(11, itemIdentifier.getReference());
+//		stmt.setLong(12, topicMapId);
+//		stmt.setString(13, itemIdentifier.getReference());
+//		stmt.setLong(3, topicMapId);
+//		stmt.setLong(4, topicMapId);
+//		stmt.setLong(5, topicMapId);
+//		stmt.setLong(6, topicMapId);
+//		stmt.setLong(7, topicMapId);
+//		Collection<IConstruct> c = Jdbc2Construct.toConstructs(topicMap, stmt.executeQuery());
+		if (result.isEmpty()) {
 			return null;
 		}
-		return c.iterator().next();
+		return result.iterator().next();
 	}
 
 	/**
@@ -4553,8 +4594,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
 			throws SQLException {
 		PreparedStatement p = queryBuilder.getQuerySelectConstructIdentifiersByPattern();
-		String pattern = "^" + regExp + "$";
-		p.setString(1, pattern);
+		p.setString(1, regExp);
 		
 		ResultSet rs = p.executeQuery();
 		Vector<Long> results = new Vector<Long>();
@@ -4595,8 +4635,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset,
 			long limit) throws SQLException {
 		PreparedStatement p = queryBuilder.getQuerySelectConstructItemIdentifiersByPattern();
-		String pattern = "^" + regExp + "$";
-		p.setString(1, pattern);
+		p.setString(1, regExp);
 		ResultSet rs = p.executeQuery();
 		Vector<Long> results = new Vector<Long>();
 		while(rs.next())
@@ -4634,7 +4673,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectIdentitifer(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setString(2, "^" + regExp + "$");
+		stmt.setString(2, regExp);
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
@@ -4649,7 +4688,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 			throws SQLException {
 		PreparedStatement stmt = queryBuilder.getQuerySelectTopicsBySubjectLocator(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
-		stmt.setString(2, "^" + regExp + "$");
+		stmt.setString(2, regExp);
 		if (offset != -1) {
 			stmt.setLong(3, offset);
 			stmt.setLong(4, limit);
