@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.topicmapslab.majortom.database.jdbc.model.IQueryBuilder;
@@ -32,7 +33,6 @@ import de.topicmapslab.majortom.database.jdbc.rdbms.query.IDeleteQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IDumpQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IIndexQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IInsertQueries;
-import de.topicmapslab.majortom.database.jdbc.rdbms.query.IQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IRevisionQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.ISelectQueries;
 import de.topicmapslab.majortom.database.jdbc.rdbms.query.IUpdateQueries;
@@ -75,6 +75,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 * Returns the connection of the connection provider to modify database
 	 * 
 	 * @return the connection
+	 * @throws SQLException 
 	 */
 	protected Connection getConnection() {
 		return getProcessor().getConnection();
@@ -88,11 +89,11 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 			for (Field field : getClass().getDeclaredFields()) {
 				if (PreparedStatement.class.equals(field.getType())) {
 					PreparedStatement stmt = (PreparedStatement) field.get(this);
-					if (stmt != null) {
+					if (stmt != null && !stmt.isClosed()) {
 						try {
 							stmt.cancel();
 						} catch (SQLException e) {
-							System.out.println("canceling not supported, skipping...");
+							//System.out.println("canceling not supported, skipping...");
 						}
 						stmt.close();
 					}
@@ -340,6 +341,9 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	private PreparedStatement preparedStatementReadUsedScopeByThemes;
 
 	private PreparedStatement preparedStatementReadNumberOfTopics;
+	private HashMap<String,PreparedStatement> constructByIdStatements;
+	//private HashMap<String, PreparedStatement> constructByItemIdentifierStatements;
+	private PreparedStatement preparedStatementReadConstructIdsByItemIdentifier;
 	
 	public PreparedStatement getQueryReadNumberOfTopics() throws SQLException{
 		
@@ -404,6 +408,20 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 		}
 		return this.preparedStatementReadConstructById;
 	}
+	
+	public PreparedStatement getQueryReadConstructById(String columnName, String type) throws SQLException {
+		if(constructByIdStatements == null)
+			constructByIdStatements = new HashMap<String, PreparedStatement>();
+		PreparedStatement stmt = constructByIdStatements.get(columnName);
+		if(stmt != null)
+			return stmt;
+		String query = ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT_STD.replace("%TYPE%", type).replace("%COLUMN%", columnName);
+		if(columnName.equalsIgnoreCase("names"))
+			query += " UNION " + ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT_VARIANT;
+		stmt = getConnection().prepareStatement(query);
+		constructByIdStatements.put(columnName, stmt);
+		return stmt;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -414,6 +432,14 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 					ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT_BY_ITEM_IDENTIFIER);
 		}
 		return this.preparedStatementReadConstructByItemIdentifier;
+	}
+	
+	public PreparedStatement getQueryReadConstructIdsByItemIdentifier() throws SQLException {
+		if(this.preparedStatementReadConstructIdsByItemIdentifier == null) {
+			this.preparedStatementReadConstructIdsByItemIdentifier = getConnection().prepareStatement(
+					ISelectQueries.NonPaged.QUERY_READ_CONSTRUCT_ID_BY_ITEM_IDENTIFIER);
+		}
+		return this.preparedStatementReadConstructIdsByItemIdentifier;
 	}
 
 	/**
@@ -3666,7 +3692,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	}
 
 	public PreparedStatement getQueryDuplicateAssociations() throws SQLException {
-		if (this.preparedStatementDuplicateAssociations == null) {
+		if (this.preparedStatementDuplicateAssociations == null || this.preparedStatementDuplicateAssociations.isClosed()) {
 			this.preparedStatementDuplicateAssociations = getConnection().prepareStatement(
 					IConstraintsQueries.QUERY_DUPLICATE_ASSOCIATIONS);
 		}
