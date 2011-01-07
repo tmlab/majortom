@@ -34,6 +34,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyAssociationRole extends ReadOnlyAssociationRole {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String reifierId;
 	private final String typeId, playerId;
 	private String parentId;

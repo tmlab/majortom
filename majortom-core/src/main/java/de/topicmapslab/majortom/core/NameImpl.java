@@ -47,6 +47,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1511999973332479713L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity

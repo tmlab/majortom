@@ -24,6 +24,11 @@ import de.topicmapslab.majortom.model.core.IVariant;
 public abstract class ReadOnlyVariant extends ReadOnlyDatatypeAware implements IVariant {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 886824371721326354L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyVariant(IVariant clone) {

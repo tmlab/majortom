@@ -33,8 +33,6 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  */
 public abstract class SessionImpl implements ISession {
 
-	private static final String WORKAROUND = "SELECT id FROM topics OFFSET 0 LIMIT 1";
-
 	private final String user;
 	private final String password;
 	private final String url;
@@ -135,12 +133,12 @@ public abstract class SessionImpl implements ISession {
 		if (connection == null || connection.isClosed()) {
 			return false;
 		}
-//		try {
-//			connection.createStatement().execute(WORKAROUND);
-//		} catch (Exception e) {
-//			close();
-//			return false;
-//		}
+		try {
+			connection.setAutoCommit(true);
+		} catch (Exception e) {
+			close();
+			return false;
+		}
 		return true;
 	}
 

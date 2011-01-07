@@ -33,6 +33,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public abstract class ReadOnlyScopable extends ReadOnlyReifiable implements IScopable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7905827035691626710L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param clone

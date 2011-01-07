@@ -39,6 +39,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Set<Locator> subjectIdentifiers = HashUtil.getHashSet();
 	private Set<Locator> subjectLocators = HashUtil.getHashSet();
 	private Set<String> typesIds = HashUtil.getHashSet();

@@ -34,6 +34,11 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 public abstract class ReifiableImpl extends ConstructImpl implements IReifiable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7359295275519843778L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity

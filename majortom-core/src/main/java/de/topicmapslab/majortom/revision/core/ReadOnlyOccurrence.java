@@ -26,6 +26,11 @@ import de.topicmapslab.majortom.model.core.IOccurrence;
 public abstract class ReadOnlyOccurrence extends ReadOnlyDatatypeAware implements IOccurrence {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7622385720655993107L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyOccurrence(IOccurrence clone) {

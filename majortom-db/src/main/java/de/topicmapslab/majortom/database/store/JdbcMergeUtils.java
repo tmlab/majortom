@@ -1082,7 +1082,7 @@ public class JdbcMergeUtils {
 				Set<ITopic> themes = HashUtil.getHashSet();
 				for(Topic t:occ.getScope())
 					themes.add(newTopics.get(t));
-				IScope scope = store.doCreateScope(topicMap, themes);
+//				IScope scope = store.doCreateScope(topicMap, themes);
 				ILocator datatype = (ILocator) store.getTopicMap().createLocator(occ.getDatatype().getReference());
 				
 				IOccurrence newOccurrence = store.doCreateOccurrence(newTopic, type, occ.getValue(), datatype, themes);

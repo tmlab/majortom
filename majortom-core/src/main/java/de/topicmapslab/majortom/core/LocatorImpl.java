@@ -35,6 +35,10 @@ import de.topicmapslab.majortom.model.core.ILocator;
  */
 public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2475883158229059516L;
 	private final URI uri;
 	private final String reference;
 	private final String id;

@@ -32,6 +32,11 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 public abstract class ReadOnlyAssociation extends ReadOnlyScopable implements IAssociation {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 357038401235689887L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyAssociation(IAssociation clone) {

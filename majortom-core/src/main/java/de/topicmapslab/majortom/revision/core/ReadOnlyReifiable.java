@@ -29,6 +29,11 @@ import de.topicmapslab.majortom.model.core.IReifiable;
 public abstract class ReadOnlyReifiable extends ReadOnlyConstruct implements IReifiable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4210842121389259750L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param clone

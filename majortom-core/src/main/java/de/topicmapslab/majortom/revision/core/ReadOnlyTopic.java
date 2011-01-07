@@ -43,6 +43,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public abstract class ReadOnlyTopic extends ReadOnlyConstruct implements ITopic {
 		
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8392859869889486513L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param clone

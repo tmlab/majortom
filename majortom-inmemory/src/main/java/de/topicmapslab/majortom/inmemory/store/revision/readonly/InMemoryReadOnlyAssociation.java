@@ -38,6 +38,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyAssociation extends ReadOnlyAssociation {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String reifierId;
 	private final String typeId;
 	private final Set<String> roleIds = HashUtil.getHashSet();

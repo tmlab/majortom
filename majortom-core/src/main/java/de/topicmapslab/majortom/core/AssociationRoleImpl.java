@@ -32,6 +32,8 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public class AssociationRoleImpl extends ReifiableImpl implements IAssociationRole {
 
+	private static final long serialVersionUID = -7838350394983745862L;
+
 	/**
 	 * constructor
 	 * 
