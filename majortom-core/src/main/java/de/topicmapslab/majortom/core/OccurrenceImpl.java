@@ -33,6 +33,11 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 public class OccurrenceImpl extends DataTypeAwareImpl implements IOccurrence {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9106360836112918931L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity

@@ -43,6 +43,8 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public abstract class DataTypeAwareImpl extends ScopeableImpl implements IDatatypeAware {
 
+	private static final long serialVersionUID = -1549445583958049344L;
+
 	/**
 	 * constructor
 	 * 

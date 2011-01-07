@@ -26,6 +26,11 @@ import de.topicmapslab.majortom.model.core.IAssociationRole;
 public abstract class ReadOnlyAssociationRole extends ReadOnlyReifiable implements IAssociationRole {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5884008938129512777L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyAssociationRole(IAssociationRole clone) {

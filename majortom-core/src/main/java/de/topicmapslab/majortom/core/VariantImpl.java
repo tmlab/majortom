@@ -28,6 +28,11 @@ import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 public class VariantImpl extends DataTypeAwareImpl implements IVariant {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5589243111079475788L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity

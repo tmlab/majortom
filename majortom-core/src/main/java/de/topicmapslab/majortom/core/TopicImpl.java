@@ -55,6 +55,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class TopicImpl extends ConstructImpl implements ITopic, IPagedTopic {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4379325386936071489L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity

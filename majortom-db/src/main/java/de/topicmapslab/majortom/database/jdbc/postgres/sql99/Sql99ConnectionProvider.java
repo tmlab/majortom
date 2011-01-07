@@ -63,8 +63,7 @@ public class Sql99ConnectionProvider extends BasePostGreSqlConnectionProvider {
 	@Override
 	@SuppressWarnings("unchecked")
 	public SQL99Session openSession() {
-		return (SQL99Session)getGlobalSession();
-//		return new SQL99Session(this, getUrl(), getUser(), getPassword());
+		return new SQL99Session(this, getUrl(), getUser(), getPassword());
 	}
 	
 	/**

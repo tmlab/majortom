@@ -20,6 +20,7 @@ package de.topicmapslab.majortom.tests.index.paged;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import de.topicmapslab.majortom.tests.index.paged.withcomp.PagedComparedIndexTestSuite;
 import de.topicmapslab.majortom.tests.index.paged.withoutcomp.PagedNonComparedIndexTestSuite;
 
 /**
@@ -32,7 +33,7 @@ public class PagedIndexTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.majortom.tests.index.paged");
 		// $JUnit-BEGIN$
 		suite.addTest(PagedNonComparedIndexTestSuite.suite());
-//		 suite.addTest(PagedComparedIndexTestSuite.suite());
+		 suite.addTest(PagedComparedIndexTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

@@ -52,6 +52,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -178217028741481602L;
+
+	/**
 	 * the reference to the topic map store
 	 */
 	private ITopicMapStore store;

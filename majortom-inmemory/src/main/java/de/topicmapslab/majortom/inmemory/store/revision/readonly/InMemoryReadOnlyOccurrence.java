@@ -25,7 +25,6 @@ import de.topicmapslab.majortom.core.ScopeImpl;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
 import de.topicmapslab.majortom.revision.core.ReadOnlyTopic;
@@ -38,6 +37,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyOccurrence extends ReadOnlyOccurrence {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String typeId;
 	private final String reifierId;
 	private String parentId;

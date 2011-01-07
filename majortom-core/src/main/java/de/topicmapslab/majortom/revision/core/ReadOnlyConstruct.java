@@ -30,6 +30,10 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
  */
 public abstract class ReadOnlyConstruct implements IConstruct {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1867711896100911001L;
 	private String id;
 	private ITopicMap topicMap;
 

@@ -37,6 +37,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyName extends ReadOnlyName {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Set<String> variantIds = HashUtil.getHashSet();
 	private final String typeId;
 	private final String value;

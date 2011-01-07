@@ -31,6 +31,10 @@ import de.topicmapslab.majortom.transaction.TransactionImpl;
  */
 public class InMemoryTransaction extends TransactionImpl {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8470350200554982763L;
 	private final TransactionTopicMapStore transactionTopicMapStore;
 
 	/**

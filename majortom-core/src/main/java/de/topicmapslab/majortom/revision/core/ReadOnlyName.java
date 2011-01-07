@@ -35,6 +35,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public abstract class ReadOnlyName extends ReadOnlyScopable implements IName {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6247793655024874694L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyName(IName clone) {

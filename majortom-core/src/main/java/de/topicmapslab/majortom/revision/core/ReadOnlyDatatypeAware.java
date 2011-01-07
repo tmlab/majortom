@@ -38,6 +38,11 @@ import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 public abstract class ReadOnlyDatatypeAware extends ReadOnlyScopable implements IDatatypeAware {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4773239352132505678L;
+
+	/**
 	 * @param clone
 	 */
 	public ReadOnlyDatatypeAware(IDatatypeAware clone) {

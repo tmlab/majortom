@@ -26,7 +26,6 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
-import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.core.ReadOnlyName;
 import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
@@ -39,6 +38,10 @@ import de.topicmapslab.majortom.util.HashUtil;
  */
 public class InMemoryReadOnlyVariant extends ReadOnlyVariant {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String reifierId;
 	private String parentId;
 	private final Set<String> themeIds = HashUtil.getHashSet();

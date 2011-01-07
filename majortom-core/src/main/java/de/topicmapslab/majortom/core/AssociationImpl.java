@@ -40,6 +40,8 @@ import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
  */
 public class AssociationImpl extends ScopeableImpl implements IAssociation, IPagedAssociation {
 
+	private static final long serialVersionUID = -7045605297867030798L;
+
 	/**
 	 * constructor
 	 * 

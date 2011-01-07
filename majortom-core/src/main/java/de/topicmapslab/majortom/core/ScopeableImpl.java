@@ -39,6 +39,11 @@ import de.topicmapslab.majortom.util.HashUtil;
 public abstract class ScopeableImpl extends ReifiableImpl implements IScopable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8310691320454140302L;
+
+	/**
 	 * constructor
 	 * 
 	 * @param identity the {@link ITopicMapStoreIdentity}
