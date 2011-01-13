@@ -923,6 +923,18 @@ public class Cache extends ReadOnlyTopicMapStoreImpl {
 		}
 		return bestLabel;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestIdentifier(ITopic topic, boolean withPrefix) {
+		String bestIdentifier = cache.getIdentityCache().getBestIdentifier(topic, withPrefix);
+		if (bestIdentifier == null) {
+			bestIdentifier = getParentStore().doReadBestIdentifier(topic, withPrefix);
+			cache.getIdentityCache().cacheBestIdentifier(topic, withPrefix, bestIdentifier);
+		}
+		return bestIdentifier;
+	}
 
 	@Override
 	public ILocator doCreateLocator(ITopicMap topicMap, String reference) throws TopicMapStoreException {

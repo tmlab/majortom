@@ -19,6 +19,8 @@ package de.topicmapslab.majortom.core;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.tmapi.core.Association;
@@ -36,7 +38,9 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.ITopicMapSystem;
+import de.topicmapslab.majortom.model.core.paged.IPagedTopicMap;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
+import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -49,7 +53,7 @@ import de.topicmapslab.majortom.util.HashUtil;
  * @author Sven Krosse
  * 
  */
-public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
+public class TopicMapImpl extends ReifiableImpl implements ITopicMap, IPagedTopicMap {
 
 	/**
 	 * 
@@ -126,8 +130,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (type == null) {
 			throw new IllegalArgumentException("Association type filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this,
-				TopicMapStoreParameterType.ASSOCIATION, type));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type));
 	}
 
 	/**
@@ -138,8 +141,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this,
-				TopicMapStoreParameterType.ASSOCIATION, scope));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, scope));
 	}
 
 	/**
@@ -153,8 +155,40 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (scope == null) {
 			throw new IllegalArgumentException("Association scope filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this,
-				TopicMapStoreParameterType.ASSOCIATION, type, scope));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION, type, scope));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Association> getAssociations(int offset, int limit) {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getAssociations(offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Association> getAssociations(int offset, int limit, Comparator<Association> comparator) {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getAssociations(offset, limit, comparator);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations() {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfAssociations();
 	}
 
 	/**
@@ -190,8 +224,40 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		if (type == null) {
 			throw new IllegalArgumentException("Topic type filter cannot be null.");
 		}
-		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this,
-				TopicMapStoreParameterType.TOPIC, type));
+		return Collections.unmodifiableCollection((Collection<T>) getStore().doRead(this, TopicMapStoreParameterType.TOPIC, type));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getTopics(int offset, int limit) {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getTopics(offset, limit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getTopics(int offset, int limit, Comparator<Topic> comparator) {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getTopics(offset, limit, comparator);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfTopics() {
+		IPagedConstructIndex index = getIndex(IPagedConstructIndex.class);
+		if (!index.isOpen()) {
+			index.open();
+		}
+		return index.getNumberOfTopics();
 	}
 
 	/**
@@ -272,8 +338,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Topic createTopicByItemIdentifier(Locator identifier) throws IdentityConstraintException,
-			ModelConstraintException {
+	public Topic createTopicByItemIdentifier(Locator identifier) throws IdentityConstraintException, ModelConstraintException {
 		if (identifier == null) {
 			throw new ModelConstraintException(this, "Item-identifier cannot be null");
 		}
@@ -288,8 +353,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 		} else if (c instanceof Topic) {
 			return (Topic) c;
 		}
-		throw new IdentityConstraintException(c, null, identifier,
-					"Item-Identifier already used by a construct which is not a topic!");
+		throw new IdentityConstraintException(c, null, identifier, "Item-Identifier already used by a construct which is not a topic!");
 	}
 
 	/**
@@ -311,8 +375,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			topic.addSubjectIdentifier(identifier);
 			return topic;
 		}
-		throw new IdentityConstraintException(c, null, identifier,
-				"Item-Identifier already used by a construct which is not a topic!");
+		throw new IdentityConstraintException(c, null, identifier, "Item-Identifier already used by a construct which is not a topic!");
 	}
 
 	/**
@@ -323,8 +386,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 			throw new ModelConstraintException(this, "Subject-locator cannot be null");
 		}
 		Topic topic = getTopicBySubjectLocator(locator);
-		return topic != null ? topic : (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_SUBJECT_LOCATOR,
-				locator);
+		return topic != null ? topic : (Topic) getStore().doCreate(this, TopicMapStoreParameterType.BY_SUBJECT_LOCATOR, locator);
 	}
 
 	/**
@@ -332,8 +394,7 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Association> getAssociations() {
-		return Collections.unmodifiableSet((Set<Association>) getStore().doRead(this,
-				TopicMapStoreParameterType.ASSOCIATION));
+		return Collections.unmodifiableSet((Set<Association>) getStore().doRead(this, TopicMapStoreParameterType.ASSOCIATION));
 	}
 
 	/**

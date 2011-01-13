@@ -1061,15 +1061,6 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException {
-		PreparedStatement stmt = getQueryBuilder().getQueryReadAssociation();
-		stmt.setLong(1, Long.parseLong(tm.getId()));
-		return Jdbc2Construct.toAssociations(tm, stmt.executeQuery(), "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryReadAssociationWithType();
 		stmt.setLong(1, Long.parseLong(tm.getId()));
@@ -1468,15 +1459,6 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		stmt.setString(2, subjectLocator.getReference());
 		ResultSet set = stmt.executeQuery();
 		return Jdbc2Construct.toTopic(t, set, "id");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<ITopic> doReadTopics(ITopicMap t) throws SQLException {
-		PreparedStatement stmt = getQueryBuilder().getQueryReadTopics();
-		stmt.setLong(1, Long.parseLong(t.getId()));
-		return Jdbc2Construct.toTopics(t, stmt.executeQuery(), "id");
 	}
 
 	/**
@@ -4853,7 +4835,8 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 			PreparedStatement stmt = getQueryBuilder().getQueryTopicDump();
 			stmt.setLong(1, revision.getId());
 			stmt.setString(2, doReadBestLabel(topic));
-			stmt.setLong(3, Long.parseLong(topic.getId()));
+			stmt.setString(3, doReadBestIdentifier(topic, true));
+			stmt.setLong(4, Long.parseLong(topic.getId()));
 			stmt.execute();
 		}
 	}
@@ -5018,6 +5001,10 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 							break;
 						case BEST_LABEL: {
 							results.put(type, rs.getString("bestlabel"));
+						}
+							break;
+						case BEST_IDENTIFIER: {
+							results.put(type, rs.getString("bestIdentifier"));
 						}
 							break;
 					}

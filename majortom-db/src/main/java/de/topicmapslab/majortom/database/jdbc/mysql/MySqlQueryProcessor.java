@@ -4927,6 +4927,10 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							results.put(type, rs.getString("bestlabel"));
 						}
 							break;
+						case BEST_IDENTIFIER: {
+							results.put(type, rs.getString("bestIdentifier"));
+						}
+							break;
 					}
 				}
 			}

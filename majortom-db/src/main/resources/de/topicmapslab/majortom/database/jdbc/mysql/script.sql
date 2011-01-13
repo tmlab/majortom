@@ -134,6 +134,7 @@ CREATE TABLE history
   datatype varchar(1024),
   roles varchar(1024),
   bestlabel varchar(256),
+  bestIdentifier varchar(256),
   CONSTRAINT pk_history PRIMARY KEY (id, id_revision, id_topicmap),
   CONSTRAINT fk_history_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE

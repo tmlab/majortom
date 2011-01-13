@@ -31,6 +31,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.paged.IPagedAssociation;
 import de.topicmapslab.majortom.model.core.paged.IPagedName;
 import de.topicmapslab.majortom.model.core.paged.IPagedTopic;
+import de.topicmapslab.majortom.model.core.paged.IPagedTopicMap;
 import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 
@@ -39,6 +40,94 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
  * 
  */
 public class TestPagedConstructIndex extends MaJorToMTestCase {
+
+	/**
+	 * Test method for
+	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedConstructIndex#getAssociations(int, int)} .
+	 */
+	public void testGetAssociationsIntInt() throws Exception {
+		IPagedConstructIndex index = topicMap.getIndex(IPagedConstructIndex.class);
+		assertNotNull(index);
+		try {
+			index.getNumberOfNames(null);
+			fail("Index should be closed!");
+		} catch (Exception e) {
+			index.open();
+		}
+		Association[] associations = new Association[101];
+		for (int j = 0; j < 101; j++) {
+			associations[j] = createAssociation(createTopic());
+		}
+		List<Association> list = null;
+
+		/*
+		 * using index methods
+		 */
+		assertEquals(101, index.getNumberOfAssociations());
+
+		for (int i = 0; i < 10; i++) {
+			list = index.getAssociations(i * 10, 10);
+			assertEquals(10, list.size());
+		}
+		list = index.getAssociations(100, 10);
+		assertEquals(1, list.size());
+
+		/*
+		 * using construct methods
+		 */
+		assertEquals(101, ((IPagedTopicMap) topicMap).getNumberOfAssociations());
+
+		for (int i = 0; i < 10; i++) {
+			list = ((IPagedTopicMap) topicMap).getAssociations(i * 10, 10);
+			assertEquals(10, list.size());
+		}
+		list = ((IPagedTopicMap) topicMap).getAssociations(100, 10);
+		assertEquals(1, list.size());
+	}
+	
+	/**
+	 * Test method for
+	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedConstructIndex#getTopics(int, int)} .
+	 */
+	public void testGetTopicsIntInt() throws Exception {
+		IPagedConstructIndex index = topicMap.getIndex(IPagedConstructIndex.class);
+		assertNotNull(index);
+		try {
+			index.getNumberOfNames(null);
+			fail("Index should be closed!");
+		} catch (Exception e) {
+			index.open();
+		}
+		Topic[] topics = new Topic[101];
+		for (int j = 0; j < 101; j++) {
+			topics[j] = createTopic();
+		}
+		List<Topic> list = null;
+
+		/*
+		 * using index methods
+		 */
+		assertEquals(101, index.getNumberOfTopics());
+
+		for (int i = 0; i < 10; i++) {
+			list = index.getTopics(i * 10, 10);
+			assertEquals(10, list.size());
+		}
+		list = index.getTopics(100, 10);
+		assertEquals(1, list.size());
+
+		/*
+		 * using construct methods
+		 */
+		assertEquals(101, ((IPagedTopicMap) topicMap).getNumberOfTopics());
+
+		for (int i = 0; i < 10; i++) {
+			list = ((IPagedTopicMap) topicMap).getTopics(i * 10, 10);
+			assertEquals(10, list.size());
+		}
+		list = ((IPagedTopicMap) topicMap).getTopics(100, 10);
+		assertEquals(1, list.size());
+	}
 
 	/**
 	 * Test method for
@@ -351,7 +440,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 
 		for (int i = 0; i < 10; i++) {
 			list = index.getSupertypes(topic, i * 10, 10);
-			assertEquals(i+"", 10, list.size());
+			assertEquals(i + "", 10, list.size());
 		}
 		list = index.getSupertypes(topic, 100, 10);
 		assertEquals(1, list.size());

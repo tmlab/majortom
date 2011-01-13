@@ -184,6 +184,13 @@ public class JdbcReadOnlyTopic extends ReadOnlyTopic {
 	public String getBestLabel() {
 		return (String) doReadHistoryValue(TopicMapStoreParameterType.BEST_LABEL);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestIdentifier(boolean withPrefix) {		
+		return (String) doReadHistoryValue(TopicMapStoreParameterType.BEST_IDENTIFIER);
+	}
 
 	/**
 	 * {@inheritDoc}

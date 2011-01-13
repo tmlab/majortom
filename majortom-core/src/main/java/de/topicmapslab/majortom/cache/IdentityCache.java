@@ -107,6 +107,45 @@ class IdentityCache implements ITopicMapListener {
 	 */
 	private Map<ITopic, Set<BestLabelKey>> bestLabelCacheKeys;
 
+	/**
+	 * map to store the best identifiers of a topic
+	 */
+	private Map<BestIdentifierKey, String> bestIdentifiers;
+
+	class BestIdentifierKey {
+		ITopic parent;
+		boolean withPrefix;
+
+		/**
+		 * constructor
+		 */
+		public BestIdentifierKey(ITopic parent, boolean withPrefix) {
+			this.parent = parent;
+			this.withPrefix = withPrefix;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean equals(Object obj) {
+			if (obj instanceof BestIdentifierKey) {
+				boolean result = parent.equals(((BestIdentifierKey) obj).parent);
+				result &= withPrefix == ((BestIdentifierKey) obj).withPrefix;
+				return result;
+			}
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public int hashCode() {
+			int hash = parent.hashCode();
+			hash |= withPrefix ? 1 : 0;
+			return hash;
+		}
+	}
+
 	class BestLabelKey {
 		ITopic parent;
 		ITopic theme;
@@ -188,6 +227,12 @@ class IdentityCache implements ITopicMapListener {
 		if (bestLabelCacheKeys != null) {
 			bestLabelCacheKeys.clear();
 		}
+		if (bestLabels != null) {
+			bestLabels.clear();
+		}
+		if (bestIdentifiers != null) {
+			bestIdentifiers.clear();
+		}
 	}
 
 	/**
@@ -213,8 +258,8 @@ class IdentityCache implements ITopicMapListener {
 	 *            the map
 	 * @param l
 	 *            the locator
-	 * @return the construct or <code>null</code> if the given map is
-	 *         <code>null</code> or does not contain the given key.
+	 * @return the construct or <code>null</code> if the given map is <code>null</code> or does not contain the given
+	 *         key.
 	 */
 	public <T extends IConstruct> T byIdentity(Map<ILocator, T> map, ILocator l) {
 		if (map == null) {
@@ -272,8 +317,7 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Cache the mapping between the item-identifier and the construct into
-	 * internal store.
+	 * Cache the mapping between the item-identifier and the construct into internal store.
 	 * 
 	 * @param l
 	 *            the item-identifier
@@ -288,8 +332,7 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Cache the mapping between the subject-identifier and the topic into
-	 * internal store.
+	 * Cache the mapping between the subject-identifier and the topic into internal store.
 	 * 
 	 * @param l
 	 *            the subject-identifier
@@ -304,8 +347,7 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Cache the mapping between the subject-locator and the topic into internal
-	 * store.
+	 * Cache the mapping between the subject-locator and the topic into internal store.
 	 * 
 	 * @param l
 	 *            the subject-locator
@@ -320,8 +362,7 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Secure extraction of the identities of the given construct from the given
-	 * map.
+	 * Secure extraction of the identities of the given construct from the given map.
 	 * 
 	 * @param <T>
 	 *            the generic type of construct
@@ -329,8 +370,8 @@ class IdentityCache implements ITopicMapListener {
 	 *            the map
 	 * @param construct
 	 *            the construct
-	 * @return the identities or <code>null</code> if the given map is
-	 *         <code>null</code> or does not contain the given key.
+	 * @return the identities or <code>null</code> if the given map is <code>null</code> or does not contain the given
+	 *         key.
 	 */
 	public <T extends IConstruct> Set<ILocator> getIdentities(Map<T, Set<ILocator>> map, T construct) {
 		if (map == null || !map.containsKey(construct)) {
@@ -440,12 +481,10 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Extract the identities contained by the current topic map of the
-	 * specified type.
+	 * Extract the identities contained by the current topic map of the specified type.
 	 * 
 	 * @param key
-	 *            the type of identities ( item-identifiers,
-	 *            subject-identifiers, subject-locators )
+	 *            the type of identities ( item-identifiers, subject-identifiers, subject-locators )
 	 * @return the identifiers or <code>null</code>
 	 */
 	public Set<ILocator> getIdentities(Key key) {
@@ -495,6 +534,39 @@ class IdentityCache implements ITopicMapListener {
 			identities = HashUtil.getHashMap();
 		}
 		identities.put(key, locators);
+	}
+
+	/**
+	 * Returns the best label for the given topic
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param withPrefix
+	 *            flag indicates if the identifier is prefixes
+	 * @return the best label
+	 */
+	public String getBestIdentifier(ITopic t, boolean withPrefix) {
+		if (bestIdentifiers == null) {
+			return null;
+		}
+		return bestIdentifiers.get(new BestIdentifierKey(t, withPrefix));
+	}
+
+	/**
+	 * Cache the best label of the given topic to the internal store.
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param withPrefix
+	 *            flag indicates if the identifier is prefixes
+	 * @param bestIdentifier
+	 *            the best identifier
+	 */
+	public void cacheBestIdentifier(ITopic t, boolean withPrefix, String bestIdentifier) {
+		if (bestIdentifiers == null) {
+			bestIdentifiers = HashUtil.getHashMap();
+		}
+		bestIdentifiers.put(new BestIdentifierKey(t, withPrefix), bestIdentifier);
 	}
 
 	/**
@@ -619,6 +691,20 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
+	 * Removing all best-identifiers of the given topic
+	 * 
+	 * @param topic
+	 *            the topic
+	 */
+	private void removeBestIdentifiers(ITopic topic) {
+		if (bestIdentifiers == null) {
+			return;
+		}
+		bestIdentifiers.remove(new BestIdentifierKey(topic, false));
+		bestIdentifiers.remove(new BestIdentifierKey(topic, true));
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public void topicMapChanged(String id, TopicMapEventType event, Construct notifier, Object newValue, Object oldValue) {
@@ -649,6 +735,7 @@ class IdentityCache implements ITopicMapListener {
 				identities.get(Key.SUBJECT_IDENTIFIER).add(locator);
 			}
 			removeBestLabels(topic);
+			removeBestIdentifiers(topic);
 		}
 		/*
 		 * subject-locator added
@@ -664,6 +751,7 @@ class IdentityCache implements ITopicMapListener {
 				identities.get(Key.SUBJEC_LOCATOR).add(locator);
 			}
 			removeBestLabels(topic);
+			removeBestIdentifiers(topic);
 		}
 		/*
 		 * item-identifier added
@@ -680,6 +768,7 @@ class IdentityCache implements ITopicMapListener {
 			}
 			if (construct instanceof ITopic) {
 				removeBestLabels((ITopic) construct);
+				removeBestIdentifiers((ITopic) construct);
 			}
 		}
 		/*
@@ -698,6 +787,7 @@ class IdentityCache implements ITopicMapListener {
 				identities.get(Key.SUBJECT_IDENTIFIER).remove(locator);
 			}
 			removeBestLabels(topic);
+			removeBestIdentifiers(topic);
 		}
 		/*
 		 * subject-locator removed
@@ -715,6 +805,7 @@ class IdentityCache implements ITopicMapListener {
 				identities.get(Key.SUBJEC_LOCATOR).remove(locator);
 			}
 			removeBestLabels(topic);
+			removeBestIdentifiers(topic);
 		}
 		/*
 		 * item-identifier removed
@@ -733,6 +824,7 @@ class IdentityCache implements ITopicMapListener {
 			}
 			if (construct instanceof ITopic) {
 				removeBestLabels((ITopic) construct);
+				removeBestIdentifiers((ITopic) construct);
 			}
 		}
 		/*
@@ -770,8 +862,7 @@ class IdentityCache implements ITopicMapListener {
 	}
 
 	/**
-	 * Internal method to remove all topic dependent entries from internal
-	 * caches.
+	 * Internal method to remove all topic dependent entries from internal caches.
 	 * 
 	 * @param topic
 	 *            the topic reference to remove

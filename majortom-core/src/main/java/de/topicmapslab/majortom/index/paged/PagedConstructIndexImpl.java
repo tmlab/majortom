@@ -60,7 +60,9 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 
 		ROLES,
 
-		ASSOCIATION
+		ASSOCIATION,
+
+		TOPIC
 	}
 
 	private Map<ConstructCacheKey, Long> cachedNumbersOfChildren;
@@ -77,11 +79,77 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	/**
 	 * {@inheritDoc}
 	 */
+	public List<Association> getAssociations(int offset, int limit) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetAssociations(offset, limit);
+		}
+		List<Association> cache = readConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap(), offset, limit);
+		if (cache == null) {
+			cache = doGetAssociations(offset, limit);
+			cacheConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap(), offset, limit, cache);
+		}
+		return cache;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Association> getAssociations(int offset, int limit, Comparator<Association> comparator) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetAssociations(offset, limit);
+		}
+		List<Association> cache = readConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap(), offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetAssociations(offset, limit, comparator);
+			cacheConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap(), offset, limit, comparator, cache);
+		}
+		return cache;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfAssociations() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfAssociations();
+		}
+		Long noc = readNumberOfConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap());
+		if (noc == null) {
+			noc = doGetNumberOfAssociations();
+			cacheNumberOfConstructs(Type.ASSOCIATION, getTopicMapStore().getTopicMap(), noc);
+		}
+		return noc;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Association> getAssociationsPlayed(Topic topic, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -105,10 +173,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -132,7 +200,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -156,7 +224,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -180,10 +248,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -207,7 +275,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -231,7 +299,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -255,10 +323,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -282,7 +350,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -306,7 +374,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( association == null ){
+		if (association == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -330,10 +398,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( association == null ){
+		if (association == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -357,7 +425,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( association == null ){
+		if (association == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -381,7 +449,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -405,10 +473,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -432,7 +500,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -456,7 +524,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -480,10 +548,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -507,7 +575,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -527,11 +595,77 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	/**
 	 * {@inheritDoc}
 	 */
+	public List<Topic> getTopics(int offset, int limit) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetTopics(offset, limit);
+		}
+		List<Topic> cache = readConstructs(Type.TOPIC, getTopicMapStore().getTopicMap(), offset, limit);
+		if (cache == null) {
+			cache = doGetTopics(offset, limit);
+			cacheConstructs(Type.TOPIC, getTopicMapStore().getTopicMap(), offset, limit, cache);
+		}
+		return cache;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Topic> getTopics(int offset, int limit, Comparator<Topic> comparator) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (comparator == null) {
+			throw new IllegalArgumentException("Comparator cannot be null.");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetTopics(offset, limit, comparator);
+		}
+		List<Topic> cache = readConstructs(Type.TOPIC, getTopicMapStore().getTopicMap(), offset, limit, comparator);
+		if (cache == null) {
+			cache = doGetTopics(offset, limit, comparator);
+			cacheConstructs(Type.TOPIC, getTopicMapStore().getTopicMap(), offset, limit, comparator, cache);
+		}
+		return cache;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long getNumberOfTopics() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		/*
+		 * is caching is disabled redirect to topic map store
+		 */
+		if (!getTopicMapStore().isCachingEnabled()) {
+			return doGetNumberOfTopics();
+		}
+		Long noc = readNumberOfConstructs(Type.TOPIC, getTopicMapStore().getTopicMap());
+		if (noc == null) {
+			noc = doGetNumberOfTopics();
+			cacheNumberOfConstructs(Type.TOPIC, getTopicMapStore().getTopicMap(), noc);
+		}
+		return noc;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Topic> getTypes(Topic topic, int offset, int limit) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -555,10 +689,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -582,7 +716,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( topic == null ){
+		if (topic == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -606,7 +740,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( name == null ){
+		if (name == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -630,10 +764,10 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( name == null ){
+		if (name == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
-		if ( comparator == null ){
+		if (comparator == null) {
 			throw new IllegalArgumentException("Comparator cannot be null.");
 		}
 		/*
@@ -657,7 +791,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
-		if ( name == null ){
+		if (name == null) {
 			throw new IllegalArgumentException("Argument cannot be null.");
 		}
 		/*
@@ -721,8 +855,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Internal method to read dependent constructs of the given parent
-	 * construct from cache.
+	 * Internal method to read dependent constructs of the given parent construct from cache.
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
@@ -742,8 +875,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Internal method to read dependent constructs of the given parent
-	 * construct from cache.
+	 * Internal method to read dependent constructs of the given parent construct from cache.
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
@@ -775,8 +907,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Internal method to add dependent constructs of the given parent construct
-	 * to internal cache
+	 * Internal method to add dependent constructs of the given parent construct to internal cache
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
@@ -797,8 +928,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Internal method to add dependent constructs of the given parent construct
-	 * to internal cache
+	 * Internal method to add dependent constructs of the given parent construct to internal cache
 	 * 
 	 * @param <X>
 	 *            the type of dependent constructs
@@ -1015,8 +1145,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all types of the given topic as a sorted list within the given
-	 * range.
+	 * Returns all types of the given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose types should be returned
@@ -1026,8 +1155,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all types of the given topic as a sorted list within the given
-	 *         range.
+	 * @return all types of the given topic as a sorted list within the given range.
 	 */
 	protected List<Topic> doGetTypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getTypes());
@@ -1048,8 +1176,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all supetypes of the given topic as a list within the given
-	 * range.
+	 * Returns all supetypes of the given topic as a list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose supetypes should be returned
@@ -1057,8 +1184,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all supetypes of the given topic as a list within the given
-	 *         range.
+	 * @return all supetypes of the given topic as a list within the given range.
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getSupertypes());
@@ -1066,8 +1192,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all supetypes of the given topic as a sorted list within the
-	 * given range.
+	 * Returns all supetypes of the given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose supetypes should be returned
@@ -1077,8 +1202,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all supetypes of the given topic as a sorted list within the
-	 *         given range.
+	 * @return all supetypes of the given topic as a sorted list within the given range.
 	 */
 	protected List<Topic> doGetSupertypes(Topic topic, int offset, int limit, Comparator<Topic> comparator) {
 		List<Topic> list = HashUtil.getList(((ITopic) topic).getSupertypes());
@@ -1115,8 +1239,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all names of the given topic as a sorted list within the given
-	 * range.
+	 * Returns all names of the given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose names should be returned
@@ -1126,8 +1249,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all names of the given topic as a sorted list within the given
-	 *         range.
+	 * @return all names of the given topic as a sorted list within the given range.
 	 */
 	protected List<Name> doGetNames(Topic topic, int offset, int limit, Comparator<Name> comparator) {
 		List<Name> list = HashUtil.getList(((ITopic) topic).getNames());
@@ -1148,8 +1270,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all occurrences of the given topic as a list within the given
-	 * range.
+	 * Returns all occurrences of the given topic as a list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose occurrences should be returned
@@ -1157,8 +1278,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all occurrences of the given topic as a list within the given
-	 *         range.
+	 * @return all occurrences of the given topic as a list within the given range.
 	 */
 	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit) {
 		List<Occurrence> list = HashUtil.getList(((ITopic) topic).getOccurrences());
@@ -1166,8 +1286,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all occurrences of the given topic as a sorted list within the
-	 * given range.
+	 * Returns all occurrences of the given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose occurrences should be returned
@@ -1177,8 +1296,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all occurrences of the given topic as a sorted list within the
-	 *         given range.
+	 * @return all occurrences of the given topic as a sorted list within the given range.
 	 */
 	protected List<Occurrence> doGetOccurrences(Topic topic, int offset, int limit, Comparator<Occurrence> comparator) {
 		List<Occurrence> list = HashUtil.getList(((ITopic) topic).getOccurrences());
@@ -1215,8 +1333,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all variants of the given name as a sorted list within the given
-	 * range.
+	 * Returns all variants of the given name as a sorted list within the given range.
 	 * 
 	 * @param name
 	 *            the name whose variants should be returned
@@ -1226,8 +1343,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all variants of the given name as a sorted list within the given
-	 *         range.
+	 * @return all variants of the given name as a sorted list within the given range.
 	 */
 	protected List<Variant> doGetVariants(Name name, int offset, int limit, Comparator<Variant> comparator) {
 		List<Variant> list = HashUtil.getList(name.getVariants());
@@ -1248,8 +1364,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all roles of the given association as a list within the given
-	 * range.
+	 * Returns all roles of the given association as a list within the given range.
 	 * 
 	 * @param association
 	 *            the association whose roles should be returned
@@ -1257,8 +1372,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all roles of the given association as a list within the given
-	 *         range.
+	 * @return all roles of the given association as a list within the given range.
 	 */
 	protected List<Role> doGetRoles(Association association, int offset, int limit) {
 		List<Role> list = HashUtil.getList(association.getRoles());
@@ -1266,8 +1380,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all roles of the given association as a sorted list within the
-	 * given range.
+	 * Returns all roles of the given association as a sorted list within the given range.
 	 * 
 	 * @param association
 	 *            the association whose roles should be returned
@@ -1277,8 +1390,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all roles of the given association as a sorted list within the
-	 *         given range.
+	 * @return all roles of the given association as a sorted list within the given range.
 	 */
 	protected List<Role> doGetRoles(Association association, int offset, int limit, Comparator<Role> comparator) {
 		List<Role> list = HashUtil.getList(association.getRoles());
@@ -1299,8 +1411,48 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all associations played by given topic as a list within the given
-	 * range.
+	 * Returns all associations of the topic map as a list within the given range.
+	 * 
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @return all associations as a list within the given range.
+	 */
+	protected List<Association> doGetAssociations(int offset, int limit) {
+		List<Association> list = HashUtil.getList(getTopicMapStore().getTopicMap().getAssociations());
+		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns all associations of the topic map as a sorted list within the given range.
+	 * 
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @param comparator
+	 *            the comparator
+	 * @return all associations as a sorted list within the given range.
+	 */
+	protected List<Association> doGetAssociations(int offset, int limit, Comparator<Association> comparator) {
+		List<Association> list = HashUtil.getList(getTopicMapStore().getTopicMap().getAssociations());
+		Collections.sort(list, comparator);
+		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Return the number of associations of the topic map
+	 * 
+	 * @return the number of associations
+	 */
+	protected long doGetNumberOfAssociations() {
+		long noc = getTopicMapStore().getTopicMap().getAssociations().size();
+		return noc;
+	}
+
+	/**
+	 * Returns all associations played by given topic as a list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose played associations should be returned
@@ -1308,8 +1460,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the offset
 	 * @param limit
 	 *            the limit
-	 * @return all associations played by given topic as a list within the given
-	 *         range.
+	 * @return all associations played by given topic as a list within the given range.
 	 */
 	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit) {
 		List<Association> list = HashUtil.getList(((ITopic) topic).getAssociationsPlayed());
@@ -1317,8 +1468,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all associations played by given topic as a sorted list within
-	 * the given range.
+	 * Returns all associations played by given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose played associations should be returned
@@ -1328,8 +1478,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all associations played by given topic as a sorted list within
-	 *         the given range.
+	 * @return all associations played by given topic as a sorted list within the given range.
 	 */
 	protected List<Association> doGetAssociationsPlayed(Topic topic, int offset, int limit, Comparator<Association> comparator) {
 		List<Association> list = HashUtil.getList(((ITopic) topic).getAssociationsPlayed());
@@ -1341,8 +1490,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 * Return the number of played associations of the topic
 	 * 
 	 * @param topic
-	 *            the topic whose number of played associations should be
-	 *            returned
+	 *            the topic whose number of played associations should be returned
 	 * @return the number of played associations
 	 */
 	protected long doGetNumberOfAssociationsPlayed(Topic topic) {
@@ -1367,8 +1515,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	}
 
 	/**
-	 * Returns all roles played by given topic as a sorted list within the given
-	 * range.
+	 * Returns all roles played by given topic as a sorted list within the given range.
 	 * 
 	 * @param topic
 	 *            the topic whose played roles should be returned
@@ -1378,8 +1525,7 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 *            the limit
 	 * @param comparator
 	 *            the comparator
-	 * @return all roles played by given topic as a sorted list within the given
-	 *         range.
+	 * @return all roles played by given topic as a sorted list within the given range.
 	 */
 	protected List<Role> doGetRolesPlayed(Topic topic, int offset, int limit, Comparator<Role> comparator) {
 		List<Role> list = HashUtil.getList(topic.getRolesPlayed());
@@ -1396,6 +1542,47 @@ public abstract class PagedConstructIndexImpl<T extends ITopicMapStore> extends 
 	 */
 	protected long doGetNumberOfRolesPlayed(Topic topic) {
 		long noc = topic.getRolesPlayed().size();
+		return noc;
+	}
+
+	/**
+	 * Returns all topics of the topic map as a list within the given range.
+	 * 
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @return all topic as a list within the given range.
+	 */
+	protected List<Topic> doGetTopics(int offset, int limit) {
+		List<Topic> list = HashUtil.getList(getTopicMapStore().getTopicMap().getTopics());
+		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Returns all topics of the topic map within the given range.
+	 * 
+	 * @param offset
+	 *            the offset
+	 * @param limit
+	 *            the limit
+	 * @param comparator
+	 *            the comparator
+	 * @return all topic as a sorted list within the given range.
+	 */
+	protected List<Topic> doGetTopics(int offset, int limit, Comparator<Topic> comparator) {
+		List<Topic> list = HashUtil.getList(getTopicMapStore().getTopicMap().getTopics());
+		Collections.sort(list, comparator);
+		return HashUtil.secureSubList(list, offset, limit);
+	}
+
+	/**
+	 * Return the number of topics
+	 * 
+	 * @return the number of topics
+	 */
+	protected long doGetNumberOfTopics() {
+		long noc = getTopicMapStore().getTopicMap().getTopics().size();
 		return noc;
 	}
 

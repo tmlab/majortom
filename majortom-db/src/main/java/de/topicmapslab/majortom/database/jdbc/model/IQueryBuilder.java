@@ -28,7 +28,7 @@ import java.sql.SQLException;
 public interface IQueryBuilder {
 
 	public void close();
-	
+
 	public PreparedStatement getQueryReadTopicMapLocators() throws SQLException;
 
 	// ****************
@@ -71,13 +71,13 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadPlayedAssociationWithScope() throws SQLException;
 
-	public PreparedStatement getQueryReadAssociation() throws SQLException;
+	public PreparedStatement getQueryReadAssociation(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadAssociationWithType() throws SQLException;
 
 	public PreparedStatement getQueryReadAssociationWithTypeAndScope() throws SQLException;
 
-//	public PreparedStatement getQueryReadAssociationWithScope() throws SQLException;
+	// public PreparedStatement getQueryReadAssociationWithScope() throws SQLException;
 
 	public PreparedStatement getQueryReadConstructById() throws SQLException;
 
@@ -135,7 +135,7 @@ public interface IQueryBuilder {
 
 	public PreparedStatement getQueryReadTopicMap() throws SQLException;
 
-	public PreparedStatement getQueryReadTopics() throws SQLException;
+	public PreparedStatement getQueryReadTopics(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadTopicsWithType() throws SQLException;
 
@@ -152,7 +152,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryReadVariants(boolean paged) throws SQLException;
 
 	public PreparedStatement getQueryReadVariantsWithScope() throws SQLException;
-	
+
 	// ***************
 	// * MERGE QUERY *
 	// ***************
@@ -214,7 +214,7 @@ public interface IQueryBuilder {
 	public PreparedStatement getQueryDeleteSubjectIdentifier() throws SQLException;
 
 	public PreparedStatement getQueryDeleteSubjectLocator() throws SQLException;
-	
+
 	public PreparedStatement getQueryClearTopicMap() throws SQLException;
 
 	// ***************
@@ -222,6 +222,10 @@ public interface IQueryBuilder {
 	// ***************
 
 	// PagedConstructIndex
+
+	public PreparedStatement getQueryReadNumberOfTopics() throws SQLException;
+
+	public PreparedStatement getQueryReadNumberOfAssociations() throws SQLException;
 
 	public PreparedStatement getQueryReadNumberOfNames() throws SQLException;
 

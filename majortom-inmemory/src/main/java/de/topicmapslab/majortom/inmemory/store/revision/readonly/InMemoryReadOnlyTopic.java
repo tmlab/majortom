@@ -53,6 +53,8 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 	private Set<String> associationsPlayedIds = HashUtil.getHashSet();
 	private final String reifiedId;
 	private final String bestLabel;
+	private final String bestIdentifierWithPrefix;
+	private final String bestIdentifierWithoutPrefix;
 
 	/*
 	 * cached value
@@ -116,8 +118,10 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 		for (Association association : clone.getAssociationsPlayed()) {
 			associationsPlayedIds.add(association.getId());
 		}
-		
+
 		this.bestLabel = clone.getBestLabel();
+		this.bestIdentifierWithoutPrefix = clone.getBestIdentifier(false);
+		this.bestIdentifierWithPrefix = clone.getBestIdentifier(true);
 	}
 
 	/**
@@ -314,28 +318,35 @@ public class InMemoryReadOnlyTopic extends ReadOnlyTopic {
 		}
 		return topics;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel() {
 		return bestLabel;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme) {
 		throw new UnsupportedOperationException("Read only topic does not support best label with theme");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBestLabel(Topic theme, boolean strict) {
 		throw new UnsupportedOperationException("Read only topic does not support best label with theme");
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBestIdentifier(boolean withPrefix) {
+		return withPrefix ? bestIdentifierWithPrefix : bestIdentifierWithoutPrefix;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

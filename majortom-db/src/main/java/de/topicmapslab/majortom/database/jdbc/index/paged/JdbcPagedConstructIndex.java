@@ -50,6 +50,44 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 	public JdbcPagedConstructIndex(JdbcTopicMapStore store) {
 		super(store);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected List<Association> doGetAssociations(int offset, int limit) {
+		try {
+			List<Association> list = HashUtil.getList();
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadAssociation(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected List<Association> doGetAssociations(int offset, int limit, Comparator<Association> comparator) {	
+		return super.doGetAssociations(offset, limit, comparator);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected long doGetNumberOfAssociations() {
+		try {
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfAssociations();
+			session.commit();
+			session.close();
+			return number;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -382,6 +420,44 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 		list.addAll(getTopicMapStore().getSuptertypes((ITopic) topic, offset, limit));
 		return list;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected List<Topic> doGetTopics(int offset, int limit) {
+		try {
+			List<Topic> list = HashUtil.getList();
+			ISession session = getTopicMapStore().openSession();
+			list.addAll(session.getProcessor().doReadTopics(getTopicMapStore().getTopicMap(), offset, limit));
+			session.commit();
+			session.close();
+			return list;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected List<Topic> doGetTopics(int offset, int limit, Comparator<Topic> comparator) {	
+		return super.doGetTopics(offset, limit, comparator);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected long doGetNumberOfTopics() {
+		try {
+			ISession session = getTopicMapStore().openSession();
+			long number = session.getProcessor().doReadNumberOfTopics();
+			session.commit();
+			session.close();
+			return number;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -437,5 +513,4 @@ public class JdbcPagedConstructIndex extends PagedConstructIndexImpl<JdbcTopicMa
 			throw new TopicMapStoreException("Internal database error!", e);
 		}
 	}
-
 }
