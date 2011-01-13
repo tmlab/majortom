@@ -369,6 +369,50 @@ public class TestTopicImpl extends MaJorToMTestCase {
 				"Best label should be the name with the scope with the smallest number of themes and shortest value",
 				name2.getValue(), topic.getBestLabel());
 	}
+	
+	public void testBestIdentifier(){String refSi = "http://psi.example.org/si/topic";
+		Locator si = createLocator(refSi);
+		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
+		topic.removeSubjectIdentifier(si);
+		
+		assertEquals(topic.getId(), topic.getBestIdentifier(false));
+		assertEquals("id:"+topic.getId(),topic.getBestIdentifier(true));
+		
+		String refOSi ="http://psi.example.org/si/opicc";
+		Locator oSi = createLocator(refOSi);
+		String refSl = "http://psi.example.org/sl/topic";
+		Locator sl = createLocator(refSl);
+		String refOSl = "http://psi.example.org/sl2/topic";
+		Locator oSl = createLocator(refOSl);
+		String refIi = "http://psi.example.org/ii/topic";
+		Locator ii = createLocator(refIi);
+		String refOIi = "http://psi.example.org/ii2/topic";
+		Locator oIi = createLocator(refOIi);
+		
+		topic.addItemIdentifier(oIi);
+		assertEquals(refOIi,topic.getBestIdentifier(false));
+		assertEquals("ii:"+refOIi,topic.getBestIdentifier(true));
+		
+		topic.addItemIdentifier(ii);
+		assertEquals(refIi,topic.getBestIdentifier(false));
+		assertEquals("ii:"+refIi,topic.getBestIdentifier(true));
+		
+		topic.addSubjectLocator(oSl);
+		assertEquals(refOSl,topic.getBestIdentifier(false));
+		assertEquals("sl:"+refOSl,topic.getBestIdentifier(true));
+		
+		topic.addSubjectLocator(sl);
+		assertEquals(refSl,topic.getBestIdentifier(false));
+		assertEquals("sl:"+refSl,topic.getBestIdentifier(true));
+		
+		topic.addSubjectIdentifier(si);
+		assertEquals(refSi,topic.getBestIdentifier(false));
+		assertEquals("si:"+refSi,topic.getBestIdentifier(true));
+		
+		topic.addSubjectIdentifier(oSi);
+		assertEquals(refOSi,topic.getBestIdentifier(false));
+		assertEquals("si:"+refOSi,topic.getBestIdentifier(true));
+	}
 
 	public void testBestLabelWithTheme() {
 		Topic theme = createTopic();

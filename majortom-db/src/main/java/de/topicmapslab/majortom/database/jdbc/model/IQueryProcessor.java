@@ -149,7 +149,7 @@ public interface IQueryProcessor {
 	public void doMergeTopics(ITopic context, ITopic other) throws SQLException;
 
 	public void doMergeTopicMaps(TopicMap context, TopicMap other) throws SQLException;
-
+	
 	public Collection<IAssociation> doReadAssociation(ITopic t, long offset, long limit) throws SQLException;
 
 	public Collection<IAssociation> doReadAssociation(ITopic t, ITopic type) throws SQLException;
@@ -158,7 +158,7 @@ public interface IQueryProcessor {
 
 	public Collection<IAssociation> doReadAssociation(ITopic t, IScope scope) throws SQLException;
 
-	public Collection<IAssociation> doReadAssociation(ITopicMap tm) throws SQLException;
+	public Collection<IAssociation> doReadAssociation(ITopicMap tm, long offset, long limit) throws SQLException;
 
 	public Collection<IAssociation> doReadAssociation(ITopicMap tm, ITopic type) throws SQLException;
 
@@ -241,7 +241,7 @@ public interface IQueryProcessor {
 	 */
 	public Collection<ITopic> doReadThemes(ITopicMap topicMap, long scopeId) throws SQLException;
 
-	public Collection<ITopic> doReadTopics(ITopicMap t) throws SQLException;
+	public Collection<ITopic> doReadTopics(ITopicMap t, long offset, long limit) throws SQLException;
 
 	public Collection<ITopic> doReadTopics(ITopicMap t, ITopic type) throws SQLException;
 
@@ -292,6 +292,30 @@ public interface IQueryProcessor {
 	 * @since 1.1.2
 	 */
 	public String doReadBestLabel(ITopic topic) throws SQLException;
+	
+	/**
+	 * Returns the best and stable identifier of the topic. The best identifier will be extracted by following rules.
+	 * 
+	 * <p>
+	 * 1. Identifiers are weighted by its types in the following order subject-identifier, subject-locator and
+	 * item-identifier.
+	 * </p>
+	 * <p>
+	 * 2. If there are more than one identifier of the same type, the shortest will be returned.
+	 * </p>
+	 * <p>
+	 * 3. If there are more than one identifier with the same length, the lexicographically smallest will be returned.
+	 * </p>
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param withPrefix
+	 *            flag indicates if the returned identifier will be prefixed with its type. Subject-identifier(
+	 *            <code>si:</code>), subject-locator(<code>sl:</code>) or item-identifier(<code>ii:</code>).
+	 * @return the best identifier or the id if the topic has no identifiers
+	 * @since 1.2.0
+	 */
+	public abstract String doReadBestIdentifier(ITopic topic, boolean withPrefix)throws SQLException;
 
 	/**
 	 * Returns the best label for the current topic instance. The best label will be identified satisfying the following
@@ -377,6 +401,10 @@ public interface IQueryProcessor {
 	// ****************
 
 	// PagedConstructIndex
+	
+	public long doReadNumberOfAssociations() throws SQLException;
+	
+	public long doReadNumberOfTopics() throws SQLException;
 
 	public long doReadNumberOfNames(ITopic topic) throws SQLException;
 

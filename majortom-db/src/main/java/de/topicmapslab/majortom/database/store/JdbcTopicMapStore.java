@@ -104,7 +104,6 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * 
  */
 public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
-
 	/**
 	 * 
 	 */
@@ -153,22 +152,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 
 	/**
 	 * Returns whether the topic map is empty or not
+	 * 
 	 * @return <code>true</code> or <code>false</code>
 	 */
-	protected boolean isTopicMapEmpty(ITopicMap topicMap){
-		
+	protected boolean isTopicMapEmpty(ITopicMap topicMap) {
+
 		ISession session = this.provider.openSession();
-		
-		try{
-		
+
+		try {
+
 			Long num = session.getProcessor().doReadNumberOfTopics(topicMap);
-		
-			if(num == 0)
+
+			if (num == 0)
 				return true;
-			
+
 			return false;
-			
-		}catch (SQLException e) {
+
+		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {
 			try {
@@ -178,7 +178,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1188,7 +1188,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public Set<IAssociation> doReadAssociation(ITopicMap tm) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm));
+			Set<IAssociation> set = HashUtil.getHashSet(session.getProcessor().doReadAssociation(tm, -1, -1));
 			session.commit();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
@@ -2109,7 +2109,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public Set<ITopic> doReadTopics(ITopicMap t) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			Set<ITopic> set = HashUtil.getHashSet(session.getProcessor().doReadTopics(t));
+			Set<ITopic> set = HashUtil.getHashSet(session.getProcessor().doReadTopics(t, -1, -1));
 			session.commit();
 			if (set.isEmpty()) {
 				return Collections.emptySet();
@@ -2391,6 +2391,26 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			String label = session.getProcessor().doReadBestLabel(topic, theme, strict);
 			session.commit();
 			return label;
+		} catch (SQLException e) {
+			throw new TopicMapStoreException("Internal database error!", e);
+		} finally {
+			try {
+				session.close();
+			} catch (SQLException e) {
+				throw new TopicMapStoreException(MESSAGE_SESSION_CANNOT_BE_CLOSED, e);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestIdentifier(ITopic topic, boolean withPrefix) {
+		ISession session = provider.openSession();
+		try {
+			String bestIdentifier = session.getProcessor().doReadBestIdentifier(topic, withPrefix);
+			session.commit();
+			return bestIdentifier;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {
@@ -3380,5 +3400,5 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	public String getDialect() {
 		return dialect;
 	}
-	
+
 }

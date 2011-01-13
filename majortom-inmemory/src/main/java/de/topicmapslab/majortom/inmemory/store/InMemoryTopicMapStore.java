@@ -3,6 +3,7 @@ package de.topicmapslab.majortom.inmemory.store;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -19,7 +20,6 @@ import org.tmapi.index.TypeInstanceIndex;
 
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
-import de.topicmapslab.majortom.comparator.LocatorByReferenceComparator;
 import de.topicmapslab.majortom.comparator.NameByValueComparator;
 import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.ConstructImpl;
@@ -93,6 +93,22 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
+	/**
+	 * 
+	 */
+	protected static final String SUBJECTIDENTIFIER_PREFIX = "si:";
+	/**
+	 * 
+	 */
+	protected static final String SUBJECTLOCATOR_PREFIX = "sl:";
+	/**
+	 * 
+	 */
+	protected static final String ITEMIDENTIFIER_PREFIX = "ii:";
+	/**
+	 * 
+	 */
+	private static final String ID_PREFIX = "id:";
 	private RandomEngine random;
 	private int capacityOfCollections = 16;
 
@@ -1977,7 +1993,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		if (!names.isEmpty()) {
 			return readBestName(topic, names);
 		}
-		return readBestIdentifier(topic);
+		return doReadBestIdentifier(topic, false);
 	}
 
 	/**
@@ -1997,7 +2013,87 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		if (strict) {
 			return null;
 		}
-		return readBestIdentifier(topic);
+		return doReadBestIdentifier(topic, false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String doReadBestIdentifier(ITopic topic, boolean withPrefix) {
+		final String prefix;
+		Set<ILocator> locators;
+		/*
+		 * try subject-identifier
+		 */
+		locators = getIdentityStore().getSubjectIdentifiers(topic);
+		if (locators.isEmpty()) {
+			/*
+			 * try subject-locator
+			 */
+			locators = getIdentityStore().getSubjectLocators(topic);
+			if (locators.isEmpty()) {
+				/*
+				 * try item-identifier
+				 */
+				locators = getIdentityStore().getItemIdentifiers(topic);
+				if (locators.isEmpty()) {
+					String bestIdentifier = withPrefix ? ID_PREFIX : "";
+					bestIdentifier += topic.getId();
+					return bestIdentifier;
+				}
+				prefix = ITEMIDENTIFIER_PREFIX;
+			} else {
+				prefix = SUBJECTLOCATOR_PREFIX;
+			}
+		} else {
+			prefix = SUBJECTIDENTIFIER_PREFIX;
+		}
+
+		if (locators.size() == 1) {
+			String bestIdentifier = withPrefix ? prefix : "";
+			bestIdentifier += locators.iterator().next().getReference();
+			return bestIdentifier;
+		}
+
+		List<ILocator> sorted = HashUtil.getList(locators);
+		Collections.sort(sorted, new Comparator<ILocator>() {
+			/**
+			 * {@inheritDoc}
+			 */
+			public int compare(ILocator o1, ILocator o2) {
+				return o1.getReference().length() - o2.getReference().length();
+			}
+		});
+
+		/*
+		 * extract all references with the shortest length
+		 */
+		String first = sorted.get(0).getReference();
+		List<String> references = HashUtil.getList();
+		references.add(first);
+		for (int i = 1; i < sorted.size(); i++) {
+			String s = sorted.get(i).getReference();
+			if (s.length() == first.length()) {
+				references.add(s);
+			} else {
+				break;
+			}
+		}
+		/*
+		 * is only one
+		 */
+		if (references.size() == 1) {
+			String bestIdentifier = withPrefix ? prefix : "";
+			bestIdentifier += references.get(0);
+			return bestIdentifier;
+		}
+		/*
+		 * sort lexicographically
+		 */
+		Collections.sort(references);
+		String bestIdentifier = withPrefix ? prefix : "";
+		bestIdentifier += references.get(0);
+		return bestIdentifier;
 	}
 
 	/**
@@ -2036,7 +2132,8 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * @param set
 	 *            the non-empty set of names
 	 * @param strict
-	 *            if there is no name with the given theme and strict is <code>true</code>, then <code>null</code> will be returned.
+	 *            if there is no name with the given theme and strict is <code>true</code>, then <code>null</code> will
+	 *            be returned.
 	 * @return the best name
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
@@ -2171,31 +2268,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		List<IName> list = HashUtil.getList(names);
 		Collections.sort(list, NameByValueComparator.getInstance(true));
 		return list.get(0).getValue();
-	}
-
-	/**
-	 * Internal best label method only check identifier attribute.
-	 * 
-	 * @param topic
-	 *            the topic
-	 * @return the best identifier
-	 * @throws TopicMapStoreException
-	 *             thrown if operation fails
-	 */
-	private String readBestIdentifier(ITopic topic) throws TopicMapStoreException {
-		Set<ILocator> set = getIdentityStore().getSubjectIdentifiers(topic);
-		if (set.isEmpty()) {
-			set = getIdentityStore().getSubjectLocators(topic);
-			if (set.isEmpty()) {
-				set = getIdentityStore().getItemIdentifiers(topic);
-				if (set.isEmpty()) {
-					return topic.getId();
-				}
-			}
-		}
-		List<ILocator> list = HashUtil.getList(set);
-		Collections.sort(list, LocatorByReferenceComparator.getInstance(true));
-		return list.iterator().next().getReference();
 	}
 
 	/**

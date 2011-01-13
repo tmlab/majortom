@@ -146,7 +146,7 @@ public interface IDumpQueries {
 	
 	public static final String QUERY_DUMP_TOPIC_SELECT = "SELECT id_topicmap, id, id_parent FROM topics WHERE id = ?";
 	
-	public static final String QUERY_DUMP_TOPIC_INSERT_INTO_HISTORY = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, subjectidentifiers, subjectlocators, types, supertypes, names, occurrences, associations, id_reification, type, bestlabel) "
+	public static final String QUERY_DUMP_TOPIC_INSERT_INTO_HISTORY = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, subjectidentifiers, subjectlocators, types, supertypes, names, occurrences, associations, id_reification, type, bestlabel, bestIdentifier) "
 			+ "VALUES(?,"//id_tm
 			+ "?,"//id_rev
 			+ "?,"//id
@@ -161,5 +161,6 @@ public interface IDumpQueries {
 			+ "?,"//assocs
 			+ "?,"//id_rei
 			+ "'t',"//t
-			+ "?)";//bl
+			+ "?,"//bl
+			+ "?)";//bi
 }

@@ -95,8 +95,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object doCreate(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -144,14 +143,12 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	public abstract IScope doCreateScope(ITopicMap topicMap, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public void doModify(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		throw new UnmodifyableStoreException("Read-only store does not support construct modification!");
 	}
 
@@ -173,8 +170,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object doRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		if (!isConnected()) {
 			throw new TopicMapStoreException("Connection is not established");
 		}
@@ -196,8 +192,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object internalDoRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public Object internalDoRead(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		switch (paramType) {
 			case ROLE_TYPES: {
 				if (context instanceof IAssociation) {
@@ -438,8 +433,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 			case META_DATA: {
 				if (context == null && params.length == 1 && params[0] instanceof IRevision) {
 					return doReadMetaData((IRevision) params[0]);
-				} else if (context == null && params.length == 2 && params[0] instanceof IRevision
-						&& params[1] instanceof String) {
+				} else if (context == null && params.length == 2 && params[0] instanceof IRevision && params[1] instanceof String) {
 					return doReadMetaData((IRevision) params[0], params[1].toString());
 				}
 				throw new OperationSignatureException(context, paramType, params);
@@ -447,9 +441,14 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 			case BEST_LABEL: {
 				if (context instanceof ITopic && params.length == 0) {
 					return doReadBestLabel((ITopic) context);
-				} else if (context instanceof ITopic && params.length == 2 && params[0] instanceof ITopic
-						&& params[1] instanceof Boolean) {
+				} else if (context instanceof ITopic && params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Boolean) {
 					return doReadBestLabel((ITopic) context, (ITopic) params[0], (Boolean) params[1]);
+				}
+				throw new OperationSignatureException(context, paramType, params);
+			}
+			case BEST_IDENTIFIER: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof Boolean) {
+					return doReadBestIdentifier((ITopic) context, (Boolean) params[0]);
 				}
 				throw new OperationSignatureException(context, paramType, params);
 			}
@@ -494,8 +493,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope)
-			throws TopicMapStoreException;
+	public abstract Set<IAssociation> doReadAssociation(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped associations played by the given topic
@@ -547,8 +545,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope)
-			throws TopicMapStoreException;
+	public abstract Set<IAssociation> doReadAssociation(ITopicMap tm, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped associations of the topic map.
@@ -600,8 +597,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope)
-			throws TopicMapStoreException;
+	public abstract Set<ICharacteristics> doReadCharacteristics(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped characteristics if the given topic.
@@ -786,8 +782,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope)
-			throws TopicMapStoreException;
+	public abstract Set<IOccurrence> doReadOccurrences(ITopic t, ITopic type, IScope scope) throws TopicMapStoreException;
 
 	/**
 	 * Read all scoped occurrence if the given topic.
@@ -890,8 +885,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type)
-			throws TopicMapStoreException;
+	public abstract Set<IAssociationRole> doReadRoles(IAssociation association, ITopic type) throws TopicMapStoreException;
 
 	/**
 	 * Read the played roles of the given topic.
@@ -930,8 +924,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType)
-			throws TopicMapStoreException;
+	public abstract Set<IAssociationRole> doReadRoles(ITopic player, ITopic type, ITopic assocType) throws TopicMapStoreException;
 
 	/**
 	 * Read all role types of the given association
@@ -987,8 +980,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier)
-			throws TopicMapStoreException;
+	public abstract ITopic doReadTopicBySubjectIdentifier(ITopicMap t, ILocator subjectIdentifier) throws TopicMapStoreException;
 
 	/**
 	 * Read the topic identified by the given subject-locator.
@@ -1000,8 +992,7 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public abstract ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator)
-			throws TopicMapStoreException;
+	public abstract ITopic doReadTopicBySubjectLocator(ITopicMap t, ILocator subjectLocator) throws TopicMapStoreException;
 
 	/**
 	 * Return all topics of the topic map.
@@ -1239,10 +1230,33 @@ public abstract class ReadOnlyTopicMapStoreImpl extends TopicMapStoreImpl {
 	public abstract String doReadBestLabel(ITopic topic, ITopic theme, boolean strict) throws TopicMapStoreException;
 
 	/**
+	 * Returns the best and stable identifier of the topic. The best identifier will be extracted by following rules.
+	 * 
+	 * <p>
+	 * 1. Identifiers are weighted by its types in the following order subject-identifier, subject-locator and
+	 * item-identifier.
+	 * </p>
+	 * <p>
+	 * 2. If there are more than one identifier of the same type, the shortest will be returned.
+	 * </p>
+	 * <p>
+	 * 3. If there are more than one identifier with the same length, the lexicographically smallest will be returned.
+	 * </p>
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param withPrefix
+	 *            flag indicates if the returned identifier will be prefixed with its type. Subject-identifier(
+	 *            <code>si:</code>), subject-locator(<code>sl:</code>) or item-identifier(<code>ii:</code>).
+	 * @return the best identifier or the id if the topic has no identifiers
+	 * @since 1.2.0
+	 */
+	public abstract String doReadBestIdentifier(ITopic topic, boolean withPrefix);
+
+	/**
 	 * {@inheritDoc}
 	 */
-	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params)
-			throws TopicMapStoreException {
+	public void doRemove(IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException {
 		throw new UnmodifyableStoreException("Read-only store does not support construct deletion!");
 	}
 

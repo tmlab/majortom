@@ -34,6 +34,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.paged.IPagedAssociation;
 import de.topicmapslab.majortom.model.core.paged.IPagedName;
 import de.topicmapslab.majortom.model.core.paged.IPagedTopic;
+import de.topicmapslab.majortom.model.core.paged.IPagedTopicMap;
 import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 
@@ -42,6 +43,114 @@ import de.topicmapslab.majortom.tests.MaJorToMTestCase;
  * 
  */
 public class TestPagedConstructIndex extends MaJorToMTestCase {
+
+	/**
+	 * Test method for
+	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedConstructIndex#getAssociations(int, int, Comparator)} .
+	 */
+	public void testGetAssociationsIntIntComparator() throws Exception {
+		IPagedConstructIndex index = topicMap.getIndex(IPagedConstructIndex.class);
+		assertNotNull(index);
+		try {
+			index.getNumberOfNames(null);
+			fail("Index should be closed!");
+		} catch (Exception e) {
+			index.open();
+		}
+		String base = "http://psi.example.org/topics/";
+		Association[] associations = new Association[101];
+		int j = 0;
+		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
+			for (int i = 0; i < 10 && j < 101; i++) {
+				associations[j] = createAssociation(createTopic());
+				associations[j].addItemIdentifier(createLocator(base + c + i));
+				j++;
+			}
+			if (j == 101) {
+				break;
+			}
+		}
+		List<Association> list = null;
+		Comparator<Association> comp = new ConstructByItemIdentifierComparator<Association>(true);
+
+		/*
+		 * using index methods
+		 */
+		assertEquals(101, index.getNumberOfAssociations());
+
+		for (int i = 0; i < 10; i++) {
+			list = index.getAssociations(i * 10, 10, comp);
+			assertEquals(10, list.size());
+		}
+		list = index.getAssociations(100, 10, comp);
+		assertEquals(1, list.size());
+
+		/*
+		 * using construct methods
+		 */
+		assertEquals(101, ((IPagedTopicMap) topicMap).getNumberOfAssociations());
+
+		for (int i = 0; i < 10; i++) {
+			list = ((IPagedTopicMap) topicMap).getAssociations(i * 10, 10, comp);
+			assertEquals(10, list.size());
+		}
+		list = ((IPagedTopicMap) topicMap).getAssociations(100, 10, comp);
+		assertEquals(1, list.size());
+	}
+
+	/**
+	 * Test method for
+	 * {@link de.topicmapslab.majortom.inmemory.index.paged.InMemoryPagedConstructIndex#getTopics(int, int, Comparator)} .
+	 */
+	public void testGetTopicsIntIntComparator() throws Exception {
+		IPagedConstructIndex index = topicMap.getIndex(IPagedConstructIndex.class);
+		assertNotNull(index);
+		try {
+			index.getNumberOfNames(null);
+			fail("Index should be closed!");
+		} catch (Exception e) {
+			index.open();
+		}
+		String base = "http://psi.example.org/topics/";
+		Topic[] topics = new Topic[101];
+		int j = 0;
+		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
+			for (int i = 0; i < 10 && j < 101; i++) {
+				topics[j] = createTopic();
+				topics[j].addItemIdentifier(createLocator(base + c + i));
+				j++;
+			}
+			if (j == 101) {
+				break;
+			}
+		}
+		List<Topic> list = null;
+		Comparator<Topic> comp = new ConstructByItemIdentifierComparator<Topic>(true);
+
+		/*
+		 * using index methods
+		 */
+		assertEquals(101, index.getNumberOfTopics());
+
+		for (int i = 0; i < 10; i++) {
+			list = index.getTopics(i * 10, 10, comp);
+			assertEquals(10, list.size());
+		}
+		list = index.getTopics(100, 10, comp);
+		assertEquals(1, list.size());
+
+		/*
+		 * using construct methods
+		 */
+		assertEquals(101, ((IPagedTopicMap) topicMap).getNumberOfTopics());
+
+		for (int i = 0; i < 10; i++) {
+			list = ((IPagedTopicMap) topicMap).getTopics(i * 10, 10, comp);
+			assertEquals(10, list.size());
+		}
+		list = ((IPagedTopicMap) topicMap).getTopics(100, 10, comp);
+		assertEquals(1, list.size());
+	}
 
 	/**
 	 * Test method for
@@ -102,7 +211,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		 * using construct methods
 		 */
 		assertEquals(101, ((IPagedTopic) topic).getNumberOfAssociationsPlayed());
-	
+
 		for (int i = 0; i < 10; i++) {
 			list = ((IPagedTopic) topic).getAssociationsPlayed(i * 10, 10, comp);
 			assertEquals(10, list.size());
@@ -219,7 +328,7 @@ public class TestPagedConstructIndex extends MaJorToMTestCase {
 		int j = 0;
 		for (String c : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" }) {
 			for (int i = 0; i < 10 && j < 101; i++) {
-				occurrences[j] = topic.createOccurrence(createTopic(),"name", new Topic[0]);
+				occurrences[j] = topic.createOccurrence(createTopic(), "name", new Topic[0]);
 				occurrences[j].addItemIdentifier(createLocator(base + c + i));
 				j++;
 			}
