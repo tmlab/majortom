@@ -370,7 +370,8 @@ public class TestTopicImpl extends MaJorToMTestCase {
 				name2.getValue(), topic.getBestLabel());
 	}
 	
-	public void testBestIdentifier(){String refSi = "http://psi.example.org/si/topic";
+	public void testBestIdentifier(){
+		String refSi = "http://psi.example.org/si/topic";
 		Locator si = createLocator(refSi);
 		ITopic topic = (ITopic) topicMap.createTopicBySubjectIdentifier(si);
 		topic.removeSubjectIdentifier(si);

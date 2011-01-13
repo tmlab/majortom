@@ -68,7 +68,7 @@ public abstract class BasePostGreSqlConnectionProvider extends RDBMSConnectionPr
 				Arrays.asList(new String[] { "id", "id_topicmap", "id_revision", "id_parent", "names", "occurrences",
 						"variants", "associations", "id_scope", "id_reification", "id_player", "types", "supertypes",
 						"value", "type", "themes", "itemidentifiers", "subjectidentifiers", "subjectlocators",
-						"datatype", "roles", "bestlabel" }));
+						"datatype", "roles", "bestlabel", "bestIdentifier" }));
 		schemaInformation.put("literals", Arrays.asList(new String[] { "id", "id_parent", "id_topicmap", "value" }));
 		schemaInformation.put("locators", Arrays.asList(new String[] { "id", "reference" }));
 		schemaInformation.put("metadata", Arrays.asList(new String[] { "id_revision", "key", "value" }));
