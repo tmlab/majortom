@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
@@ -545,7 +547,8 @@ public class TestLiteralIndex extends AbstractTest {
 	}
 
 	/**
-	 * Use all occurrences from the other tests () TODO
+	 * Use all occurrences from the other tests (23)
+	 * XXX: change number when adding new test cases
 	 */
 	@Test
 	public void testDoGetOccurrences() {
@@ -557,9 +560,8 @@ public class TestLiteralIndex extends AbstractTest {
 		
 		Collection<Occurrence> characteristics = index.getOccurrences();
 		
-		System.out.println(characteristics.size());
-		
-		fail();
+		assertNotNull(characteristics);
+		assertEquals(23, characteristics.size());
 	}
 
 	/**
@@ -624,12 +626,7 @@ public class TestLiteralIndex extends AbstractTest {
 		index.open();
 		assertTrue(index.isOpen());
 		
-		Collection<Occurrence> characteristics = index.getOccurrences("testDoGetOccurrencesStringLocator");
-		
-		assertNotNull(characteristics);
-		assertEquals(2, characteristics.size());
-		
-		characteristics = index.getOccurrences("testDoGetOccurrencesStringLocator", map.createLocator("http://testDoGetOccurrencesStringLocator"));
+		Collection<Occurrence> characteristics = index.getOccurrences("testDoGetOccurrencesStringLocator", map.createLocator("http://testDoGetOccurrencesStringLocator"));
 		
 		assertNotNull(characteristics);
 		assertEquals(1, characteristics.size());
@@ -638,12 +635,30 @@ public class TestLiteralIndex extends AbstractTest {
 		
 		assertNotNull(characteristics);
 		assertEquals(0, characteristics.size());
-		
 	}
 
+	/**
+	 * Exist one occurrence with value "http://testDoGetUrisURI" with datatype xsd:string, and one with datatype xsd:anyURI 
+	 * @throws URISyntaxException 
+	 */
 	@Test
-	public void testDoGetUrisURI() {
-		fail("Not yet implemented");
+	public void testDoGetUrisURI() throws URISyntaxException {
+		
+		assertNotNull(map);
+		ILiteralIndex index = (ILiteralIndex)map.getIndex(LiteralIndex.class);
+		assertNotNull(index);
+		index.open();
+		assertTrue(index.isOpen());
+		
+		Collection<ICharacteristics> characteristics = index.getUris(new URI("http://testDoGetUrisURI"));
+		
+		assertNotNull(characteristics);
+		assertEquals(1, characteristics.size());
+		
+		Collection<Occurrence> occs = index.getOccurrences("http://testDoGetUrisURI");
+		
+		assertNotNull(occs);
+		assertEquals(1, occs.size());
 	}
 
 	@Test
