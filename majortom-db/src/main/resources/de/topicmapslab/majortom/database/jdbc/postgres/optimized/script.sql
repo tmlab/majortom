@@ -1458,7 +1458,7 @@ CREATE TABLE history (
     datatype character varying,
     roles bigint[],
     bestlabel character varying(256),
-  	bestIdentifier character varying(256)
+  	bestidentifier character varying(256)
 );
 
 

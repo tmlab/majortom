@@ -5004,7 +5004,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 						}
 							break;
 						case BEST_IDENTIFIER: {
-							results.put(type, rs.getString("bestIdentifier"));
+							results.put(type, rs.getString("bestidentifier"));
 						}
 							break;
 					}

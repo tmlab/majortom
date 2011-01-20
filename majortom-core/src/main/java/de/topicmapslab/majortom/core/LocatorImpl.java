@@ -20,12 +20,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.text.MessageFormat;
 import java.util.UUID;
 
 import org.tmapi.core.Locator;
 import org.tmapi.core.MalformedIRIException;
 
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.exception.MaJorToMMalformedIriException;
 
 /**
  * Base Implementation of {@link ILocator}.
@@ -33,8 +35,12 @@ import de.topicmapslab.majortom.model.core.ILocator;
  * @author Sven Krosse
  * 
  */
-public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
+public class LocatorImpl implements ILocator, Comparable<LocatorImpl> {
 
+	/**
+	 * 
+	 */
+	private static final String THE_IRI_IS_RELATIVE = "The IRI {0} is relative.";
 	/**
 	 * 
 	 */
@@ -42,7 +48,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	private final URI uri;
 	private final String reference;
 	private final String id;
-	
+
 	/**
 	 * constructor
 	 * 
@@ -61,20 +67,20 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	 */
 	public LocatorImpl(final String reference, final String id) throws MalformedIRIException {
 		if (reference == null || reference.isEmpty()) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MaJorToMMalformedIriException("The given IRI reference is invalid.", reference);
 		}
-		try {			
+		try {
 			String tmp = reference.replace("+", "%2B");
-			this.reference = URLDecoder.decode(tmp, "utf-8"); 
+			this.reference = URLDecoder.decode(tmp, "utf-8");
 			uri = new URI(tmp.replace(" ", "%20"));
 		} catch (URISyntaxException e) {
-			throw new MalformedIRIException("The given IRI reference '" + reference +"' is invalid.");
+			throw new MaJorToMMalformedIriException("The given IRI reference '" + reference + "' is invalid.", reference);
 		} catch (UnsupportedEncodingException e) {
-			throw new MalformedIRIException("The given IRI reference '" + reference +"'is invalid.");
+			throw new MaJorToMMalformedIriException("The given IRI reference '" + reference + "'is invalid.", reference);
 		}
 
 		if (!uri.isAbsolute()) {
-			throw new MalformedIRIException("Relative URI");
+			throw new MaJorToMMalformedIriException(MessageFormat.format(THE_IRI_IS_RELATIVE, reference), reference);
 		}
 		this.id = id;
 	}
@@ -90,7 +96,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 			this.reference = URLDecoder.decode(uri.toASCIIString(), "utf-8");
 			this.uri = uri;
 		} catch (UnsupportedEncodingException e) {
-			throw new MalformedIRIException("The given IRI reference is invalid.");
+			throw new MaJorToMMalformedIriException("The given IRI reference is invalid.", uri.toASCIIString());
 		}
 		this.id = UUID.randomUUID().toString();
 	}
@@ -146,7 +152,7 @@ public class LocatorImpl implements ILocator, Comparable<LocatorImpl>{
 	public int hashCode() {
 		return reference.hashCode();
 	}
-	
+
 	/**
 	 * @return the id
 	 */
