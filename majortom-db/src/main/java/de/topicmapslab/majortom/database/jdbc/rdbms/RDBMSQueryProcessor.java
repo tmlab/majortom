@@ -5999,7 +5999,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 						}
 							break;
 						case BEST_IDENTIFIER: {
-							results.put(type, rs.getString("bestIdentifier"));
+							results.put(type, rs.getString("bestidentifier"));
 						}
 							break;
 					}

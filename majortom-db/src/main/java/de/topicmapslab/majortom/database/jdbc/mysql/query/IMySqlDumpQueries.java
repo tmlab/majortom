@@ -44,7 +44,7 @@ public interface IMySqlDumpQueries {
 			+ "SELECT id_topicmap, ?, id, id_parent, ARRAY ( SELECT reference FROM locators WHERE id IN (SELECT id_locator FROM rel_item_identifiers WHERE id_construct = o.id )), ARRAY[id_type], id_reifier, id_scope,  ARRAY( SELECT id_theme FROM rel_themes WHERE id_scope = o.id_scope ), value, ( SELECT reference FROM locators WHERE id = o.id_datatype), 'o' "
 			+ "FROM occurrences AS o WHERE id = ?";
 
-	public static final String QUERY_DUMP_TOPIC = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, subjectidentifiers, subjectlocators, types, supertypes, names, occurrences, associations, id_reification, type, bestlabel, bestIdentifier) "
+	public static final String QUERY_DUMP_TOPIC = "INSERT INTO history(id_topicmap, id_revision, id, id_parent, itemidentifiers, subjectidentifiers, subjectlocators, types, supertypes, names, occurrences, associations, id_reification, type, bestlabel, bestidentifier) "
 			+ "SELECT id_topicmap, ?, id, id_parent, "
 			+ "ARRAY ( SELECT reference FROM locators WHERE id IN ( SELECT id_locator FROM rel_item_identifiers WHERE id_construct = t.id )), "
 			+ "ARRAY ( SELECT reference FROM locators WHERE id IN (SELECT id_locator FROM rel_subject_identifiers WHERE id_topic = t.id )), "
