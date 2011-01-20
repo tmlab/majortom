@@ -154,7 +154,7 @@ CREATE MEMORY TABLE history
   datatype varchar(1024),
   roles varchar(1024),
   bestlabel varchar(256),
-  bestIdentifier varchar(256),
+  bestidentifier varchar(256),
   CONSTRAINT fk_history_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) MATCH SIMPLE
       ON DELETE CASCADE ON UPDATE CASCADE,

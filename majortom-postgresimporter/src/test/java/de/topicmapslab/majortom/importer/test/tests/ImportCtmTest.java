@@ -60,8 +60,8 @@ public class ImportCtmTest {
 	@Before
 	public void setUp() throws Exception{
 		
-		databaseBaseLocator = "http://dbimporter/test/";
-		String fileName = "manual.ctm";
+		databaseBaseLocator = "http://psi.freebase.de/";
+		String fileName = "freebasefull.ctm";
 		
 		// get database
 		TopicMapSystemFactory db_factory = TopicMapSystemFactory.newInstance();
@@ -109,7 +109,11 @@ public class ImportCtmTest {
 		reader.read();
 		
 	}
-
+	@Test
+	public void testImport() throws Exception {
+		
+	}
+	
 	/**
 	 * Test if the hello_welt topic has a type
 	 */

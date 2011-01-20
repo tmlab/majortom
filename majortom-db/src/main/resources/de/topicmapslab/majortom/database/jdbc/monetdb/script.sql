@@ -122,7 +122,7 @@ CREATE TABLE history
   datatype varchar(1024),
   roles varchar(1024),
   bestlabel varchar(256),
-  bestIdentifier varchar(256),
+  bestidentifier varchar(256),
   CONSTRAINT pk_history PRIMARY KEY (id_history),
   CONSTRAINT fk_history_revision FOREIGN KEY (id_revision)
       REFERENCES revisions (id) ON UPDATE CASCADE ON DELETE CASCADE ,
