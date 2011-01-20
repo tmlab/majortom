@@ -13,12 +13,14 @@ Provide-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.store.revision.readonly,
  de.topicmapslab.majortom.inmemory.transaction,
  de.topicmapslab.majortom.inmemory.transaction.internal
-Import-Package: org.apache.commons.collections,
+Import-Package: cern.jet.random.engine,
+ javax.xml.parsers,
+ org.apache.commons.collections,
  org.apache.commons.collections.bidimap;specification-version="3.2.1",
  org.osgi.framework;specification-version="1.5.0",
  org.tmapi.core;specification-version="2.0.2",
  org.tmapi.index;specification-version="2.0.2",
- cern.jet.random.engine
+ org.w3c.dom
 Export-Package: de.topicmapslab.majortom.inmemory,
  de.topicmapslab.majortom.inmemory.index,
  de.topicmapslab.majortom.inmemory.index.paged,
