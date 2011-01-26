@@ -30,6 +30,7 @@ import de.topicmapslab.majortom.importer.helper.Name;
 import de.topicmapslab.majortom.importer.helper.Occurrence;
 import de.topicmapslab.majortom.importer.helper.Role;
 import de.topicmapslab.majortom.importer.helper.Variant;
+import de.topicmapslab.majortom.importer.model.IHandler;
 
 import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.*;
 
@@ -37,7 +38,7 @@ import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.*;
  * @author Hannes Niederhausen
  * 
  */
-public class PostgresMapHandler {
+public class PostgresMapHandler implements IHandler{
 
 	private static Logger logger = LoggerFactory.getLogger(PostgresMapHandler.class);
 

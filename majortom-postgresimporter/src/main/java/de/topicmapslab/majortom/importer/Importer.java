@@ -23,6 +23,7 @@ import com.semagia.mio.xtm.XTMDeserializerFactory;
 
 import de.topicmapslab.format_estimator.FormatEstimator;
 import de.topicmapslab.format_estimator.FormatEstimator.Format;
+import de.topicmapslab.majortom.importer.model.IHandler;
 
 /**
  * Main class which provides some static methods to import from files and streams
@@ -35,18 +36,61 @@ public class Importer {
 	/**
 	 * Imports a topic map read by the file
 	 * 
-	 * @param file file to load
-	 * @param baseIRI base iri to use
-	 * @param dbProperties database properties overriding values in db.properties
+	 * @param handler
+	 *            the internal handler
+	 * @param file
+	 *            file to load
+	 * @param baseIRI
+	 *            base iri to use
+	 * @throws MIOException
+	 */
+	public static void importFile(IHandler handler, File file, String baseIRI) throws MIOException {
+		try {
+			MapHandler mapHandler = new MapHandler(handler, baseIRI);
+
+			Format format = FormatEstimator.guessFormat(new FileReader(file));
+
+			importStream(new FileInputStream(file), baseIRI, mapHandler, format);
+		} catch (FileNotFoundException e) {
+			throw new MIOException(e);
+		} catch (IOException e) {
+			throw new MIOException(e);
+		}
+	}
+
+	/**
+	 * Imports a topic map read by the input stream
+	 * 
+	 * @param handler
+	 *            the internal handler
+	 * @param is
+	 *            the {@link InputStream} of the serialized topic map
+	 * @param baseIRI
+	 *            the base iri for the topic map
+	 * 
+	 * @throws MIOException
+	 */
+	public static void importStream(IHandler handler, InputStream is, String baseIRI, Format format)
+			throws MIOException {
+		MapHandler mapHandler = new MapHandler(handler, baseIRI);
+		importStream(is, baseIRI, mapHandler, format);
+	}
+
+	/**
+	 * Imports a topic map read by the file
+	 * 
+	 * @param file
+	 *            file to load
+	 * @param baseIRI
+	 *            base iri to use
 	 * @throws MIOException
 	 */
 	public static void importFile(File file, String baseIRI, Properties dbProperties) throws MIOException {
 		try {
-			MapHandler mapHandler = new MapHandler(dbProperties, baseIRI);
-			
+			MapHandler mapHandler = new MapHandler(new PostgresMapHandler(dbProperties), baseIRI);
+
 			Format format = FormatEstimator.guessFormat(new FileReader(file));
-			
-			
+
 			importStream(new FileInputStream(file), baseIRI, mapHandler, format);
 		} catch (FileNotFoundException e) {
 			throw new MIOException(e);
@@ -54,18 +98,21 @@ public class Importer {
 			throw new MIOException(e);
 		}
 	}
-	
+
 	/**
 	 * Imports a topic map read by the file
 	 * 
-	 * @param file file to load
-	 * @param baseIRI base iri to use
-	 * @param dbProperties database properties overriding values in db.properties
+	 * @param file
+	 *            file to load
+	 * @param baseIRI
+	 *            base iri to use
+	 * @param dbProperties
+	 *            database properties overriding values in db.properties
 	 * @throws MIOException
 	 */
 	public static void importFile(File file, String baseIRI) throws MIOException {
 		try {
-			MapHandler mapHandler = new MapHandler(baseIRI);
+			MapHandler mapHandler = new MapHandler(new PostgresMapHandler(), baseIRI);
 			Format format = FormatEstimator.guessFormat(new FileReader(file));
 			importStream(new FileInputStream(file), baseIRI, mapHandler, format);
 		} catch (FileNotFoundException e) {
@@ -74,49 +121,59 @@ public class Importer {
 			throw new MIOException(e);
 		}
 	}
-	
+
 	/**
 	 * Imports a topic map read by the input stream
 	 * 
-	 * @param is the {@link InputStream} of the serialized topic map
-	 * @param baseIRI the base iri for the topic map
+	 * @param is
+	 *            the {@link InputStream} of the serialized topic map
+	 * @param baseIRI
+	 *            the base iri for the topic map
 	 * 
 	 * @throws MIOException
 	 */
-	public static void importStream(InputStream is, String baseIRI, Format format,  Properties dbProperties) throws MIOException {
-		MapHandler mapHandler = new MapHandler(dbProperties, baseIRI);
-		importStream(is, baseIRI, mapHandler, format);
-	}
-	
-	/**
-	 * Imports a topic map read by the input stream
-	 * 
-	 * @param is the {@link InputStream} of the serialized topic map
-	 * @param baseIRI the base iri for the topic map
-	 * @param format the serialization format
-	 * @throws MIOException
-	 */
-	public static void importStream(InputStream is, String baseIRI, Format format) throws MIOException {
-		MapHandler mapHandler = new MapHandler(baseIRI);
+	public static void importStream(InputStream is, String baseIRI, Format format, Properties dbProperties)
+			throws MIOException {
+		MapHandler mapHandler = new MapHandler(new PostgresMapHandler(dbProperties), baseIRI);
 		importStream(is, baseIRI, mapHandler, format);
 	}
 
-	
-	
+	/**
+	 * Imports a topic map read by the input stream
+	 * 
+	 * @param is
+	 *            the {@link InputStream} of the serialized topic map
+	 * @param baseIRI
+	 *            the base iri for the topic map
+	 * @param format
+	 *            the serialization format
+	 * @throws MIOException
+	 */
+	public static void importStream(InputStream is, String baseIRI, Format format) throws MIOException {
+		MapHandler mapHandler = new MapHandler(new PostgresMapHandler(), baseIRI);
+		importStream(is, baseIRI, mapHandler, format);
+	}
+
 	/**
 	 * Instantiates the deserilizer for the given format and reads the topic map
 	 * 
-	 * @param is the {@link InputStream} for the serialized topic map
-	 * @param baseIRI the base iri to use for the topic map
-	 * @param mapHandler the {@link MapHandler} 
-	 * @param format the format of the topic map
-	 * @throws MIOException if somethihng went wront
+	 * @param is
+	 *            the {@link InputStream} for the serialized topic map
+	 * @param baseIRI
+	 *            the base iri to use for the topic map
+	 * @param mapHandler
+	 *            the {@link MapHandler}
+	 * @param format
+	 *            the format of the topic map
+	 * @throws MIOException
+	 *             if somethihng went wront
 	 */
-	private static void importStream(InputStream is, String baseIRI, MapHandler mapHandler, Format format) throws MIOException {
-		
+	private static void importStream(InputStream is, String baseIRI, MapHandler mapHandler, Format format)
+			throws MIOException {
+
 		IDeserializerFactory fac = null;
-		
-		switch(format) {
+
+		switch (format) {
 		case CTM:
 		case CTM_1_0:
 			fac = new CTMDeserializerFactory();
@@ -142,8 +199,7 @@ public class Importer {
 		default:
 			throw new MIOException("Unsupported Format");
 		}
-		
-		
+
 		try {
 			IDeserializer deserializer = fac.createDeserializer();
 			deserializer.setMapHandler(mapHandler);
@@ -152,5 +208,5 @@ public class Importer {
 			throw new MIOException(e);
 		}
 	}
-	
+
 }

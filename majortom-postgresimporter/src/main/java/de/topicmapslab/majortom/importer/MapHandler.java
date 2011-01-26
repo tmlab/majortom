@@ -4,7 +4,6 @@
 package de.topicmapslab.majortom.importer;
 
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.Stack;
 
 import org.slf4j.Logger;
@@ -20,55 +19,47 @@ import de.topicmapslab.majortom.importer.helper.Name;
 import de.topicmapslab.majortom.importer.helper.Occurrence;
 import de.topicmapslab.majortom.importer.helper.Role;
 import de.topicmapslab.majortom.importer.helper.Variant;
+import de.topicmapslab.majortom.importer.model.IHandler;
 
 /**
  * @author Hannes Niederhausen
- *
+ * 
  */
 public class MapHandler implements IMapHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MapHandler.class);
-	
+
 	private long topicMapId;
-	
+
 	private long currTopicId = -1;
-	
+
 	private final String baseIRI;
-	
-	private PostgresMapHandler handler;
-	
+
+	// private PostgresMapHandler handler;
+
 	private Characteristic currentCharacteristic;
-	
+
 	private Variant currentVariant = null;
-	
+
 	private Association currentAssociation;
-	
+
 	private Role currentRole;
-	
+
 	private Stack<State> state;
-	
-	
-	
+
+	private IHandler handler;
+
 	/**
 	 * Constructor
+	 * 
 	 * @throws SQLException
 	 */
-	public MapHandler(String baseIRI) throws MIOException {
-		this.handler = new PostgresMapHandler();
+	public MapHandler(IHandler handler, String baseIRI) throws MIOException {
+		this.handler = handler;
 		this.state = new Stack<MapHandler.State>();
 		this.baseIRI = baseIRI;
 	}
-	
-	/**
-	 * Constructor
-	 * @throws SQLException
-	 */
-	public MapHandler(Properties dbProperties, String baseIRI) throws MIOException {
-		this.handler = new PostgresMapHandler(dbProperties);
-		this.state = new Stack<MapHandler.State>();
-		this.baseIRI = baseIRI;
-	}
-	
+
 	public void endAssociation() throws MIOException {
 		handler.addAssociation(currentAssociation);
 		currentAssociation = null;
@@ -80,7 +71,7 @@ public class MapHandler implements IMapHandler {
 	}
 
 	public void endName() throws MIOException {
-		
+
 		handler.addName((Name) currentCharacteristic);
 		currentCharacteristic = null;
 		logger.debug("End Name");
@@ -105,7 +96,7 @@ public class MapHandler implements IMapHandler {
 
 		currentAssociation.getRoles().add(currentRole);
 		currentRole = null;
-		
+
 		state.pop();
 	}
 
@@ -143,10 +134,10 @@ public class MapHandler implements IMapHandler {
 
 	public void startAssociation() throws MIOException {
 		state.push(State.ASSOCIATION);
-		
+
 		currentAssociation = new Association();
 		currentAssociation.setTopicmapId(topicMapId);
-		
+
 	}
 
 	public void startIsa() throws MIOException {
@@ -158,9 +149,9 @@ public class MapHandler implements IMapHandler {
 		currentCharacteristic = new Name();
 		currentCharacteristic.setTopicmapId(topicMapId);
 		currentCharacteristic.setParentId(currTopicId);
-		
+
 		logger.debug("Start name");
-		
+
 	}
 
 	public void startOccurrence() throws MIOException {
@@ -172,12 +163,12 @@ public class MapHandler implements IMapHandler {
 
 	public void startPlayer() throws MIOException {
 		state.push(State.PLAYER);
-		
+
 	}
 
 	public void startReifier() throws MIOException {
 		state.push(State.REIFIER);
-		
+
 	}
 
 	public void startRole() throws MIOException {
@@ -187,64 +178,64 @@ public class MapHandler implements IMapHandler {
 
 	public void startScope() throws MIOException {
 		state.push(State.SCOPE);
-		
+
 	}
 
 	public void startTheme() throws MIOException {
 		state.push(State.THEME);
-		
+
 	}
 
 	public void startTopic(IRef arg0) throws MIOException {
 		state.push(State.TOPIC);
-		logger.debug("Starting Topic with "+arg0.getIRI());
-		
+		logger.debug("Starting Topic with " + arg0.getIRI());
+
 		currTopicId = handler.getTopic(arg0);
-		
+
 	}
 
 	public void startTopicMap() throws MIOException {
 		state.push(State.TOPICMAP);
 		handler.start();
 		topicMapId = handler.getTopicMapId(baseIRI);
-		logger.debug("Found Topic Map with id: "+topicMapId);
-		
+		logger.debug("Found Topic Map with id: " + topicMapId);
+
 	}
 
 	public void startType() throws MIOException {
 		state.push(State.TYPE);
 		logger.debug("Start type");
-		
+
 	}
 
 	public void startVariant() throws MIOException {
 		state.push(State.VARIANT);
 		currentVariant = new Variant();
-		
+
 	}
 
 	public void itemIdentifier(String arg0) throws MIOException {
 		handler.addIdentifier(currTopicId, arg0, IRef.ITEM_IDENTIFIER);
-		logger.debug("Item Identifier: "+arg0);
+		logger.debug("Item Identifier: " + arg0);
 	}
 
 	public void subjectIdentifier(String arg0) throws MIOException {
 		handler.addIdentifier(currTopicId, arg0, IRef.SUBJECT_IDENTIFIER);
-		logger.debug("Subject Identifier: "+arg0);
+		logger.debug("Subject Identifier: " + arg0);
 	}
 
 	public void subjectLocator(String arg0) throws MIOException {
 		handler.addIdentifier(currTopicId, arg0, IRef.SUBJECT_LOCATOR);
-		logger.debug("Subject Locator: "+arg0);
-		
+		logger.debug("Subject Locator: " + arg0);
+
 	}
 
 	public void topicRef(IRef arg0) throws MIOException {
-		
-		if (currentAssociation!=null) {
-			switch(state.peek()) {
+
+		if (currentAssociation != null) {
+			switch (state.peek()) {
 			case TYPE:
-				if (currentRole!=null)
+				if (currentRole != null)
 					currentRole.setRoleType(arg0);
 				else
 					currentAssociation.setType(arg0);
@@ -260,42 +251,42 @@ public class MapHandler implements IMapHandler {
 				break;
 			}
 			return;
-		} else if ( (currentCharacteristic!=null) ){
+		} else if ((currentCharacteristic != null)) {
 
-			switch(state.peek()) {
+			switch (state.peek()) {
 			case TYPE:
 				currentCharacteristic.setTypeRef(arg0);
 				break;
 			case THEME:
-				if (currentVariant==null)
+				if (currentVariant == null)
 					currentCharacteristic.addTheme(arg0);
 				else
 					currentVariant.addTheme(arg0);
 				break;
 			case REIFIER:
-				if (currentVariant==null)
+				if (currentVariant == null)
 					currentCharacteristic.setReifier(arg0);
 				else
 					currentVariant.setReifier(arg0);
 				break;
 			}
 		} else {
-			if (state.peek()==State.ISA) {
+			if (state.peek() == State.ISA) {
 				handler.addType(currTopicId, arg0);
 			}
 		}
-		
+
 		// TODO do something else
-		logger.debug("Topic Ref:"+arg0.getIRI());
-		
+		logger.debug("Topic Ref:" + arg0.getIRI());
+
 	}
 
 	public void value(String arg0) throws MIOException {
-		if (currentCharacteristic!=null) {
+		if (currentCharacteristic != null) {
 			// we have a name...
 			currentCharacteristic.setValue(arg0);
 		}
-		logger.debug("Set value:"+arg0);
+		logger.debug("Set value:" + arg0);
 	}
 
 	public void value(String arg0, String arg1) throws MIOException {
@@ -308,21 +299,7 @@ public class MapHandler implements IMapHandler {
 		}
 	}
 
-	
 	private enum State {
-		SCOPE,
-		NAME,
-		OCCURRENCE,
-		ISA,
-		AKO,
-		ROLE,
-		PLAYER,
-		TOPICMAP,
-		TYPE,
-		TOPIC,
-		ASSOCIATION,
-		THEME,
-		VARIANT,
-		REIFIER
+		SCOPE, NAME, OCCURRENCE, ISA, AKO, ROLE, PLAYER, TOPICMAP, TYPE, TOPIC, ASSOCIATION, THEME, VARIANT, REIFIER
 	}
 }
