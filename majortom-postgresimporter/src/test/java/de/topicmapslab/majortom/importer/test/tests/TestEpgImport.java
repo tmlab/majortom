@@ -20,7 +20,6 @@ import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.HOS
 import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.PASSWORD;
 import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.USERNAME;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,7 +34,6 @@ import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.format_estimator.FormatEstimator.Format;
-import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.importer.Importer;
 import de.topicmapslab.majortom.importer.file.FileWriterMapHandler;
@@ -94,9 +92,10 @@ public class TestEpgImport {
 		this.db_map.clear();
 
 	}
+
 	@After
-	public void tearDown(){
-//		this.db_map.remove();
+	public void tearDown() {
+		// this.db_map.remove();
 	}
 
 	@Test
@@ -119,22 +118,15 @@ public class TestEpgImport {
 
 		File f = new File("D:/export.sql");
 		FileOutputStream out = new FileOutputStream(f);
-//		ByteArrayOutputStream out = new ByteArrayOutputStream(90000000);
 
 		long t = System.currentTimeMillis();
 		System.out.print("Start to convert XTM to SQL ...");
-		Importer.importStream(new FileWriterMapHandler(out), is, databaseBaseLocator,
-				Format.XTM_2_1);
+		Importer.importStream(new FileWriterMapHandler(out), is, databaseBaseLocator, Format.XTM_2_1);
 		System.out.println(" finished after " + (System.currentTimeMillis() - t) + "ms");
 		t = System.currentTimeMillis();
-		System.out.println("Start to write SQL to DB ...");
-		PSQLTask.runPSQL("C:/Programme/PostgreSQL/8.4//bin","D:/export.sql", database, user, password);		
+		System.out.print("Start to write SQL to DB ...");
+		PSQLTask.runPSQL("C:/Programme/PostgreSQL/8.4//bin", "D:/export.sql", database, user, password);
 		System.out.println(" finished after " + (System.currentTimeMillis() - t) + "ms");
-//		ISession session = ((JdbcTopicMapStore)((ITopicMap)this.db_map).getStore()).openSession();
-//		t = System.currentTimeMillis();		
-//		System.out.print("Start to write SQL to DB ...");
-//		session.getConnection().createStatement().execute(out.toString());
-//		System.out.println(" finished after " + (System.currentTimeMillis() - t) + "ms");
 	}
 
 }
