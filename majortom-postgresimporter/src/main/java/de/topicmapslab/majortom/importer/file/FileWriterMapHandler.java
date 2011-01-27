@@ -11,8 +11,6 @@ import static de.topicmapslab.majortom.importer.IDatabasePropertiesConstants.USE
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,6 +45,8 @@ import de.topicmapslab.majortom.importer.helper.Variant;
 import de.topicmapslab.majortom.importer.model.IHandler;
 
 /**
+ * Special Map Handler to write topic map constructs to SQL commands.
+ * 
  * @author Sven Krosse
  * 
  */
@@ -55,55 +55,116 @@ public class FileWriterMapHandler implements IHandler {
 	/**
 	 * 
 	 */
+	private static final String NULL = "NULL";
+
+	/**
+	 * the UTF-8 constant
+	 */
 	private static final String UTF_8 = "UTF-8";
 
 	/**
-	 * 
+	 * wildcard variable
 	 */
 	private static final String PLACEHOLDER = "{0}";
 
+	/**
+	 * current construct Id
+	 */
 	private long id;
+	/**
+	 * current locator Id
+	 */
 	private long locatorId;
+	/**
+	 * current scope Id
+	 */
 	private long scopeId;
 
+	/**
+	 * the PostGreSql connection provider
+	 */
 	private PostGreSqlConnectionProvider provider;
+	/**
+	 * the session
+	 */
 	private PostGreSqlSession session;
+	/**
+	 * the topic map id
+	 */
 	private Long topicMapId;
+	/**
+	 * the query builder of MaJorToM
+	 */
 	private Sql99QueryBuilder builder;
+	/**
+	 * the output stream to write the SQL commands
+	 */
 	private OutputStream os;
-//	private PrintWriter writer;
-
+	/**
+	 * the current connection
+	 */
 	private Connection connection;
 
+	/**
+	 * topic cache, storing the topic references to the topic Id
+	 */
 	private Map<IRef, Long> topicCache = new HashMap<IRef, Long>();
-	/*
-	 * map reference-id
+	/**
+	 * locator cache storing the reference to the locator Id
 	 */
 	private BidiMap locatorCache = new TreeBidiMap();
+	/**
+	 * scope cache storing the theme Id to the scope id
+	 */
 	private Map<Set<Long>, Long> scopesCache = new HashMap<Set<Long>, Long>();
+	/**
+	 * query cache storing the known constructs as SQL Query
+	 */
 	private Map<String, Long> knownQueries = new HashMap<String, Long>();
 
 	/**
 	 * Constructor
 	 * 
-	 * @throws SQLException
+	 * @param os
+	 *            the output stream
+	 * @throws MIOException
 	 */
 	public FileWriterMapHandler(OutputStream os) throws MIOException {
-		this.os = os;
-//		this.writer = new PrintWriter(os);
-		try {
-			InputStream is = getClass().getResourceAsStream("/db.properties");
-			Properties properties = new Properties();
-			if (is == null)
-				throw new MIOException("Could not load db.properties!");
-			properties.load(is);
-
-			init(properties);
-		} catch (IOException e) {
-			throw new MIOException(e);
-		}
+		this(os, null);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param os
+	 *            the output stream
+	 * @param properties
+	 *            the DB connection properties
+	 * @throws MIOException
+	 */
+	public FileWriterMapHandler(OutputStream os, Properties properties) throws MIOException {
+		this.os = os;
+		if (properties == null) {
+			try {
+				InputStream is = getClass().getResourceAsStream("/db.properties");
+				properties = new Properties();
+				if (is == null)
+					throw new MIOException("Could not load db.properties!");
+				properties.load(is);
+			} catch (IOException e) {
+				throw new MIOException(e);
+			}
+		}
+		init(properties);
+	}
+
+	/**
+	 * Initialize the database and get the topic map id
+	 * 
+	 * @param properties
+	 *            the properties to connect to db
+	 * @throws MIOException
+	 */
 	private void init(Properties properties) throws MIOException {
 		try {
 			String localhost = properties.getProperty(HOST);
@@ -199,7 +260,7 @@ public class FileWriterMapHandler implements IHandler {
 				String value = rs.getString(5);
 				long scopeId = rs.getLong(6);
 				long reifierId = rs.getLong(7);
-				String reifier = rs.wasNull() ? "NULL" : Long.toString(reifierId);
+				String reifier = rs.wasNull() ? NULL : Long.toString(reifierId);
 				knownQueries.put(MessageFormat.format(QUERY.NAME, Long.toString(topicMapId), Long.toString(topicId),
 						PLACEHOLDER, Long.toString(typeId), value, Long.toString(scopeId), reifier), nameId);
 			}
@@ -216,7 +277,7 @@ public class FileWriterMapHandler implements IHandler {
 				long locatorId = rs.getLong(6);
 				long scopeId = rs.getLong(7);
 				long reifierId = rs.getLong(8);
-				String reifier = rs.wasNull() ? "NULL" : Long.toString(reifierId);
+				String reifier = rs.wasNull() ? NULL : Long.toString(reifierId);
 				knownQueries.put(MessageFormat.format(QUERY.OCCURRENCE, Long.toString(topicMapId),
 						Long.toString(topicId), PLACEHOLDER, Long.toString(typeId), value, Long.toString(locatorId),
 						Long.toString(scopeId), reifier), occurrenceId);
@@ -233,7 +294,7 @@ public class FileWriterMapHandler implements IHandler {
 				long locatorId = rs.getLong(5);
 				long scopeId = rs.getLong(6);
 				long reifierId = rs.getLong(7);
-				String reifier = rs.wasNull() ? "NULL" : Long.toString(reifierId);
+				String reifier = rs.wasNull() ? NULL : Long.toString(reifierId);
 				knownQueries.put(MessageFormat.format(QUERY.VARIANT, Long.toString(topicMapId), Long.toString(nameId),
 						PLACEHOLDER, value, Long.toString(locatorId), Long.toString(scopeId), reifier), variantId);
 			}
@@ -247,7 +308,7 @@ public class FileWriterMapHandler implements IHandler {
 				long typeId = rs.getLong(3);
 				long scopeId = rs.getLong(4);
 				long reifierId = rs.getLong(5);
-				String reifier = rs.wasNull() ? "NULL" : Long.toString(reifierId);
+				String reifier = rs.wasNull() ? NULL : Long.toString(reifierId);
 				knownQueries.put(
 						MessageFormat.format(QUERY.ASSOCIATION, Long.toString(topicMapId), Long.toString(topicMapId),
 								PLACEHOLDER, Long.toString(typeId), Long.toString(scopeId), reifier), associationId);
@@ -263,7 +324,7 @@ public class FileWriterMapHandler implements IHandler {
 				long typeId = rs.getLong(4);
 				long playerId = rs.getLong(5);
 				long reifierId = rs.getLong(6);
-				String reifier = rs.wasNull() ? "NULL" : Long.toString(reifierId);
+				String reifier = rs.wasNull() ? NULL : Long.toString(reifierId);
 				knownQueries.put(MessageFormat.format(QUERY.ROLE, topicMapId, associationId, PLACEHOLDER, typeId,
 						playerId, reifier), roleId);
 			}
@@ -294,15 +355,6 @@ public class FileWriterMapHandler implements IHandler {
 	}
 
 	/**
-	 * Constructor
-	 * 
-	 * @throws SQLException
-	 */
-	public FileWriterMapHandler(Properties properties) throws MIOException {
-		init(properties);
-	}
-
-	/**
 	 * Commits the last statements
 	 * 
 	 * @throws MIOException
@@ -317,7 +369,7 @@ public class FileWriterMapHandler implements IHandler {
 	}
 
 	/**
-	 * Handler for start event prepareing the connection
+	 * Handler for start event preparing the connection
 	 * 
 	 * @throws MIOException
 	 */
@@ -335,16 +387,16 @@ public class FileWriterMapHandler implements IHandler {
 		try {
 			commit();
 			session.close();
-			session = null;			
+			session = null;
 			/*
 			 * update sequences
 			 */
-			String sql = MessageFormat.format(QUERY.SETVAL, Long.toString(id), Long.toString(locatorId), Long.toString(scopeId));
+			String sql = MessageFormat.format(QUERY.SETVAL, Long.toString(id), Long.toString(locatorId),
+					Long.toString(scopeId));
 			os.write(sql.getBytes(UTF_8));
 			/*
 			 * flush
 			 */
-//			writer.flush();
 			os.flush();
 		} catch (SQLException e) {
 			throw new MIOException(e);
@@ -357,8 +409,8 @@ public class FileWriterMapHandler implements IHandler {
 	 * Returns the id of the topic map for the given locator. If it does not exist it will be created.
 	 * 
 	 * @param locator
-	 *            locator of the tm
-	 * @return the id of the tm
+	 *            locator of the topic map
+	 * @return the id of the topic map
 	 * @throws MIOException
 	 */
 	public long getTopicMapId(String locator) throws MIOException {
@@ -391,14 +443,7 @@ public class FileWriterMapHandler implements IHandler {
 			if (topicMapId == -1)
 				throw new MIOException("Could not create topic map");
 
-			// clear topic map
-			PreparedStatement stmt = builder.getQueryClearTopicMap();
-			stmt.setLong(1, topicMapId);
-			stmt.setLong(2, topicMapId);
-			stmt.setLong(3, topicMapId);
-			stmt.setLong(4, topicMapId);
-			stmt.setLong(5, topicMapId);
-			stmt.execute();
+			preInitialization();
 
 			rs = connection.createStatement().executeQuery(QUERY.CURRVAL);
 			rs.next();
@@ -419,23 +464,19 @@ public class FileWriterMapHandler implements IHandler {
 	 * Adds the given association to the database.
 	 * 
 	 * @param assoc
+	 *            the association to add
 	 * @throws MIOException
 	 */
 	public void addAssociation(Association assoc) throws MIOException {
 		long assocID = id++;
-		String reifier = assoc.getReifier() == null ? "NULL" : Long.toString(getTopic(assoc.getReifier()));
+		String reifier = assoc.getReifier() == null ? NULL : Long.toString(getTopic(assoc.getReifier()));
 		String sql = MessageFormat.format(QUERY.ASSOCIATION, Long.toString(topicMapId), Long.toString(topicMapId),
-				PLACEHOLDER, Long.toString(getTopic(assoc.getType())), getScopeId(assoc.getThemes()), reifier);
-		if (!knownQueries.containsKey(sql)) {
-			sql = MessageFormat.format(QUERY.ASSOCIATION, Long.toString(topicMapId), Long.toString(topicMapId),
-					Long.toString(assocID), Long.toString(getTopic(assoc.getType())), getScopeId(assoc.getThemes()), reifier);
-			try {
-				os.write(sql.getBytes(UTF_8));
-			} catch (Exception e) {
-				throw new MIOException(e);
-			}
-		} else {
-			assocID = knownQueries.get(sql);
+				Long.toString(assocID), Long.toString(getTopic(assoc.getType())), getScopeId(assoc.getThemes()),
+				reifier);
+		try {
+			os.write(sql.getBytes(UTF_8));
+		} catch (Exception e) {
+			throw new MIOException(e);
 		}
 		for (Role role : assoc.getRoles()) {
 			addRole(assocID, role);
@@ -453,12 +494,12 @@ public class FileWriterMapHandler implements IHandler {
 	 */
 	private void addRole(long assocID, Role role) throws MIOException {
 		long roleId = id++;
-		// String reifier = role.getReifier() == null ? "NULL" : Long.toString(getTopic(role.getReifier()));
 		String sql = MessageFormat.format(QUERY.ROLE, Long.toString(topicMapId), Long.toString(assocID), PLACEHOLDER,
-				Long.toString(getTopic(role.getRoleType())), Long.toString(getTopic(role.getRolePlayer())), "NULL");
+				Long.toString(getTopic(role.getRoleType())), Long.toString(getTopic(role.getRolePlayer())), NULL);
 		if (!knownQueries.containsKey(sql)) {
-			sql = MessageFormat.format(QUERY.ROLE, Long.toString(topicMapId), Long.toString(assocID), Long.toString(roleId),
-					Long.toString(getTopic(role.getRoleType())), Long.toString(getTopic(role.getRolePlayer())), "NULL");
+			sql = MessageFormat.format(QUERY.ROLE, Long.toString(topicMapId), Long.toString(assocID),
+					Long.toString(roleId), Long.toString(getTopic(role.getRoleType())),
+					Long.toString(getTopic(role.getRolePlayer())), NULL);
 			try {
 				os.write(sql.getBytes(UTF_8));
 			} catch (Exception e) {
@@ -475,14 +516,15 @@ public class FileWriterMapHandler implements IHandler {
 	 */
 	public void addName(Name name) throws MIOException {
 		long nameId = id++;
-		String reifier = name.getReifier() == null ? "NULL" : Long.toString(getTopic(name.getReifier()));
+		String reifier = name.getReifier() == null ? NULL : Long.toString(getTopic(name.getReifier()));
 		String sql = MessageFormat.format(QUERY.NAME, Long.toString(name.getTopicMapId()),
 				Long.toString(name.getParentId()), PLACEHOLDER, Long.toString(getTopic(name.getTypeRef())),
 				escape(name.getValue()), getScopeId(name.getThemeRefs()), reifier);
 		if (!knownQueries.containsKey(sql)) {
 			sql = MessageFormat.format(QUERY.NAME, Long.toString(name.getTopicMapId()),
-					Long.toString(name.getParentId()), Long.toString(nameId), Long.toString(getTopic(name.getTypeRef())),
-					escape(name.getValue()), getScopeId(name.getThemeRefs()), reifier);
+					Long.toString(name.getParentId()), Long.toString(nameId),
+					Long.toString(getTopic(name.getTypeRef())), escape(name.getValue()),
+					getScopeId(name.getThemeRefs()), reifier);
 			try {
 				os.write(sql.getBytes(UTF_8));
 			} catch (Exception e) {
@@ -504,16 +546,16 @@ public class FileWriterMapHandler implements IHandler {
 	 */
 	public void addOccurrence(Occurrence occurrence) throws MIOException {
 		long occurrenceId = id++;
-		String reifier = occurrence.getReifier() == null ? "NULL" : Long.toString(getTopic(occurrence.getReifier()));
+		String reifier = occurrence.getReifier() == null ? NULL : Long.toString(getTopic(occurrence.getReifier()));
 		String sql = MessageFormat.format(QUERY.OCCURRENCE, Long.toString(occurrence.getTopicMapId()),
 				Long.toString(occurrence.getParentId()), PLACEHOLDER, Long.toString(getTopic(occurrence.getTypeRef())),
 				escape(occurrence.getValue()), getLocatorId(occurrence.getDatatype()),
 				getScopeId(occurrence.getThemeRefs()), reifier);
 		if (!knownQueries.containsKey(sql)) {
 			sql = MessageFormat.format(QUERY.OCCURRENCE, Long.toString(occurrence.getTopicMapId()),
-					Long.toString(occurrence.getParentId()), Long.toString(occurrenceId), Long.toString(getTopic(occurrence.getTypeRef())),
-					escape(occurrence.getValue()), getLocatorId(occurrence.getDatatype()),
-					getScopeId(occurrence.getThemeRefs()), reifier);
+					Long.toString(occurrence.getParentId()), Long.toString(occurrenceId),
+					Long.toString(getTopic(occurrence.getTypeRef())), escape(occurrence.getValue()),
+					getLocatorId(occurrence.getDatatype()), getScopeId(occurrence.getThemeRefs()), reifier);
 			try {
 				os.write(sql.getBytes(UTF_8));
 			} catch (Exception e) {
@@ -538,7 +580,8 @@ public class FileWriterMapHandler implements IHandler {
 			return val.longValue();
 
 		long topicId = id++;
-		String sql = MessageFormat.format(QUERY.TOPIC, Long.toString(topicMapId), Long.toString(topicMapId), Long.toString(topicId));
+		String sql = MessageFormat.format(QUERY.TOPIC, Long.toString(topicMapId), Long.toString(topicMapId),
+				Long.toString(topicId));
 		try {
 			os.write(sql.getBytes(UTF_8));
 		} catch (Exception e) {
@@ -563,6 +606,14 @@ public class FileWriterMapHandler implements IHandler {
 		return topicId;
 	}
 
+	/**
+	 * Returns the locator id of the given reference
+	 * 
+	 * @param ref
+	 *            the reference
+	 * @return the locator Id as {@link String}
+	 * @throws MIOException
+	 */
 	public String getLocatorId(String ref) throws MIOException {
 		// check cache
 		Long val = (Long) locatorCache.get(ref);
@@ -588,7 +639,7 @@ public class FileWriterMapHandler implements IHandler {
 	 * @param topicId
 	 *            id of the topic
 	 * @param ref
-	 *            the uri
+	 *            the URI
 	 * @param type
 	 *            the type of identifier
 	 * @throws MIOException
@@ -600,15 +651,15 @@ public class FileWriterMapHandler implements IHandler {
 		 */
 		if (topicCache.containsKey(new Ref(ref, type))) {
 			long existingId = topicCache.get(new Ref(ref, type));
-			if ( topicId == existingId) {
+			if (topicId == existingId) {
 				return;
 			}
 			String newTopicId = Long.toString(topicId);
 			String oldTopicId = Long.toString(existingId);
-			Object[] values = new Object[25];			
-			for ( int i = 0 ; i < 24 ; i += 2){
+			Object[] values = new Object[25];
+			for (int i = 0; i < 24; i += 2) {
 				values[i] = newTopicId;
-				values[i+1] = oldTopicId;
+				values[i + 1] = oldTopicId;
 			}
 			values[24] = oldTopicId;
 			String sql = MessageFormat.format(QUERY.MERGE, values);
@@ -621,21 +672,21 @@ public class FileWriterMapHandler implements IHandler {
 			 * update references
 			 */
 			Set<IRef> refs = new HashSet<IRef>();
-			for ( Entry<IRef, Long> entry : topicCache.entrySet()){
-				if ( entry.getKey().equals(oldTopicId)){
+			for (Entry<IRef, Long> entry : topicCache.entrySet()) {
+				if (entry.getKey().equals(oldTopicId)) {
 					refs.add(entry.getKey());
 				}
 			}
-			for ( IRef ref_ : refs ){
+			for (IRef ref_ : refs) {
 				topicCache.put(ref_, topicId);
 			}
 			/*
 			 * update scopes
 			 */
 			Iterator<Set<Long>> iterator = scopesCache.keySet().iterator();
-			while(iterator.hasNext()){
+			while (iterator.hasNext()) {
 				Set<Long> key = iterator.next();
-				if ( key.contains(existingId)){
+				if (key.contains(existingId)) {
 					Set<Long> keys_ = new HashSet<Long>(key);
 					keys_.remove(existingId);
 					keys_.add(topicId);
@@ -693,6 +744,14 @@ public class FileWriterMapHandler implements IHandler {
 		}
 	}
 
+	/**
+	 * Returns the scope Id of the given themes
+	 * 
+	 * @param themes
+	 *            the themes
+	 * @return the scope Id
+	 * @throws MIOException
+	 */
 	private String getScopeId(List<IRef> themes) throws MIOException {
 		Set<Long> set = new HashSet<Long>();
 		for (IRef ref : themes) {
@@ -721,16 +780,25 @@ public class FileWriterMapHandler implements IHandler {
 		return Long.toString(scopeId);
 	}
 
+	/**
+	 * Adds a variant to database
+	 * 
+	 * @param id
+	 *            the name Id
+	 * @param variant
+	 *            the variant container
+	 * @throws MIOException
+	 */
 	private void addVariant(long id, Variant variant) throws MIOException {
 		long variantId = this.id++;
-		String reifier = variant.getReifier() == null ? "NULL" : Long.toString(getTopic(variant.getReifier()));
+		String reifier = variant.getReifier() == null ? NULL : Long.toString(getTopic(variant.getReifier()));
 		String sql = MessageFormat.format(QUERY.VARIANT, Long.toString(topicMapId), Long.toString(id), PLACEHOLDER,
 				escape(variant.getValue()), getLocatorId(variant.getDatatype()), getScopeId(variant.getThemeRefs()),
 				reifier);
 		if (!knownQueries.containsKey(sql)) {
-			sql = MessageFormat.format(QUERY.VARIANT, Long.toString(topicMapId), Long.toString(id), Long.toString(variantId),
-					escape(variant.getValue()), getLocatorId(variant.getDatatype()), getScopeId(variant.getThemeRefs()),
-					reifier);
+			sql = MessageFormat.format(QUERY.VARIANT, Long.toString(topicMapId), Long.toString(id),
+					Long.toString(variantId), escape(variant.getValue()), getLocatorId(variant.getDatatype()),
+					getScopeId(variant.getThemeRefs()), reifier);
 			try {
 				os.write(sql.getBytes(UTF_8));
 			} catch (Exception e) {
@@ -739,20 +807,14 @@ public class FileWriterMapHandler implements IHandler {
 		}
 	}
 
+	/**
+	 * Utility method to escape SQL reserved symbols as part of string values
+	 * 
+	 * @param value
+	 *            the value
+	 * @return the escaped value
+	 */
 	private String escape(String value) {
 		return value.replace("'", "\\'");
-//		StringBuilder sb = new StringBuilder();
-//		int last = 0;
-//		int index = value.indexOf('\'', last);
-//		while ( index != -1 ){
-//			sb.append(value.substring(last, index));
-//			sb.append("\'");
-//			last = index+1;
-//			index = value.indexOf('\'', last);
-//		}
-//		if ( last < value.length()){
-//			sb.append(value.substring(last));
-//		}
-//		return sb.toString();
 	}
 }
