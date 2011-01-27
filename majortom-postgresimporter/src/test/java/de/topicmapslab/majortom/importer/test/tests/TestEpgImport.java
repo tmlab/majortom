@@ -39,7 +39,7 @@ import de.topicmapslab.majortom.database.jdbc.model.ISession;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.importer.Importer;
 import de.topicmapslab.majortom.importer.file.FileWriterMapHandler;
-import de.topicmapslab.majortom.importer.file.ImportToDatabaseTask;
+import de.topicmapslab.majortom.importer.file.PSQLTask;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 import de.topicmapslab.majortom.util.FeatureStrings;
@@ -128,7 +128,7 @@ public class TestEpgImport {
 		System.out.println(" finished after " + (System.currentTimeMillis() - t) + "ms");
 		t = System.currentTimeMillis();
 		System.out.println("Start to write SQL to DB ...");
-		ImportToDatabaseTask.importSql("C:/Programme/PostgreSQL/8.4//bin","D:/export.sql", database, user, password);		
+		PSQLTask.runPSQL("C:/Programme/PostgreSQL/8.4//bin","D:/export.sql", database, user, password);		
 		System.out.println(" finished after " + (System.currentTimeMillis() - t) + "ms");
 //		ISession session = ((JdbcTopicMapStore)((ITopicMap)this.db_map).getStore()).openSession();
 //		t = System.currentTimeMillis();		
