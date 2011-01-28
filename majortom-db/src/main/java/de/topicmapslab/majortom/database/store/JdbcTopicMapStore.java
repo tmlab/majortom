@@ -644,7 +644,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			session.getProcessor().doMergeTopics(newTopic, context);
 			String oldId = context.getId();
-			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			((TopicImpl) context).getIdentity().setId(newTopic.longId());
 			/*
 			 * store history and notify listeners
 			 */
@@ -656,7 +656,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			session.getProcessor().doMergeTopics(newTopic, other);
 			oldId = other.getId();
-			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.longId());
 			session.commit();
 			/*
 			 * store history and notify listeners

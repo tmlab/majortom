@@ -45,6 +45,10 @@
 			<id>JBoss</id>
 			<url>http://repository.jboss.org/maven2/</url>
 		</repository>
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -72,6 +76,11 @@
 			<version>3.2.1</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		  <groupId>colt</groupId>
+		  <artifactId>colt</artifactId>
+		  <version>1.2.0</version>
 		</dependency>
 	</dependencies>
 </project>

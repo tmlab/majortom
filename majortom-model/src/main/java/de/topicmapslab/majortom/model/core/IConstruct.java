@@ -5,6 +5,8 @@ import java.io.Serializable;
 import org.tmapi.core.Construct;
 import org.tmapi.core.TopicInUseException;
 
+import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
+
 /**
  * Base Interface representing a topic map construct.
  * 
@@ -19,8 +21,8 @@ public interface IConstruct extends Construct, Comparable<IConstruct>, Serializa
 	 * @param cascade
 	 *            flag indicates if all dependencies should be removed too
 	 * @throws TopicInUseException
-	 *             thrown if the construct will be used by another construct and
-	 *             the argument cascade is <code>false</code>
+	 *             thrown if the construct will be used by another construct and the argument cascade is
+	 *             <code>false</code>
 	 */
 	public void remove(final boolean cascade) throws TopicInUseException;
 
@@ -35,4 +37,13 @@ public interface IConstruct extends Construct, Comparable<IConstruct>, Serializa
 	 * @return the removed <code>true</code> if the construct was removed
 	 */
 	public boolean isRemoved();
+
+	/**
+	 * Returns the long id of this construct
+	 * 
+	 * @return the long id
+	 * @since 1.2.0
+	 * @see ITopicMapStoreIdentity#longId()
+	 */
+	public long longId();
 }

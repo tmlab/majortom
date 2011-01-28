@@ -58,6 +58,8 @@ public class FeatureStrings {
 	
 	public static final String DELETION_CONSTRAINTS = CONSTRAINTS + ".deletion";
 	
+	public static final String CONCURRENT_COLLECTIONS = MAJORTOM_PREFIX + ".collection.concurrent";
+	
 	public static final String DELETION_CONSTRAINTS_REIFICATION = DELETION_CONSTRAINTS + ".reification";
 	
 	public static final Set<String> FEATURES = HashUtil.getHashSet();
@@ -79,5 +81,7 @@ public class FeatureStrings {
 		FEATURES.add(ENABLE_CACHING);
 		FEATURES.add(SUPPORT_TRANSACTION);
 		FEATURES.add(DELETION_CONSTRAINTS_REIFICATION);
+		
+		FEATURES.add(CONCURRENT_COLLECTIONS);
 	}
 }

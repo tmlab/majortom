@@ -754,9 +754,9 @@ public class InMemoryMergeUtils {
 				doMerge(store, newReifier, reifier, revision);
 				doMerge(store, newReifier, reifierOfOther, revision);
 				((InMemoryIdentity) ((TopicImpl) reifier).getIdentity())
-						.setId(newReifier.getId());
+						.setId(newReifier.longId());
 				((InMemoryIdentity) ((TopicImpl) reifierOfOther).getIdentity())
-						.setId(newReifier.getId());
+						.setId(newReifier.longId());
 				store.modifyReifier(other, null, null);
 			}
 		}

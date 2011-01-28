@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Set;
 
 import org.tmapi.core.ModelConstraintException;
@@ -18,8 +17,6 @@ import org.tmapi.index.LiteralIndex;
 import org.tmapi.index.ScopedIndex;
 import org.tmapi.index.TypeInstanceIndex;
 
-import cern.jet.random.engine.MersenneTwister;
-import cern.jet.random.engine.RandomEngine;
 import de.topicmapslab.majortom.comparator.NameByValueComparator;
 import de.topicmapslab.majortom.comparator.ScopeComparator;
 import de.topicmapslab.majortom.core.ConstructImpl;
@@ -109,7 +106,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * 
 	 */
 	private static final String ID_PREFIX = "id:";
-	private RandomEngine random;
 	private int capacityOfCollections = 16;
 
 	private IdentityStore identityStore;
@@ -184,12 +180,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = generateId();
+		final long id = generateId();
 		/*
 		 * create topic and add to identity store
 		 */
 		IAssociation a = getConstructFactory().newAssociation(new InMemoryIdentity(id), topicMap);
-		getIdentityStore().setId(a, id);
+		getIdentityStore().setId(a, Long.toString(id));
 		/*
 		 * register association
 		 */
@@ -357,12 +353,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = generateId();
+		final long id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
 		IName name = getConstructFactory().newName(new InMemoryIdentity(id), topic);
-		getIdentityStore().setId(name, id);
+		getIdentityStore().setId(name, Long.toString(id));
 		/*
 		 * register characteristics
 		 */
@@ -466,12 +462,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = generateId();
+		final long id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
 		IOccurrence occurrence = getConstructFactory().newOccurrence(new InMemoryIdentity(id), topic);
-		getIdentityStore().setId(occurrence, id);
+		getIdentityStore().setId(occurrence, Long.toString(id));
 		/*
 		 * register characteristics
 		 */
@@ -523,12 +519,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = generateId();
+		final long id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
 		IAssociationRole role = getConstructFactory().newAssociationRole(new InMemoryIdentity(id), association);
-		getIdentityStore().setId(role, id);
+		getIdentityStore().setId(role, Long.toString(id));
 		/*
 		 * register typed
 		 */
@@ -599,7 +595,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		 * create random id
 		 */
 		long time = System.currentTimeMillis();
-		String id = generateId();
+		long id = generateId();
 		if (OUTPUT)
 			System.out.println("generateId: " + (System.currentTimeMillis() - time) + " ms");
 		/*
@@ -611,7 +607,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			System.out.println("newTopic: " + (System.currentTimeMillis() - time) + " ms");
 
 		time = System.currentTimeMillis();
-		getIdentityStore().setId(t, id);
+		getIdentityStore().setId(t, Long.toString(id));
 		if (OUTPUT)
 			System.out.println("setId: " + (System.currentTimeMillis() - time) + " ms");
 
@@ -739,12 +735,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * create random id
 		 */
-		final String id = generateId();
+		final long id = generateId();
 		/*
 		 * create role and add to identity store
 		 */
 		IVariant variant = getConstructFactory().newVariant(new InMemoryIdentity(id), name);
-		getIdentityStore().setId(variant, id);
+		getIdentityStore().setId(variant, Long.toString(id));
 		/*
 		 * register characteristics
 		 */
@@ -807,7 +803,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 			ITopic newTopic = createTopic(getTopicMap(), revision);
 			InMemoryMergeUtils.doMerge(this, newTopic, context, revision);
 			String oldId = context.getId();
-			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			((TopicImpl) context).getIdentity().setId(newTopic.longId());
 			((ConstructImpl) context).setRemoved(false);
 			/*
 			 * notify listeners
@@ -817,7 +813,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 
 			InMemoryMergeUtils.doMerge(this, newTopic, other, revision);
 			oldId = other.getId();
-			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.longId());
 			((ConstructImpl) other).setRemoved(false);
 			/*
 			 * notify listeners
@@ -3028,12 +3024,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.reificationStore = null;
 		this.associationStore = null;
 		this.revisionStore = null;
-		random = null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public void setTopicMapSystem(ITopicMapSystem topicMapSystem) {
 		super.setTopicMapSystem(topicMapSystem);
 		Object propertyCapacityOfCollections = topicMapSystem.getProperty(TopicMapStoreProperty.INITIAL_COLLECTION_CAPACITY);
@@ -3044,13 +3040,44 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 				// IGNORE EXCEPTION
 			}
 		}
+		/*
+		 * overwrite map implementation class
+		 */
+		Object propertyMapClass = topicMapSystem.getProperty(TopicMapStoreProperty.MAP_IMPLEMENTATION_CLASS);
+		if (propertyMapClass != null) {
+			try {
+				if (propertyMapClass instanceof Class<?>) {
+					HashUtil.overwriteMapImplementationClass((Class<Map<?, ?>>) propertyMapClass);
+				} else if (propertyMapClass instanceof String) {
+					Class<?> clazz = Class.forName(propertyMapClass.toString());
+					HashUtil.overwriteMapImplementationClass((Class<Map<?, ?>>) clazz);
+				}
+			} catch (Exception e) {
+				throw new TopicMapStoreException("Initialization of map class failed", e);
+			}
+		}
+		/*
+		 * overwrite set implementation class
+		 */
+		Object propertySetClass = topicMapSystem.getProperty(TopicMapStoreProperty.SET_IMPLEMENTATION_CLASS);
+		if (propertySetClass != null) {
+			try {
+				if (propertySetClass instanceof Class<?>) {
+					HashUtil.overwriteSetImplementationClass((Class<Set<?>>) propertySetClass);
+				} else if (propertySetClass instanceof String) {
+					Class<?> clazz = Class.forName(propertySetClass.toString());
+					HashUtil.overwriteSetImplementationClass((Class<Set<?>>) clazz);
+				}
+			} catch (Exception e) {
+				throw new TopicMapStoreException("Initialization of map class failed", e);
+			}
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void connect() throws TopicMapStoreException {
-		this.random = new MersenneTwister((new Random()).nextInt());
 		super.connect();
 		this.identityStore = createIdentityStore(this);
 		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
@@ -3650,14 +3677,6 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public InMemoryIdentity getTopicMapIdentity() {
 		return identity;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected String generateId() {
-		String s = Long.toString(random.nextLong());
-		return s;
 	}
 
 	/**

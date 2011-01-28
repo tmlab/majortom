@@ -106,6 +106,13 @@ public abstract class ConstructImpl implements IConstruct {
 	public String getId() {
 		return getIdentity().getId();// (String) getTopicMap().getStore().doRead(this, TopicMapStoreParameterType.ID);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long longId() {
+		return getIdentity().longId();
+	}
 
 	/**
 	 * {@inheritDoc}

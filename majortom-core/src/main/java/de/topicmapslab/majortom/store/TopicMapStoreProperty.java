@@ -25,4 +25,8 @@ public interface TopicMapStoreProperty {
 	
 	public static final String INITIAL_COLLECTION_CAPACITY = PREFIX + ".collection.capacity";
 	
+	public static final String MAP_IMPLEMENTATION_CLASS = PREFIX + ".collection.map";
+	
+	public static final String SET_IMPLEMENTATION_CLASS = PREFIX + ".collection.set";
+	
 }

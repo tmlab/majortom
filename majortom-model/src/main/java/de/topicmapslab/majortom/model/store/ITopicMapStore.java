@@ -59,26 +59,22 @@ public interface ITopicMapStore {
 	/**
 	 * Checks if the connection to the data store is already established.
 	 * 
-	 * @return <code>true</code> if the connection is established,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the connection is established, <code>false</code> otherwise.
 	 */
 	public boolean isConnected();
 
 	/**
-	 * Indicates if the current topic map store instance only supports read-only
-	 * access.
+	 * Indicates if the current topic map store instance only supports read-only access.
 	 * 
-	 * @return <code>true</code> if only read-operations are supported,
-	 *         <code>false</code> if there is a read-write-access.
+	 * @return <code>true</code> if only read-operations are supported, <code>false</code> if there is a
+	 *         read-write-access.
 	 */
 	public boolean isReadOnly();
 
 	/**
-	 * Indicates if the current topic map store instance supports the history
-	 * functionality.
+	 * Indicates if the current topic map store instance supports the history functionality.
 	 * 
-	 * @return <code>true</code> if the store save all changes of the topic map,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the store save all changes of the topic map, <code>false</code> otherwise.
 	 */
 	public boolean isRevisionManagementSupported();
 
@@ -114,8 +110,7 @@ public interface ITopicMapStore {
 	 * @param context
 	 *            the construct to remove
 	 * @param cascade
-	 *            flag indicates if all dependent constructs should be removed
-	 *            too
+	 *            flag indicates if all dependent constructs should be removed too
 	 * @throws TopicMapStoreException
 	 *             thrown if the operation fails or is not supported
 	 */
@@ -152,8 +147,7 @@ public interface ITopicMapStore {
 	Object doCreate(final IConstruct context, TopicMapStoreParameterType paramType, Object... params) throws TopicMapStoreException;
 
 	/**
-	 * Operation method to add or set some information items to a construct of
-	 * the store
+	 * Operation method to add or set some information items to a construct of the store
 	 * 
 	 * @param context
 	 *            the context
@@ -215,8 +209,8 @@ public interface ITopicMapStore {
 	public ITopicMap getTopicMap();
 
 	/**
-	 * Method commit all changes of every queue of the topic map store. The
-	 * calling thread will be blocked until the changes are committed.
+	 * Method commit all changes of every queue of the topic map store. The calling thread will be blocked until the
+	 * changes are committed.
 	 */
 	public void commit();
 
@@ -234,26 +228,22 @@ public interface ITopicMapStore {
 	 * Method to enable or disable the internal revision management mechanism.
 	 * 
 	 * @param enabled
-	 *            <code>true</code> if the revision management should be
-	 *            enabled, <code>false</code> otherwise.
+	 *            <code>true</code> if the revision management should be enabled, <code>false</code> otherwise.
 	 * @throws TopicMapStoreException
-	 *             thrown if the topic map store does not support history
-	 *             management
+	 *             thrown if the topic map store does not support history management
 	 */
 	public void enableRevisionManagement(boolean enabled) throws TopicMapStoreException;
 
 	/**
 	 * Returns the current state of revision management.
 	 * 
-	 * @return <code>true</code> if the revision management feature will be
-	 *         supported by the current topic map store and the management is
-	 *         enabled, <code>false</code> otherwise.
+	 * @return <code>true</code> if the revision management feature will be supported by the current topic map store and
+	 *         the management is enabled, <code>false</code> otherwise.
 	 */
 	public boolean isRevisionManagementEnabled();
 
 	/**
-	 * Return the construct factory to create constructs for the current topic
-	 * map store instance.
+	 * Return the construct factory to create constructs for the current topic map store instance.
 	 * 
 	 * @return the internal construct factory
 	 */
@@ -262,26 +252,21 @@ public interface ITopicMapStore {
 	/**
 	 * Method returns the internal state of caching.
 	 * 
-	 * @return <code>true</code> if caching is enabled, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if caching is enabled, <code>false</code> otherwise.
 	 */
 	public boolean isCachingEnabled();
 
 	/**
-	 * Enable the caching mechanism of the database topic map store. If the
-	 * caching is enabled, the cache stores any read access and deliver the
-	 * values from cache instead calling the database. The cache will be updated
-	 * automatically. If the cache is disabled, it will be destroyed. Any cached
-	 * values are lost.
+	 * Enable the caching mechanism of the database topic map store. If the caching is enabled, the cache stores any
+	 * read access and deliver the values from cache instead calling the database. The cache will be updated
+	 * automatically. If the cache is disabled, it will be destroyed. Any cached values are lost.
 	 * 
 	 * <p>
-	 * <b>Hint:</b> If the topic map store does not support caching, the method
-	 * has no effect.
+	 * <b>Hint:</b> If the topic map store does not support caching, the method has no effect.
 	 * </p>
 	 * 
 	 * @param enable
-	 *            <code>true</code> to enable the cache, <code>false</code> to
-	 *            disable it
+	 *            <code>true</code> to enable the cache, <code>false</code> to disable it
 	 */
 	public void enableCaching(boolean enable);
 
@@ -292,19 +277,20 @@ public interface ITopicMapStore {
 	 * @since 1.1.2
 	 */
 	public ITopicMapStoreMetaData getMetaData();
-		
+
 	/**
 	 * Returns the internal identity of the topic map
+	 * 
 	 * @return the identity
 	 */
 	public ITopicMapStoreIdentity getTopicMapIdentity();
-	
+
 	/**
 	 * Returns the base locator of the topic map
 	 * 
 	 * @return the base locator
 	 * @since 1.1.4
-	 */	
+	 */
 	public ILocator getTopicMapBaseLocator();
 
 	/**
@@ -314,4 +300,12 @@ public interface ITopicMapStore {
 	 * @since 1.1.4
 	 */
 	public String getTopicMapBaseLocatorReference();
+
+	/**
+	 * Generates a new Id
+	 * 
+	 * @since 1.2.0
+	 * @return the new id
+	 */
+	public long generateId();
 }

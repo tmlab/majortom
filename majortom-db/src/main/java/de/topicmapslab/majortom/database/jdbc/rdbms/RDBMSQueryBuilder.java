@@ -3322,40 +3322,40 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	// * Utility methods *
 	// *******************
 
-	/**
-	 * Method creates a prepared statement to query constructs matching by one or all items in different conditions (
-	 * matching all and number of items )
-	 * 
-	 * @param query
-	 *            the base query
-	 * @param columnName
-	 *            the name of the column to check like this <code>column = ?</code>
-	 * @param count
-	 *            the number of item
-	 * @param all
-	 *            matching all condition
-	 * @return the created statement
-	 * @throws SQLException
-	 *             thrown if statement cannot created
-	 */
-	private PreparedStatement createPreparedStatementForMatchingThemes(String query, final String columnName, long count, boolean all) throws SQLException {
-		String replacer = all ? "%ARRAY%" : "%SUBQUERY%";
-		String placeholder = all ? "?" : (columnName + " = ?");
-		String delimer = all ? "," : " OR ";
-		/*
-		 * create statement
-		 */
-		String subquery = "";
-		for (int n = 0; n < count; n++) {
-			subquery += subquery.isEmpty() ? "" : delimer;
-			subquery += placeholder;
-			if (all)
-				break;
-		}
-		query = query.replaceAll(replacer, subquery);
-		System.out.println(query.length());
-		return getConnection().prepareStatement(query);
-	}
+//	/**
+//	 * Method creates a prepared statement to query constructs matching by one or all items in different conditions (
+//	 * matching all and number of items )
+//	 * 
+//	 * @param query
+//	 *            the base query
+//	 * @param columnName
+//	 *            the name of the column to check like this <code>column = ?</code>
+//	 * @param count
+//	 *            the number of item
+//	 * @param all
+//	 *            matching all condition
+//	 * @return the created statement
+//	 * @throws SQLException
+//	 *             thrown if statement cannot created
+//	 */
+//	private PreparedStatement createPreparedStatementForMatchingThemes(String query, final String columnName, long count, boolean all) throws SQLException {
+//		String replacer = all ? "%ARRAY%" : "%SUBQUERY%";
+//		String placeholder = all ? "?" : (columnName + " = ?");
+//		String delimer = all ? "," : " OR ";
+//		/*
+//		 * create statement
+//		 */
+//		String subquery = "";
+//		for (int n = 0; n < count; n++) {
+//			subquery += subquery.isEmpty() ? "" : delimer;
+//			subquery += placeholder;
+//			if (all)
+//				break;
+//		}
+//		query = query.replaceAll(replacer, subquery);
+//		System.out.println(query.length());
+//		return getConnection().prepareStatement(query);
+//	}
 
 	// *****************
 	// * PERFORM QUERY *

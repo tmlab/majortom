@@ -137,7 +137,7 @@ public class LazyStubCreator {
 
 	private static ITopicMapStoreIdentity cloneIdentity(
 			ITopicMapStoreIdentity identity) {
-		return new InMemoryIdentity(identity.getId());
+		return new InMemoryIdentity(identity.longId());
 	}
 
 }

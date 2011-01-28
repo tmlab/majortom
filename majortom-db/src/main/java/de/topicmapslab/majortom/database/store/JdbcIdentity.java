@@ -47,13 +47,12 @@ public class JdbcIdentity implements ITopicMapStoreIdentity {
 	 * @return the id
 	 */
 	public String getId() {
-		return String.valueOf(id);
+		return Long.toString(id);
 	}
 
 	/**
-	 * Return the internal id of the construct as long
 	 * 
-	 * @return the id
+	 * {@inheritDoc}
 	 */
 	public long longId() {
 		return id;

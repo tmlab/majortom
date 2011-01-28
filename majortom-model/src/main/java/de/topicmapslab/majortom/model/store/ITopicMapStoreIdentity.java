@@ -27,8 +27,23 @@ import java.io.Serializable;
  */
 public interface ITopicMapStoreIdentity extends Serializable {
 
+	/**
+	 * Returns the id of this construct as String
+	 * @return the string Id
+	 */
 	String getId();
 	
-	public void setId(final String id);
+	/**
+	 * Returns the id of this construct as long
+	 * @return the long Id
+	 * @since 1.2.0
+	 */
+	long longId();
+	
+	/**
+	 * Modify the id of this construct
+	 * @param id the new id
+	 */
+	public void setId(final long id);
 	
 }

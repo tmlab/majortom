@@ -42,6 +42,7 @@ import de.topicmapslab.majortom.model.core.paged.IPagedTopicMap;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.index.paging.IPagedConstructIndex;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
@@ -494,9 +495,10 @@ public class TopicMapImpl extends ReifiableImpl implements ITopicMap, IPagedTopi
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getId() {
-		return (String) getStore().doRead(this, TopicMapStoreParameterType.ID);
+	public ITopicMapStoreIdentity getIdentity() {
+		return getStore().getTopicMapIdentity();
 	}
+	
 
 	/**
 	 * {@inheritDoc}
