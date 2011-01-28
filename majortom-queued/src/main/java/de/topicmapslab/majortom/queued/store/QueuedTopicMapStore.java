@@ -544,7 +544,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 		if (result instanceof IConstruct) {
 			ConstructImpl memory = (ConstructImpl) task.getInMemoryClone();
 			inMemoryTopicMapStore.removeVirtualConstruct(memory, (IConstruct) result);
-			String databaseId = ((ConstructImpl) result).getIdentity().getId();
+			long databaseId = ((ConstructImpl) result).getIdentity().longId();
 			memory.getIdentity().setId(databaseId);
 
 			if (task.getParameterType() == TopicMapStoreParameterType.NAME && !(task.getParameters()[0] instanceof ITopic)) {

@@ -804,11 +804,11 @@ public class MergeUtils {
 				/*
 				 * merge both topics
 				 */
-				Topic newReifier = store.getTopicMap().createTopic();
+				ITopic newReifier = (ITopic)store.getTopicMap().createTopic();
 				doMerge(store, (ITopic) newReifier, (ITopic) reifier, revision);
 				doMerge(store, (ITopic) newReifier, (ITopic) reifierOfOther, revision);
-				((TopicImpl) reifier).getIdentity().setId(newReifier.getId());
-				((TopicImpl) reifierOfOther).getIdentity().setId(newReifier.getId());
+				((TopicImpl) reifier).getIdentity().setId(newReifier.longId());
+				((TopicImpl) reifierOfOther).getIdentity().setId(newReifier.longId());
 			}
 		}
 	}

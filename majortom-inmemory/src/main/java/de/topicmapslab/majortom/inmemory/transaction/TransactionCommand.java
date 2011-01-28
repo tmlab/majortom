@@ -171,6 +171,9 @@ public class TransactionCommand {
 	 */
 	private final Object resolveTransactionObject(ITopicMapStore store,
 			Object parameter, Map<Object, Object> lazy) {
+		if ( parameter == null ){
+			return null;
+		}
 		if (lazy.containsKey(parameter)) {
 			return lazy.get(parameter);
 		}

@@ -885,9 +885,9 @@ public class TransactionTopicMapStore extends ModifableTopicMapStoreImpl impleme
 			ITopic newTopic = createTopic(getTopicMap(), revision);
 			TransactionMergeUtils.doMerge(this, newTopic, context, revision);
 			TransactionMergeUtils.doMerge(this, newTopic, other, revision);
-			((TopicImpl) context).getIdentity().setId(newTopic.getId());
+			((TopicImpl) context).getIdentity().setId(newTopic.longId());
 			((ConstructImpl) context).setRemoved(false);
-			((TopicImpl) other).getIdentity().setId(newTopic.getId());
+			((TopicImpl) other).getIdentity().setId(newTopic.longId());
 			((ConstructImpl) other).setRemoved(false);
 			/*
 			 * notify listeners

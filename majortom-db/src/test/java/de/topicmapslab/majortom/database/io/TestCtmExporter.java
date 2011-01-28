@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.database.io.exporter.PostGreSqlCTMTopicMapWriter;
-import de.topicmapslab.majortom.database.io.importer.PostGreSqlCTMTopicMapReader;
 import de.topicmapslab.majortom.database.jdbc.core.SqlDialect;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStore;
 import de.topicmapslab.majortom.database.store.JdbcTopicMapStoreProperty;
@@ -54,9 +53,9 @@ public class TestCtmExporter extends TestCase {
 	}
 
 	public void testImportFromCtm() throws Exception {
-		PostGreSqlCTMTopicMapWriter.write(new File("src/test/resources/freebase.ctm"), (JdbcTopicMapStore)tm.getStore());
+		PostGreSqlCTMTopicMapWriter.write(new File("src/test/resources/freebase.ctm"), (JdbcTopicMapStore) tm.getStore());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

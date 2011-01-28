@@ -23,6 +23,7 @@ import java.util.Map;
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
 
+import de.topicmapslab.majortom.inmemory.store.InMemoryIdentity;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyAssociationStore;
 import de.topicmapslab.majortom.inmemory.transaction.internal.LazyCharacteristicsStore;
@@ -254,6 +255,13 @@ public class InMemoryTransactionTopicMapStore extends VirtualTopicMapStore imple
 	 */
 	public boolean isRevisionManagementEnabled() {
 		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public InMemoryIdentity getTopicMapIdentity() {
+		return super.getTopicMapIdentity();
 	}
 
 }

@@ -34,7 +34,7 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 	 * 
 	 */
 	private static final long serialVersionUID = -1867711896100911001L;
-	private String id;
+	private long id;
 	private ITopicMap topicMap;
 
 	/**
@@ -44,7 +44,7 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 	 *            the construct to clone
 	 */
 	protected ReadOnlyConstruct(IConstruct clone) {
-		this.id = clone.getId();
+		this.id = clone.longId();
 		this.topicMap = clone.getTopicMap();
 	}
 
@@ -59,6 +59,13 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 	 * {@inheritDoc}
 	 */
 	public String getId() {
+		return Long.toString(id);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public long longId() {
 		return id;
 	}
 
@@ -94,7 +101,7 @@ public abstract class ReadOnlyConstruct implements IConstruct {
 	 * {@inheritDoc}
 	 */
 	public int compareTo(IConstruct o) {
-		return id.compareTo(o.getId());
+		return getId().compareTo(o.getId());
 	}
 
 	/**

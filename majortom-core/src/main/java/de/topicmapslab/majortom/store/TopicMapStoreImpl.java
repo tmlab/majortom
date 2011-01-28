@@ -16,13 +16,18 @@
 package de.topicmapslab.majortom.store;
 
 import java.util.Collections;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.Locator;
 
+import cern.jet.random.engine.MersenneTwister;
+import cern.jet.random.engine.RandomEngine;
 import de.topicmapslab.majortom.core.ConstructFactoryImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemImpl;
 import de.topicmapslab.majortom.model.core.IConstruct;
@@ -57,6 +62,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	private ThreadPoolExecutor threadPool;
 	private ITopicMapStoreMetaData metaData;
 	private String topicMapBaseLocatorReference;
+	private RandomEngine random;
 	/**
 	 * the base locator of the topic map
 	 */
@@ -94,6 +100,10 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * feature {@link FeatureStrings#MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME}
 	 */
 	private boolean featureMergingByName;
+	/**
+	 * feature {@link FeatureStrings#CONCURRENT_COLLECTIONS}
+	 */
+	private boolean featureConcurrentCollections;
 
 	/**
 	 * current state of revision management
@@ -161,7 +171,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 		String id = null;
 		for (ITopicMapListener listener : getListeners()) {
 			if (id == null) {
-				id = generateId();
+				id = generateStringId();
 			}
 			listener.topicMapChanged(id, event, notifier, newValue, oldValue);
 		}
@@ -184,9 +194,15 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			this.featureSupertypeSubtypeAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION);
 			this.featureSupportTransaction = topicMapSystem.getFeature(FeatureStrings.SUPPORT_TRANSACTION);
 			this.featureTypeInstanceAssociation = topicMapSystem.getFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION);
+			this.featureConcurrentCollections = topicMapSystem.getFeature(FeatureStrings.CONCURRENT_COLLECTIONS);
 		} catch (FeatureNotRecognizedException e) {
 			throw new TopicMapStoreException("Feature is missing", e);
 		}
+		if ( featureConcurrentCollections ){
+			HashUtil.overwriteSetImplementationClass(CopyOnWriteArraySet.class);
+			HashUtil.overwriteMapImplementationClass(ConcurrentHashMap.class);
+		}
+		
 		this.revisionManagementEnabled = featureRevisionManagement;
 	}
 
@@ -267,8 +283,8 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	}
 
 	/**
-	 * Method returns checks if the deletion constraint contains the constraint, that topics used as reifier cannot be removed until the reification was
-	 * destroyed.
+	 * Method returns checks if the deletion constraint contains the constraint, that topics used as reifier cannot be
+	 * removed until the reification was destroyed.
 	 * 
 	 * @see TopicMapStoreProperty#DELETION_CONSTRAINTS_REIFICATION
 	 * 
@@ -299,6 +315,7 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 			return;
 		}
 		connected = true;
+		this.random = new MersenneTwister((new Random()).nextInt());
 
 		Object maximum = getTopicMapSystem().getProperty(TopicMapStoreProperty.THREADPOOL_MAXIMUM);
 		int max = Runtime.getRuntime().availableProcessors() + 1;
@@ -438,11 +455,14 @@ public abstract class TopicMapStoreImpl implements ITopicMapStore {
 	 * 
 	 * @return the id
 	 */
-	protected String generateId() {
-		long t = System.currentTimeMillis();
-		String s = Double.toString(Math.round(Math.random() * Double.MAX_VALUE)); // UUID.randomUUID().toString();
-		if ( OUTPUT)
-			System.out.println("Generate an id in " + (System.currentTimeMillis() - t) + " ms");
-		return s;
+	protected String generateStringId() {
+		return Long.toString(generateId());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long generateId() {
+		return random.nextLong();
 	}
 }

@@ -61,6 +61,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		SUPPORTED_FEATURES.add(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION);
 		SUPPORTED_FEATURES.add(FeatureStrings.SUPPORT_HISTORY);
 		SUPPORTED_FEATURES.add(FeatureStrings.SUPPORT_TRANSACTION);
+		SUPPORTED_FEATURES.add(FeatureStrings.CONCURRENT_COLLECTIONS);
 	}
 
 	/**
@@ -76,6 +77,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		features.put(FeatureStrings.SUPPORT_TRANSACTION, false);
 		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
 		features.put(FeatureStrings.READ_ONLY_SYSTEM, false);
+		features.put(FeatureStrings.CONCURRENT_COLLECTIONS, false);
 		properties = new Properties();
 		loadPropertiesFromFile();
 	}

@@ -17,7 +17,6 @@ package de.topicmapslab.majortom.database.jdbc.core;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -33,15 +32,16 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
  */
 public abstract class SessionImpl implements ISession {
 
-	private final String user;
-	private final String password;
-	private final String url;
+	// private final String user;
+	// private final String password;
+	// private final String url;
 	private IQueryProcessor processor;
 	private Connection connection;
 	private final IConnectionProvider connectionProvider;
 	private final boolean autoCommit;
 	private BasicDataSource bds;
-	private HashMap<Connection, IQueryProcessor> processors;
+
+	// private HashMap<Connection, IQueryProcessor> processors;
 
 	/**
 	 * Constructor
@@ -55,11 +55,10 @@ public abstract class SessionImpl implements ISession {
 	 * @param password
 	 *            the password
 	 */
-	public <T extends IConnectionProvider> SessionImpl(final T connectionProvider, final String url, final String user,
-			final String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
+	public <T extends IConnectionProvider> SessionImpl(final T connectionProvider, final String url, final String user, final String password) {
+		// this.url = url;
+		// this.user = user;
+		// this.password = password;
 		this.connectionProvider = connectionProvider;
 		this.autoCommit = true;
 		bds = new BasicDataSource();
@@ -70,7 +69,7 @@ public abstract class SessionImpl implements ISession {
 		bds.setDefaultAutoCommit(isAutoCommit());
 		bds.setMaxActive(20);
 		bds.setPoolPreparedStatements(true);
-		processors = new HashMap<Connection, IQueryProcessor>();
+		// processors = new HashMap<Connection, IQueryProcessor>();
 	}
 
 	/**
@@ -100,8 +99,7 @@ public abstract class SessionImpl implements ISession {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract <T extends IQueryProcessor> T createProcessor(Connection connection)
-			throws TopicMapStoreException;
+	protected abstract <T extends IQueryProcessor> T createProcessor(Connection connection) throws TopicMapStoreException;
 
 	/**
 	 * {@inheritDoc}
@@ -150,7 +148,7 @@ public abstract class SessionImpl implements ISession {
 	 *             thrown if connection cannot be established
 	 */
 	protected Connection openConnection() throws SQLException {
-		//connection = DriverManager.getConnection(url, user, password);
+		// connection = DriverManager.getConnection(url, user, password);
 		connection = bds.getConnection();
 		connection.setAutoCommit(isAutoCommit());
 		return connection;

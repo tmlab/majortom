@@ -797,8 +797,8 @@ public class JdbcMergeUtils {
 				ITopic newReifier = store.doCreateTopicWithoutIdentifier(store.getTopicMap());
 				doMerge(store, newReifier, reifier, revision);
 				doMerge(store, newReifier, reifierOfOther, revision);
-				((TopicImpl) reifier).getIdentity().setId(newReifier.getId());
-				((TopicImpl) reifierOfOther).getIdentity().setId(newReifier.getId());
+				((TopicImpl) reifier).getIdentity().setId(newReifier.longId());
+				((TopicImpl) reifierOfOther).getIdentity().setId(newReifier.longId());
 			}
 		}
 	}

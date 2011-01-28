@@ -18,8 +18,7 @@ package de.topicmapslab.majortom.inmemory.store;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 
 /**
- * Implementation of {@link ITopicMapStoreIdentity} for a
- * {@link InMemoryTopicMapStore}.
+ * Implementation of {@link ITopicMapStoreIdentity} for a {@link InMemoryTopicMapStore}.
  * 
  * @author Sven Krosse
  * 
@@ -30,14 +29,15 @@ public class InMemoryIdentity implements ITopicMapStoreIdentity {
 	/**
 	 * the internal id
 	 */
-	private String id;
+	private long id;
 
 	/**
 	 * constructor
 	 * 
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 */
-	public InMemoryIdentity(final String id) {
+	public InMemoryIdentity(final long id) {
 		this.id = id;
 	}
 
@@ -47,6 +47,13 @@ public class InMemoryIdentity implements ITopicMapStoreIdentity {
 	 * @return the id
 	 */
 	public String getId() {
+		return Long.toString(id);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long longId() {
 		return id;
 	}
 
@@ -55,7 +62,7 @@ public class InMemoryIdentity implements ITopicMapStoreIdentity {
 	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof InMemoryIdentity) {
-			return ((InMemoryIdentity) obj).getId().equalsIgnoreCase(id);
+			return ((InMemoryIdentity) obj).getId().equalsIgnoreCase(getId());
 		}
 		return false;
 	}
@@ -70,9 +77,10 @@ public class InMemoryIdentity implements ITopicMapStoreIdentity {
 	/**
 	 * Modify the underlying id
 	 * 
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
