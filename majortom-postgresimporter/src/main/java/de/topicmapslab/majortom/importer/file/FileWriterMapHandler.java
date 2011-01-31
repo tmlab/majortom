@@ -91,7 +91,7 @@ public class FileWriterMapHandler implements IHandler {
 	/**
 	 * the topic map id
 	 */
-	private Long topicMapId;
+	private long topicMapId = -1;
 	/**
 	 * the query builder of MaJorToM
 	 */
@@ -414,6 +414,9 @@ public class FileWriterMapHandler implements IHandler {
 	 * @throws MIOException
 	 */
 	public long getTopicMapId(String locator) throws MIOException {
+		if ( topicMapId != -1 ){
+			return topicMapId;
+		}
 		try {
 			PreparedStatement stm = builder.getQueryReadTopicMap();
 			stm.setString(1, locator);
@@ -815,6 +818,6 @@ public class FileWriterMapHandler implements IHandler {
 	 * @return the escaped value
 	 */
 	private String escape(String value) {
-		return value.replace("'", "\\'");
+		return value.replace("'", "´");
 	}
 }
