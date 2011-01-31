@@ -48,9 +48,9 @@ public interface QUERY {
 	/*
 	 * SELECT QUERIES
 	 */
-	public static final String SELECT_SI = "SELECT id_topic, id_locator FROM rel_subject_identifiers WHERE id_topicmap = {0}";
-	public static final String SELECT_II = "SELECT id_construct, id_locator FROM rel_item_identifiers WHERE id_topicmap = {0}";
-	public static final String SELECT_SL = "SELECT id_topic, id_locator FROM rel_subject_locators WHERE id_topicmap = {0}";
+	public static final String SELECT_SI = "SELECT id_topic, id_locator FROM rel_subject_identifiers WHERE id_topic IN ( SELECT id FROM topics WHERE id_topicmap = {0})";
+	public static final String SELECT_II = "SELECT id_construct, id_locator FROM rel_item_identifiers WHERE id_construct IN ( SELECT id FROM constructs WHERE id_topicmap = {0})";
+	public static final String SELECT_SL = "SELECT id_topic, id_locator FROM rel_subject_locators WHERE id_topic IN ( SELECT id FROM topics WHERE id_topicmap = {0})";
 	public static final String SELECT_LOCATOR = "SELECT id, reference FROM locators";
 	public static final String SELECT_NAME = "SELECT id_topicmap, id_parent, id, id_type, value, id_scope, id_reifier FROM names WHERE id_topicmap = {0}";
 	public static final String SELECT_OCCURRENCE = "SELECT id_topicmap, id_parent, id, id_type, value, id_datatype, id_scope, id_reifier FROM occurrences WHERE id_topicmap = {0}";
@@ -60,5 +60,5 @@ public interface QUERY {
 
 	public static final String SELECT_ISA = "SELECT id_type, id_instance FROM rel_instance_of WHERE id_type IN ( SELECT id FROM topics WHERE id_topicmap = {0})";
 	public static final String SELECT_AKO = "SELECT id_supertype, id_subtype FROM rel_kind_of WHERE id_supertype IN ( SELECT id FROM topics WHERE id_topicmap = {0})";
-	public static final String SELECT_SCOPE = "SELECT id, ARRAY(SELECT id_theme FROM rel_themes WHERE id_scope = s.id) FROM scopes AS s WHERE id_topicmap = {0}";
+	public static final String SELECT_SCOPE = "SELECT id, ARRAY(SELECT id_theme FROM rel_themes WHERE id_scope = s.id) FROM scopes AS s WHERE id IN ( SELECT id_scope FROM scopeables WHERE id_topicmap = {0})";
 }

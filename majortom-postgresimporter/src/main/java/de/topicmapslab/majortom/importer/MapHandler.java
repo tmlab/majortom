@@ -29,7 +29,7 @@ public class MapHandler implements IMapHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MapHandler.class);
 
-	private long topicMapId;
+	private long topicMapId = -1;
 
 	private long currTopicId = -1;
 
@@ -196,9 +196,14 @@ public class MapHandler implements IMapHandler {
 
 	public void startTopicMap() throws MIOException {
 		state.push(State.TOPICMAP);
-		handler.start();
-		topicMapId = handler.getTopicMapId(baseIRI);
+		if (topicMapId == -1) {
+			handler.start();
+			topicMapId = handler.getTopicMapId(baseIRI);
+		}else{
+			System.out.println("Reuse TM");
+		}
 		logger.debug("Found Topic Map with id: " + topicMapId);
+		
 
 	}
 

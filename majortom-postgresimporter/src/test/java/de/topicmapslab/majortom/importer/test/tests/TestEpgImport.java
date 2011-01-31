@@ -48,6 +48,7 @@ import de.topicmapslab.majortom.util.FeatureStrings;
  */
 public class TestEpgImport {
 
+	
 	private TopicMap db_map;
 	private String databaseBaseLocator;
 	private String user;
@@ -82,7 +83,6 @@ public class TestEpgImport {
 		db_factory.setProperty("de.topicmapslab.majortom.jdbc.user", properties.get(USERNAME));
 		password = properties.get(PASSWORD).toString();
 		db_factory.setProperty("de.topicmapslab.majortom.jdbc.password", properties.get(PASSWORD));
-
 		db_factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL");
 
 		TopicMapSystem db_system = db_factory.newTopicMapSystem();
@@ -90,7 +90,6 @@ public class TestEpgImport {
 
 		// clear database
 		this.db_map.clear();
-
 	}
 
 	@After
