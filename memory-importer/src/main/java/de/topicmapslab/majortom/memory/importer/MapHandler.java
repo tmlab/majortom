@@ -129,6 +129,9 @@ public class MapHandler implements IMapHandler {
 		long id = this.store.generateId();
 		this.currentOccurrence = this.constructFactory.newOccurrence(new InMemoryIdentity(id), this.currentTopic);
 		
+		CharacteristicsStore cs = this.store.getCharacteristicsStore();
+		cs.addOccurrence(this.currentTopic, this.currentOccurrence);
+		
 	}
 	
 	@Override
@@ -136,9 +139,6 @@ public class MapHandler implements IMapHandler {
 		logger.debug("endOccurrence");
 		
 		this.state.pop();
-		CharacteristicsStore cs = this.store.getCharacteristicsStore();
-		cs.addOccurrence(this.currentTopic, this.currentOccurrence);
-				
 		this.currentOccurrence = null;
 	}
 
@@ -281,6 +281,8 @@ public class MapHandler implements IMapHandler {
 		this.state.push(State.VARIANT);
 		long id = this.store.generateId();
 		this.currentVariant = this.constructFactory.newVariant(new InMemoryIdentity(id), this.currentName);
+		CharacteristicsStore cs = this.store.getCharacteristicsStore();
+		cs.addVariant(this.currentName, this.currentVariant);
 	}
 	
 	@Override
@@ -288,10 +290,6 @@ public class MapHandler implements IMapHandler {
 		logger.debug("endVariant");
 		
 		this.state.pop();
-		
-		CharacteristicsStore cs = this.store.getCharacteristicsStore();
-		cs.addVariant(this.currentName, this.currentVariant);
-		
 		this.currentVariant = null;
 	}
 	
@@ -488,7 +486,6 @@ public class MapHandler implements IMapHandler {
 		}else if (this.currentOccurrence != null) {
 			this.currentOccurrence.setValue(arg0);	
 		}
-		
 	}
 	
 	@Override
@@ -496,19 +493,18 @@ public class MapHandler implements IMapHandler {
 		logger.debug("value2");
 		
 		ILocator l = new LocatorImpl(arg1);
+		
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
 
 		if (this.currentOccurrence != null) {
 			this.currentOccurrence.setValue(arg0);
 			cs.setDatatype(this.currentOccurrence, l);
-			
+				
 		}else if(this.currentVariant != null){
 			this.currentVariant.setValue(arg0);
 			cs.setDatatype(this.currentVariant, l);
 		}
 	}
-
-	
 
 	private ITopic createTopicByRef(IRef ref){
 		
@@ -550,7 +546,6 @@ public class MapHandler implements IMapHandler {
 		
 		return topic;
 	}
-	
 	
 	private ITopic getCurrentTopic(){
 		return this.currentTopic;
