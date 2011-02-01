@@ -232,7 +232,6 @@ public class MapHandler implements IMapHandler {
 	public void subjectLocator(String arg0) throws MIOException {
 		handler.addIdentifier(currTopicId, arg0, IRef.SUBJECT_LOCATOR);
 		logger.debug("Subject Locator: " + arg0);
-
 	}
 
 	public void topicRef(IRef arg0) throws MIOException {
