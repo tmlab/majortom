@@ -39,8 +39,7 @@ public class MapHandler implements IMapHandler {
 	private static Logger logger = LoggerFactory.getLogger(MapHandler.class);
 	
 	private final InMemoryTopicMapStore store;
-	private final String baseIri;
-	
+
 	private ITopicMap currentTopicMap;
 	private ITopic currentTopic;
 	private IAssociation currentAssociation;
@@ -61,9 +60,8 @@ public class MapHandler implements IMapHandler {
 
 	private Stack<State> state;
 	
-	public MapHandler(InMemoryTopicMapStore store, String baseIRI) {
+	public MapHandler(InMemoryTopicMapStore store) {
 		this.store = store;
-		this.baseIri = baseIRI;
 		this.state = new Stack<MapHandler.State>();
 		this.constructFactory = store.getConstructFactory();
 	}
@@ -303,8 +301,28 @@ public class MapHandler implements IMapHandler {
 		
 		/// TODO check if the item identifier belongs to an other construct, though it is not very likely
 		IdentityStore is = this.store.getIdentityStore();
-		is.addItemIdentifer(getCurrentTopic(),new LocatorImpl(arg0));
 		
+		if(this.currentAssociation != null){
+			
+			if(this.currentRole != null){
+				is.addItemIdentifer(this.currentRole,new LocatorImpl(arg0));
+			}else{
+				is.addItemIdentifer(this.currentAssociation,new LocatorImpl(arg0));
+			}
+		}else if(this.currentName != null){
+			
+			if(this.currentVariant != null){
+				is.addItemIdentifer(this.currentVariant,new LocatorImpl(arg0));
+			}else{
+				is.addItemIdentifer(this.currentName,new LocatorImpl(arg0));
+			}
+		}else if(this.currentOccurrence != null){
+			is.addItemIdentifer(this.currentOccurrence,new LocatorImpl(arg0));
+		}else if(getCurrentTopic() != null){
+			is.addItemIdentifer(getCurrentTopic(),new LocatorImpl(arg0));
+		}else{
+			is.addItemIdentifer(this.currentTopicMap,new LocatorImpl(arg0));
+		}
 	}
 	
 	@Override
@@ -393,9 +411,19 @@ public class MapHandler implements IMapHandler {
 				break;
 			case REIFIER:
 				
-				ReificationStore rs = this.store.getReificationStore();
-				ITopic reifier = createTopicByRef(arg0);
-				rs.setReifier(this.currentName, reifier);
+				if(this.currentVariant != null){
+					
+					ReificationStore rs = this.store.getReificationStore();
+					ITopic reifier = createTopicByRef(arg0);
+					rs.setReifier(this.currentVariant, reifier);
+					
+				}else{
+				
+					ReificationStore rs = this.store.getReificationStore();
+					ITopic reifier = createTopicByRef(arg0);
+					rs.setReifier(this.currentName, reifier);
+				}
+				
 				break;
 			}
 		}else if ((this.currentOccurrence != null)) {
@@ -411,39 +439,26 @@ public class MapHandler implements IMapHandler {
 			case THEME:
 				
 				if(this.currentScope == null)
-					this.currentScope = new HashSet<ITopic>();
-				
-				this.currentScope.add(createTopicByRef(arg0));
-				
-				break;
-			case REIFIER:
-				
-				ReificationStore rs = this.store.getReificationStore();
-				ITopic reifier = createTopicByRef(arg0);
-				rs.setReifier(this.currentOccurrence, reifier);
-				
-				break;
-			}
-		}else if ((this.currentVariant != null)) {
-
-			switch (this.state.peek()) {
+				this.currentScope = new HashSet<ITopic>();
 			
-			case THEME:
+				this.currentScope.add(createTopicByRef(arg0));
 				
 				if(this.currentScope == null)
 					this.currentScope = new HashSet<ITopic>();
 				
 				this.currentScope.add(createTopicByRef(arg0));
+
 				
 				break;
 			case REIFIER:
-				
+
 				ReificationStore rs = this.store.getReificationStore();
 				ITopic reifier = createTopicByRef(arg0);
-				rs.setReifier(this.currentVariant, reifier);
-				
+				rs.setReifier(this.currentOccurrence, reifier);
+
 				break;
 			}
+			
 		}else {
 			switch (state.peek()) {
 			case ISA:
@@ -497,8 +512,6 @@ public class MapHandler implements IMapHandler {
 
 	private ITopic createTopicByRef(IRef ref){
 		
-		System.out.println("create topic " + ref.getIRI());
-		
 		IdentityStore is = this.store.getIdentityStore();
 		ILocator l = new LocatorImpl(ref.getIRI());
 		
@@ -506,9 +519,13 @@ public class MapHandler implements IMapHandler {
 		
 		if(ref.getType() == 1){ // ITEM_IDENTIFIER
 			topic = (ITopic)is.byItemIdentifier(l);
+			if(topic == null)
+				topic = is.bySubjectIdentifier(l);
 			
 		}else if(ref.getType() == 2){ // SUBJECT_IDENTIFIER
 			topic = is.bySubjectIdentifier(l);
+			if(topic == null)
+				topic = (ITopic)is.byItemIdentifier(l);
 			
 		}else if(ref.getType() == 3){ // SUBJECT_LOCATOR
 			topic = is.bySubjectLocator(l);

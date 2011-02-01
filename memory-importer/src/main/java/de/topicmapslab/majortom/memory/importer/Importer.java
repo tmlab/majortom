@@ -26,7 +26,7 @@ public class Importer {
 
 	public static void importFile(InMemoryTopicMapStore store, File file, String baseIRI) throws MIOException {
 		try {
-			MapHandler mapHandler = new MapHandler(store, baseIRI);
+			MapHandler mapHandler = new MapHandler(store);
 
 			Format format = FormatEstimator.guessFormat(new FileReader(file));
 
@@ -40,12 +40,10 @@ public class Importer {
 	
 	public static void importStream(InMemoryTopicMapStore store, InputStream is, String baseIRI, Format format)
 			throws MIOException {
-		MapHandler mapHandler = new MapHandler(store, baseIRI);
+		MapHandler mapHandler = new MapHandler(store);
 		importStream(is, baseIRI, mapHandler, format);
 	}
-	
 
-	
 	private static void importStream(InputStream is, String baseIRI, MapHandler mapHandler, Format format)
 			throws MIOException {
 
@@ -75,7 +73,7 @@ public class Importer {
 			fac = new XTMDeserializerFactory();
 			break;
 		default:
-			throw new MIOException("Unsupported Format");
+			throw new MIOException("Unsupported Format: " + format);
 		}
 
 		try {
