@@ -3,8 +3,11 @@ package de.topicmapslab.majortom.memory.importer.test;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.tmapi.core.Occurrence;
+import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMapSystemFactory;
 import org.tmapix.io.CTMTopicMapWriter;
+import org.tmapix.io.XTM20TopicMapWriter;
 import org.tmapix.io.XTMTopicMapReader;
 
 import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
@@ -29,10 +32,14 @@ public static void main(String[] args) throws Exception {
 		
 		ITopicMap map = (ITopicMap)system.createTopicMap("http://test");
 
+		map.clear();
+		
 		Importer.importFile((InMemoryTopicMapStore)map.getStore(), file, "http://test");	
 		
 		CTMTopicMapWriter writer = new CTMTopicMapWriter(new FileOutputStream(new File("src/test/resources/testResult.ctm")), "http://test");
 		writer.write(map);
+		
+
 		
 	}
 	
