@@ -17,5 +17,8 @@ doc/build.properties
 majortom-postgresimporter/src/test/resources/db.properties
 *.orig
 *.ctm
+*.xtm
+*.xctm
 syntax: regexp
 ^majortom-db/data$
+
