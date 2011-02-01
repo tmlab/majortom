@@ -232,6 +232,9 @@ public class TopicMapSystemImpl implements ITopicMapSystem {
 		if (!factory.hasFeature(key)) {
 			throw new FeatureNotSupportedException("Feature not supported by the engine!");
 		}
+		if ( features == null ){
+			features = HashUtil.getHashMap();
+		}
 		features.put(key, value);
 	}
 
