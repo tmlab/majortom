@@ -256,9 +256,7 @@ public class MapHandler implements IMapHandler {
 		
 		if(getCurrentTopic() == null)
 			return;
-		
-		InMemoryMergeUtils.removeDuplicates(this.store, getCurrentTopic(),false);
-		
+
 		this.state.pop();
 		clearCurrentTopic();
 		
