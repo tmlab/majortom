@@ -23,7 +23,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
-		</resources>	  
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -41,6 +41,54 @@
 					<archive>
 						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.2.0</version>
+				<!-- configure plugin to generate MANIFEST.MF -->
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- configure plugin to support jar packaging -->
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+					</supportedProjectTypes>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Bundle-Version>${osgi.version}</Bundle-Version>
+						<Export-Package>
+							de.topicmapslab.majortom.database.*
+						</Export-Package>
+						<Require-Bundle>
+							de.topicmapslab.geotype,
+							de.topicmapslab.majortom.core,
+							de.topicmapslab.majortom.model
+						</Require-Bundle>
+						<Import-Package>
+							org.apache.commons.collections,
+							org.apache.commons.collections.bidimap;version="3.2.1",
+							org.osgi.framework;version="1.5.0",
+							org.postgresql,
+							org.postgresql.ds.jdbc4,
+							org.tmapi.core;version="2.0.3",
+							org.tmapi.index;version="2.0.3"
+ 							</Import-Package>
+						<Bundle-SymbolicName>de.topicmapslab.majortom.jdbc</Bundle-SymbolicName>
+						<Bundle-Name>MajorToM JDBC Store</Bundle-Name>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Service-Component>OSGI-INF/jdbctopicmapstore.xml</Service-Component>
+					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -62,16 +110,16 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.13</version>
 		</dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.cwi.monetdb.jdbc</groupId>
-            <artifactId>monetdb-jdbc</artifactId>
-            <version>1.16</version>
-        </dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-701.jdbc4</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.cwi.monetdb.jdbc</groupId>
+			<artifactId>monetdb-jdbc</artifactId>
+			<version>1.16</version>
+		</dependency>
 		<dependency>
 			<groupId>de.topicmapslab.majortom</groupId>
 			<artifactId>majortom-testsuite</artifactId>

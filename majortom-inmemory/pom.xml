@@ -46,6 +46,55 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.2.0</version>
+				<!-- configure plugin to generate MANIFEST.MF -->
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- configure plugin to support jar packaging -->
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+					</supportedProjectTypes>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Bundle-Version>${osgi.version}</Bundle-Version>
+						<Export-Package>
+							de.topicmapslab.majortom.*
+						</Export-Package>
+						<Require-Bundle>
+							de.topicmapslab.geotype;bundle-version="0.0.2",
+							de.topicmapslab.majortom.core;bundle-version="1.2.0",
+							de.topicmapslab.majortom.model;bundle-version="1.2.0"
+						</Require-Bundle>
+						<Import-Package>
+							cern.jet.random.engine,
+							javax.xml.parsers,
+							org.apache.commons.collections,
+							org.apache.commons.collections.bidimap;version="3.2.1",
+							org.osgi.framework;version="1.5.0",
+							org.tmapi.core;version="2.0.3",
+							org.tmapi.index;version="2.0.3",
+							org.w3c.dom
+ 						</Import-Package>
+						<Bundle-SymbolicName>de.topicmapslab.majortom.inmemory</Bundle-SymbolicName>
+						<Bundle-Name>MajorToM In Memory</Bundle-Name>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Service-Component>OSGI-INF/inmemorytopicmapstore.xml</Service-Component>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
