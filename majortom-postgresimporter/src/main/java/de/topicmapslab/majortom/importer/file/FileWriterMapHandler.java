@@ -818,6 +818,6 @@ public class FileWriterMapHandler implements IHandler {
 	 * @return the escaped value
 	 */
 	private String escape(String value) {
-		return value.replace("'", "´");
+		return value.replace("'", "\u00B4");
 	}
 }
