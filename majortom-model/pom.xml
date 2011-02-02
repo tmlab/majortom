@@ -30,6 +30,46 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.2.0</version>
+				<!-- configure plugin to generate MANIFEST.MF -->
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- configure plugin to support jar packaging -->
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+					</supportedProjectTypes>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Bundle-Version>${osgi.version}</Bundle-Version>
+						<Export-Package>
+							de.topicmapslab.majortom.model.*
+						</Export-Package>
+						<Require-Bundle>
+							de.topicmapslab.geotype
+						</Require-Bundle>
+						<Import-Package>
+							org.tmapi.core;specification-version="2.0.3",
+							org.tmapi.index;specification-version="2.0.3"
+ 						</Import-Package>
+						<Bundle-SymbolicName>de.topicmapslab.majortom.model</Bundle-SymbolicName>
+						<Bundle-Name>MajorToM Model</Bundle-Name>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -54,5 +94,5 @@
 			<artifactId>tmapi</artifactId>
 			<version>2.0.3-SNAPSHOT</version>
 		</dependency>
-	</dependencies>	
+	</dependencies>
 </project>
