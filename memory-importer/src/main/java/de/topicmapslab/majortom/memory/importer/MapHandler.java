@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tmapi.core.ModelConstraintException;
 
 import com.semagia.mio.IMapHandler;
 import com.semagia.mio.IRef;
@@ -394,13 +395,13 @@ public class MapHandler implements IMapHandler {
 				
 				ReificationStore rs = this.store.getReificationStore();
 				
-				if(this.currentRole != null){
-					
-					rs.setReifier(currentRole, reifier);
-					
-				}else{
-					rs.setReifier(currentAssociation, reifier);
-				}
+				try {
+					if(this.currentRole != null){
+						rs.setReifier(this.currentRole, reifier);
+					}else{
+						rs.setReifier(this.currentAssociation, reifier);
+					}
+				} catch (ModelConstraintException e) {}
 				
 				break;
 			}
@@ -425,18 +426,21 @@ public class MapHandler implements IMapHandler {
 				break;
 			case REIFIER:
 				
-				if(this.currentVariant != null){
+				try{
+					if(this.currentVariant != null){
+						
+						ReificationStore rs = this.store.getReificationStore();
+						ITopic reifier = createTopicByRef(arg0);
+						rs.setReifier(this.currentVariant, reifier);
+						
+					}else{
 					
-					ReificationStore rs = this.store.getReificationStore();
-					ITopic reifier = createTopicByRef(arg0);
-					rs.setReifier(this.currentVariant, reifier);
-					
-				}else{
+						ReificationStore rs = this.store.getReificationStore();
+						ITopic reifier = createTopicByRef(arg0);
+						rs.setReifier(this.currentName, reifier);
+					}
 				
-					ReificationStore rs = this.store.getReificationStore();
-					ITopic reifier = createTopicByRef(arg0);
-					rs.setReifier(this.currentName, reifier);
-				}
+				} catch (ModelConstraintException e) {}
 				
 				break;
 			}
@@ -466,9 +470,11 @@ public class MapHandler implements IMapHandler {
 				break;
 			case REIFIER:
 
-				ReificationStore rs = this.store.getReificationStore();
-				ITopic reifier = createTopicByRef(arg0);
-				rs.setReifier(this.currentOccurrence, reifier);
+				try{
+					ReificationStore rs = this.store.getReificationStore();
+					ITopic reifier = createTopicByRef(arg0);
+					rs.setReifier(this.currentOccurrence, reifier);
+				} catch (ModelConstraintException e) {}
 
 				break;
 			}
@@ -484,9 +490,11 @@ public class MapHandler implements IMapHandler {
 		
 			case REIFIER:
 			
-				ReificationStore rs = this.store.getReificationStore();
-				ITopic reifier = createTopicByRef(arg0);
-				rs.setReifier(this.currentTopicMap, reifier);
+				try{
+					ReificationStore rs = this.store.getReificationStore();
+					ITopic reifier = createTopicByRef(arg0);
+					rs.setReifier(this.currentTopicMap, reifier);
+				} catch (ModelConstraintException e) {}
 			
 			break;
 		}
