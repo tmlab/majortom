@@ -61,7 +61,7 @@ public class ImportCtmTest {
 	public void setUp() throws Exception{
 		
 		databaseBaseLocator = "http://psi.freebase.de/";
-		String fileName = "freebasefull.ctm";
+		String fileName = "manual.ctm";
 		
 		// get database
 		TopicMapSystemFactory db_factory = TopicMapSystemFactory.newInstance();
