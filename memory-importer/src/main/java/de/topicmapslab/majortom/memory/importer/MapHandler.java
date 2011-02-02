@@ -35,6 +35,7 @@ import de.topicmapslab.majortom.model.core.IScope;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.event.TopicMapEventType;
 
 public class MapHandler implements IMapHandler {
 
@@ -90,6 +91,8 @@ public class MapHandler implements IMapHandler {
 	public void endAssociation() throws MIOException {
 		logger.debug("endAssociation");
 		
+		this.store.notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, this.currentTopicMap, this.currentAssociation, null);
+		
 		this.state.pop();
 		this.currentAssociation = null;
 	}
@@ -123,8 +126,10 @@ public class MapHandler implements IMapHandler {
 		this.state.pop();
 		
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
-		cs.addName(currentTopic, currentName);
+		cs.addName(this.currentTopic, this.currentName);
 				
+		this.store.notifyListeners(TopicMapEventType.NAME_ADDED, this.currentTopic, this.currentName, null);
+		
 		this.currentName = null;
 	}
 
@@ -146,6 +151,9 @@ public class MapHandler implements IMapHandler {
 		logger.debug("endOccurrence");
 		
 		this.state.pop();
+		
+		this.store.notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, this.currentTopic, this.currentOccurrence, null);
+		
 		this.currentOccurrence = null;
 	}
 
@@ -193,6 +201,8 @@ public class MapHandler implements IMapHandler {
 		
 		AssociationStore as = this.store.getAssociationStore();
 		as.addRole(this.currentAssociation, this.currentRole, this.currentPlayer);
+		
+		this.store.notifyListeners(TopicMapEventType.ROLE_ADDED, this.currentAssociation, this.currentRole, null);
 		
 		this.currentRole = null;
 		this.currentPlayer = null;
@@ -307,6 +317,9 @@ public class MapHandler implements IMapHandler {
 		logger.debug("endVariant");
 		
 		this.state.pop();
+		
+		this.store.notifyListeners(TopicMapEventType.VARIANT_ADDED, this.currentName, this.currentVariant, null);
+		
 		this.currentVariant = null;
 	}
 	
@@ -537,17 +550,17 @@ public class MapHandler implements IMapHandler {
 		
 		ITopic topic = null;
 		
-		if(ref.getType() == 1){ // ITEM_IDENTIFIER
+		if(ref.getType() == IRef.ITEM_IDENTIFIER){
 			topic = (ITopic)is.byItemIdentifier(l);
 			if(topic == null)
 				topic = is.bySubjectIdentifier(l);
 			
-		}else if(ref.getType() == 2){ // SUBJECT_IDENTIFIER
+		}else if(ref.getType() == IRef.SUBJECT_IDENTIFIER){
 			topic = is.bySubjectIdentifier(l);
 			if(topic == null)
 				topic = (ITopic)is.byItemIdentifier(l);
 			
-		}else if(ref.getType() == 3){ // SUBJECT_LOCATOR
+		}else if(ref.getType() == IRef.SUBJECT_LOCATOR){
 			topic = is.bySubjectLocator(l);
 		}
 		
@@ -560,11 +573,14 @@ public class MapHandler implements IMapHandler {
 		topic = this.constructFactory.newTopic(new InMemoryIdentity(id), this.currentTopicMap);
 		is.setId(topic, Long.toString(id));
 		
-		if(ref.getType() == 1){ // ITEM_IDENTIFIER
+		if(ref.getType() == IRef.ITEM_IDENTIFIER){
+			System.out.println("Add II " + l.getReference());
 			is.addItemIdentifer(topic, l);
-		}else if(ref.getType() == 2){ // SUBJECT_IDENTIFIER
+		}else if(ref.getType() == IRef.SUBJECT_IDENTIFIER){
+			System.out.println("Add SI " + l.getReference());
 			is.addSubjectIdentifier(topic, l);
-		}else if(ref.getType() == 3){ // SUBJECT_LOCATOR
+		}else if(ref.getType() == IRef.SUBJECT_LOCATOR){
+			System.out.println("Add SL " + l.getReference());
 			is.addSubjectLocator(topic, l);
 		}
 		
