@@ -1148,6 +1148,284 @@ public class InMemoryMergeUtils {
 
 	}
 
+	public static void removeDuplicates(final InMemoryTopicMapStore store,	final ITopic topic, boolean handleAssociations) throws TopicMapStoreException {
+		
+		final IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
+		Set<Construct> removed = HashUtil.getHashSet();
+		
+		/*
+		 * check name duplicates
+		 */
+		for (IName name : store.doReadNames(topic)) {
+			if (removed.contains(name)) {
+				continue;
+			}
+			for (IName duplicate : store.doReadNames(topic)) {
+				if (duplicate.equals(name) || removed.contains(duplicate)) {
+					continue;
+				}
+				/*
+				 * names are equal if the value, the type and scope property
+				 * are equal
+				 */
+				if (duplicate.getType().equals(name.getType())
+						&& store.doReadValue(duplicate).equals(store.doReadValue(name))
+						&& duplicate.getScopeObject().equals(
+								name.getScopeObject())) {
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : duplicate.getItemIdentifiers()) {
+						store.removeItemIdentifier(duplicate,
+								(ILocator) ii, revision);
+						store.modifyItemIdentifier(name,
+								(ILocator) ii, revision);
+					}
+					/*
+					 * copy variants
+					 */
+					for (Variant v : duplicate.getVariants()) {
+						Variant copy = getDuplette(store, name,
+								v.getValue(), (ILocator) v.getDatatype(),
+								((IVariant) v).getScopeObject().getThemes());
+						if (copy == null) {
+							copy = store.createVariant(name, v
+									.getValue(),
+									(ILocator) v.getDatatype(),
+									((IVariant) v).getScopeObject()
+											.getThemes(), revision);
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : v.getItemIdentifiers()) {
+							store.removeItemIdentifier((IVariant) v,
+									(ILocator) ii, revision);
+							store.modifyItemIdentifier((IVariant) copy,
+									(ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IVariant) v,
+								(IVariant) copy, revision);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, name,
+							duplicate, revision);
+					/*
+					 * remove duplicate
+					 */
+					store.removeName(duplicate, true, revision);
+					removed.add(duplicate);
+				}
+			}
+			/*
+			 * check variants
+			 */
+			for (Variant v : name.getVariants()) {
+				if (removed.contains(v)) {
+					continue;
+				}
+				for (IVariant dup : MergeUtils.getDuplettes(store,
+						name, v.getValue(), (ILocator) v
+								.getDatatype(), ((IVariant) v)
+								.getScopeObject().getThemes())) {
+					if (v.equals(dup) || removed.contains(dup)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : dup.getItemIdentifiers()) {
+						dup.removeItemIdentifier(ii);
+						v.addItemIdentifier(ii);
+					}
+					/*
+					 * check reification
+					 */
+					ITopic reifier = (ITopic) dup.getReifier();
+					ITopic otherReifier = (ITopic) v.getReifier();
+					if (reifier != null) {
+						dup.setReifier(null);
+						if (otherReifier != null) {
+							doMerge(store, otherReifier, reifier, revision);
+						} else {
+							v.setReifier(reifier);
+						}
+					}
+					/*
+					 * remove duplicate
+					 */
+					removed.add(dup);
+					dup.remove();
+				}
+			}
+		}
+		removed.clear();
+		/*
+		 * check occurrences
+		 */
+		for (Occurrence occurrence : topic.getOccurrences()) {
+			if (removed.contains(occurrence)) {
+				continue;
+			}
+			for (Occurrence duplicate : topic.getOccurrences()) {
+				if (duplicate.equals(occurrence)
+						|| removed.contains(duplicate)) {
+					continue;
+				}
+				/*
+				 * occurrences are equal if the value, datatype, the type
+				 * and scope property are equal
+				 */
+				if (duplicate.getType().equals(occurrence.getType())
+						&& duplicate.getValue()
+								.equals(occurrence.getValue())
+						&& ((IOccurrence) occurrence).getScopeObject()
+								.equals(((IOccurrence) duplicate)
+										.getScopeObject())
+						&& occurrence.getDatatype().equals(
+								duplicate.getDatatype())) {
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : duplicate.getItemIdentifiers()) {
+						store.removeItemIdentifier((IOccurrence) duplicate,
+								(ILocator) ii, revision);
+						store.modifyItemIdentifier(
+								(IOccurrence) occurrence, (ILocator) ii,
+								revision);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IOccurrence) occurrence,
+							(IOccurrence) duplicate, revision);
+					/*
+					 * remove duplicate
+					 */
+					store.removeOccurrence((IOccurrence) duplicate, true,
+							revision);
+					removed.add(duplicate);
+				}
+			}
+		}
+		
+		removed.clear();
+		
+		
+		if(!handleAssociations)
+			return;
+		
+		/*
+		 * check associations
+		 */
+		
+		for (final Association association : topic.getAssociationsPlayed()) {
+			if (removed.contains(association)) {
+				continue;
+			}
+			for (IAssociation duplicate : MergeUtils.getDuplettes2(topic, store, (IAssociation) association)) {
+				if (duplicate.equals(association)
+						|| removed.contains(duplicate)) {
+					continue;
+				}
+				/*
+				 * copy item-identifier
+				 */
+				for (Locator ii : duplicate.getItemIdentifiers()) {
+					store.removeItemIdentifier(duplicate, (ILocator) ii,
+							revision);
+					store.modifyItemIdentifier((IAssociation) association,
+							(ILocator) ii, revision);
+				}
+				/*
+				 * check roles
+				 */
+				for (Role r : association.getRoles()) {
+					for (IAssociationRole dup : MergeUtils.getDuplettes(
+							duplicate, (IAssociationRole) r)) {
+						if (removed.contains(dup)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							store.removeItemIdentifier(dup, (ILocator) ii,
+									revision);
+							store.modifyItemIdentifier((IAssociationRole) r,
+									(ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						doMergeReifiable(store, (IAssociationRole) r, dup,
+								revision);
+					}
+				}
+				/*
+				 * check reification
+				 */
+				doMergeReifiable(store, (IAssociation) association, duplicate,
+						revision);
+				/*
+				 * remove duplicate
+				 */
+				store.removeAssociation(duplicate, true, revision);
+				removed.add(duplicate);
+			}
+			/*
+			 * check roles
+			 */
+			for (Role r : association.getRoles()) {
+				if (removed.contains(r)) {
+					continue;
+				}
+				for (IAssociationRole dup : MergeUtils.getDuplettes(
+						(IAssociation) association, (IAssociationRole) r)) {
+					if (dup.equals(r) || removed.contains(dup)) {
+						continue;
+					}
+					/*
+					 * copy item-identifier
+					 */
+					for (Locator ii : dup.getItemIdentifiers()) {
+						store.removeItemIdentifier(dup, (ILocator) ii, revision);
+						store.modifyItemIdentifier((IAssociationRole) r,
+								(ILocator) ii, revision);
+					}
+					/*
+					 * check reification
+					 */
+					doMergeReifiable(store, (IAssociationRole) r, dup, revision);
+					/*
+					 * remove duplicate
+					 */
+					removed.add(dup);
+					store.removeRole(dup, false, revision);
+				}
+			}
+		}
+
+		
+	}
+	
+	// implementation on topic base
+	public static void removeDuplicates2(final InMemoryTopicMapStore store,	final ITopicMap topicMap) throws TopicMapStoreException {
+		
+		final IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
+		Set<Construct> removed = HashUtil.getHashSet();
+		
+		for(final ITopic topic : store.doReadTopics(topicMap)) {
+			removeDuplicates(store, topic, true);
+		}
+		
+	}
+	
 	/**
 	 * Method removes all duplicates from the given topic map.
 	 * 
@@ -1164,6 +1442,7 @@ public class InMemoryMergeUtils {
 
 		for (final ITopic topic : store.doReadTopics(topicMap)) {
 			Set<Construct> removed = HashUtil.getHashSet();
+			
 			/*
 			 * check name duplicates
 			 */
@@ -1417,4 +1696,5 @@ public class InMemoryMergeUtils {
 			}
 		}
 	}
+	
 }

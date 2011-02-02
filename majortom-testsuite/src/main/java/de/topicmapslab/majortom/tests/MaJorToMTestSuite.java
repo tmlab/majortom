@@ -44,8 +44,8 @@ public class MaJorToMTestSuite {
 //		suite.addTest(TransactionSuite.suite());
 //		suite.addTest(org.tmapi.AllTests.suite());
 //		suite.addTest(org.tmapi.core.AllCoreTests.suite());
-		suite.addTest(org.tmapi.index.AllIndexTests.suite());
-//		suite.addTest(CanonicalTestSuite.suite());
+//		suite.addTest(org.tmapi.index.AllIndexTests.suite());
+		suite.addTest(CanonicalTestSuite.suite());
 		// $JUnit-END$
 		return suite;
 	}

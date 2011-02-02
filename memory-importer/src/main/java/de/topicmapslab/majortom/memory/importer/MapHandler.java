@@ -13,6 +13,7 @@ import com.semagia.mio.MIOException;
 
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.inmemory.store.InMemoryIdentity;
+import de.topicmapslab.majortom.inmemory.store.InMemoryMergeUtils;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.inmemory.store.internal.AssociationStore;
 import de.topicmapslab.majortom.inmemory.store.internal.CharacteristicsStore;
@@ -54,6 +55,8 @@ public class MapHandler implements IMapHandler {
 	
 	private IConstructFactory constructFactory;
 	
+	private boolean hadEndTopicEvent = false;
+	
 	private enum State {
 		SCOPE, NAME, OCCURRENCE, ISA, AKO, ROLE, PLAYER, TOPICMAP, TYPE, TOPIC, ASSOCIATION, THEME, VARIANT, REIFIER
 	}
@@ -69,6 +72,9 @@ public class MapHandler implements IMapHandler {
 	@Override
 	public void startAssociation() throws MIOException {
 		logger.debug("startAssociation");
+		
+		if(!this.hadEndTopicEvent)
+			endTopic();
 		
 		state.push(State.ASSOCIATION);
 		long id = this.store.generateId();
@@ -235,16 +241,28 @@ public class MapHandler implements IMapHandler {
 	public void startTopic(IRef arg0) throws MIOException {
 		logger.debug("startTopic");
 		
+		if(!this.hadEndTopicEvent)
+			endTopic();
+
 		this.state.push(State.TOPIC);
 		setCurrentTopic(createTopicByRef(arg0));
+		
+		this.hadEndTopicEvent = false;
 	}
 	
 	@Override
 	public void endTopic() throws MIOException {
 		logger.debug("endTopic");
 		
+		if(getCurrentTopic() == null)
+			return;
+		
+		InMemoryMergeUtils.removeDuplicates(this.store, getCurrentTopic(),false);
+		
 		this.state.pop();
 		clearCurrentTopic();
+		
+		this.hadEndTopicEvent = true;
 	}
 
 	@Override
@@ -546,7 +564,7 @@ public class MapHandler implements IMapHandler {
 		
 		return topic;
 	}
-	
+
 	private ITopic getCurrentTopic(){
 		return this.currentTopic;
 	}

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.internal.runners.statements.Fail;
 import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.FeatureNotSupportedException;
@@ -44,6 +45,7 @@ public class CXTMTests {
 		
 	}
 	
+	@Ignore
 	public static void baseTest(final String pathPart, final String extension) throws Exception{
 		
 		String inPath = pathToCXTMTestSuite + pathPart + "/in/";
