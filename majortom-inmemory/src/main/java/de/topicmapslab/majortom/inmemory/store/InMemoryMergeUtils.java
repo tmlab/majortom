@@ -455,16 +455,16 @@ public class InMemoryMergeUtils {
 					 */
 					if (dup != null) {
 						/*
-						 * merge them
-						 */
-						doMergeReifiable(store, dup, v, revision);
-						/*
 						 * copy all item identifiers
 						 */
 						for (Locator itemIdentifier : v.getItemIdentifiers()) {
 							store.removeItemIdentifier(v, (ILocator) itemIdentifier, revision);
 							store.modifyItemIdentifier(dup, (ILocator) itemIdentifier, revision);
 						}
+						/*
+						 * merge them
+						 */
+						doMergeReifiable(store, dup, v, revision);
 					}
 					/*
 					 * no duplicated variant found
@@ -498,7 +498,7 @@ public class InMemoryMergeUtils {
 				/*
 				 * merge them
 				 */
-				doMergeReifiable(store, duplette, name, revision);
+				doMergeReifiable(store, name, duplette, revision);
 			}
 			/*
 			 * no duplicated name found
@@ -1037,22 +1037,22 @@ public class InMemoryMergeUtils {
 					/*
 					 * copy variants
 					 */
-					for (Variant v : duplicate.getVariants()) {
-						Variant copy = getDuplette(store, name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes());
-						if (copy == null) {
-							copy = store.createVariant(name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes(), revision);
+					for (Variant dup : duplicate.getVariants()) {
+						Variant variant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant) dup).getScopeObject().getThemes());
+						if (variant == null) {
+							variant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant) dup).getScopeObject().getThemes(), revision);
 						}
 						/*
 						 * copy item-identifier
 						 */
-						for (Locator ii : v.getItemIdentifiers()) {
-							store.removeItemIdentifier((IVariant) v, (ILocator) ii, revision);
-							store.modifyItemIdentifier((IVariant) copy, (ILocator) ii, revision);
+						for (Locator ii : dup.getItemIdentifiers()) {
+							store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
+							store.modifyItemIdentifier((IVariant) variant, (ILocator) ii, revision);
 						}
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, (IVariant) v, (IVariant) copy, revision);
+						doMergeReifiable(store, (IVariant) variant, (IVariant) dup, revision);
 					}
 					/*
 					 * check reification
@@ -1086,14 +1086,14 @@ public class InMemoryMergeUtils {
 					/*
 					 * check reification
 					 */
-					ITopic reifier = (ITopic) dup.getReifier();
-					ITopic otherReifier = (ITopic) v.getReifier();
-					if (reifier != null) {
+					ITopic duplicateReifier = (ITopic) dup.getReifier();
+					ITopic reifier = (ITopic) v.getReifier();
+					if (duplicateReifier != null) {
 						dup.setReifier(null);
-						if (otherReifier != null) {
-							doMerge(store, otherReifier, reifier, revision);
+						if (reifier != null) {
+							doMerge(store, reifier, duplicateReifier, revision);
 						} else {
-							v.setReifier(reifier);
+							v.setReifier(duplicateReifier);
 						}
 					}
 					/*
@@ -1283,22 +1283,22 @@ public class InMemoryMergeUtils {
 						/*
 						 * copy variants
 						 */
-						for (Variant v : duplicate.getVariants()) {
-							Variant copy = getDuplette(store, name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes());
-							if (copy == null) {
-								copy = store.createVariant(name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes(), revision);
+						for (Variant dup : duplicate.getVariants()) {
+							Variant newVariant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant) dup).getScopeObject().getThemes());
+							if (newVariant == null) {
+								newVariant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant) dup).getScopeObject().getThemes(), revision);
 							}
 							/*
 							 * copy item-identifier
 							 */
-							for (Locator ii : v.getItemIdentifiers()) {
-								store.removeItemIdentifier((IVariant) v, (ILocator) ii, revision);
-								store.modifyItemIdentifier((IVariant) copy, (ILocator) ii, revision);
+							for (Locator ii : dup.getItemIdentifiers()) {
+								store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
+								store.modifyItemIdentifier((IVariant) newVariant, (ILocator) ii, revision);
 							}
 							/*
 							 * check reification
 							 */
-							doMergeReifiable(store, (IVariant) v, (IVariant) copy, revision);
+							doMergeReifiable(store, (IVariant) newVariant, (IVariant) dup, revision);
 						}
 						/*
 						 * check reification
@@ -1332,14 +1332,14 @@ public class InMemoryMergeUtils {
 						/*
 						 * check reification
 						 */
-						ITopic reifier = (ITopic) dup.getReifier();
-						ITopic otherReifier = (ITopic) v.getReifier();
-						if (reifier != null) {
+						ITopic duplicateReifier = (ITopic) dup.getReifier();
+						ITopic reifier = (ITopic) v.getReifier();
+						if (duplicateReifier != null) {
 							dup.setReifier(null);
-							if (otherReifier != null) {
-								doMerge(store, otherReifier, reifier, revision);
+							if (reifier != null) {
+								doMerge(store, reifier, duplicateReifier, revision);
 							} else {
-								v.setReifier(reifier);
+								v.setReifier(duplicateReifier);
 							}
 						}
 						/*

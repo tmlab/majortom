@@ -10,6 +10,7 @@
 
 	<groupId>de.topicmapslab.majortom</groupId>
 	<artifactId>memory-importer</artifactId>
+	<name>MaJorToM Importer for InMemory</name>
 	<version>${project.parent.version}</version>
 
 	<build>

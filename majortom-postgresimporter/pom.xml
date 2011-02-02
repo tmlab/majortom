@@ -10,6 +10,7 @@
 
 	<groupId>de.topicmapslab.majortom</groupId>
 	<artifactId>dbimporter</artifactId>
+	<name>MaJorToM Importer for PostGreSQL</name>
 	<version>${project.parent.version}</version>
 
 	<build>
