@@ -116,6 +116,11 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	private ReificationStore reificationStore;
 	private AssociationStore associationStore;
 	private RevisionStore revisionStore;
+	/**
+	 * storage of construct signatures
+	 * @since 1.2.0
+	 */
+	private SignatureStore signatureStore;
 
 	/**
 	 * the identity of the topic map itself
@@ -3024,6 +3029,12 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.reificationStore = null;
 		this.associationStore = null;
 		this.revisionStore = null;
+		
+		/*
+		 * remove as listener
+		 */
+		removeTopicMapListener(this.signatureStore);
+		this.signatureStore = null;
 	}
 
 	/**
@@ -3089,7 +3100,11 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.revisionStore = createRevisionStore(this);
 
 		this.identity = new InMemoryIdentity(generateId());
-
+		/*
+		 * create signature store and register as listener
+		 */
+		this.signatureStore = new SignatureStore(this);
+		addTopicMapListener(this.signatureStore);
 		/*
 		 * store topic map creation revision
 		 */
@@ -3632,7 +3647,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
-		InMemoryMergeUtils.removeDuplicates2(this, getTopicMap()); // TODO rename when working
+		InMemoryMergeUtils.removeDuplicates2(this, getTopicMap(), true); // TODO rename when working
 	}
 
 	/**
@@ -3686,5 +3701,13 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	public int getCapacityOfCollections() {
 		return capacityOfCollections;
+	}
+	
+	/**
+	 * Returns the signature store
+	 * @return the signatureStore
+	 */
+	SignatureStore getSignatureStore() {
+		return signatureStore;
 	}
 }
