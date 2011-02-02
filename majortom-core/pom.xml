@@ -61,9 +61,11 @@
 							de.topicmapslab.geotype
 						</Require-Bundle>
 						<Import-Package>
-							org.osgi.framework;version="1.5.0",
-							org.tmapi.core;version="2.0.2",
-							org.tmapi.index;version="2.0.2"
+							cern.jet.random.engine,
+							org.apache.commons.collections.bidimap,
+							org.osgi.framework,
+							org.tmapi.core;version="2.0.3",
+							org.tmapi.index;version="2.0.3"
  							</Import-Package>
 						<Bundle-SymbolicName>de.topicmapslab.majortom.core</Bundle-SymbolicName>
 						<Bundle-Name>MajorToM Core</Bundle-Name>

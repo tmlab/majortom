@@ -60,8 +60,8 @@
 							de.topicmapslab.geotype
 						</Require-Bundle>
 						<Import-Package>
-							org.tmapi.core;specification-version="2.0.3",
-							org.tmapi.index;specification-version="2.0.3"
+							org.tmapi.core;version="2.0.3",
+ 							org.tmapi.index;version="2.0.3"
  						</Import-Package>
 						<Bundle-SymbolicName>de.topicmapslab.majortom.model</Bundle-SymbolicName>
 						<Bundle-Name>MajorToM Model</Bundle-Name>
