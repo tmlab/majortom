@@ -56,12 +56,6 @@
 						<Export-Package>
 							de.topicmapslab.geotype.*
 						</Export-Package>
-						<Import-Package>
-							de.topicmapslab.majortom.util;resolution:=optional,
-							org.tmapix.io;resolution:=optional,
-							org.osgi.framework,
-							org.slf4j;version="1.6.1"
- 							</Import-Package>
 						<Bundle-SymbolicName>de.topicmapslab.geotype</Bundle-SymbolicName>
 						<Bundle-Name>MaJorToM Geotype</Bundle-Name>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>

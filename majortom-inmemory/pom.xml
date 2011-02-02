@@ -73,7 +73,7 @@
 							de.topicmapslab.majortom.*
 						</Export-Package>
 						<Require-Bundle>
-							de.topicmapslab.geotype;bundle-version="0.0.2",
+							de.topicmapslab.geotype;bundle-version="1.2.0",
 							de.topicmapslab.majortom.core;bundle-version="1.2.0",
 							de.topicmapslab.majortom.model;bundle-version="1.2.0"
 						</Require-Bundle>
