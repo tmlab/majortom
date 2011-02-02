@@ -1412,6 +1412,60 @@ public class MergeUtils {
 		return set;
 	}
 
+	public static Set<IAssociation> getDuplettes2(ITopic topic, ITopicMapStore store, IAssociation association)
+			throws TopicMapStoreException {
+		Set<IAssociation> associations = HashUtil.getHashSet();
+		/*
+		 * iterate over all filtered associations
+		 */
+		for (Association a : topic.getAssociationsPlayed(association.getType(), association.getScopeObject())) {
+			if (a.equals(association)) {
+				continue;
+			}
+			boolean duplette = true;
+			/*
+			 * iterate over all roles of an association
+			 */
+			for (Role role : a.getRoles()) {
+				boolean containsRole = false;
+				/*
+				 * get typed roles of the other association
+				 */
+				Set<Role> roles = association.getRoles(role.getType());
+				/*
+				 * look for duplicated role
+				 */
+				for (Role r : roles) {
+					/*
+					 * same player or players are the topics to merge
+					 */
+					if (r.getPlayer().equals(role.getPlayer())) {
+						containsRole = true;
+						break;
+					}
+				}
+				/*
+				 * role is not a duplicated one
+				 */
+				if (!containsRole) {
+					duplette = false;
+					break;
+				}
+			}
+			/*
+			 * association is a duplicated one
+			 */
+			if (duplette) {
+				associations.add((IAssociation) a);
+			}
+		}
+
+		/*
+		 * no duplicated association found
+		 */
+		return associations;
+	}
+	
 	/**
 	 * Method returns a set of duplicated association of the given one
 	 * 

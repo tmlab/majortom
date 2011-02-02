@@ -3632,7 +3632,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public void removeDuplicates() {
-		InMemoryMergeUtils.removeDuplicates(this, getTopicMap());
+		InMemoryMergeUtils.removeDuplicates2(this, getTopicMap()); // TODO rename when working
 	}
 
 	/**

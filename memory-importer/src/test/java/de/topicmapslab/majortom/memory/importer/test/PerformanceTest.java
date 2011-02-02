@@ -2,6 +2,7 @@ package de.topicmapslab.majortom.memory.importer.test;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.tmapi.core.FeatureNotRecognizedException;
 import org.tmapi.core.FeatureNotSupportedException;
 import org.tmapi.core.TopicMapSystemFactory;
@@ -15,11 +16,12 @@ import de.topicmapslab.majortom.model.core.ITopicMapSystem;
 import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 import de.topicmapslab.majortom.util.FeatureStrings;
 
+@Ignore
 public class PerformanceTest {
 
 	public static void main(String[] args) throws Exception {
 		
-		File file = new File("src/test/resources/fb-10400.xtm");
+		File file = new File("src/test/resources/fb-3000.xtm");
 		
 		
 		TopicMapSystemFactory factory = new TopicMapSystemFactoryImpl();
@@ -31,11 +33,11 @@ public class PerformanceTest {
 		
 		
 		long s = System.currentTimeMillis();
-		XTMTopicMapReader reader = new XTMTopicMapReader(map, file);
-		reader.read();
-		
-		System.out.println("Using the normal reader took " + ((System.currentTimeMillis() - s)/1000) + " secound.");
-		
+//		XTMTopicMapReader reader = new XTMTopicMapReader(map, file);
+//		reader.read();
+//		
+//		System.out.println("Using the normal reader took " + ((System.currentTimeMillis() - s)/1000) + " secound.");
+//		
 		
 		map.clear();
 		s = System.currentTimeMillis();
