@@ -46,7 +46,7 @@ public class Test {
 	
 	
 		File file1 = new File("src/test/resources/fb-10400.xtm");
-		File file2 = new File("src/test/resources/fb-3000.xtm");
+		File file2 = new File("src/test/resources/toytm.xtm");
 		
 		TopicMapSystemFactory factory = new TopicMapSystemFactoryImpl();
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
@@ -57,8 +57,8 @@ public class Test {
 
 		long s = System.currentTimeMillis();
 		
-		System.out.println("Read " + file1.getName());
-		Importer.importFile((InMemoryTopicMapStore)map.getStore(), file1, "http://test");
+		System.out.println("Read " + file2.getName());
+		Importer.importFile((InMemoryTopicMapStore)map.getStore(), file2, "http://test");
 		System.out.println("Read " + file2.getName());
 		Importer.importFile((InMemoryTopicMapStore)map.getStore(), file2, "http://test");
 		
