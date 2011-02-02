@@ -5,6 +5,14 @@
 %prefix test http://test.de/
 %prefix xsd http://www.w3.org/2001/XMLSchema#
 
+def test()
+	?c isa tmp:testtopic;
+	- "Hallo" .
+end
+
+test()
+
+#(
 <http://test.de/hallo_welt> isa tmp:typ;
     ^tmp:lala;
     =<http://dort.isses.de/>;
@@ -16,6 +24,9 @@
     tmp:occ3 : "Dritte" @tmp:scope1, tmp:scope2 .
 
 
-tmp:typ ako tmp:supertyp .
+tmp:typ ako tmp:supertyp;
+	test()
+.
 
 <http://test.de/maiana/assoc> ( <http://test.de/maiana/role> : <http://test.de/p/1> ) @<http://scope.de/1>, <http://scope.de/2> ~tmp:reifier3
+#)
