@@ -78,9 +78,14 @@
 			<url>http://maven.topicmapslab.de/public</url>
 		</repository>
 		<repository>
-			<id>tmapi</id>
+			<id>tmapi-snap</id>
 			<name>http://www.tmapi.org/maven-repository/snapshots/</name>
 			<url>http://www.tmapi.org/maven-repository/snapshots/</url>
+		</repository>
+		<repository>
+			<id>tmapi</id>
+			<name>http://www.tmapi.org/maven-repository/</name>
+			<url>http://www.tmapi.org/maven-repository/</url>
 		</repository>
 	</repositories>
 	<dependencies>

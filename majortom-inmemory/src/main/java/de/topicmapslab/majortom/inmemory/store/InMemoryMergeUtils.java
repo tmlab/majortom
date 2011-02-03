@@ -433,7 +433,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * move names
 		 */
-		for (IName name : store.getCharacteristicsStore().getNames(other)) {
+		for (IName name : HashUtil.getHashSet(store.getCharacteristicsStore().getNames(other))) {
 			/*
 			 * check if name already contained by the other topic
 			 */
@@ -445,7 +445,7 @@ public class InMemoryMergeUtils {
 				/*
 				 * copy variants
 				 */
-				for (IVariant v : store.getCharacteristicsStore().getVariants(name)) {
+				for (IVariant v : HashUtil.getHashSet(store.getCharacteristicsStore().getVariants(name))) {
 					/*
 					 * check if variant already contained by the other name
 					 */
@@ -548,7 +548,7 @@ public class InMemoryMergeUtils {
 		/*
 		 * move occurrences
 		 */
-		for (IOccurrence occurrence : store.getCharacteristicsStore().getOccurrences(other)) {
+		for (IOccurrence occurrence : HashUtil.getHashSet(store.getCharacteristicsStore().getOccurrences(other))) {
 			/*
 			 * check if occurrence already contained by the other topic
 			 */
