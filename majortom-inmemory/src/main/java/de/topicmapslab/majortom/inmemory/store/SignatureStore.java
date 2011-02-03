@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.inmemory.store;
 
+import java.security.MessageDigest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,16 +25,13 @@ import java.util.Set;
 
 import org.tmapi.core.Construct;
 import org.tmapi.core.Locator;
-import org.tmapi.core.Role;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
-import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
-import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -56,6 +54,8 @@ public class SignatureStore implements ITopicMapListener {
 	private Map<IConstruct, String> signatures = HashUtil.getHashMap();
 	private Map<String, Set<IConstruct>> constructs = HashUtil.getHashMap();
 
+	private final MessageDigest digest;
+
 	private final InMemoryTopicMapStore topicMapStore;
 
 	/**
@@ -63,6 +63,11 @@ public class SignatureStore implements ITopicMapListener {
 	 */
 	public SignatureStore(InMemoryTopicMapStore topicMapStore) {
 		this.topicMapStore = topicMapStore;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+		} catch (Exception e) {
+			throw new TopicMapStoreException(e);
+		}
 	}
 
 	/**
@@ -103,31 +108,31 @@ public class SignatureStore implements ITopicMapListener {
 		 * is association deletion
 		 */
 		else if (oldValue instanceof IAssociation) {
-			removeSignature(((IAssociation) newValue));
+			removeSignature(((IAssociation) oldValue));
 		}
 		/*
 		 * is role deletion
 		 */
 		else if (oldValue instanceof IAssociationRole) {
-			removeSignature(((IAssociationRole) newValue));
+			removeSignature(((IAssociationRole) oldValue));
 		}
 		/*
 		 * is name deletion
 		 */
 		else if (oldValue instanceof IName) {
-			removeSignature(((IName) newValue));
+			removeSignature(((IName) oldValue));
 		}
 		/*
 		 * is occurrence deletion
 		 */
 		else if (oldValue instanceof IOccurrence) {
-			removeSignature(((IOccurrence) newValue));
+			removeSignature(((IOccurrence) oldValue));
 		}
 		/*
 		 * is variant deletion
 		 */
 		else if (oldValue instanceof IVariant) {
-			removeSignature(((IVariant) newValue));
+			removeSignature(((IVariant) oldValue));
 		}
 		/*
 		 * is modification of association context ( type or scope )
@@ -281,7 +286,7 @@ public class SignatureStore implements ITopicMapListener {
 	 *            the association
 	 */
 	private void updateSignature(IAssociation association) {
-		final String signature = generateSignature(association);
+		final String signature = toHash(generateSignature(association));
 		updateSignature(association, signature);
 	}
 
@@ -293,7 +298,7 @@ public class SignatureStore implements ITopicMapListener {
 	 */
 	private void updateSignature(IAssociationRole role) {
 		updateSignature(role.getParent());
-		final String signature = generateSignature(role);
+		final String signature = toHash(generateSignature(role));
 		updateSignature(role, signature);
 	}
 
@@ -304,7 +309,7 @@ public class SignatureStore implements ITopicMapListener {
 	 *            the name
 	 */
 	private void updateSignature(IName name) {
-		final String signature = generateSignature(name);
+		final String signature = toHash(generateSignature(name));
 		updateSignature(name, signature);
 	}
 
@@ -315,7 +320,7 @@ public class SignatureStore implements ITopicMapListener {
 	 *            the occurrence
 	 */
 	private void updateSignature(IOccurrence occurrence) {
-		final String signature = generateSignature(occurrence);
+		final String signature = toHash(generateSignature(occurrence));
 		updateSignature(occurrence, signature);
 	}
 
@@ -326,7 +331,7 @@ public class SignatureStore implements ITopicMapListener {
 	 *            the variant
 	 */
 	private void updateSignature(IVariant variant) {
-		final String signature = generateSignature(variant);
+		final String signature = toHash(generateSignature(variant));
 		updateSignature(variant, signature);
 	}
 
@@ -350,7 +355,6 @@ public class SignatureStore implements ITopicMapListener {
 		return MessageFormat.format(ASSOCIATION_SIGNATURE, typeId, sortedSignatures.toString(), scopeId);
 	}
 
-	
 	/**
 	 * Internal method to generate new role signature
 	 * 
@@ -398,16 +402,29 @@ public class SignatureStore implements ITopicMapListener {
 	/**
 	 * Internal method to generate new variant signature
 	 * 
+	 * @param parent
+	 *            the name used as parent
+	 * @param variant
+	 *            the variant
+	 * @return the generated signature
+	 */
+	private String generateSignature(IName parent, IVariant variant) {
+		final String scopeId = getTopicMapStore().getScopeStore().getScope(variant).getId();
+		final String value = getTopicMapStore().getCharacteristicsStore().getValueAsString(variant);
+		final String datatype = getTopicMapStore().getCharacteristicsStore().getDatatype(variant).getReference();
+		final String parentId = parent.getId();
+		return MessageFormat.format(VARIANT_SIGNATURE, parentId, value, datatype, scopeId);
+	}
+
+	/**
+	 * Internal method to generate new variant signature
+	 * 
 	 * @param variant
 	 *            the variant
 	 * @return the generated signature
 	 */
 	private String generateSignature(IVariant variant) {
-		final String scopeId = getTopicMapStore().getScopeStore().getScope(variant).getId();
-		final String value = getTopicMapStore().getCharacteristicsStore().getValueAsString(variant);
-		final String datatype = getTopicMapStore().getCharacteristicsStore().getDatatype(variant).getReference();
-		final String parentId = variant.getParent().getId();
-		return MessageFormat.format(VARIANT_SIGNATURE, parentId, value, datatype, scopeId);
+		return generateSignature(variant.getParent(), variant);
 	}
 
 	/**
@@ -417,31 +434,217 @@ public class SignatureStore implements ITopicMapListener {
 		return topicMapStore;
 	}
 
-	/**
-	 * remove duplicates in the context of the topic
-	 * 
-	 * @param topic
-	 *            the topic
-	 */
-	public void removeDuplicates(ITopic topic) {
-		Set<ICharacteristics> removed = HashUtil.getHashSet();
-		/*
-		 * remove duplicate characteristics
-		 */
-		for (ICharacteristics characteristics : HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getCharacteristics(topic))) {
-			if (removed.contains(characteristics)) {
-				continue;
-			}
-			String signature = signatures.get(characteristics);
-			if (signature == null) {
-				throw new TopicMapStoreException("Signature is missing!");
-			}
-			// TODO remove duplicates
-		}
-	}
+	// public void removeDuplicates(ITopic topic, IRevision revision) {
+	// Set<Construct> removed = HashUtil.getHashSet();
+	//
+	// /*
+	// * check name duplicates
+	// */
+	// for (IName name : getTopicMapStore().getCharacteristicsStore().getNames(topic)) {
+	// if (removed.contains(name)) {
+	// continue;
+	// }
+	// byte[] signature = signatures.get(name);
+	// if (signature == null) {
+	// throw new TopicMapStoreException("Signature is missing!");
+	// }
+	// Set<IConstruct> set = constructs.get(signature);
+	// if (set.size() > 1) {
+	// for (IConstruct c : set) {
+	// /*
+	// * ignore same association
+	// */
+	// if (name.equals(c)) {
+	// continue;
+	// }
+	// IName duplicate = (IName) c;
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicate)) {
+	// getTopicMapStore().removeItemIdentifier(duplicate, (ILocator) ii, revision);
+	// getTopicMapStore().modifyItemIdentifier(name, (ILocator) ii, revision);
+	// }
+	// /*
+	// * check variants
+	// */
+	// for (Variant duplicateVariant : getTopicMapStore().getCharacteristicsStore().getVariants(duplicate)) {
+	// if ( removed.contains(duplicateVariant)){
+	// continue;
+	// }
+	// byte[] variantSignature = generateSignature(name, duplicateVariant);
+	// if (variantSignature == null) {
+	// throw new TopicMapStoreException("Signature is missing!");
+	// }
+	// /*
+	// * check duplicated variants
+	// */
+	// for (IConstruct r : duplicates) {
+	// Variant variant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
+	// dup).getScopeObject().getThemes());
+	// if (variant == null) {
+	// variant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
+	// dup).getScopeObject().getThemes(), revision);
+	// }
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : dup.getItemIdentifiers()) {
+	// store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
+	// store.modifyItemIdentifier((IVariant) variant, (ILocator) ii, revision);
+	// }
+	// /*
+	// * check reification
+	// */
+	// doMergeReifiable(store, (IVariant) variant, (IVariant) dup, revision);
+	// }
+	// /*
+	// * check reification
+	// */
+	// doMergeReifiable(store, name, duplicate, revision);
+	// /*
+	// * remove duplicate
+	// */
+	// store.removeName(duplicate, true, revision);
+	// removed.add(duplicate);
+	//
+	// }
+	//
+	// for (IName duplicate : store.doReadNames(topic)) {
+	// if (duplicate.equals(name) || removed.contains(duplicate)) {
+	// continue;
+	// }
+	// /*
+	// * names are equal if the value, the type and scope property are equal
+	// */
+	// if (duplicate.getType().equals(name.getType()) && store.doReadValue(duplicate).equals(store.doReadValue(name)) &&
+	// duplicate.getScopeObject().equals(name.getScopeObject())) {
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : duplicate.getItemIdentifiers()) {
+	// store.removeItemIdentifier(duplicate, (ILocator) ii, revision);
+	// store.modifyItemIdentifier(name, (ILocator) ii, revision);
+	// }
+	// /*
+	// * copy variants
+	// */
+	// for (Variant dup : duplicate.getVariants()) {
+	// Variant variant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
+	// dup).getScopeObject().getThemes());
+	// if (variant == null) {
+	// variant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
+	// dup).getScopeObject().getThemes(), revision);
+	// }
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : dup.getItemIdentifiers()) {
+	// store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
+	// store.modifyItemIdentifier((IVariant) variant, (ILocator) ii, revision);
+	// }
+	// /*
+	// * check reification
+	// */
+	// doMergeReifiable(store, (IVariant) variant, (IVariant) dup, revision);
+	// }
+	// /*
+	// * check reification
+	// */
+	// doMergeReifiable(store, name, duplicate, revision);
+	// /*
+	// * remove duplicate
+	// */
+	// store.removeName(duplicate, true, revision);
+	// removed.add(duplicate);
+	// }
+	// }
+	// /*
+	// * check variants
+	// */
+	// for (Variant v : name.getVariants()) {
+	// if (removed.contains(v)) {
+	// continue;
+	// }
+	// for (IVariant dup : MergeUtils.getDuplettes(store, name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant)
+	// v).getScopeObject().getThemes())) {
+	// if (v.equals(dup) || removed.contains(dup)) {
+	// continue;
+	// }
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : dup.getItemIdentifiers()) {
+	// dup.removeItemIdentifier(ii);
+	// v.addItemIdentifier(ii);
+	// }
+	// /*
+	// * check reification
+	// */
+	// ITopic duplicateReifier = (ITopic) dup.getReifier();
+	// ITopic reifier = (ITopic) v.getReifier();
+	// if (duplicateReifier != null) {
+	// dup.setReifier(null);
+	// if (reifier != null) {
+	// doMerge(store, reifier, duplicateReifier, revision);
+	// } else {
+	// v.setReifier(duplicateReifier);
+	// }
+	// }
+	// /*
+	// * remove duplicate
+	// */
+	// removed.add(dup);
+	// dup.remove();
+	// }
+	// }
+	// }
+	// removed.clear();
+	// /*
+	// * check occurrences
+	// */
+	// for (Occurrence occurrence : topic.getOccurrences()) {
+	// if (removed.contains(occurrence)) {
+	// continue;
+	// }
+	// for (Occurrence duplicate : topic.getOccurrences()) {
+	// if (duplicate.equals(occurrence) || removed.contains(duplicate)) {
+	// continue;
+	// }
+	// /*
+	// * occurrences are equal if the value, datatype, the type and scope property are equal
+	// */
+	// if (duplicate.getType().equals(occurrence.getType()) && duplicate.getValue().equals(occurrence.getValue())
+	// && ((IOccurrence) occurrence).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject()) &&
+	// occurrence.getDatatype().equals(duplicate.getDatatype())) {
+	// /*
+	// * copy item-identifier
+	// */
+	// for (Locator ii : duplicate.getItemIdentifiers()) {
+	// store.removeItemIdentifier((IOccurrence) duplicate, (ILocator) ii, revision);
+	// store.modifyItemIdentifier((IOccurrence) occurrence, (ILocator) ii, revision);
+	// }
+	// /*
+	// * check reification
+	// */
+	// doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, revision);
+	// /*
+	// * remove duplicate
+	// */
+	// store.removeOccurrence((IOccurrence) duplicate, true, revision);
+	// removed.add(duplicate);
+	// }
+	// }
+	// }
+	//
+	// removed.clear();
+	// }
 
-	/*
-	 * Method to delete all associations
+	/**
+	 * Removes all duplicates associations
+	 * 
+	 * @param revision
+	 *            the revision to store changes
 	 */
 	public void removeAssociationDuplicates(IRevision revision) {
 		Set<IConstruct> removed = HashUtil.getHashSet();
@@ -453,7 +656,7 @@ public class SignatureStore implements ITopicMapListener {
 			if (signature == null) {
 				throw new TopicMapStoreException("Signature is missing!");
 			}
-			Set<IConstruct> set = constructs.get(signature);
+			Set<IConstruct> set = HashUtil.getHashSet(constructs.get(signature));
 			if (set.size() > 1) {
 				for (IConstruct c : set) {
 					/*
@@ -480,31 +683,28 @@ public class SignatureStore implements ITopicMapListener {
 						/*
 						 * generate signature
 						 */
-						final String sig = generateSignature(dup);
-						Set<IConstruct> duplicates = constructs.get(sig);
+						final String sig = toHash(generateSignature(dup));
+						Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(sig));
 						/*
 						 * check duplicated roles
 						 */
-						for ( IConstruct r : duplicates){
-							if ( removed.contains(r) || !r.getParent().equals(association)){
+						for (IConstruct r : duplicates) {
+							if (removed.contains(r) || !r.getParent().equals(association)) {
 								continue;
 							}
 							/*
 							 * copy item-identifier
 							 */
 							for (Locator ii : dup.getItemIdentifiers()) {
-								getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii,
-										revision);
-								getTopicMapStore().modifyItemIdentifier((IAssociationRole) r,
-										(ILocator) ii, revision);
+								getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii, revision);
+								getTopicMapStore().modifyItemIdentifier((IAssociationRole) r, (ILocator) ii, revision);
 							}
 							/*
 							 * check reification
 							 */
-							InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), (IAssociationRole) r, dup,
-									revision);
+							InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), (IAssociationRole) r, dup, revision);
 							break;
-						}						
+						}
 					}
 					/*
 					 * check reification
@@ -521,14 +721,14 @@ public class SignatureStore implements ITopicMapListener {
 			 * check roles
 			 */
 			for (IAssociationRole r : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getRoles(association))) {
-				if ( removed.contains(r)){
+				if (removed.contains(r)) {
 					continue;
 				}
 				String roleSignature = signatures.get(r);
 				if (roleSignature == null) {
 					throw new TopicMapStoreException("Signature is missing!");
 				}
-				Set<IConstruct> duplicates = constructs.get(roleSignature);
+				Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(roleSignature));
 				if (duplicates.size() == 1) {
 					continue;
 				}
@@ -553,6 +753,17 @@ public class SignatureStore implements ITopicMapListener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Utility method to generate a hash
+	 * 
+	 * @param string
+	 *            the string
+	 * @return the byte array as hash
+	 */
+	private String toHash(final String string) {
+		return new String(digest.digest(string.getBytes()));
 	}
 
 }
