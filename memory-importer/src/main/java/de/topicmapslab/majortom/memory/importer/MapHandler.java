@@ -275,6 +275,7 @@ public class MapHandler implements IMapHandler {
 		clearCurrentTopic();
 		
 		this.hadEndTopicEvent = true;
+		
 	}
 
 	@Override
@@ -356,10 +357,11 @@ public class MapHandler implements IMapHandler {
 			if(t == null)
 				t = is.bySubjectIdentifier(l);
 			
-			if(t instanceof ITopic)
+			if(t instanceof ITopic && !t.equals(getCurrentTopic())){
 				InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
-			else
+			}else
 				is.addItemIdentifer(getCurrentTopic(),l);
+			
 
 		}else{
 			is.addItemIdentifer(this.currentTopicMap,l);
@@ -378,9 +380,9 @@ public class MapHandler implements IMapHandler {
 		if(t == null)
 			t = is.byItemIdentifier(l);
 		
-		if(t instanceof ITopic)
+		if(t instanceof ITopic && !t.equals(getCurrentTopic())){
 			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
-		else
+		}else
 			is.addSubjectIdentifier(getCurrentTopic(),new LocatorImpl(arg0));
 	}
 	
@@ -393,9 +395,9 @@ public class MapHandler implements IMapHandler {
 		
 		ITopic t = is.bySubjectLocator(l);
 		
-		if(t != null)
+		if(t != null && !t.equals(getCurrentTopic())){
 			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), t, null);
-		else
+		}else
 			is.addSubjectLocator(getCurrentTopic(),new LocatorImpl(arg0));
 	}
 	

@@ -20,7 +20,7 @@ public class Test {
 	public static void main(String[] args) throws Exception {
 
 		File file1 = new File("src/test/resources/fb-3000.xtm");
-		File file2 = new File("src/test/resources/fb-10400.xtm");
+		File file2 = new File("src/test/resources/fb-3000.xtm");
 
 		TopicMapSystemFactory factory = new TopicMapSystemFactoryImpl();
 		factory.setFeature(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
