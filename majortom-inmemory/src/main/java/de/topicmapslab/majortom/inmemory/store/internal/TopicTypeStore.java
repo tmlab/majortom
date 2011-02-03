@@ -700,6 +700,7 @@ public class TopicTypeStore implements IDataStore {
 		 * get instances of the topic item
 		 */
 		set = instances.get(type);
+		
 		if (!set.contains(t)) {
 			return;
 		}
@@ -874,6 +875,7 @@ public class TopicTypeStore implements IDataStore {
 		 */
 		Set<ITopic> instances = HashUtil.getHashSet(getInstances(topic));
 		for (ITopic instance : instances) {
+			
 			/*
 			 * remove instance and all typed topics
 			 */
