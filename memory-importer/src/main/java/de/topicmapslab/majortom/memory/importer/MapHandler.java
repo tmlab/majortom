@@ -6,7 +6,9 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
+import org.tmapi.core.Topic;
 
 import com.semagia.mio.IMapHandler;
 import com.semagia.mio.IRef;
@@ -36,6 +38,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
+import de.topicmapslab.majortom.model.revision.IRevision;
 
 public class MapHandler implements IMapHandler {
 
@@ -327,29 +330,39 @@ public class MapHandler implements IMapHandler {
 	public void itemIdentifier(String arg0) throws MIOException {
 		logger.debug("itemIdentifier");
 		
-		/// TODO check if the item identifier belongs to an other construct, though it is not very likely
 		IdentityStore is = this.store.getIdentityStore();
-		
+		ILocator l = new LocatorImpl(arg0);
+				
 		if(this.currentAssociation != null){
 			
 			if(this.currentRole != null){
-				is.addItemIdentifer(this.currentRole,new LocatorImpl(arg0));
+				is.addItemIdentifer(this.currentRole,l);
 			}else{
-				is.addItemIdentifer(this.currentAssociation,new LocatorImpl(arg0));
+				is.addItemIdentifer(this.currentAssociation,l);
 			}
 		}else if(this.currentName != null){
 			
 			if(this.currentVariant != null){
-				is.addItemIdentifer(this.currentVariant,new LocatorImpl(arg0));
+				is.addItemIdentifer(this.currentVariant,l);
 			}else{
-				is.addItemIdentifer(this.currentName,new LocatorImpl(arg0));
+				is.addItemIdentifer(this.currentName,l);
 			}
 		}else if(this.currentOccurrence != null){
-			is.addItemIdentifer(this.currentOccurrence,new LocatorImpl(arg0));
+			is.addItemIdentifer(this.currentOccurrence,l);
 		}else if(getCurrentTopic() != null){
-			is.addItemIdentifer(getCurrentTopic(),new LocatorImpl(arg0));
+			
+			IConstruct t = is.byItemIdentifier(l);
+			
+			if(t == null)
+				t = is.bySubjectIdentifier(l);
+			
+			if(t instanceof ITopic)
+				InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
+			else
+				is.addItemIdentifer(getCurrentTopic(),l);
+
 		}else{
-			is.addItemIdentifer(this.currentTopicMap,new LocatorImpl(arg0));
+			is.addItemIdentifer(this.currentTopicMap,l);
 		}
 	}
 	
@@ -358,7 +371,17 @@ public class MapHandler implements IMapHandler {
 		logger.debug("subjectIdentifier");
 		
 		IdentityStore is = this.store.getIdentityStore();
-		is.addSubjectIdentifier(getCurrentTopic(),new LocatorImpl(arg0));
+		ILocator l = new LocatorImpl(arg0);
+		
+		IConstruct t = is.bySubjectIdentifier(l);
+		
+		if(t == null)
+			t = is.byItemIdentifier(l);
+		
+		if(t instanceof ITopic)
+			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
+		else
+			is.addSubjectIdentifier(getCurrentTopic(),new LocatorImpl(arg0));
 	}
 	
 	@Override
@@ -366,7 +389,14 @@ public class MapHandler implements IMapHandler {
 		logger.debug("subjectLocator");
 		
 		IdentityStore is = this.store.getIdentityStore();
-		is.addSubjectLocator(getCurrentTopic(),new LocatorImpl(arg0));
+		ILocator l = new LocatorImpl(arg0);
+		
+		ITopic t = is.bySubjectLocator(l);
+		
+		if(t != null)
+			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), t, null);
+		else
+			is.addSubjectLocator(getCurrentTopic(),new LocatorImpl(arg0));
 	}
 	
 	@Override
@@ -574,13 +604,10 @@ public class MapHandler implements IMapHandler {
 		is.setId(topic, Long.toString(id));
 		
 		if(ref.getType() == IRef.ITEM_IDENTIFIER){
-			System.out.println("Add II " + l.getReference());
 			is.addItemIdentifer(topic, l);
 		}else if(ref.getType() == IRef.SUBJECT_IDENTIFIER){
-			System.out.println("Add SI " + l.getReference());
 			is.addSubjectIdentifier(topic, l);
 		}else if(ref.getType() == IRef.SUBJECT_LOCATOR){
-			System.out.println("Add SL " + l.getReference());
 			is.addSubjectLocator(topic, l);
 		}
 		
