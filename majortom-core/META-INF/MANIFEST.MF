@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+Export-Package: de.topicmapslab.majortom.revision.core;uses:="org.tmap
+ i.core,de.topicmapslab.majortom.util",de.topicmapslab.majortom.index;
+ uses:="org.tmapi.index,org.tmapi.core",de.topicmapslab.majortom.execu
+ table;uses:="org.tmapi.core",de.topicmapslab.majortom.revision;uses:=
+ "de.topicmapslab.majortom.util",de.topicmapslab.majortom.cache;uses:=
+ "org.tmapi.core,de.topicmapslab.majortom.util,de.topicmapslab.majorto
+ m.store,de.topicmapslab.majortom.core,org.tmapi.index,org.apache.comm
+ ons.collections.bidimap",de.topicmapslab.majortom.store;uses:="org.tm
+ api.index,de.topicmapslab.majortom.util,org.tmapi.core,de.topicmapsla
+ b.majortom.core,de.topicmapslab.majortom.cache,de.topicmapslab.majort
+ om.osgi,cern.jet.random.engine",de.topicmapslab.majortom.core;uses:="
+ org.tmapi.index,org.tmapi.core,de.topicmapslab.majortom.util,de.topic
+ mapslab.majortom.store",de.topicmapslab.majortom.osgi;uses:="org.osgi
+ .framework",de.topicmapslab.majortom.comparator;uses:="org.tmapi.core
+ ,de.topicmapslab.majortom.util",de.topicmapslab.majortom.io;uses:="or
+ g.tmapi.core,de.topicmapslab.majortom.util,org.tmapi.index",de.topicm
+ apslab.majortom.index.core;uses:="de.topicmapslab.majortom.util,org.t
+ mapi.core,de.topicmapslab.majortom.index",de.topicmapslab.majortom.tr
+ ansaction;uses:="org.tmapi.core,de.topicmapslab.majortom.core",de.top
+ icmapslab.majortom.util;uses:="org.tmapi.core,de.topicmapslab.majorto
+ m.comparator,org.tmapi.index,de.topicmapslab.majortom.core",de.topicm
+ apslab.majortom.index.paged;uses:="org.tmapi.core,de.topicmapslab.maj
+ ortom.index.core,de.topicmapslab.majortom.util,org.tmapi.index,de.top
+ icmapslab.majortom.index",de.topicmapslab.majortom.index.nonpaged;use
+ s:="de.topicmapslab.majortom.index.core,org.tmapi.core,org.tmapi.inde
+ x,de.topicmapslab.majortom.util"
+Bundle-ActivationPolicy: lazy
+Tool: Bnd-1.15.0
+Bundle-Name: MajorToM Core
+Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: de.topicmapslab.majortom.model,de.topicmapslab.geotype
+Bundle-Version: 1.2.0.201102041358
+Bnd-LastModified: 1296824320500
+Bundle-ManifestVersion: 2
+Bundle-Activator: de.topicmapslab.majortom.osgi.MajorToMActivator
+Import-Package: cern.jet.random.engine,org.apache.commons.collections.
+ bidimap;version="[3.2,4)",org.osgi.framework;version="[1.4,2)",org.tm
+ api.core;version="2.0.3",org.tmapi.index;version="2.0.3"
+Bundle-SymbolicName: de.topicmapslab.majortom.core
+

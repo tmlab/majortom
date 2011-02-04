@@ -171,7 +171,7 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		}
 
 		occurrence.setValue(calendar);
-		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
+		assertEquals(ref, occurrence.getValue());
 		assertFalse(occurrence.getValue().equals(calendar));
 		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
 		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));

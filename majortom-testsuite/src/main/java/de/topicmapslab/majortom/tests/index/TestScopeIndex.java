@@ -171,6 +171,7 @@ public class TestScopeIndex extends MaJorToMTestCase {
 		createTopic().createName("Value", otherTheme, anotherTheme);
 		createTopic().createName("Value", anotherTheme, otherTheme, theme);
 		
+
 		Collection<IScope> scopes = index.getScopes(new Topic[] { theme, otherTheme }, false);
 		assertEquals(6, scopes.size());
 		assertTrue(scopes.contains(scope1));

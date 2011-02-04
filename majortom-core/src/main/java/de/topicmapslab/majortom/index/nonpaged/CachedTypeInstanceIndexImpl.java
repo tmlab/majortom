@@ -15,7 +15,9 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.index.nonpaged;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
@@ -90,8 +92,21 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		if (results == null) {
 			results = doGetAssociations(type);
 			cache(IAssociation.class, type, false, results);
-		}
+		}		
 		return (Collection<Association>) results;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Association> getAssociations(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getAssociations(Arrays.asList(types)));
 	}
 
 	/**
@@ -161,6 +176,19 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 			cache(ICharacteristics.class, type, false, results);
 		}
 		return (Collection<ICharacteristics>) results;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<ICharacteristics> getCharacteristics(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getCharacteristics(Arrays.asList(types)));
 	}
 
 	/**
@@ -235,6 +263,19 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 	/**
 	 * {@inheritDoc}
 	 */
+	public Collection<Name> getNames(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getNames(Arrays.asList(types)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public Collection<Name> getNames(Collection<? extends Topic> types) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
@@ -299,6 +340,19 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 			cache(IOccurrence.class, type, false, results);
 		}
 		return (Collection<Occurrence>) results;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Occurrence> getOccurrences(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getOccurrences(Arrays.asList(types)));
 	}
 
 	/**
@@ -369,6 +423,19 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 		}
 		return (Collection<Role>) results;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Role> getRoles(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getRoles(Arrays.asList(types)));
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -434,6 +501,34 @@ public abstract class CachedTypeInstanceIndexImpl<E extends ITopicMapStore> exte
 			cache(ITopic.class, type, false, results);
 		}
 		return results;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getTopics(Topic... types) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if ( types == null ){
+			throw new IllegalArgumentException("Argument cannot be null.");
+		}
+		return Collections.unmodifiableCollection(getTopics(Arrays.asList(types), false));
+	}
+	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getTopics(Topic[] types, boolean matchAll) {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		if (types == null) {
+			throw new IllegalArgumentException("Types cannot be null!");
+		}
+		return Collections.unmodifiableCollection(getTopics(Arrays.asList(types), matchAll));
 	}
 
 	/**
