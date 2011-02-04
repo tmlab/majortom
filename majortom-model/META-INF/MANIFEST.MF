@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Export-Package: de.topicmapslab.majortom.model.store;uses:="de.topicma
+ pslab.majortom.model.event,org.tmapi.index,de.topicmapslab.majortom.m
+ odel.exception,de.topicmapslab.majortom.model.core,de.topicmapslab.ma
+ jortom.model.transaction,org.tmapi.core",de.topicmapslab.majortom.mod
+ el.event;uses:="org.tmapi.core",de.topicmapslab.majortom.model.revisi
+ on;uses:="de.topicmapslab.majortom.model.event,de.topicmapslab.majort
+ om.model.core",de.topicmapslab.majortom.model.index.paging;uses:="org
+ .tmapi.core,de.topicmapslab.majortom.model.index,de.topicmapslab.majo
+ rtom.model.core",de.topicmapslab.majortom.model.core.paged;uses:="org
+ .tmapi.core",de.topicmapslab.majortom.model.exception;uses:="org.tmap
+ i.core,de.topicmapslab.majortom.model.store",de.topicmapslab.majortom
+ .model.core;uses:="org.tmapi.core,de.topicmapslab.majortom.model.stor
+ e,de.topicmapslab.majortom.model.event,de.topicmapslab.majortom.model
+ .transaction",de.topicmapslab.majortom.model.transaction;uses:="de.to
+ picmapslab.majortom.model.exception,de.topicmapslab.majortom.model.co
+ re,de.topicmapslab.majortom.model.store",de.topicmapslab.majortom.mod
+ el.index;uses:="org.tmapi.core,org.tmapi.index,de.topicmapslab.majort
+ om.model.core,de.topicmapslab.majortom.model.revision,de.topicmapslab
+ .majortom.model.exception"
+Bundle-ActivationPolicy: lazy
+Tool: Bnd-1.15.0
+Bundle-Name: MajorToM Model
+Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: de.topicmapslab.geotype
+Bundle-Version: 1.2.0.201102041358
+Bnd-LastModified: 1296824316812
+Bundle-ManifestVersion: 2
+Import-Package: org.tmapi.core;version="2.0.3",org.tmapi.index;version
+ ="2.0.3"
+Bundle-SymbolicName: de.topicmapslab.majortom.model
+
