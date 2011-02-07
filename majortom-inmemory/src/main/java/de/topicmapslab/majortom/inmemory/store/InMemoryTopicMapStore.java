@@ -76,6 +76,7 @@ import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedTypeInstanceIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
@@ -85,7 +86,6 @@ import de.topicmapslab.majortom.store.NameMergeCandidate;
 import de.topicmapslab.majortom.store.TopicMapStoreProperty;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
@@ -118,6 +118,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	private RevisionStore revisionStore;
 	/**
 	 * storage of construct signatures
+	 * 
 	 * @since 1.2.0
 	 */
 	private SignatureStore signatureStore;
@@ -406,28 +407,28 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING), null, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), Namespaces.XSD.STRING), null, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING), themes, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		return createOccurrence(topic, type, value, doCreateLocator(getTopicMap(), Namespaces.XSD.STRING), themes, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI), null, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), Namespaces.XSD.ANYURI), null, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI), themes, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		return createOccurrence(topic, type, value.getReference(), doCreateLocator(getTopicMap(), Namespaces.XSD.ANYURI), themes, createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 	}
 
 	/**
@@ -702,14 +703,14 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createVariant(name, value, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING), themes, createRevision(TopicMapEventType.VARIANT_ADDED));
+		return createVariant(name, value, getIdentityStore().createLocator(Namespaces.XSD.STRING), themes, createRevision(TopicMapEventType.VARIANT_ADDED));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
-		return createVariant(name, value.toExternalForm(), getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_ANYURI), themes, createRevision(TopicMapEventType.VARIANT_ADDED));
+		return createVariant(name, value.toExternalForm(), getIdentityStore().createLocator(Namespaces.XSD.ANYURI), themes, createRevision(TopicMapEventType.VARIANT_ADDED));
 	}
 
 	/**
@@ -1232,7 +1233,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyValue(IDatatypeAware c, String value) throws TopicMapStoreException {
-		ILocator datatype = getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING);
+		ILocator datatype = getIdentityStore().createLocator(Namespaces.XSD.STRING);
 		modifyValue(c, value, datatype, createRevision(TopicMapEventType.VALUE_MODIFIED));
 	}
 
@@ -3029,7 +3030,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		this.reificationStore = null;
 		this.associationStore = null;
 		this.revisionStore = null;
-		
+
 		/*
 		 * remove as listener
 		 */
@@ -3091,7 +3092,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	public void connect() throws TopicMapStoreException {
 		super.connect();
 		this.identityStore = createIdentityStore(this);
-		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(Namespaces.XSD.STRING));
 		this.typedStore = createTypedStore(this);
 		this.scopeStore = createScopeStore(this);
 		this.topicTypeStore = createTopicTypeStore(this);
@@ -3219,7 +3220,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * get default-name-type
 		 */
-		ILocator locDefaultNameType = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator locDefaultNameType = getIdentityStore().createLocator(Namespaces.TMDM.TOPIC_NAME);
 		ITopic defaultNameType = getIdentityStore().bySubjectIdentifier(locDefaultNameType);
 		if (defaultNameType == null) {
 			defaultNameType = createTopic(topicMap, revision);
@@ -3288,7 +3289,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TYPE_INSTANCE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3300,7 +3301,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3312,7 +3313,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.INSTANCE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3324,7 +3325,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3336,7 +3337,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUPERTYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3348,7 +3349,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUBTYPE);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3360,7 +3361,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public ITopic getTmdmDefaultNameType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TOPIC_NAME);
 		ITopic topic = getIdentityStore().bySubjectIdentifier(loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -3372,7 +3373,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TYPE_INSTANCE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3380,7 +3381,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3388,7 +3389,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.INSTANCE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3396,7 +3397,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3404,7 +3405,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUPERTYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3412,7 +3413,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.SUBTYPE);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3420,7 +3421,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	public boolean existsTmdmDefaultNameType() throws TopicMapStoreException {
-		ILocator loc = getIdentityStore().createLocator(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = getIdentityStore().createLocator(Namespaces.TMDM.TOPIC_NAME);
 		return getIdentityStore().containsSubjectIdentifier(loc);
 	}
 
@@ -3664,7 +3665,7 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		getRevisionStore().close();
 
 		this.identityStore = createIdentityStore(this);
-		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING));
+		this.characteristicsStore = createCharacteristicsStore(this, getIdentityStore().createLocator(Namespaces.XSD.STRING));
 		this.typedStore = createTypedStore(this);
 		this.scopeStore = createScopeStore(this);
 		this.topicTypeStore = createTopicTypeStore(this);
@@ -3702,9 +3703,10 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 	public int getCapacityOfCollections() {
 		return capacityOfCollections;
 	}
-	
+
 	/**
 	 * Returns the signature store
+	 * 
 	 * @return the signatureStore
 	 */
 	SignatureStore getSignatureStore() {

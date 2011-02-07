@@ -21,10 +21,10 @@ package de.topicmapslab.majortom.tests.revision;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.revision.core.ReadOnlyOccurrence;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -57,7 +57,7 @@ public class TestOccurrenceRevisions extends MaJorToMTestCase {
 		assertEquals(topic, o.getParent());
 		assertTrue(o.getScope().contains(theme));
 		assertEquals(type, o.getType());
-		assertTrue(o.getDatatype().getReference().equals(XmlSchemeDatatypes.XSD_STRING));
+		assertTrue(o.getDatatype().getReference().equals(Namespaces.XSD.STRING));
 	}
 
 }

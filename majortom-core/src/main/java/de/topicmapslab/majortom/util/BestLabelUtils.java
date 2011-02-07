@@ -33,8 +33,7 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
-import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 
 /**
  * @author Sven Krosse
@@ -173,7 +172,7 @@ public class BestLabelUtils {
 	 */
 	private static Set<Name> filterByDefaultNameType(ITopic topic, Set<Name> names) {
 		ITopicMap topicMap = topic.getTopicMap();
-		Topic defaultNameType = topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE));
+		Topic defaultNameType = topicMap.getTopicBySubjectIdentifier(topicMap.createLocator(Namespaces.TMDM.TOPIC_NAME));
 		/*
 		 * check if default name type exists
 		 */
@@ -384,9 +383,9 @@ public class BestLabelUtils {
 				 */
 				locators = topic.getItemIdentifiers();
 				if (locators.isEmpty()) {
-					String bestIdentifier = withPrefix ? ID_PREFIX:"";
-					bestIdentifier +=  topic.getId();
-					return bestIdentifier;					
+					String bestIdentifier = withPrefix ? ID_PREFIX : "";
+					bestIdentifier += topic.getId();
+					return bestIdentifier;
 				}
 				prefix = ITEMIDENTIFIER_PREFIX;
 			} else {

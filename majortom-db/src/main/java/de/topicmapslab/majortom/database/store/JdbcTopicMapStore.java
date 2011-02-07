@@ -88,6 +88,7 @@ import de.topicmapslab.majortom.model.index.paging.IPagedScopedIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedSupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedTransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedTypeInstanceIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
@@ -331,7 +332,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws TopicMapStoreException {
 		Collection<ITopic> themes = Collections.emptySet();
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.STRING);
 		return doCreateOccurrence(topic, type, value, datatype, themes);
 	}
 
@@ -339,7 +340,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.STRING);
 		return doCreateOccurrence(topic, type, value, datatype, themes);
 	}
 
@@ -348,7 +349,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws TopicMapStoreException {
 		Collection<ITopic> themes = Collections.emptySet();
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.ANYURI);
 		return doCreateOccurrence(topic, type, value.toExternalForm(), datatype, themes);
 	}
 
@@ -356,7 +357,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.ANYURI);
 		return doCreateOccurrence(topic, type, value.toExternalForm(), datatype, themes);
 	}
 
@@ -575,7 +576,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws TopicMapStoreException {
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.STRING);
 		return doCreateVariant(name, value, datatype, themes);
 	}
 
@@ -583,7 +584,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws TopicMapStoreException {
-		ILocator datatype = doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+		ILocator datatype = doCreateLocator(getTopicMap(), Namespaces.XSD.ANYURI);
 		return doCreateVariant(name, value.toExternalForm(), datatype, themes);
 	}
 
@@ -1006,7 +1007,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyValue(IDatatypeAware t, String value) throws TopicMapStoreException {
-		doModifyValue(t, value, doCreateLocator(getTopicMap(), XmlSchemeDatatypes.XSD_STRING));
+		doModifyValue(t, value, doCreateLocator(getTopicMap(), Namespaces.XSD.STRING));
 	}
 
 	/**

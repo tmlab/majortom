@@ -34,6 +34,7 @@ import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.model.transaction.ITransaction;
@@ -54,7 +55,6 @@ import de.topicmapslab.majortom.queued.store.index.ConcurrentTransitiveTypeInsta
 import de.topicmapslab.majortom.queued.store.index.ConcurrentTypeInstanceIndex;
 import de.topicmapslab.majortom.store.TopicMapStoreImpl;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * A queued topic map store, which reads and writes any context to memory and creating a task to persist information to
@@ -548,7 +548,7 @@ public class QueuedTopicMapStore extends TopicMapStoreImpl implements IProcessin
 			memory.getIdentity().setId(databaseId);
 
 			if (task.getParameterType() == TopicMapStoreParameterType.NAME && !(task.getParameters()[0] instanceof ITopic)) {
-				ILocator locator = new LocatorImpl(TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+				ILocator locator = new LocatorImpl(Namespaces.TMDM.TOPIC_NAME);
 				ITopic topic = jdbcTopicMapStore.doReadTopicBySubjectIdentifier(getTopicMap(), locator);
 				ITopic inMemory = inMemoryTopicMapStore.doReadTopicBySubjectIdentifier(getTopicMap(), locator);
 				if (topic != null && inMemory != null) {

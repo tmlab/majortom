@@ -39,13 +39,12 @@ import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
 import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
- * Implementation class of {@link IPagedLiteralIndex} of the Jdbc Topic Map
- * Store.
+ * Implementation class of {@link IPagedLiteralIndex} of the Jdbc Topic Map Store.
  * 
  * @author Sven Krosse
  * 
@@ -67,8 +66,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetBooleans(boolean value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -82,8 +81,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value), XmlSchemeDatatypes.XSD_BOOLEAN, offset,
-					limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value), Namespaces.XSD.BOOLEAN, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -95,8 +93,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -122,8 +120,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(String value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -149,8 +147,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetCharacteristics(String value, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -176,8 +174,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetCharacteristicsMatches(Pattern regExp, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -203,12 +201,11 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
-	protected List<ICharacteristics> doGetCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit,
-			Comparator<ICharacteristics> comparator) {
+	protected List<ICharacteristics> doGetCharacteristicsMatches(Pattern regExp, Locator datatype, int offset, int limit, Comparator<ICharacteristics> comparator) {
 		return super.doGetCharacteristicsMatches(regExp, datatype, offset, limit, comparator);
 	}
 
@@ -219,8 +216,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), datatype.getReference(), offset,
-					limit));
+			list.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp.pattern(), datatype.getReference(), offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -252,8 +248,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetCoordinates(Wgs84Coordinate value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -267,8 +263,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.WGS84_COORDINATE, offset,
-					limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), Namespaces.XSD.WGS84_COORDINATE, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -280,8 +275,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<IDatatypeAware> doGetDatatypeAwares(Locator dataType, int offset, int limit, Comparator<IDatatypeAware> comparator) {
@@ -307,8 +302,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetDateTime(Calendar value, Calendar deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -340,8 +335,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetDateTime(Calendar value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -355,8 +350,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
-					XmlSchemeDatatypes.XSD_DATETIME, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATETIME), Namespaces.XSD.DATETIME, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -368,8 +362,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetDoubles(double value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -383,7 +377,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_DOUBLE, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.DOUBLE, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -395,8 +389,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetDoubles(double value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -410,8 +404,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor()
-					.getOccurrences(getTopicMapStore().getTopicMap(), Double.toString(value), XmlSchemeDatatypes.XSD_DOUBLE, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Double.toString(value), Namespaces.XSD.DOUBLE, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -423,8 +416,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetFloats(float value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -439,7 +432,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.FLOAT, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -451,8 +444,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetFloats(float value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -466,7 +459,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value), XmlSchemeDatatypes.XSD_FLOAT, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value), Namespaces.XSD.FLOAT, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -478,8 +471,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetIntegers(int value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -493,7 +486,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_INT, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.INT, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -505,8 +498,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetIntegers(int value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -520,7 +513,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value), XmlSchemeDatatypes.XSD_INT, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value), Namespaces.XSD.INT, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -532,8 +525,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetLongs(long value, double deviance, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -547,7 +540,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.LONG, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -559,8 +552,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetLongs(long value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -574,7 +567,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value), XmlSchemeDatatypes.XSD_LONG, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value), Namespaces.XSD.LONG, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -586,8 +579,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Name> doGetNames(int offset, int limit, Comparator<Name> comparator) {
@@ -611,8 +604,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Occurrence> doGetOccurrences(int offset, int limit, Comparator<Occurrence> comparator) {
@@ -638,8 +631,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<ICharacteristics> doGetUris(URI value, int offset, int limit, Comparator<ICharacteristics> comparator) {
@@ -653,7 +646,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 		try {
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
-			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), XmlSchemeDatatypes.XSD_ANYURI, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), Namespaces.XSD.ANYURI, offset, limit));
 			session.commit();
 			session.close();
 			return list;
@@ -665,8 +658,8 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <b>Hint:</b> Method extracts all items from database to enable the usage
-	 * of comparators. The operation can be very slowly.
+	 * <b>Hint:</b> Method extracts all items from database to enable the usage of comparators. The operation can be
+	 * very slowly.
 	 * </p>
 	 */
 	protected List<Variant> doGetVariants(int offset, int limit, Comparator<Variant> comparator) {

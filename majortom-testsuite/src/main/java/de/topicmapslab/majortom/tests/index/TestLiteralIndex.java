@@ -29,8 +29,8 @@ import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -141,8 +141,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(Namespaces.XSD.STRING);
+		Locator xsdBool = createLocator(Namespaces.XSD.BOOLEAN);
 
 		assertEquals(0, index.getCharacteristics(xsdString).size());
 
@@ -191,8 +191,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(Namespaces.XSD.STRING);
+		Locator xsdBool = createLocator(Namespaces.XSD.BOOLEAN);
 
 		assertEquals(0, index.getCharacteristics(xsdString).size());
 
@@ -240,8 +240,8 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator xsdString = createLocator(XmlSchemeDatatypes.XSD_STRING);
-		Locator xsdBool = createLocator(XmlSchemeDatatypes.XSD_BOOLEAN);
+		Locator xsdString = createLocator(Namespaces.XSD.STRING);
+		Locator xsdBool = createLocator(Namespaces.XSD.BOOLEAN);
 
 		assertEquals(0, index.getCharacteristicsMatches("Occ", xsdString).size());
 		assertEquals(0, index.getCharacteristicsMatches(Pattern.compile("Occ"), xsdString).size());

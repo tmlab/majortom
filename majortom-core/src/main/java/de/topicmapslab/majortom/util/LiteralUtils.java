@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import de.topicmapslab.majortom.model.namespace.Namespaces;
+
 /**
  * Utility class for literals. Checks the type of literals and transform string
  * literals to a literal of a specific type.
@@ -416,37 +418,37 @@ public class LiteralUtils {
 		/*
 		 * handle as date?
 		 */
-		if (dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATE) && isDate(literal)) {
+		if (dataType_.equalsIgnoreCase(Namespaces.XSD.DATE) && isDate(literal)) {
 			return asDate(literal);
 		}
 		/*
 		 * handle as time?
 		 */
-		else if (dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_TIME) && isTime(literal)) {
+		else if (dataType_.equalsIgnoreCase(Namespaces.XSD.TIME) && isTime(literal)) {
 			return asTime(literal);
 		}
 		/*
 		 * handle as dateTime?
 		 */
-		else if (dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATETIME) && isDateTime(literal)) {
+		else if (dataType_.equalsIgnoreCase(Namespaces.XSD.DATETIME) && isDateTime(literal)) {
 			return asDateTime(literal);
 		}
 		/*
 		 * handle as integer?
 		 */
-		else if (dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_INTEGER) && isInteger(literal)) {
+		else if (dataType_.equalsIgnoreCase(Namespaces.XSD.INTEGER) && isInteger(literal)) {
 			return asInteger(literal);
 		}
 		/*
 		 * handle as decimal?
 		 */
-		else if ((dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DECIMAL) || dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_FLOAT)) && isDecimal(literal)) {
+		else if ((dataType_.equalsIgnoreCase(Namespaces.XSD.DECIMAL) || dataType_.equalsIgnoreCase(Namespaces.XSD.FLOAT)) && isDecimal(literal)) {
 			return asDecimal(literal);
 		}
 		/*
 		 * handle as URI?
 		 */
-		else if (dataType_.equalsIgnoreCase(XmlSchemeDatatypes.XSD_ANYURI) && isIri(literal)) {
+		else if (dataType_.equalsIgnoreCase(Namespaces.XSD.ANYURI) && isIri(literal)) {
 			return asIri(literal);
 		}
 		/*

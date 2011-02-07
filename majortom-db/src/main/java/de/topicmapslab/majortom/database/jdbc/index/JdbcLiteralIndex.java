@@ -40,9 +40,9 @@ import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -130,8 +130,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), literal,
-					XmlSchemeDatatypes.XSD_STRING, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), literal, Namespaces.XSD.STRING, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -153,8 +152,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.getReference(),
-					XmlSchemeDatatypes.XSD_ANYURI, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.getReference(), Namespaces.XSD.ANYURI, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -179,8 +177,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Occurrence> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value,
-					datatype.getReference(), -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, datatype.getReference(), -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -199,8 +196,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value),
-					XmlSchemeDatatypes.XSD_BOOLEAN, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Boolean.toString(value), Namespaces.XSD.BOOLEAN, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -244,8 +240,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getCharacteristicsByDatatype(getTopicMapStore().getTopicMap(),
-					datatype.getReference(), -1, -1));
+			col.addAll(session.getProcessor().getCharacteristicsByDatatype(getTopicMapStore().getTopicMap(), datatype.getReference(), -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -270,8 +265,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value,
-					datatype.getReference(), -1, -1));
+			col.addAll(session.getProcessor().getCharacteristics(getTopicMapStore().getTopicMap(), value, datatype.getReference(), -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -293,8 +287,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp, -1,
-					-1));
+			col.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -319,8 +312,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp,
-					datatype.getReference(), -1, -1));
+			col.addAll(session.getProcessor().getCharacteristicsByPattern(getTopicMapStore().getTopicMap(), regExp, datatype.getReference(), -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -371,8 +363,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(),
-					XmlSchemeDatatypes.WGS84_COORDINATE, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), Namespaces.XSD.WGS84_COORDINATE, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -396,8 +387,8 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		}
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
-			for (ICharacteristics coordinate : doGetCharacteristics(new LocatorImpl(XmlSchemeDatatypes.WGS84_COORDINATE))) { // doGetCoordinates(value))
-																																// {
+			for (ICharacteristics coordinate : doGetCharacteristics(new LocatorImpl(Namespaces.XSD.WGS84_COORDINATE))) { // doGetCoordinates(value))
+																															// {
 				IOccurrence occ = (IOccurrence) coordinate;
 				if (occ.coordinateValue().getDistance(value) <= deviance) {
 					col.add(occ);
@@ -422,8 +413,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<IDatatypeAware> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getDatatypeAwaresByDatatype(getTopicMapStore().getTopicMap(),
-					dataType.getReference(), -1, -1));
+			col.addAll(session.getProcessor().getDatatypeAwaresByDatatype(getTopicMapStore().getTopicMap(), dataType.getReference(), -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -445,9 +435,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(),
-					DatatypeAwareUtils.toString(value, XmlSchemeDatatypes.XSD_DATETIME),
-					XmlSchemeDatatypes.XSD_DATETIME, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATETIME), Namespaces.XSD.DATETIME, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -472,8 +460,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Calendar lower = (Calendar) value.clone();
 			Calendar upper = (Calendar) value.clone();
-			for (int field : new int[] { Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR, Calendar.DAY_OF_MONTH,
-					Calendar.MONTH, Calendar.YEAR }) {
+			for (int field : new int[] { Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR, Calendar.DAY_OF_MONTH, Calendar.MONTH, Calendar.YEAR }) {
 				lower.add(field, -1 * deviance.get(field));
 				upper.add(field, deviance.get(field));
 			}
@@ -498,8 +485,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Double.toString(value),
-					XmlSchemeDatatypes.XSD_DOUBLE, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Double.toString(value), Namespaces.XSD.DOUBLE, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -518,8 +504,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance,
-					XmlSchemeDatatypes.XSD_DOUBLE, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.DOUBLE, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -538,8 +523,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value),
-					XmlSchemeDatatypes.XSD_FLOAT, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Float.toString(value), Namespaces.XSD.FLOAT, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -558,8 +542,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance,
-					XmlSchemeDatatypes.XSD_FLOAT, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.FLOAT, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -578,8 +561,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value),
-					XmlSchemeDatatypes.XSD_INT, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Integer.toString(value), Namespaces.XSD.INT, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -598,8 +580,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance,
-					XmlSchemeDatatypes.XSD_INT, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.INT, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -618,8 +599,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value),
-					XmlSchemeDatatypes.XSD_LONG, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), Long.toString(value), Namespaces.XSD.LONG, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -638,8 +618,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance,
-					XmlSchemeDatatypes.XSD_LONG, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value, deviance, Namespaces.XSD.LONG, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -661,8 +640,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(),
-					XmlSchemeDatatypes.XSD_ANYURI, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), value.toString(), Namespaces.XSD.ANYURI, -1, -1));
 			session.commit();
 			session.close();
 			return col;
@@ -703,8 +681,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value,
-					XmlSchemeDatatypes.XSD_STRING));
+			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value, Namespaces.XSD.STRING));
 			session.commit();
 			session.close();
 			return col;
@@ -726,8 +703,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value.toString(),
-					XmlSchemeDatatypes.XSD_ANYURI));
+			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value.toString(), Namespaces.XSD.ANYURI));
 			session.commit();
 			session.close();
 			return col;
@@ -752,8 +728,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 		try {
 			Collection<Variant> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
-			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value,
-					datatype.getReference()));
+			col.addAll(session.getProcessor().getVariants(getTopicMapStore().getTopicMap(), value, datatype.getReference()));
 			session.commit();
 			session.close();
 			return col;

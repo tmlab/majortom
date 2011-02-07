@@ -43,11 +43,11 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.store.NameMergeCandidate;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * Utility class for merging process.
@@ -628,7 +628,7 @@ public class InMemoryMergeUtils {
 					}
 				}
 			}
-		}		
+		}
 		/*
 		 * replace old topic
 		 */
@@ -935,8 +935,8 @@ public class InMemoryMergeUtils {
 	 *             thrown if operation fails
 	 */
 	private static boolean checkTmdmAssociation(InMemoryTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
-		Locator typeInstanceLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
-		Locator supertypeSubtypeLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		Locator typeInstanceLocator = topicMap.createLocator(Namespaces.TMDM.TYPE_INSTANCE);
+		Locator supertypeSubtypeLocator = topicMap.createLocator(Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 
 		/*
 		 * is tmdm:supertype-subtype-association
@@ -945,8 +945,8 @@ public class InMemoryMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE));
-			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE));
+			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUPERTYPE));
+			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUBTYPE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */
@@ -972,8 +972,8 @@ public class InMemoryMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE));
-			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE));
+			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.TYPE));
+			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.INSTANCE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */

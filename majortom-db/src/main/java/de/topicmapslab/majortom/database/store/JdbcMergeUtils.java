@@ -46,10 +46,10 @@ import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.store.NameMergeCandidate;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * Utility class for merging process.
@@ -803,7 +803,6 @@ public class JdbcMergeUtils {
 		}
 	}
 
-	
 	/**
 	 * Merge the one topic map into the other
 	 * 
@@ -817,7 +816,7 @@ public class JdbcMergeUtils {
 	 *             thrown if operation fails
 	 */
 	private static void mergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
-		
+
 		Set<Topic> topics = other.getTopics();
 		/*
 		 * copy identifies
@@ -1013,7 +1012,7 @@ public class JdbcMergeUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Copies the one topic map into the other
 	 * 
@@ -1026,25 +1025,25 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private static void copyTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException{
-		
+	private static void copyTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+
 		Set<Topic> topics = other.getTopics();
-		
-		Map<Topic,ITopic> newTopics = HashUtil.getHashMap(topics.size());
-		
+
+		Map<Topic, ITopic> newTopics = HashUtil.getHashMap(topics.size());
+
 		// create all topics with all identifier
 		for (Topic topic : topics) {
-			
+
 			ITopic newTopic = store.doCreateTopicWithoutIdentifier(topicMap);
 			newTopics.put(topic, newTopic); // store relation for later use
-			
+
 			for (Locator loc : topic.getItemIdentifiers())
 				store.doModifyItemIdentifier(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
-			
-			for (Locator loc : topic.getSubjectIdentifiers()) 
+
+			for (Locator loc : topic.getSubjectIdentifiers())
 				store.doModifySubjectIdentifier(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
-			
-			for (Locator loc : topic.getSubjectLocators()) 
+
+			for (Locator loc : topic.getSubjectLocators())
 				store.doModifySubjectLocator(newTopic, store.doCreateLocator(topicMap, loc.getReference()));
 		}
 
@@ -1052,9 +1051,9 @@ public class JdbcMergeUtils {
 		 * Copy information
 		 */
 		for (Topic topic : topics) {
-			
+
 			ITopic newTopic = newTopics.get(topic);
-			
+
 			/*
 			 * copy types
 			 */
@@ -1068,7 +1067,7 @@ public class JdbcMergeUtils {
 			 */
 			if (topic instanceof ITopic) {
 				for (Topic type : ((ITopic) topic).getSupertypes()) {
-					ITopic t = newTopics.get(type); 
+					ITopic t = newTopics.get(type);
 					store.doModifySupertype(newTopic, t);
 				}
 			}
@@ -1077,16 +1076,16 @@ public class JdbcMergeUtils {
 			 * copy occurrences
 			 */
 			for (Occurrence occ : topic.getOccurrences()) {
-				
+
 				ITopic type = newTopics.get(occ.getType());
 				Set<ITopic> themes = HashUtil.getHashSet();
-				for(Topic t:occ.getScope())
+				for (Topic t : occ.getScope())
 					themes.add(newTopics.get(t));
-//				IScope scope = store.doCreateScope(topicMap, themes);
+				// IScope scope = store.doCreateScope(topicMap, themes);
 				ILocator datatype = (ILocator) store.getTopicMap().createLocator(occ.getDatatype().getReference());
-				
+
 				IOccurrence newOccurrence = store.doCreateOccurrence(newTopic, type, occ.getValue(), datatype, themes);
-								
+
 				/*
 				 * copy item-identifiers of the occurrence
 				 */
@@ -1110,9 +1109,9 @@ public class JdbcMergeUtils {
 			for (Name name : topic.getNames()) {
 				ITopic type = newTopics.get(name.getType());
 				Set<ITopic> themes = HashUtil.getHashSet();
-				for(Topic t:name.getScope())
+				for (Topic t : name.getScope())
 					themes.add(newTopics.get(t));
-				
+
 				IName newName = store.doCreateName(newTopic, type, name.getValue(), themes);
 
 				/*
@@ -1134,12 +1133,12 @@ public class JdbcMergeUtils {
 				 * copy variants
 				 */
 				for (Variant v : name.getVariants()) {
-					
+
 					Set<ITopic> vthemes = HashUtil.getHashSet();
-					for(Topic t:v.getScope())
+					for (Topic t : v.getScope())
 						vthemes.add(newTopics.get(t));
 					ILocator datatype = (ILocator) store.getTopicMap().createLocator(v.getDatatype().getReference());
-					
+
 					IVariant variant = store.doCreateVariant(newName, v.getValue(), datatype, vthemes);
 
 					/*
@@ -1174,9 +1173,9 @@ public class JdbcMergeUtils {
 
 			ITopic type = newTopics.get(ass.getType());
 			Set<ITopic> themes = HashUtil.getHashSet();
-			for(Topic t:ass.getScope())
+			for (Topic t : ass.getScope())
 				themes.add(newTopics.get(t));
-			
+
 			IAssociation association = store.doCreateAssociation(topicMap, type, themes);
 
 			/*
@@ -1217,13 +1216,12 @@ public class JdbcMergeUtils {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	/**
-	 * Merge the one topic map into the other. 
-	 * If the source topic map is empty, the other topic map will simply be copied into the new one 
-	 * without checking if specific constructs have to be merged.
+	 * Merge the one topic map into the other. If the source topic map is empty, the other topic map will simply be
+	 * copied into the new one without checking if specific constructs have to be merged.
 	 * 
 	 * @param store
 	 *            the store
@@ -1235,11 +1233,11 @@ public class JdbcMergeUtils {
 	 *             thrown if operation fails
 	 */
 	public static void doMergeTopicMaps(JdbcTopicMapStore store, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
-	
-		if(store.isTopicMapEmpty(topicMap)){
+
+		if (store.isTopicMapEmpty(topicMap)) {
 			// use copy
 			copyTopicMaps(store, topicMap, other);
-		}else{
+		} else {
 			// use merge
 			mergeTopicMaps(store, topicMap, other);
 		}
@@ -1264,7 +1262,8 @@ public class JdbcMergeUtils {
 	}
 
 	/**
-	 * Method checks if the association is a TMDM association. Such associations will not be copied into the new topic map to avoid duplicated entries.
+	 * Method checks if the association is a TMDM association. Such associations will not be copied into the new topic
+	 * map to avoid duplicated entries.
 	 * 
 	 * @param store
 	 *            the store
@@ -1278,8 +1277,8 @@ public class JdbcMergeUtils {
 	 * @throws TopicMapStoreException
 	 */
 	private static boolean checkTmdmAssociation(JdbcTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
-		Locator typeInstanceLocator = store.doCreateLocator(topicMap, TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
-		Locator supertypeSubtypeLocator = store.doCreateLocator(topicMap, TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		Locator typeInstanceLocator = store.doCreateLocator(topicMap, Namespaces.TMDM.TYPE_INSTANCE);
+		Locator supertypeSubtypeLocator = store.doCreateLocator(topicMap, Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 
 		/*
 		 * is tmdm:supertype-subtype-association
@@ -1288,8 +1287,8 @@ public class JdbcMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE));
-			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE));
+			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUPERTYPE));
+			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUBTYPE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */
@@ -1315,8 +1314,8 @@ public class JdbcMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE));
-			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE));
+			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.TYPE));
+			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.INSTANCE));
 			/*
 			 * TMDM restricts that role-types has to exist if the association exists
 			 */

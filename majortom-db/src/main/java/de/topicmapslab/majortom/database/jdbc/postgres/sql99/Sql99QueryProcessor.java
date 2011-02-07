@@ -74,13 +74,12 @@ import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.RevisionImpl;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -161,7 +160,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IName doCreateName(ITopic topic, String value) throws SQLException {
-		ILocator loc = doCreateLocator(topic.getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(topic.getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		ITopic type = doReadTopicBySubjectIdentifier(topic.getTopicMap(), loc);
 		if (type == null) {
 			type = doCreateTopicBySubjectIdentifier(topic.getTopicMap(), loc);
@@ -173,7 +172,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws SQLException {
-		ILocator loc = doCreateLocator(topic.getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(topic.getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		ITopic type = doReadTopicBySubjectIdentifier(topic.getTopicMap(), loc);
 		if (type == null) {
 			type = doCreateTopicBySubjectIdentifier(topic.getTopicMap(), loc);
@@ -217,13 +216,13 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(1, Namespaces.XSD.STRING);
+		stmt.setString(2, Namespaces.XSD.STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(topic.getId()));
 		stmt.setLong(5, Long.parseLong(type.getId()));
 		stmt.setString(6, value);
-		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(7, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
@@ -235,14 +234,14 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(1, Namespaces.XSD.STRING);
+		stmt.setString(2, Namespaces.XSD.STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(topic.getId()));
 		stmt.setLong(5, Long.parseLong(type.getId()));
 		stmt.setString(6, value);
 		stmt.setLong(7, Long.parseLong(scope.getId()));
-		stmt.setString(8, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(8, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
@@ -253,13 +252,13 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws SQLException {
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(1, Namespaces.XSD.ANYURI);
+		stmt.setString(2, Namespaces.XSD.ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(topic.getId()));
 		stmt.setLong(5, Long.parseLong(type.getId()));
 		stmt.setString(6, value.getReference());
-		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(7, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
@@ -271,14 +270,14 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(1, Namespaces.XSD.ANYURI);
+		stmt.setString(2, Namespaces.XSD.ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(topic.getId()));
 		stmt.setLong(5, Long.parseLong(type.getId()));
 		stmt.setString(6, value.getReference());
 		stmt.setLong(7, Long.parseLong(scope.getId()));
-		stmt.setString(8, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(8, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getResultSet(), "id");
 	}
@@ -555,13 +554,13 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_STRING);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(1, Namespaces.XSD.STRING);
+		stmt.setString(2, Namespaces.XSD.STRING);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(name.getId()));
 		stmt.setString(5, value);
 		stmt.setLong(6, Long.parseLong(scope.getId()));
-		stmt.setString(7, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(7, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
 	}
@@ -573,13 +572,13 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
-		stmt.setString(1, XmlSchemeDatatypes.XSD_ANYURI);
-		stmt.setString(2, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(1, Namespaces.XSD.ANYURI);
+		stmt.setString(2, Namespaces.XSD.ANYURI);
 		stmt.setLong(3, Long.parseLong(topicMap.getId()));
 		stmt.setLong(4, Long.parseLong(name.getId()));
 		stmt.setString(5, value.getReference());
 		stmt.setLong(6, Long.parseLong(scope.getId()));
-		stmt.setString(7, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(7, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getResultSet(), "id");
 	}
@@ -3460,7 +3459,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrences(topicMap, value, reference, offset, limit));
 			return col;
@@ -3502,7 +3501,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrencesByDatatype(topicMap, reference, offset, limit));
 			return col;
@@ -3542,7 +3541,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrencesByPattern(topicMap, value, reference));
 			return col;

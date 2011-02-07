@@ -25,10 +25,10 @@ import org.tmapi.core.Variant;
 import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.IRevisionIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.revision.core.ReadOnlyVariant;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -59,7 +59,7 @@ public class TestVariantRevisions extends MaJorToMTestCase {
 		
 		assertEquals("Var", v.getValue());
 		assertEquals(reifier, v.getReifier());
-		assertEquals(XmlSchemeDatatypes.XSD_STRING, v.getDatatype().getReference());
+		assertEquals(Namespaces.XSD.STRING, v.getDatatype().getReference());
 		assertEquals(n, v.getParent());
 		assertTrue(v.getScope().contains(theme));
 	}
