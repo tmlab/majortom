@@ -32,6 +32,8 @@ import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
+import de.topicmapslab.majortom.model.core.IScope;
+import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.ITopicMapListener;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
@@ -434,225 +436,24 @@ public class SignatureStore implements ITopicMapListener {
 		return topicMapStore;
 	}
 
-	// public void removeDuplicates(ITopic topic, IRevision revision) {
-	// Set<Construct> removed = HashUtil.getHashSet();
-	//
-	// /*
-	// * check name duplicates
-	// */
-	// for (IName name : getTopicMapStore().getCharacteristicsStore().getNames(topic)) {
-	// if (removed.contains(name)) {
-	// continue;
-	// }
-	// byte[] signature = signatures.get(name);
-	// if (signature == null) {
-	// throw new TopicMapStoreException("Signature is missing!");
-	// }
-	// Set<IConstruct> set = constructs.get(signature);
-	// if (set.size() > 1) {
-	// for (IConstruct c : set) {
-	// /*
-	// * ignore same association
-	// */
-	// if (name.equals(c)) {
-	// continue;
-	// }
-	// IName duplicate = (IName) c;
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicate)) {
-	// getTopicMapStore().removeItemIdentifier(duplicate, (ILocator) ii, revision);
-	// getTopicMapStore().modifyItemIdentifier(name, (ILocator) ii, revision);
-	// }
-	// /*
-	// * check variants
-	// */
-	// for (Variant duplicateVariant : getTopicMapStore().getCharacteristicsStore().getVariants(duplicate)) {
-	// if ( removed.contains(duplicateVariant)){
-	// continue;
-	// }
-	// byte[] variantSignature = generateSignature(name, duplicateVariant);
-	// if (variantSignature == null) {
-	// throw new TopicMapStoreException("Signature is missing!");
-	// }
-	// /*
-	// * check duplicated variants
-	// */
-	// for (IConstruct r : duplicates) {
-	// Variant variant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
-	// dup).getScopeObject().getThemes());
-	// if (variant == null) {
-	// variant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
-	// dup).getScopeObject().getThemes(), revision);
-	// }
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : dup.getItemIdentifiers()) {
-	// store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
-	// store.modifyItemIdentifier((IVariant) variant, (ILocator) ii, revision);
-	// }
-	// /*
-	// * check reification
-	// */
-	// doMergeReifiable(store, (IVariant) variant, (IVariant) dup, revision);
-	// }
-	// /*
-	// * check reification
-	// */
-	// doMergeReifiable(store, name, duplicate, revision);
-	// /*
-	// * remove duplicate
-	// */
-	// store.removeName(duplicate, true, revision);
-	// removed.add(duplicate);
-	//
-	// }
-	//
-	// for (IName duplicate : store.doReadNames(topic)) {
-	// if (duplicate.equals(name) || removed.contains(duplicate)) {
-	// continue;
-	// }
-	// /*
-	// * names are equal if the value, the type and scope property are equal
-	// */
-	// if (duplicate.getType().equals(name.getType()) && store.doReadValue(duplicate).equals(store.doReadValue(name)) &&
-	// duplicate.getScopeObject().equals(name.getScopeObject())) {
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : duplicate.getItemIdentifiers()) {
-	// store.removeItemIdentifier(duplicate, (ILocator) ii, revision);
-	// store.modifyItemIdentifier(name, (ILocator) ii, revision);
-	// }
-	// /*
-	// * copy variants
-	// */
-	// for (Variant dup : duplicate.getVariants()) {
-	// Variant variant = getDuplette(store, name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
-	// dup).getScopeObject().getThemes());
-	// if (variant == null) {
-	// variant = store.createVariant(name, dup.getValue(), (ILocator) dup.getDatatype(), ((IVariant)
-	// dup).getScopeObject().getThemes(), revision);
-	// }
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : dup.getItemIdentifiers()) {
-	// store.removeItemIdentifier((IVariant) dup, (ILocator) ii, revision);
-	// store.modifyItemIdentifier((IVariant) variant, (ILocator) ii, revision);
-	// }
-	// /*
-	// * check reification
-	// */
-	// doMergeReifiable(store, (IVariant) variant, (IVariant) dup, revision);
-	// }
-	// /*
-	// * check reification
-	// */
-	// doMergeReifiable(store, name, duplicate, revision);
-	// /*
-	// * remove duplicate
-	// */
-	// store.removeName(duplicate, true, revision);
-	// removed.add(duplicate);
-	// }
-	// }
-	// /*
-	// * check variants
-	// */
-	// for (Variant v : name.getVariants()) {
-	// if (removed.contains(v)) {
-	// continue;
-	// }
-	// for (IVariant dup : MergeUtils.getDuplettes(store, name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant)
-	// v).getScopeObject().getThemes())) {
-	// if (v.equals(dup) || removed.contains(dup)) {
-	// continue;
-	// }
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : dup.getItemIdentifiers()) {
-	// dup.removeItemIdentifier(ii);
-	// v.addItemIdentifier(ii);
-	// }
-	// /*
-	// * check reification
-	// */
-	// ITopic duplicateReifier = (ITopic) dup.getReifier();
-	// ITopic reifier = (ITopic) v.getReifier();
-	// if (duplicateReifier != null) {
-	// dup.setReifier(null);
-	// if (reifier != null) {
-	// doMerge(store, reifier, duplicateReifier, revision);
-	// } else {
-	// v.setReifier(duplicateReifier);
-	// }
-	// }
-	// /*
-	// * remove duplicate
-	// */
-	// removed.add(dup);
-	// dup.remove();
-	// }
-	// }
-	// }
-	// removed.clear();
-	// /*
-	// * check occurrences
-	// */
-	// for (Occurrence occurrence : topic.getOccurrences()) {
-	// if (removed.contains(occurrence)) {
-	// continue;
-	// }
-	// for (Occurrence duplicate : topic.getOccurrences()) {
-	// if (duplicate.equals(occurrence) || removed.contains(duplicate)) {
-	// continue;
-	// }
-	// /*
-	// * occurrences are equal if the value, datatype, the type and scope property are equal
-	// */
-	// if (duplicate.getType().equals(occurrence.getType()) && duplicate.getValue().equals(occurrence.getValue())
-	// && ((IOccurrence) occurrence).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject()) &&
-	// occurrence.getDatatype().equals(duplicate.getDatatype())) {
-	// /*
-	// * copy item-identifier
-	// */
-	// for (Locator ii : duplicate.getItemIdentifiers()) {
-	// store.removeItemIdentifier((IOccurrence) duplicate, (ILocator) ii, revision);
-	// store.modifyItemIdentifier((IOccurrence) occurrence, (ILocator) ii, revision);
-	// }
-	// /*
-	// * check reification
-	// */
-	// doMergeReifiable(store, (IOccurrence) occurrence, (IOccurrence) duplicate, revision);
-	// /*
-	// * remove duplicate
-	// */
-	// store.removeOccurrence((IOccurrence) duplicate, true, revision);
-	// removed.add(duplicate);
-	// }
-	// }
-	// }
-	//
-	// removed.clear();
-	// }
-
 	/**
-	 * Removes all duplicates associations
+	 * Internal method to remove duplicates in context to the topic
 	 * 
+	 * @param topic
+	 *            the topic
 	 * @param revision
 	 *            the revision to store changes
 	 */
-	public void removeAssociationDuplicates(IRevision revision) {
-		Set<IConstruct> removed = HashUtil.getHashSet();
-		for (IAssociation association : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getAssociations())) {
-			if (removed.contains(association)) {
+	private void internalRemoveDuplicates(ITopic topic, IRevision revision) {
+		Set<Construct> removed = HashUtil.getHashSet();
+		/*
+		 * check name duplicates
+		 */
+		for (IName name : HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getNames(topic))) {
+			if (removed.contains(name)) {
 				continue;
 			}
-			String signature = signatures.get(association);
+			String signature = signatures.get(name);
 			if (signature == null) {
 				throw new TopicMapStoreException("Signature is missing!");
 			}
@@ -662,96 +463,305 @@ public class SignatureStore implements ITopicMapListener {
 					/*
 					 * ignore same association
 					 */
-					if (association.equals(c)) {
+					if (name.equals(c)) {
 						continue;
 					}
-					IAssociation duplicate = (IAssociation) c;
+					IName duplicate = (IName) c;
 					/*
 					 * copy item-identifier
 					 */
-					for (Locator ii : duplicate.getItemIdentifiers()) {
+					for (Locator ii : HashUtil.getHashSet(getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicate))) {
 						getTopicMapStore().removeItemIdentifier(duplicate, (ILocator) ii, revision);
-						getTopicMapStore().modifyItemIdentifier(association, (ILocator) ii, revision);
+						getTopicMapStore().modifyItemIdentifier(name, (ILocator) ii, revision);
 					}
 					/*
-					 * check contained roles of duplicate
+					 * check variants
 					 */
-					for (IAssociationRole dup : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getRoles(duplicate))) {
-						if (removed.contains(dup)) {
+					for (IVariant duplicateVariant : HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getVariants(duplicate))) {
+						if (removed.contains(duplicateVariant)) {
 							continue;
 						}
-						/*
-						 * generate signature
-						 */
-						final String sig = toHash(generateSignature(dup));
-						Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(sig));
-						/*
-						 * check duplicated roles
-						 */
-						for (IConstruct r : duplicates) {
-							if (removed.contains(r) || !r.getParent().equals(association)) {
-								continue;
-							}
-							/*
-							 * copy item-identifier
-							 */
-							for (Locator ii : dup.getItemIdentifiers()) {
-								getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii, revision);
-								getTopicMapStore().modifyItemIdentifier((IAssociationRole) r, (ILocator) ii, revision);
-							}
-							/*
-							 * check reification
-							 */
-							InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), (IAssociationRole) r, dup, revision);
-							break;
+						String variantSignature = toHash(generateSignature(name, duplicateVariant));
+						if (variantSignature == null) {
+							throw new TopicMapStoreException("Signature is missing!");
 						}
+						Set<IConstruct> duplicates = constructs.get(variantSignature);
+						IVariant variant = null;
+						/*
+						 * copy new variant
+						 */
+						if (duplicates == null || duplicates.isEmpty()) {
+							String value = getTopicMapStore().getCharacteristicsStore().getValueAsString(duplicateVariant);
+							ILocator datatype = getTopicMapStore().getCharacteristicsStore().getDatatype(duplicateVariant);
+							IScope scope = getTopicMapStore().getScopeStore().getScope(duplicateVariant);
+							variant = getTopicMapStore().createVariant(name, value, datatype, scope.getThemes(), revision);
+						}
+						/*
+						 * merge in variant
+						 */
+						else {
+							variant = (IVariant) duplicates.iterator().next();
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : HashUtil.getHashSet(getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicateVariant))) {
+							getTopicMapStore().removeItemIdentifier(duplicateVariant, (ILocator) ii, revision);
+							getTopicMapStore().modifyItemIdentifier(variant, (ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), variant, duplicateVariant, revision);
+						removed.add(duplicateVariant);
 					}
 					/*
 					 * check reification
 					 */
-					InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), association, duplicate, revision);
+					InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), name, duplicate, revision);
 					/*
 					 * remove duplicate
 					 */
-					getTopicMapStore().removeAssociation(duplicate, true, revision);
-					removed.add(c);
+					getTopicMapStore().removeName(duplicate, true, revision);
+					removed.add(duplicate);
 				}
 			}
+
 			/*
-			 * check roles
+			 * check variants
 			 */
-			for (IAssociationRole r : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getRoles(association))) {
-				if (removed.contains(r)) {
+			for (IVariant variant : HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getVariants(name))) {
+				if (removed.contains(variant)) {
 					continue;
 				}
-				String roleSignature = signatures.get(r);
-				if (roleSignature == null) {
+				String variantSignature = signatures.get(variant);
+				if (variantSignature == null) {
 					throw new TopicMapStoreException("Signature is missing!");
 				}
-				Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(roleSignature));
-				if (duplicates.size() == 1) {
-					continue;
+				Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(variantSignature));
+				if (duplicates.size() > 1) {
+					for (IConstruct c2 : duplicates) {
+						if (c2.equals(variant) || removed.contains(c2)) {
+							continue;
+						}
+						IVariant duplicateVariant = (IVariant) c2;
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : HashUtil.getHashSet(getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicateVariant))) {
+							getTopicMapStore().removeItemIdentifier(duplicateVariant, (ILocator) ii, revision);
+							getTopicMapStore().modifyItemIdentifier(variant, (ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), variant, duplicateVariant, revision);
+						removed.add(duplicateVariant);
+						getTopicMapStore().removeVariant(duplicateVariant, false, revision);
+					}
 				}
-				for (IConstruct c2 : duplicates) {
-					if (removed.contains(c2) || r.equals(c2) || !c2.getParent().equals(association)) {
+			}
+		}
+
+		removed.clear();
+		/*
+		 * check occurrences
+		 */
+		for (IOccurrence occurrence : HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getOccurrences(topic))) {
+			if (removed.contains(occurrence)) {
+				continue;
+			}
+			String signature = signatures.get(occurrence);
+			if (signature == null) {
+				throw new TopicMapStoreException("Signature is missing!");
+			}
+			Set<IConstruct> set = HashUtil.getHashSet(constructs.get(signature));
+			if (set.size() > 1) {
+				for (IConstruct c : set) {
+					/*
+					 * ignore same association
+					 */
+					if (occurrence.equals(c)) {
 						continue;
 					}
-					IAssociationRole dup = (IAssociationRole) c2;
+					IOccurrence duplicate = (IOccurrence) c;
 					/*
 					 * copy item-identifier
 					 */
-					for (Locator ii : dup.getItemIdentifiers()) {
-						getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii, revision);
-						getTopicMapStore().modifyItemIdentifier(r, (ILocator) ii, revision);
+					for (Locator ii : HashUtil.getHashSet(getTopicMapStore().getIdentityStore().getItemIdentifiers(duplicate))) {
+						getTopicMapStore().removeItemIdentifier(duplicate, (ILocator) ii, revision);
+						getTopicMapStore().modifyItemIdentifier(occurrence, (ILocator) ii, revision);
 					}
 					/*
 					 * check reification
 					 */
-					InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), r, dup, revision);
-					getTopicMapStore().removeRole(dup, false, revision);
-					removed.add(c2);
+					InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), occurrence, duplicate, revision);
+					/*
+					 * remove duplicate
+					 */
+					getTopicMapStore().removeOccurrence(duplicate, true, revision);
+					removed.add(duplicate);
 				}
 			}
+		}
+		removed.clear();
+	}
+
+	/**
+	 * Internal method to remove duplicates from topic map store
+	 * 
+	 * @param association
+	 *            the association
+	 * @param removed
+	 *            the removed constructs
+	 * @param revision
+	 *            the revision to store the changes
+	 */
+	private void internalRemoveDuplicates(IAssociation association, Set<IConstruct> removed, IRevision revision) {
+		if (removed.contains(association)) {
+			return;
+		}
+		String signature = signatures.get(association);
+		if (signature == null) {
+			throw new TopicMapStoreException("Signature is missing!");
+		}
+		Set<IConstruct> set = HashUtil.getHashSet(constructs.get(signature));
+		if (set.size() > 1) {
+			for (IConstruct c : set) {
+				/*
+				 * ignore same association
+				 */
+				if (association.equals(c)) {
+					continue;
+				}
+				IAssociation duplicate = (IAssociation) c;
+				/*
+				 * copy item-identifier
+				 */
+				for (Locator ii : duplicate.getItemIdentifiers()) {
+					getTopicMapStore().removeItemIdentifier(duplicate, (ILocator) ii, revision);
+					getTopicMapStore().modifyItemIdentifier(association, (ILocator) ii, revision);
+				}
+				/*
+				 * check contained roles of duplicate
+				 */
+				for (IAssociationRole dup : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getRoles(duplicate))) {
+					if (removed.contains(dup)) {
+						continue;
+					}
+					/*
+					 * generate signature
+					 */
+					final String sig = toHash(generateSignature(dup));
+					Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(sig));
+					/*
+					 * check duplicated roles
+					 */
+					for (IConstruct r : duplicates) {
+						if (removed.contains(r) || !r.getParent().equals(association)) {
+							continue;
+						}
+						/*
+						 * copy item-identifier
+						 */
+						for (Locator ii : dup.getItemIdentifiers()) {
+							getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii, revision);
+							getTopicMapStore().modifyItemIdentifier((IAssociationRole) r, (ILocator) ii, revision);
+						}
+						/*
+						 * check reification
+						 */
+						InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), (IAssociationRole) r, dup, revision);
+						break;
+					}
+				}
+				/*
+				 * check reification
+				 */
+				InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), association, duplicate, revision);
+				/*
+				 * remove duplicate
+				 */
+				getTopicMapStore().removeAssociation(duplicate, true, revision);
+				removed.add(c);
+			}
+		}
+		/*
+		 * check roles
+		 */
+		for (IAssociationRole r : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getRoles(association))) {
+			if (removed.contains(r)) {
+				continue;
+			}
+			String roleSignature = signatures.get(r);
+			if (roleSignature == null) {
+				throw new TopicMapStoreException("Signature is missing!");
+			}
+			Set<IConstruct> duplicates = HashUtil.getHashSet(constructs.get(roleSignature));
+			if (duplicates.size() == 1) {
+				continue;
+			}
+			for (IConstruct c2 : duplicates) {
+				if (removed.contains(c2) || r.equals(c2) || !c2.getParent().equals(association)) {
+					continue;
+				}
+				IAssociationRole dup = (IAssociationRole) c2;
+				/*
+				 * copy item-identifier
+				 */
+				for (Locator ii : dup.getItemIdentifiers()) {
+					getTopicMapStore().removeItemIdentifier(dup, (ILocator) ii, revision);
+					getTopicMapStore().modifyItemIdentifier(r, (ILocator) ii, revision);
+				}
+				/*
+				 * check reification
+				 */
+				InMemoryMergeUtils.doMergeReifiable(getTopicMapStore(), r, dup, revision);
+				getTopicMapStore().removeRole(dup, false, revision);
+				removed.add(c2);
+			}
+		}
+	}
+
+	/**
+	 * Removes all duplicates of the topic map
+	 * 
+	 * @param revision
+	 *            the revision to store changes
+	 */
+	public void removeDuplicates(IRevision revision) {
+		for (ITopic topic : HashUtil.getHashSet(getTopicMapStore().getIdentityStore().getTopics())) {
+			if (topic.isRemoved()) {
+				continue;
+			}
+			internalRemoveDuplicates(topic, revision);
+		}
+		Set<IConstruct> removed = HashUtil.getHashSet();
+		for (IAssociation association : HashUtil.getHashSet(getTopicMapStore().getAssociationStore().getAssociations())) {
+			if (removed.contains(association)) {
+				continue;
+			}
+			internalRemoveDuplicates(association, removed, revision);
+		}
+	}
+
+	/**
+	 * Removes all duplicates in relation to the given topic. In other words, all duplicate names, occurrences and
+	 * played associations will be removed.
+	 * 
+	 * @param topic
+	 *            the topic
+	 * @param revision
+	 *            the revision to store changes
+	 */
+	public void removeDuplicates(ITopic topic, IRevision revision) {
+		internalRemoveDuplicates(topic, revision);
+		Set<IConstruct> removed = HashUtil.getHashSet();
+		for (IAssociation association : HashUtil.getHashSet(getTopicMapStore().doReadAssociation(topic))) {
+			if (removed.contains(association)) {
+				continue;
+			}
+			internalRemoveDuplicates(association, removed, revision);
 		}
 	}
 
