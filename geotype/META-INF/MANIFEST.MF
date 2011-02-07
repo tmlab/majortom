@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Export-Package: de.topicmapslab.geotype.model,de.topicmapslab.geotype.
  wgs84;uses:="de.topicmapslab.geotype.model"
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.2.0.201102031524
+Bundle-Version: 1.2.0.201102071002
 Tool: Bnd-1.15.0
 Bundle-Name: MaJorToM Geotype
-Bnd-LastModified: 1296743105593
+Bnd-LastModified: 1297069362986
 Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: de.topicmapslab.geotype

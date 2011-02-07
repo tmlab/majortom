@@ -498,7 +498,7 @@ public class InMemoryMergeUtils {
 				/*
 				 * merge them
 				 */
-				doMergeReifiable(store, name, duplette, revision);
+				doMergeReifiable(store, duplette, name, revision);
 			}
 			/*
 			 * no duplicated name found
@@ -628,7 +628,7 @@ public class InMemoryMergeUtils {
 					}
 				}
 			}
-		}
+		}		
 		/*
 		 * replace old topic
 		 */
@@ -1233,13 +1233,13 @@ public class InMemoryMergeUtils {
 	public static void removeDuplicates2(final InMemoryTopicMapStore store, final ITopicMap topicMap, final boolean handleAssociation) throws TopicMapStoreException {
 
 		final IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
-
-		for (final ITopic topic : store.doReadTopics(topicMap)) {
-			removeDuplicates(store, revision, topic, false);
-		}
-		if (handleAssociation) {
-			store.getSignatureStore().removeAssociationDuplicates(revision);
-		}
+		//
+		// for (final ITopic topic : store.doReadTopics(topicMap)) {
+		// removeDuplicates(store, revision, topic, false);
+		// }
+		// if (handleAssociation) {
+		store.getSignatureStore().removeDuplicates(revision);
+		// }
 	}
 
 	/**
@@ -1387,7 +1387,7 @@ public class InMemoryMergeUtils {
 				}
 			}
 		}
-		store.getSignatureStore().removeAssociationDuplicates(revision);
+		store.getSignatureStore().removeDuplicates(revision);
 		// Set<Construct> removed = HashUtil.getHashSet();
 		// /*
 		// * check associations

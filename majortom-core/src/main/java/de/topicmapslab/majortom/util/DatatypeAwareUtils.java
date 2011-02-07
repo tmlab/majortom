@@ -135,12 +135,26 @@ public class DatatypeAwareUtils {
 			if (value instanceof Float) {
 				return (Float) value;
 			}
-			return Float.parseFloat(value.toString());
+			/*
+			 * different Symbol for decimal values
+			 */
+			String v = value.toString();
+			if ( v.contains(",")){
+					v = v.replace(',', '.');
+			}
+			return Float.parseFloat(v);
 		} else if (Double.class.equals(clazz)) {
 			if (value instanceof Double) {
 				return (Double) value;
 			}
-			return Double.parseDouble(value.toString());
+			/*
+			 * different Symbol for decimal values
+			 */
+			String v = value.toString();
+			if ( v.contains(",")){
+					v = v.replace(',', '.');
+			}
+			return Double.parseDouble(v);
 		} else if (BigInteger.class.equals(clazz)) {
 			if (value instanceof BigInteger) {
 				return (BigInteger) value;
