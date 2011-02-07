@@ -44,10 +44,10 @@ import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.store.MergeUtils;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * Utility class for merging process.
@@ -72,8 +72,7 @@ public class TransactionMergeUtils {
 	 *            a set of themes
 	 * @return the merging candidate-name combination or <code>null</code>
 	 */
-	public static Map<ITopic, IName> detectMergeByNameCandidate(TransactionTopicMapStore store, ITopic topic, ITopic nameType, String value,
-			Collection<ITopic> themes) {
+	public static Map<ITopic, IName> detectMergeByNameCandidate(TransactionTopicMapStore store, ITopic topic, ITopic nameType, String value, Collection<ITopic> themes) {
 		IName duplette = getDuplette(store, topic, nameType, value, themes);
 		if (duplette != null) {
 			Map<ITopic, IName> candidate = HashUtil.getHashMap();
@@ -136,8 +135,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returning the duplicated name with the given type, parent, value and
-	 * scope.
+	 * Returning the duplicated name with the given type, parent, value and scope.
 	 * 
 	 * @param store
 	 *            the store
@@ -153,8 +151,7 @@ public class TransactionMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IName getDuplette(TransactionTopicMapStore store, ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static IName getDuplette(TransactionTopicMapStore store, ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IName> names = HashUtil.getHashSet();
 		/*
 		 * get all names
@@ -182,8 +179,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returning the duplicated variant with the given parent, value, datatype
-	 * and scope.
+	 * Returning the duplicated variant with the given parent, value, datatype and scope.
 	 * 
 	 * @param store
 	 *            the store
@@ -199,8 +195,7 @@ public class TransactionMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IVariant getDuplette(TransactionTopicMapStore store, IName name, String value, ILocator locator, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static IVariant getDuplette(TransactionTopicMapStore store, IName name, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IVariant> set = HashUtil.getHashSet();
 		/*
 		 * get all names
@@ -224,8 +219,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returning the duplicated occurrence with the given type, parent, value,
-	 * datatype and scope.
+	 * Returning the duplicated occurrence with the given type, parent, value, datatype and scope.
 	 * 
 	 * @param store
 	 *            the store
@@ -243,8 +237,7 @@ public class TransactionMergeUtils {
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	public static IOccurrence getDuplette(TransactionTopicMapStore store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes)
-			throws TopicMapStoreException {
+	public static IOccurrence getDuplette(TransactionTopicMapStore store, ITopic topic, ITopic type, String value, ILocator locator, Collection<ITopic> themes) throws TopicMapStoreException {
 		Set<IOccurrence> set = HashUtil.getHashSet();
 		/*
 		 * get all names
@@ -272,9 +265,8 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returning the duplicated association with the same type, roles and scope
-	 * than the given one. All roles played by the source topic can be played by
-	 * the target topic without changing the equality of associations.
+	 * Returning the duplicated association with the same type, roles and scope than the given one. All roles played by
+	 * the source topic can be played by the target topic without changing the equality of associations.
 	 * 
 	 * @param store
 	 *            the store
@@ -352,8 +344,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returning the duplicated association with the same type, roles and scope
-	 * than the given one.
+	 * Returning the duplicated association with the same type, roles and scope than the given one.
 	 * 
 	 * @param store
 	 *            the store
@@ -563,8 +554,7 @@ public class TransactionMergeUtils {
 			/*
 			 * check if occurrence already contained by the other topic
 			 */
-			IOccurrence duplette = getDuplette(store, topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(),
-					occurrence.getScopeObject().getThemes());
+			IOccurrence duplette = getDuplette(store, topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(), occurrence.getScopeObject().getThemes());
 			/*
 			 * duplicated occurrence found
 			 */
@@ -585,8 +575,8 @@ public class TransactionMergeUtils {
 			 * no duplicated occurrence found
 			 */
 			else {
-				IOccurrence newOccurrence = store.createOccurrence(topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence
-						.getDatatype(), occurrence.getScopeObject().getThemes(), revision);
+				IOccurrence newOccurrence = store.createOccurrence(topic, (ITopic) occurrence.getType(), occurrence.getValue(), (ILocator) occurrence.getDatatype(), occurrence.getScopeObject()
+						.getThemes(), revision);
 				/*
 				 * copy all item identifiers
 				 */
@@ -655,9 +645,8 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Handling reification after merging the given constructs. If both are
-	 * reified, the reifier topics are merged. Otherwise the existing reifier
-	 * are moved to the target construct.
+	 * Handling reification after merging the given constructs. If both are reified, the reifier topics are merged.
+	 * Otherwise the existing reifier are moved to the target construct.
 	 * 
 	 * @param store
 	 *            the store
@@ -702,8 +691,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Merging all information items of the second topic map into the first
-	 * topic map, without duplicates
+	 * Merging all information items of the second topic map into the first topic map, without duplicates
 	 * 
 	 * @param store
 	 *            the store
@@ -782,8 +770,8 @@ public class TransactionMergeUtils {
 				ILocator datatype = store.getIdentityStore().createLocator(occ.getDatatype().getReference());
 				IOccurrence occurrence = getDuplette(store, duplette, type, occ.getValue(), datatype, scope.getThemes());
 				if (occurrence == null) {
-					occurrence = store.createOccurrence(duplette, type, occ.getValue(), store.getIdentityStore()
-							.createLocator(occ.getDatatype().getReference()), getCorrespondingScope(store, occ.getScope()).getThemes(), revision);
+					occurrence = store.createOccurrence(duplette, type, occ.getValue(), store.getIdentityStore().createLocator(occ.getDatatype().getReference()),
+							getCorrespondingScope(store, occ.getScope()).getThemes(), revision);
 				}
 				/*
 				 * copy item-identifiers of the occurrence
@@ -836,8 +824,7 @@ public class TransactionMergeUtils {
 					ILocator datatype = store.getIdentityStore().createLocator(v.getDatatype().getReference());
 					IVariant variant = getDuplette(store, n, v.getValue(), datatype, scope.getThemes());
 					if (variant == null) {
-						variant = store.createVariant(n, v.getValue(), store.getIdentityStore().createLocator(v.getDatatype().getReference()), scope
-								.getThemes(), revision);
+						variant = store.createVariant(n, v.getValue(), store.getIdentityStore().createLocator(v.getDatatype().getReference()), scope.getThemes(), revision);
 					}
 
 					/*
@@ -914,8 +901,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Returns the IScope object representing all the given themes in the given
-	 * topic map store.
+	 * Returns the IScope object representing all the given themes in the given topic map store.
 	 * 
 	 * @param store
 	 *            the store.
@@ -934,8 +920,7 @@ public class TransactionMergeUtils {
 	}
 
 	/**
-	 * Method checks if the given association is a TMDM type-instance or
-	 * supertype-subtype association
+	 * Method checks if the given association is a TMDM type-instance or supertype-subtype association
 	 * 
 	 * @param store
 	 *            the store
@@ -945,15 +930,14 @@ public class TransactionMergeUtils {
 	 *            the topic map
 	 * @param other
 	 *            the other topic map
-	 * @return <code>true</code> if the associations is a TMDM type-instance or
-	 *         supertype-subtype association, <code>false</code> otherwise.
+	 * @return <code>true</code> if the associations is a TMDM type-instance or supertype-subtype association,
+	 *         <code>false</code> otherwise.
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	private static boolean checkTmdmAssociation(TransactionTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other)
-			throws TopicMapStoreException {
-		Locator typeInstanceLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
-		Locator supertypeSubtypeLocator = topicMap.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+	private static boolean checkTmdmAssociation(TransactionTopicMapStore store, Association association, ITopicMap topicMap, TopicMap other) throws TopicMapStoreException {
+		Locator typeInstanceLocator = topicMap.createLocator(Namespaces.TMDM.TYPE_INSTANCE);
+		Locator supertypeSubtypeLocator = topicMap.createLocator(Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 
 		/*
 		 * is tmdm:supertype-subtype-association
@@ -962,18 +946,16 @@ public class TransactionMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE));
-			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE));
+			Topic supertypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUPERTYPE));
+			Topic subtypeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.SUBTYPE));
 			/*
-			 * TMDM restricts that role-types has to exist if the association
-			 * exists
+			 * TMDM restricts that role-types has to exist if the association exists
 			 */
 			if (supertypeRole == null || subtypeRole == null) {
 				throw new TopicMapStoreException("Invalid supertype-subtype-association, missing at least one role-type");
 			}
 			/*
-			 * get equivalent players contained by the topic map, information
-			 * merged in
+			 * get equivalent players contained by the topic map, information merged in
 			 */
 			ITopic supertype = getDuplette(store, association.getRoles(supertypeRole).iterator().next().getPlayer());
 			ITopic subtype = getDuplette(store, association.getRoles(subtypeRole).iterator().next().getPlayer());
@@ -991,18 +973,16 @@ public class TransactionMergeUtils {
 			/*
 			 * get role-types of TMDM association
 			 */
-			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE));
-			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE));
+			Topic typeRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.TYPE));
+			Topic instanceRole = other.getTopicBySubjectIdentifier(other.createLocator(Namespaces.TMDM.INSTANCE));
 			/*
-			 * TMDM restricts that role-types has to exist if the association
-			 * exists
+			 * TMDM restricts that role-types has to exist if the association exists
 			 */
 			if (typeRole == null || instanceRole == null) {
 				throw new TopicMapStoreException("Invalid type-instance-association, missing at least one role-type");
 			}
 			/*
-			 * get equivalent players contained by the topic map, information
-			 * merged in
+			 * get equivalent players contained by the topic map, information merged in
 			 */
 			ITopic type = getDuplette(store, association.getRoles(typeRole).iterator().next().getPlayer());
 			ITopic instance = getDuplette(store, association.getRoles(instanceRole).iterator().next().getPlayer());
@@ -1051,11 +1031,9 @@ public class TransactionMergeUtils {
 						continue;
 					}
 					/*
-					 * names are equal if the value, the type and scope property
-					 * are equal
+					 * names are equal if the value, the type and scope property are equal
 					 */
-					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue())
-							&& ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
+					if (duplicate.getType().equals(name.getType()) && duplicate.getValue().equals(name.getValue()) && ((IName) duplicate).getScopeObject().equals(((IName) name).getScopeObject())) {
 						/*
 						 * copy item-identifier
 						 */
@@ -1067,11 +1045,9 @@ public class TransactionMergeUtils {
 						 * copy variants
 						 */
 						for (Variant v : duplicate.getVariants()) {
-							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
-									.getThemes());
+							Variant copy = getDuplette(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes());
 							if (copy == null) {
-								copy = store.createVariant((IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes(),
-										revision);
+								copy = store.createVariant((IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes(), revision);
 							}
 							/*
 							 * copy item-identifier
@@ -1103,8 +1079,7 @@ public class TransactionMergeUtils {
 					if (removed.contains(v)) {
 						continue;
 					}
-					for (IVariant dup : MergeUtils.getDuplettes(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject()
-							.getThemes())) {
+					for (IVariant dup : MergeUtils.getDuplettes(store, (IName) name, v.getValue(), (ILocator) v.getDatatype(), ((IVariant) v).getScopeObject().getThemes())) {
 						if (v.equals(dup) || removed.contains(dup)) {
 							continue;
 						}
@@ -1149,12 +1124,10 @@ public class TransactionMergeUtils {
 						continue;
 					}
 					/*
-					 * occurrences are equal if the value, datatype, the type
-					 * and scope property are equal
+					 * occurrences are equal if the value, datatype, the type and scope property are equal
 					 */
 					if (duplicate.getType().equals(duplicate.getType()) && duplicate.getValue().equals(duplicate.getValue())
-							&& ((IName) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject())
-							&& occurrence.getDatatype().equals(duplicate.getDatatype())) {
+							&& ((IName) duplicate).getScopeObject().equals(((IOccurrence) duplicate).getScopeObject()) && occurrence.getDatatype().equals(duplicate.getDatatype())) {
 						/*
 						 * copy item-identifier
 						 */

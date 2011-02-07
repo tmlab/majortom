@@ -25,9 +25,9 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.LiteralUtils;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * Implementation of the {@link ILiteralIndex}
@@ -35,8 +35,7 @@ import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
  * @author Sven Krosse
  * 
  */
-public class TransactionLiteralIndex extends
-		IndexImpl<TransactionTopicMapStore> implements ILiteralIndex {
+public class TransactionLiteralIndex extends IndexImpl<TransactionTopicMapStore> implements ILiteralIndex {
 
 	/**
 	 * constructor
@@ -56,13 +55,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_BOOLEAN))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.BOOLEAN))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.booleanValue().equals(value)) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.booleanValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (ParseException e) {
@@ -80,12 +75,8 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_STRING))) {
-			if (datatypeAware instanceof IOccurrence
-					&& datatypeAware.getValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING))) {
+			if (datatypeAware instanceof IOccurrence && datatypeAware.getValue().equals(value)) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
@@ -109,10 +100,8 @@ public class TransactionLiteralIndex extends
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getCharacteristics());
-		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				(ILocator) datatype));
-		if (datatype.getReference().equalsIgnoreCase(
-				XmlSchemeDatatypes.XSD_STRING)) {
+		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype));
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			set.addAll(getTopicMapStore().getCharacteristicsStore().getNames());
 		}
 		return Collections.unmodifiableCollection(set);
@@ -121,8 +110,7 @@ public class TransactionLiteralIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(String value,
-			Locator datatype) {
+	public Collection<ICharacteristics> getCharacteristics(String value, Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -133,16 +121,12 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						(ILocator) datatype)) {
-			if (datatypeAware instanceof IOccurrence
-					&& datatypeAware.getValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype)) {
+			if (datatypeAware instanceof IOccurrence && datatypeAware.getValue().equals(value)) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
-		if (datatype.getReference().equalsIgnoreCase(
-				XmlSchemeDatatypes.XSD_STRING)) {
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			for (IName name : getTopicMapStore().getCharacteristicsStore().getNames()) {
 				if (name.getValue().equalsIgnoreCase(value)) {
 					set.add(name);
@@ -161,31 +145,25 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null.");
+			throw new IllegalArgumentException("Regular expression cannot be null.");
 		}
-		return Collections
-				.unmodifiableCollection(getCharacteristicsMatches(Pattern
-						.compile(regExp)));
+		return Collections.unmodifiableCollection(getCharacteristicsMatches(Pattern.compile(regExp)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(
-			String regExp, Locator datatype) {
+	public Collection<ICharacteristics> getCharacteristicsMatches(String regExp, Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null.");
+			throw new IllegalArgumentException("Regular expression cannot be null.");
 		}
 		if (datatype == null) {
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
-		return Collections.unmodifiableCollection(getCharacteristicsMatches(
-				Pattern.compile(regExp), datatype));
+		return Collections.unmodifiableCollection(getCharacteristicsMatches(Pattern.compile(regExp), datatype));
 	}
 
 	/**
@@ -196,8 +174,7 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null.");
+			throw new IllegalArgumentException("Regular expression cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 
@@ -206,12 +183,8 @@ public class TransactionLiteralIndex extends
 				set.add(n);
 			}
 		}
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_STRING))) {
-			if (datatypeAware instanceof IOccurrence
-					&& regExp.matcher(datatypeAware.getValue()).matches()) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING))) {
+			if (datatypeAware instanceof IOccurrence && regExp.matcher(datatypeAware.getValue()).matches()) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
@@ -222,29 +195,23 @@ public class TransactionLiteralIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsMatches(
-			Pattern regExp, Locator datatype) {
+	public Collection<ICharacteristics> getCharacteristicsMatches(Pattern regExp, Locator datatype) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		if (regExp == null) {
-			throw new IllegalArgumentException(
-					"Regular expression cannot be null.");
+			throw new IllegalArgumentException("Regular expression cannot be null.");
 		}
 		if (datatype == null) {
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						(ILocator) datatype)) {
-			if (datatypeAware instanceof IOccurrence
-					&& regExp.matcher(datatypeAware.getValue()).matches()) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype)) {
+			if (datatypeAware instanceof IOccurrence && regExp.matcher(datatypeAware.getValue()).matches()) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
-		if (datatype.getReference().equalsIgnoreCase(
-				XmlSchemeDatatypes.XSD_STRING)) {
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			for (IName n : getTopicMapStore().getCharacteristicsStore().getNames()) {
 				if (regExp.matcher(n.getValue()).matches()) {
 					set.add(n);
@@ -266,13 +233,9 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.WGS84_COORDINATE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.WGS84_COORDINATE))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.coordinateValue().equals(value)) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.coordinateValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (ParseException e) {
@@ -285,8 +248,7 @@ public class TransactionLiteralIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value,
-			double deviance) {
+	public Collection<ICharacteristics> getCoordinates(Wgs84Coordinate value, double deviance) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -294,13 +256,9 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.WGS84_COORDINATE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.WGS84_COORDINATE))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& value.getDistance(datatypeAware.coordinateValue()) <= deviance) {
+				if (datatypeAware instanceof IOccurrence && value.getDistance(datatypeAware.coordinateValue()) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (ParseException e) {
@@ -321,13 +279,9 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_DATETIME))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.dateTimeValue().equals(value)) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.dateTimeValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (ParseException e) {
@@ -340,8 +294,7 @@ public class TransactionLiteralIndex extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getDateTime(Calendar value,
-			Calendar deviance) {
+	public Collection<ICharacteristics> getDateTime(Calendar value, Calendar deviance) {
 		if (!isOpen()) {
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
@@ -352,20 +305,13 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Deviance cannot be null.");
 		}
 
-		double deviance_ = ((double) (deviance.get(Calendar.SECOND) + (deviance
-				.get(Calendar.MINUTE) + (deviance.get(Calendar.HOUR) + (deviance
-				.get(Calendar.DAY_OF_MONTH) + (deviance.get(Calendar.MONTH) + deviance
-				.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
+		double deviance_ = ((double) (deviance.get(Calendar.SECOND) + (deviance.get(Calendar.MINUTE) + (deviance.get(Calendar.HOUR) + (deviance.get(Calendar.DAY_OF_MONTH) + (deviance
+				.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
 
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_DATETIME))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& LiteralUtils.inRange(datatypeAware.dateTimeValue(),
-								value, deviance_)) {
+				if (datatypeAware instanceof IOccurrence && LiteralUtils.inRange(datatypeAware.dateTimeValue(), value, deviance_)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (ParseException e) {
@@ -383,13 +329,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_DOUBLE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DOUBLE))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.doubleValue().equals(value)) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.doubleValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -407,13 +349,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_DOUBLE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DOUBLE))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& Math.abs(datatypeAware.doubleValue() - value) <= deviance) {
+				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.doubleValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -431,13 +369,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_FLOAT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.FLOAT))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.floatValue() == value) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.floatValue() == value) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -455,13 +389,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_FLOAT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.FLOAT))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& Math.abs(datatypeAware.floatValue() - value) <= deviance) {
+				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.floatValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -479,13 +409,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_INT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.INT))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.intValue() == value) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.intValue() == value) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -503,13 +429,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_INT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.INT))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& Math.abs(datatypeAware.intValue() - value) <= deviance) {
+				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.intValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -527,13 +449,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_LONG))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.LONG))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.longValue() == value) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.longValue() == value) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -551,13 +469,9 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_LONG))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.LONG))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& Math.abs(datatypeAware.longValue() - value) <= deviance) {
+				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.longValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (NumberFormatException e) {
@@ -578,13 +492,9 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_ANYURI))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI))) {
 			try {
-				if (datatypeAware instanceof IOccurrence
-						&& datatypeAware.uriValue().equals(value)) {
+				if (datatypeAware instanceof IOccurrence && datatypeAware.uriValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
 				}
 			} catch (URISyntaxException e) {
@@ -624,12 +534,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_STRING))) {
-			if (datatypeAware instanceof IOccurrence
-					&& datatypeAware.getValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING))) {
+			if (datatypeAware instanceof IOccurrence && datatypeAware.getValue().equals(value)) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
@@ -647,12 +553,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_ANYURI))) {
-			if (datatypeAware instanceof IOccurrence
-					&& datatypeAware.locatorValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI))) {
+			if (datatypeAware instanceof IOccurrence && datatypeAware.locatorValue().equals(value)) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
@@ -673,11 +575,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						(ILocator) datatype)) {
-			if (datatypeAware instanceof IOccurrence
-					&& datatypeAware.getValue().equalsIgnoreCase(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype)) {
+			if (datatypeAware instanceof IOccurrence && datatypeAware.getValue().equalsIgnoreCase(value)) {
 				set.add((IOccurrence) datatypeAware);
 			}
 		}
@@ -695,12 +594,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<Variant> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_STRING))) {
-			if (datatypeAware instanceof IVariant
-					&& datatypeAware.getValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING))) {
+			if (datatypeAware instanceof IVariant && datatypeAware.getValue().equals(value)) {
 				set.add((IVariant) datatypeAware);
 			}
 		}
@@ -718,12 +613,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<Variant> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						getTopicMapStore().getIdentityStore().createLocator(
-								XmlSchemeDatatypes.XSD_ANYURI))) {
-			if (datatypeAware instanceof IVariant
-					&& datatypeAware.locatorValue().equals(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI))) {
+			if (datatypeAware instanceof IVariant && datatypeAware.locatorValue().equals(value)) {
 				set.add((IVariant) datatypeAware);
 			}
 		}
@@ -744,11 +635,8 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
 		Set<Variant> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore()
-				.getCharacteristicsStore().getDatatypeAwares(
-						(ILocator) datatype)) {
-			if (datatypeAware instanceof IVariant
-					&& datatypeAware.getValue().equalsIgnoreCase(value)) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype)) {
+			if (datatypeAware instanceof IVariant && datatypeAware.getValue().equalsIgnoreCase(value)) {
 				set.add((IVariant) datatypeAware);
 			}
 		}
@@ -766,11 +654,9 @@ public class TransactionLiteralIndex extends
 			throw new IllegalArgumentException("Datatype cannot be null.");
 		}
 		if (!(dataType instanceof ILocator)) {
-			throw new IllegalArgumentException(
-					"Datatype has to be created by this topic map.");
+			throw new IllegalArgumentException("Datatype has to be created by this topic map.");
 		}
-		return HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore()
-				.getDatatypeAwares((ILocator) dataType));
+		return HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) dataType));
 	}
 
 	/**
@@ -793,8 +679,7 @@ public class TransactionLiteralIndex extends
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Collection<Occurrence> occurrences = HashUtil.getHashSet();
-		occurrences.addAll(getTopicMapStore().getCharacteristicsStore()
-				.getOccurrences());
+		occurrences.addAll(getTopicMapStore().getCharacteristicsStore().getOccurrences());
 		return occurrences;
 	}
 

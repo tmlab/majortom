@@ -31,9 +31,9 @@ import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.geotype.wgs84.Wgs84Degree;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
 import de.topicmapslab.majortom.util.DatatypeAwareUtils;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * Testcase
@@ -52,8 +52,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "true", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("true"));
 		assertFalse(occurrence.getValue().equals(true));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_BOOLEAN)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.BOOLEAN)));
 		assertTrue(occurrence.booleanValue());
 
 		try {
@@ -66,15 +66,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(false);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("false"));
 		assertFalse(occurrence.getValue().equals(true));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_BOOLEAN)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.BOOLEAN)));
 		assertFalse(occurrence.booleanValue());
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("true", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("true"));
 		assertFalse(variant.getValue().equals(true));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_BOOLEAN)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.BOOLEAN)));
 		assertTrue(variant.booleanValue());
 
 		try {
@@ -87,8 +87,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(false);
 		assertTrue(variant.getValue().equalsIgnoreCase("false"));
 		assertFalse(variant.getValue().equals(true));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_BOOLEAN)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.BOOLEAN)));
 		assertFalse(variant.booleanValue());
 
 	}
@@ -107,8 +107,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.WGS84_COORDINATE)));
 		assertTrue(occurrence.coordinateValue().equals(coord));
 
 		try {
@@ -121,15 +121,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(coord);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(coord));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.WGS84_COORDINATE)));
 		assertTrue(occurrence.coordinateValue().equals(coord));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(ref, createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(coord));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.WGS84_COORDINATE)));
 		assertTrue(variant.coordinateValue().equals(coord));
 
 		try {
@@ -142,8 +142,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(coord);
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(coord));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.WGS84_COORDINATE)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.WGS84_COORDINATE)));
 		assertTrue(variant.coordinateValue().equals(coord));
 	}
 
@@ -159,8 +159,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(calendar));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DATETIME)));
 		assertTrue(occurrence.dateTimeValue().equals(calendar));
 
 		try {
@@ -173,15 +173,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(calendar);
 		assertEquals(ref, occurrence.getValue());
 		assertFalse(occurrence.getValue().equals(calendar));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DATETIME)));
 		assertTrue(occurrence.dateTimeValue().equals(calendar));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(ref, createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(calendar));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DATETIME)));
 		assertTrue(variant.dateTimeValue().equals(calendar));
 
 		try {
@@ -194,8 +194,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(calendar);
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(calendar));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DATETIME)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DATETIME)));
 		assertTrue(variant.dateTimeValue().equals(calendar));
 
 		calendar = new GregorianCalendar(2000, 1, 1, 1, 1, 1);
@@ -283,8 +283,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12.5", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(12.5));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DOUBLE)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DOUBLE)));
 		assertTrue(occurrence.doubleValue().equals(12.5D));
 
 		try {
@@ -297,15 +297,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(12.5D);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(12.5));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DOUBLE)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DOUBLE)));
 		assertTrue(occurrence.doubleValue().equals(12.5D));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12.5", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(12.5));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DOUBLE)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DOUBLE)));
 		assertTrue(variant.doubleValue().equals(12.5D));
 
 		try {
@@ -318,8 +318,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(12.5);
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(12.5));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DOUBLE)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DOUBLE)));
 		assertTrue(variant.doubleValue().equals(12.5D));
 	}
 
@@ -334,8 +334,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(uri));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(occurrence.uriValue().equals(uri));
 
 		try {
@@ -348,15 +348,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(uri);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(uri));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(occurrence.uriValue().equals(uri));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(ref, createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(uri));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(variant.uriValue().equals(uri));
 
 		try {
@@ -369,8 +369,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(uri);
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(uri));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(variant.uriValue().equals(uri));
 	}
 
@@ -384,8 +384,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12.5", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(bigDec));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DECIMAL)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DECIMAL)));
 		assertTrue(occurrence.decimalValue().equals(bigDec));
 
 		try {
@@ -398,15 +398,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(bigDec);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(bigDec));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DECIMAL)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DECIMAL)));
 		assertTrue(occurrence.decimalValue().equals(bigDec));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12.5", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(bigDec));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DECIMAL)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DECIMAL)));
 		assertTrue(variant.decimalValue().equals(bigDec));
 
 		try {
@@ -419,8 +419,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(bigDec);
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(bigDec));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_DECIMAL)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.DECIMAL)));
 		assertTrue(variant.decimalValue().equals(bigDec));
 	}
 
@@ -433,29 +433,29 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12.5", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(12.5));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_FLOAT)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.FLOAT)));
 		assertTrue(occurrence.floatValue() == 12.5);
 
 		occurrence.setValue(12.5F);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(occurrence.getValue().equals(12.5));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_FLOAT)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.FLOAT)));
 		assertTrue(occurrence.floatValue() == 12.5);
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12.5", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(12.5));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_FLOAT)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.FLOAT)));
 		assertTrue(variant.floatValue() == 12.5);
 
 		variant.setValue(12.5F);
 		assertTrue(variant.getValue().equalsIgnoreCase("12.5"));
 		assertFalse(variant.getValue().equals(12.5));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_FLOAT)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.FLOAT)));
 		assertTrue(variant.floatValue() == 12.5);
 	}
 
@@ -468,29 +468,29 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(12));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INT)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INT)));
 		assertTrue(occurrence.intValue() == 12);
 
 		occurrence.setValue(12);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(12));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INT)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INT)));
 		assertTrue(occurrence.intValue() == 12);
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(12));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INT)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INT)));
 		assertTrue(variant.intValue() == 12);
 
 		variant.setValue(12);
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(12));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INT)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INT)));
 		assertTrue(variant.intValue() == 12);
 	}
 
@@ -504,8 +504,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(bigInt));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INTEGER)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INTEGER)));
 		assertTrue(occurrence.integerValue().equals(bigInt));
 
 		try {
@@ -518,15 +518,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(bigInt);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(bigInt));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INTEGER)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INTEGER)));
 		assertTrue(occurrence.integerValue().equals(bigInt));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(bigInt));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INTEGER)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INTEGER)));
 		assertTrue(variant.integerValue().equals(bigInt));
 
 		try {
@@ -539,8 +539,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(bigInt);
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(bigInt));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_INTEGER)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.INTEGER)));
 		assertTrue(variant.integerValue().equals(bigInt));
 	}
 
@@ -554,8 +554,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), locator.getReference(), new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(locator.getReference()));
 		assertFalse(occurrence.getValue().equals(locator));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(occurrence.locatorValue().equals(locator));
 
 		try {
@@ -568,15 +568,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(locator);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(locator.getReference()));
 		assertFalse(occurrence.getValue().equals(locator));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(occurrence.locatorValue().equals(locator));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(locator.getReference(), createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(locator.getReference()));
 		assertFalse(variant.getValue().equals(locator));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(variant.locatorValue().equals(locator));
 
 		try {
@@ -589,8 +589,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(locator);
 		assertTrue(variant.getValue().equalsIgnoreCase(locator.getReference()));
 		assertFalse(variant.getValue().equals(locator));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.ANYURI)));
 		assertTrue(variant.locatorValue().equals(locator));
 	}
 
@@ -603,29 +603,29 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), "12", new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(12L));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_LONG)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.LONG)));
 		assertTrue(occurrence.longValue() == 12);
 
 		occurrence.setValue(12L);
 		assertTrue(occurrence.getValue().equalsIgnoreCase("12"));
 		assertFalse(occurrence.getValue().equals(12L));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_LONG)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.LONG)));
 		assertTrue(occurrence.longValue() == 12);
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant("12", createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(12L));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_LONG)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.LONG)));
 		assertTrue(variant.longValue() == 12);
 
 		variant.setValue(12L);
 		assertTrue(variant.getValue().equalsIgnoreCase("12"));
 		assertFalse(variant.getValue().equals(12L));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_LONG)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.LONG)));
 		assertTrue(variant.longValue() == 12);
 	}
 
@@ -643,8 +643,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		IOccurrence occurrence = (IOccurrence) topic.createOccurrence(createTopic(), ref, new Topic[0]);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(circuit));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOSURFACE)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.GEOSURFACE)));
 		assertTrue(occurrence.surfaceValue().equals(circuit));
 
 		try {
@@ -657,15 +657,15 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		occurrence.setValue(circuit);
 		assertTrue(occurrence.getValue().equalsIgnoreCase(ref));
 		assertFalse(occurrence.getValue().equals(circuit));
-		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOSURFACE)));
+		assertFalse(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(occurrence.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.GEOSURFACE)));
 		assertTrue(occurrence.surfaceValue().equals(circuit));
 
 		IVariant variant = (IVariant) topic.createName("name", new Topic[0]).createVariant(ref, createTopic());
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(circuit));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOSURFACE)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.GEOSURFACE)));
 		assertTrue(variant.surfaceValue().equals(circuit));
 
 		try {
@@ -678,8 +678,8 @@ public class TestDatattypeAwareImpl extends MaJorToMTestCase {
 		variant.setValue(circuit);
 		assertTrue(variant.getValue().equalsIgnoreCase(ref));
 		assertFalse(variant.getValue().equals(circuit));
-		assertFalse(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_STRING)));
-		assertTrue(variant.getDatatype().equals(topicMap.createLocator(XmlSchemeDatatypes.XSD_GEOSURFACE)));
+		assertFalse(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.STRING)));
+		assertTrue(variant.getDatatype().equals(topicMap.createLocator(Namespaces.XSD.GEOSURFACE)));
 		assertTrue(variant.surfaceValue().equals(circuit));
 	}
 

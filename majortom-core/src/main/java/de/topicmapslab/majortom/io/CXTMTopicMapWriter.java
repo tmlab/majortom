@@ -15,11 +15,6 @@
  */
 package de.topicmapslab.majortom.io;
 
-import static de.topicmapslab.majortom.util.TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE;
-import static de.topicmapslab.majortom.util.TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION;
-import static de.topicmapslab.majortom.util.TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE;
-import static de.topicmapslab.majortom.util.XmlSchemeDatatypes.XSD_ANYURI;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.AbstractSet;
@@ -54,27 +49,24 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 import de.topicmapslab.majortom.model.core.ITopicMap;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.util.FeatureStrings;
 import de.topicmapslab.majortom.util.HashUtil;
 
 /**
  * Provides serialization of topic maps into Canonical XTM (CXTM).
  * <p>
- * CXTM is a format that guarantees that two equivalent Topic Maps Data Model
- * instances [ISO/IEC 13250-2] will always produce byte-by-byte identical
- * serializations, and that non-equivalent instances will always produce
- * different serializations.
+ * CXTM is a format that guarantees that two equivalent Topic Maps Data Model instances [ISO/IEC 13250-2] will always
+ * produce byte-by-byte identical serializations, and that non-equivalent instances will always produce different
+ * serializations.
  * </p>
  * <p>
- * See <a
- * href="http://www.isotopicmaps.org/cxtm/">http://www.isotopicmaps.org/cxtm
- * /</a> for details.
+ * See <a href="http://www.isotopicmaps.org/cxtm/">http://www.isotopicmaps.org/cxtm /</a> for details.
  * </p>
  * 
  * This class was copied from the tinyTiM project and adapted for MaJorToM.
  * 
- * @author Lars Heuer (heuer[at]semagia.com) <a
- *         href="http://www.semagia.com/">Semagia</a>
+ * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @author Hannes Niederhausen
  */
 public final class CXTMTopicMapWriter {
@@ -141,8 +133,8 @@ public final class CXTMTopicMapWriter {
 	/**
 	 * Serializes the specified <tt>topicMap</tt> into the CXTM format.
 	 * <p>
-	 * <em>CAUTION</em>: This method MAY modify the topic map since duplicate
-	 * Topic Maps constructs (if any) are removed in advance.
+	 * <em>CAUTION</em>: This method MAY modify the topic map since duplicate Topic Maps constructs (if any) are removed
+	 * in advance.
 	 * </p>
 	 * 
 	 * @param topicMap
@@ -201,12 +193,10 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Returns an unsorted array of topics which should be included into the
-	 * output.
+	 * Returns an unsorted array of topics which should be included into the output.
 	 * <p>
-	 * This method may return more topics than {@link TopicMap#getTopics()}
-	 * since this method creates virtual topics to model type-instance
-	 * relationships properly.
+	 * This method may return more topics than {@link TopicMap#getTopics()} since this method creates virtual topics to
+	 * model type-instance relationships properly.
 	 * </p>
 	 * 
 	 * @param topicMap
@@ -227,16 +217,15 @@ public final class CXTMTopicMapWriter {
 		}
 
 		List<Topic> topics = HashUtil.getList(topicMap.getTopics());
-		_typeInstance = _getTopicBySubjectIdentifier(topicMap, topics, TMDM_TYPE_INSTANCE_ASSOCIATION);
-		_type = _getTopicBySubjectIdentifier(topicMap, topics, TMDM_TYPE_ROLE_TYPE);
-		_instance = _getTopicBySubjectIdentifier(topicMap, topics, TMDM_INSTANCE_ROLE_TYPE);
+		_typeInstance = _getTopicBySubjectIdentifier(topicMap, topics, Namespaces.TMDM.TYPE_INSTANCE);
+		_type = _getTopicBySubjectIdentifier(topicMap, topics, Namespaces.TMDM.TYPE);
+		_instance = _getTopicBySubjectIdentifier(topicMap, topics, Namespaces.TMDM.INSTANCE);
 		return topics.toArray(new Topic[topics.size()]);
 	}
 
 	/**
-	 * Returns a topic by its subject identifier. If the topic is null, a
-	 * {@link TypeInstanceTopic} is created, added to the <tt>topics</tt> and
-	 * returned.
+	 * Returns a topic by its subject identifier. If the topic is null, a {@link TypeInstanceTopic} is created, added to
+	 * the <tt>topics</tt> and returned.
 	 * 
 	 * @param tm
 	 *            The topic map to fetch the topic from.
@@ -258,18 +247,14 @@ public final class CXTMTopicMapWriter {
 	/**
 	 * Returns an unsorted array of associations which should be serialized.
 	 * 
-	 * This method may return more association than
-	 * {@link TopicMap#getAssociations()} since this method may create virtual
-	 * associations which are used to model type-instance relationships
-	 * properly.
+	 * This method may return more association than {@link TopicMap#getAssociations()} since this method may create
+	 * virtual associations which are used to model type-instance relationships properly.
 	 * 
 	 * @param tm
-	 *            The topic map from which the associations should be
-	 *            serialized.
+	 *            The topic map from which the associations should be serialized.
 	 * @param idx
 	 *            A (upto date) type instance index.
-	 * @return An unsorted array of associations which must be included into the
-	 *         output.
+	 * @return An unsorted array of associations which must be included into the output.
 	 */
 	private Association[] _fetchAssociations(final TopicMap tm, final TypeInstanceIndex idx) throws FeatureNotRecognizedException {
 		Collection<Topic> types = idx.getTopicTypes();
@@ -379,9 +364,8 @@ public final class CXTMTopicMapWriter {
 	/**
 	 * Returns the index of the provided Topic Maps construct.
 	 * 
-	 * The "index" is <cite>"[...] the string encoding of the position of this
-	 * information item in the canonically ordered list of the values from that
-	 * set".</cite> (CXTM 3.20 Constructing the number attribute).
+	 * The "index" is <cite>"[...] the string encoding of the position of this information item in the canonically
+	 * ordered list of the values from that set".</cite> (CXTM 3.20 Constructing the number attribute).
 	 * 
 	 * @param tmo
 	 *            The Topic Maps construct to return the index of.
@@ -495,7 +479,7 @@ public final class CXTMTopicMapWriter {
 	 *             If an error occurs.
 	 */
 	private void _writeDatatyped(final DatatypeAware obj) throws IOException {
-		final String value = XSD_ANYURI.equals(obj.getDatatype()) ? _normalizeLocator(obj.locatorValue()) : obj.getValue();
+		final String value = Namespaces.XSD.ANYURI.equals(obj.getDatatype()) ? _normalizeLocator(obj.locatorValue()) : obj.getValue();
 		_out.startElement("value");
 		_out.characters(value);
 		_out.endElement("value");
@@ -546,8 +530,7 @@ public final class CXTMTopicMapWriter {
 	 * Serializes the type of a typed Topic Maps construct.
 	 * 
 	 * @param typed
-	 *            The typed Topic Maps construct from which the type should be
-	 *            serialized.
+	 *            The typed Topic Maps construct from which the type should be serialized.
 	 * @throws IOException
 	 *             If an error occurs.
 	 */
@@ -615,8 +598,7 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Serializes the <tt>locators</tt> using the <tt>localName</tt> as element
-	 * name.
+	 * Serializes the <tt>locators</tt> using the <tt>localName</tt> as element name.
 	 * <p>
 	 * If the set of <tt>locators</tt> is empty, this method does nothing.
 	 * </p>
@@ -661,15 +643,15 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Returns attributes which contain the reifier (if any) and the number of
-	 * the provided Topic Maps construct (not a topic).
+	 * Returns attributes which contain the reifier (if any) and the number of the provided Topic Maps construct (not a
+	 * topic).
 	 * 
 	 * @param reifiable
 	 *            The Topic Maps construct.
 	 * @param pos
 	 *            The position of the reifiable within the parent container.
-	 * @return Attributes which contain a reference to the reifier (if any) and
-	 *         the number of the provided Topic Maps construct.
+	 * @return Attributes which contain a reference to the reifier (if any) and the number of the provided Topic Maps
+	 *         construct.
 	 */
 	private Attributes _attributes(final Reifiable reifiable, int pos) {
 		_attrs.clear();
@@ -679,9 +661,8 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Adds a reference to the reifier of the Topic Maps construct to the
-	 * provided attributes. If the Topic Maps construct has no reifier, the
-	 * provided attributes are not modified.
+	 * Adds a reference to the reifier of the Topic Maps construct to the provided attributes. If the Topic Maps
+	 * construct has no reifier, the provided attributes are not modified.
 	 * 
 	 * @param attrs
 	 *            The attributes.
@@ -732,9 +713,8 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Normalizes the base locator according to the following procedure (CXTM
-	 * 3.19 - 1.): <cite>[...] the base locator with any fragment identifier and
-	 * query removed and any trailing "/" character removed.[...]</cite>
+	 * Normalizes the base locator according to the following procedure (CXTM 3.19 - 1.): <cite>[...] the base locator
+	 * with any fragment identifier and query removed and any trailing "/" character removed.[...]</cite>
 	 * 
 	 * @param baseLocator
 	 * @return
@@ -758,8 +738,7 @@ public final class CXTMTopicMapWriter {
 	/**
 	 * Writes a warning msg to the log.
 	 * 
-	 * This method is used to inform the user that the serialized topic map is
-	 * not valid acc. to CXTM.
+	 * This method is used to inform the user that the serialized topic map is not valid acc. to CXTM.
 	 * 
 	 * @param msg
 	 *            The warning message.
@@ -797,8 +776,7 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Abstract comparator that provides some utility methods which handle
-	 * common comparisons.
+	 * Abstract comparator that provides some utility methods which handle common comparisons.
 	 */
 	private abstract class AbstractComparator<T> implements Comparator<T> {
 		int compareString(String o1, String o2) {
@@ -814,30 +792,28 @@ public final class CXTMTopicMapWriter {
 		}
 
 		/**
-		 * Extracts the type of the typed Topic Maps constructs and compares the
-		 * topics.
+		 * Extracts the type of the typed Topic Maps constructs and compares the topics.
 		 * 
 		 * @param o1
 		 *            The first typed Topic Maps construct.
 		 * @param o2
 		 *            The second typed Topic Maps construct.
-		 * @return A negative integer, zero, or a positive integer as the first
-		 *         argument is less than, equal to, or greater than the second.
+		 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or
+		 *         greater than the second.
 		 */
 		int compareType(Typed o1, Typed o2) {
 			return _topicComparator.compare(o1.getType(), o2.getType());
 		}
 
 		/**
-		 * Extracts the scope of the scoped Topic Maps constructs and compares
-		 * them.
+		 * Extracts the scope of the scoped Topic Maps constructs and compares them.
 		 * 
 		 * @param o1
 		 *            The first scoped Topic Maps construct.
 		 * @param o2
 		 *            The second scoped Topic Maps construct.
-		 * @return A negative integer, zero, or a positive integer as the first
-		 *         argument is less than, equal to, or greater than the second.
+		 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or
+		 *         greater than the second.
 		 */
 		int compareScope(Scoped o1, Scoped o2) {
 			return _scopeComparator.compare(o1.getScope(), o2.getScope());
@@ -845,8 +821,8 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Enhances the {@link AbstractComparator} with a method to compare the
-	 * value and datatype of an occurrence or variant.
+	 * Enhances the {@link AbstractComparator} with a method to compare the value and datatype of an occurrence or
+	 * variant.
 	 */
 	private abstract class AbstractDatatypeAwareComparator<T> extends AbstractComparator<T> {
 		/**
@@ -856,8 +832,8 @@ public final class CXTMTopicMapWriter {
 		 *            The first occurrence / variant.
 		 * @param o2
 		 *            The second occurrence / variant.
-		 * @return A negative integer, zero, or a positive integer as the first
-		 *         argument is less than, equal to, or greater than the second.
+		 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or
+		 *         greater than the second.
 		 */
 		int _compareValueDatatype(DatatypeAware o1, DatatypeAware o2) {
 			int res = compareString(o1.getValue(), o2.getValue());
@@ -895,9 +871,8 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Role comparator which ignores the parent association. This comparator is
-	 * meant to be used for roles where the parent is known to be equal or
-	 * unequal.
+	 * Role comparator which ignores the parent association. This comparator is meant to be used for roles where the
+	 * parent is known to be equal or unequal.
 	 */
 	private class RoleIgnoreParentComparator extends AbstractComparator<Role> {
 
@@ -931,8 +906,7 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Canonical sort order: 1. [value] 2. [datatype] 3. [type] 4. [scope] 5.
-	 * [parent]
+	 * Canonical sort order: 1. [value] 2. [datatype] 3. [type] 4. [scope] 5. [parent]
 	 */
 	private final class OccurrenceComparator extends AbstractDatatypeAwareComparator<Occurrence> {
 
@@ -992,8 +966,7 @@ public final class CXTMTopicMapWriter {
 	/**
 	 * Comparator which compares the size of the provided set.
 	 * 
-	 * Iff the size of the sets are equal, another comparison method is used to
-	 * compare the content of the sets.
+	 * Iff the size of the sets are equal, another comparison method is used to compare the content of the sets.
 	 */
 	private abstract class AbstractSetComparator<T> implements Comparator<Set<T>> {
 
@@ -1018,8 +991,8 @@ public final class CXTMTopicMapWriter {
 		 *            The second set.
 		 * @param size
 		 *            The size of the set(s).
-		 * @return A negative integer, zero, or a positive integer as the first
-		 *         argument is less than, equal to, or greater than the second.
+		 * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or
+		 *         greater than the second.
 		 */
 		abstract int compareContent(Set<T> o1, Set<T> o2, int size);
 	}
@@ -1104,8 +1077,7 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/*
-	 * Helper classes to treat type-instance relationships, modelled as property
-	 * of a topic, as associations.
+	 * Helper classes to treat type-instance relationships, modelled as property of a topic, as associations.
 	 */
 
 	private final class TypeInstanceTopic implements Topic {
@@ -1249,8 +1221,7 @@ public final class CXTMTopicMapWriter {
 	}
 
 	/**
-	 * Used to represent type-instance relationships which are modelled as
-	 * [type] property of topics.
+	 * Used to represent type-instance relationships which are modelled as [type] property of topics.
 	 */
 	private final class TypeInstanceAssociation implements Association {
 
@@ -1373,9 +1344,9 @@ public final class CXTMTopicMapWriter {
 		public void removeItemIdentifier(Locator itemIdentifier) {
 		}
 
-//		public Association getAssociation() {
-//			return _parent;
-//		}
+		// public Association getAssociation() {
+		// return _parent;
+		// }
 
 		public Topic getReifier() {
 			return null;

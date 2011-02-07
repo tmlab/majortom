@@ -23,9 +23,9 @@ import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.index.ILiteralIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.util.HashUtil;
 import de.topicmapslab.majortom.util.LiteralUtils;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * Implementation of the {@link ILiteralIndex}
@@ -53,8 +53,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_BOOLEAN))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.BOOLEAN))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.booleanValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -92,7 +91,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getCharacteristics());
 		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares((ILocator) datatype));
-		if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			set.addAll(getTopicMapStore().getCharacteristicsStore().getNames());
 		}
 		return Collections.unmodifiableCollection(set);
@@ -124,7 +123,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		/*
 		 * get all names by value if datatype is string
 		 */
-		if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			set.addAll(getTopicMapStore().getCharacteristicsStore().getNamesByValue(value, false));
 		}
 
@@ -207,7 +206,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		/*
 		 * get all names matching the regular expression if datatype is string
 		 */
-		if (datatype.getReference().equalsIgnoreCase(XmlSchemeDatatypes.XSD_STRING)) {
+		if (datatype.getReference().equalsIgnoreCase(Namespaces.XSD.STRING)) {
 			set.addAll(getTopicMapStore().getCharacteristicsStore().getNamesByValue(regExp));
 		}
 
@@ -225,8 +224,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.WGS84_COORDINATE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.WGS84_COORDINATE))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.coordinateValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -249,8 +247,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.WGS84_COORDINATE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.WGS84_COORDINATE))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && value.getDistance(datatypeAware.coordinateValue()) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
@@ -273,8 +270,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_DATETIME))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.dateTimeValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -304,8 +300,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 				.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
 
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_DATETIME))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && LiteralUtils.inRange(datatypeAware.dateTimeValue(), value, deviance_)) {
 					set.add((IOccurrence) datatypeAware);
@@ -325,8 +320,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_DOUBLE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DOUBLE))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.doubleValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -346,8 +340,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_DOUBLE))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DOUBLE))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.doubleValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
@@ -367,8 +360,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_FLOAT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.FLOAT))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.floatValue() == value) {
 					set.add((IOccurrence) datatypeAware);
@@ -388,8 +380,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_FLOAT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.FLOAT))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.floatValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
@@ -409,8 +400,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_INT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.INT))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.intValue() == value) {
 					set.add((IOccurrence) datatypeAware);
@@ -430,8 +420,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_INT))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.INT))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.intValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
@@ -451,8 +440,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_LONG))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.LONG))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.longValue() == value) {
 					set.add((IOccurrence) datatypeAware);
@@ -472,8 +460,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new TMAPIRuntimeException("Index is closed!");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_LONG))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.LONG))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && Math.abs(datatypeAware.longValue() - value) <= deviance) {
 					set.add((IOccurrence) datatypeAware);
@@ -496,8 +483,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(
-				getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_ANYURI))) {
+		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI))) {
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.uriValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -536,7 +522,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getOccurrencesByValue(value, false));
-		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING)));
+		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING)));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -552,7 +538,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		}
 		Set<Occurrence> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getOccurrencesByValue(value.toExternalForm(), false));
-		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI)));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -587,7 +573,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		}
 		Set<Variant> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getVariantsByValue(value, false));
-		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_STRING)));
+		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.STRING)));
 		return Collections.unmodifiableCollection(set);
 	}
 
@@ -603,7 +589,7 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 		}
 		Set<Variant> set = HashUtil.getHashSet();
 		set.addAll(getTopicMapStore().getCharacteristicsStore().getVariantsByValue(value.toExternalForm(), false));
-		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(XmlSchemeDatatypes.XSD_ANYURI)));
+		set.retainAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.ANYURI)));
 		return Collections.unmodifiableCollection(set);
 	}
 

@@ -30,6 +30,7 @@ import de.topicmapslab.geotype.wgs84.Wgs84Coordinate;
 import de.topicmapslab.majortom.core.LocatorImpl;
 import de.topicmapslab.majortom.model.core.IDatatypeAware;
 import de.topicmapslab.majortom.model.core.ILocator;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 
 /**
  * Utility class for {@link IDatatypeAware}
@@ -84,22 +85,22 @@ public class DatatypeAwareUtils {
 	 * @return the string literal
 	 */
 	public static final String toString(Object value, String reference) {
-		if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_ANYURI)) {
+		if (reference.equalsIgnoreCase(Namespaces.XSD.ANYURI)) {
 			if (value instanceof Locator) {
 				return ((Locator) value).getReference();
 			}
 			return value.toString();
-		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATE)) {
+		} else if (reference.equalsIgnoreCase(Namespaces.XSD.DATE)) {
 			if (value instanceof Calendar) {
 				return dateFormat.format(((Calendar) value).getTime());
 			}
 			return value.toString();
-		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_DATETIME)) {
+		} else if (reference.equalsIgnoreCase(Namespaces.XSD.DATETIME)) {
 			if (value instanceof Calendar) {
 				return dateTimeFormat.format(((Calendar) value).getTime());
 			}
 			return value.toString();
-		} else if (reference.equalsIgnoreCase(XmlSchemeDatatypes.XSD_TIME)) {
+		} else if (reference.equalsIgnoreCase(Namespaces.XSD.TIME)) {
 			if (value instanceof Calendar) {
 				return timeFormat.format(((Calendar) value).getTime());
 			}

@@ -50,10 +50,10 @@ import de.topicmapslab.majortom.model.exception.UnmodifyableStoreException;
 import de.topicmapslab.majortom.model.index.IScopedIndex;
 import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
 
 /**
  * Implementation of Topic Map Store which allows any read and write access to the underlying data storage.
@@ -93,223 +93,221 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		}
 		((TopicMapStoreMetaDataImpl) getMetaData()).setModificationTime();
 		switch (paramType) {
-		case ASSOCIATION: {
-			if (context instanceof ITopicMap) {
-				/*
-				 * createAssociation(ITopic)
-				 */
-				if (params.length == 1 && params[0] instanceof ITopic) {
-					return doCreateAssociation((ITopicMap) context, (ITopic) params[0]);
+			case ASSOCIATION: {
+				if (context instanceof ITopicMap) {
+					/*
+					 * createAssociation(ITopic)
+					 */
+					if (params.length == 1 && params[0] instanceof ITopic) {
+						return doCreateAssociation((ITopicMap) context, (ITopic) params[0]);
+					}
+					/*
+					 * createAssociation(ITopic, ITopic[])
+					 */
+					else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Topic[]) {
+						return doCreateAssociation((ITopicMap) context, (ITopic) params[0], convert((Topic[]) params[1]));
+					}
+					/*
+					 * createAssociation(ITopic, Collection<ITopic>)
+					 */
+					else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Collection<?>) {
+						return doCreateAssociation((ITopicMap) context, (ITopic) params[0], (Collection<ITopic>) params[1]);
+					}
 				}
-				/*
-				 * createAssociation(ITopic, ITopic[])
-				 */
-				else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Topic[]) {
-					return doCreateAssociation((ITopicMap) context, (ITopic) params[0], convert((Topic[]) params[1]));
-				}
-				/*
-				 * createAssociation(ITopic, Collection<ITopic>)
-				 */
-				else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof Collection<?>) {
-					return doCreateAssociation((ITopicMap) context, (ITopic) params[0], (Collection<ITopic>) params[1]);
-				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case BY_ITEM_IDENTIFER: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
-				return doCreateTopicByItemIdentifier((ITopicMap) context, (ILocator) params[0]);
-			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case BY_SUBJECT_IDENTIFER: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
-				return doCreateTopicBySubjectIdentifier((ITopicMap) context, (ILocator) params[0]);
-			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case BY_SUBJECT_LOCATOR: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
-				return doCreateTopicBySubjectLocator((ITopicMap) context, (ILocator) params[0]);
-			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case LOCATOR: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
-				return doCreateLocator((ITopicMap) context, (String) params[0]);
-			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case NAME: {
-			if (context instanceof ITopic) {
-				/*
-				 * createName(String)
-				 */
-				if (params.length == 1 && params[0] instanceof String) {
-					return doCreateName((ITopic) context, (String) params[0]);
+			case BY_ITEM_IDENTIFER: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
+					return doCreateTopicByItemIdentifier((ITopicMap) context, (ILocator) params[0]);
 				}
-				/*
-				 * createName(String, ITopic[])
-				 */
-				else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Topic[]) {
-					return doCreateName((ITopic) context, (String) params[0], convert((Topic[]) params[1]));
+				throw new OperationSignatureException(context, paramType, params);
+			}
+			case BY_SUBJECT_IDENTIFER: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
+					return doCreateTopicBySubjectIdentifier((ITopicMap) context, (ILocator) params[0]);
 				}
-				/*
-				 * createName(String, Collection<ITopic>)
-				 */
-				else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Collection<?>) {
-					return doCreateName((ITopic) context, (String) params[0], (Collection<ITopic>) params[1]);
+				throw new OperationSignatureException(context, paramType, params);
+			}
+			case BY_SUBJECT_LOCATOR: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof ILocator) {
+					return doCreateTopicBySubjectLocator((ITopicMap) context, (ILocator) params[0]);
 				}
-				/*
-				 * createName(ITopic, String)
-				 */
-				else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof String) {
-					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1]);
+				throw new OperationSignatureException(context, paramType, params);
+			}
+			case LOCATOR: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
+					return doCreateLocator((ITopicMap) context, (String) params[0]);
 				}
+				throw new OperationSignatureException(context, paramType, params);
+			}
+			case NAME: {
+				if (context instanceof ITopic) {
+					/*
+					 * createName(String)
+					 */
+					if (params.length == 1 && params[0] instanceof String) {
+						return doCreateName((ITopic) context, (String) params[0]);
+					}
+					/*
+					 * createName(String, ITopic[])
+					 */
+					else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Topic[]) {
+						return doCreateName((ITopic) context, (String) params[0], convert((Topic[]) params[1]));
+					}
+					/*
+					 * createName(String, Collection<ITopic>)
+					 */
+					else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Collection<?>) {
+						return doCreateName((ITopic) context, (String) params[0], (Collection<ITopic>) params[1]);
+					}
+					/*
+					 * createName(ITopic, String)
+					 */
+					else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof String) {
+						return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1]);
+					}
 
-				/*
-				 * createName(ITopic,String, ITopic[])
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
-					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
+					/*
+					 * createName(ITopic,String, ITopic[])
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
+						return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
+					}
+					/*
+					 * createName(ITopic,String, Collection<ITopic>)
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
+						return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
+					}
 				}
-				/*
-				 * createName(ITopic,String, Collection<ITopic>)
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
-					return doCreateName((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
-				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case OCCURRENCE: {
-			if (context instanceof ITopic) {
-				/*
-				 * createOccurrence(ITopic,String)
-				 */
-				if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof String) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1]);
+			case OCCURRENCE: {
+				if (context instanceof ITopic) {
+					/*
+					 * createOccurrence(ITopic,String)
+					 */
+					if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof String) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1]);
+					}
+					/*
+					 * createOccurrence(ITopic,String)
+					 */
+					else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof ILocator) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1]);
+					}
+					/*
+					 * createOccurrence(ITopic,String, ILocator)
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2]);
+					}
+					/*
+					 * createOccurrence(ITopic,String, ITopic[])
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
+					}
+					/*
+					 * createOccurrence(ITopic,String, Collection<?>)
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
+					}
+					/*
+					 * createOccurrence(ITopic,Locator, ITopic[])
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
+					}
+					/*
+					 * createOccurrence(ITopic,Locator, Collection<?>)
+					 */
+					else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
+					}
+					/*
+					 * createOccurrence(ITopic, String, ILocator, ITopic[])
+					 */
+					else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator && params[3] instanceof Topic[]) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], convert((Topic[]) params[3]));
+					}
+					/*
+					 * createOccurrence(ITopic,String, ILocator, Collection<?>)
+					 */
+					else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator && params[3] instanceof Collection<?>) {
+						return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], (Collection<ITopic>) params[3]);
+					}
 				}
-				/*
-				 * createOccurrence(ITopic,String)
-				 */
-				else if (params.length == 2 && params[0] instanceof ITopic && params[1] instanceof ILocator) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1]);
-				}
-				/*
-				 * createOccurrence(ITopic,String, ILocator)
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2]);
-				}
-				/*
-				 * createOccurrence(ITopic,String, ITopic[])
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], convert((Topic[]) params[2]));
-				}
-				/*
-				 * createOccurrence(ITopic,String, Collection<?>)
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (Collection<ITopic>) params[2]);
-				}
-				/*
-				 * createOccurrence(ITopic,Locator, ITopic[])
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
-				}
-				/*
-				 * createOccurrence(ITopic,Locator, Collection<?>)
-				 */
-				else if (params.length == 3 && params[0] instanceof ITopic && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
-				}
-				/*
-				 * createOccurrence(ITopic, String, ILocator, ITopic[])
-				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
-						&& params[3] instanceof Topic[]) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], convert((Topic[]) params[3]));
-				}
-				/*
-				 * createOccurrence(ITopic,String, ILocator, Collection<?>)
-				 */
-				else if (params.length == 4 && params[0] instanceof ITopic && params[1] instanceof String && params[2] instanceof ILocator
-						&& params[3] instanceof Collection<?>) {
-					return doCreateOccurrence((ITopic) context, (ITopic) params[0], (String) params[1], (ILocator) params[2], (Collection<ITopic>) params[3]);
-				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case VARIANT: {
-			if (context instanceof IName) {
-				/*
-				 * createVariant(String,ITopic[])
-				 */
-				if (params.length == 2 && params[0] instanceof String && params[1] instanceof Topic[]) {
-					return doCreateVariant((IName) context, (String) params[0], convert((Topic[]) params[1]));
+			case VARIANT: {
+				if (context instanceof IName) {
+					/*
+					 * createVariant(String,ITopic[])
+					 */
+					if (params.length == 2 && params[0] instanceof String && params[1] instanceof Topic[]) {
+						return doCreateVariant((IName) context, (String) params[0], convert((Topic[]) params[1]));
+					}
+					/*
+					 * createVariant(String,Collection<?>)
+					 */
+					else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Collection<?>) {
+						return doCreateVariant((IName) context, (String) params[0], (Collection<ITopic>) params[1]);
+					}
+					/*
+					 * createVariant(ILocator,ITopic[])
+					 */
+					else if (params.length == 2 && params[0] instanceof ILocator && params[1] instanceof Topic[]) {
+						return doCreateVariant((IName) context, (ILocator) params[0], convert((Topic[]) params[1]));
+					}
+					/*
+					 * createVariant(ILocator,Collection<?>)
+					 */
+					else if (params.length == 2 && params[0] instanceof ILocator && params[1] instanceof Collection<?>) {
+						return doCreateVariant((IName) context, (ILocator) params[0], (Collection<ITopic>) params[1]);
+					}
+					/*
+					 * createVariant(String, ILocator,ITopic[])
+					 */
+					else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
+						return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
+					}
+					/*
+					 * createVariant(String, ILocator,Collection<?>)
+					 */
+					else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
+						return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
+					}
 				}
-				/*
-				 * createVariant(String,Collection<?>)
-				 */
-				else if (params.length == 2 && params[0] instanceof String && params[1] instanceof Collection<?>) {
-					return doCreateVariant((IName) context, (String) params[0], (Collection<ITopic>) params[1]);
-				}
-				/*
-				 * createVariant(ILocator,ITopic[])
-				 */
-				else if (params.length == 2 && params[0] instanceof ILocator && params[1] instanceof Topic[]) {
-					return doCreateVariant((IName) context, (ILocator) params[0], convert((Topic[]) params[1]));
-				}
-				/*
-				 * createVariant(ILocator,Collection<?>)
-				 */
-				else if (params.length == 2 && params[0] instanceof ILocator && params[1] instanceof Collection<?>) {
-					return doCreateVariant((IName) context, (ILocator) params[0], (Collection<ITopic>) params[1]);
-				}
-				/*
-				 * createVariant(String, ILocator,ITopic[])
-				 */
-				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Topic[]) {
-					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], convert((Topic[]) params[2]));
-				}
-				/*
-				 * createVariant(String, ILocator,Collection<?>)
-				 */
-				else if (params.length == 3 && params[0] instanceof String && params[1] instanceof ILocator && params[2] instanceof Collection<?>) {
-					return doCreateVariant((IName) context, (String) params[0], (ILocator) params[1], (Collection<ITopic>) params[2]);
-				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case ROLE: {
-			if (context instanceof IAssociation && params.length == 2 && params[0] instanceof ITopic && params[1] instanceof ITopic) {
-				return doCreateRole((IAssociation) context, (ITopic) params[0], (ITopic) params[1]);
+			case ROLE: {
+				if (context instanceof IAssociation && params.length == 2 && params[0] instanceof ITopic && params[1] instanceof ITopic) {
+					return doCreateRole((IAssociation) context, (ITopic) params[0], (ITopic) params[1]);
+				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case TOPIC: {
-			if (context instanceof ITopicMap) {
-				long time = System.currentTimeMillis();
-				ILocator ii = doCreateItemIdentifier((ITopicMap) context);
-				if (OUTPUT)
-					System.out.println("doCreateItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
-				time = System.currentTimeMillis();
-				ITopic topic = doCreateTopicByItemIdentifier((ITopicMap) context, ii);
-				if (OUTPUT)
-					System.out.println("doCreateTopicByItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
-				return topic;
+			case TOPIC: {
+				if (context instanceof ITopicMap) {
+					long time = System.currentTimeMillis();
+					ILocator ii = doCreateItemIdentifier((ITopicMap) context);
+					if (OUTPUT)
+						System.out.println("doCreateItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
+					time = System.currentTimeMillis();
+					ITopic topic = doCreateTopicByItemIdentifier((ITopicMap) context, ii);
+					if (OUTPUT)
+						System.out.println("doCreateTopicByItemIdentifier" + (System.currentTimeMillis() - time) + " ms");
+					return topic;
+				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
-		case SCOPE: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof Collection<?>) {
-				return doCreateScope((ITopicMap) context, (Collection<ITopic>) params[0]);
+			case SCOPE: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof Collection<?>) {
+					return doCreateScope((ITopicMap) context, (Collection<ITopic>) params[0]);
+				}
+				throw new OperationSignatureException(context, paramType, params);
 			}
-			throw new OperationSignatureException(context, paramType, params);
-		}
 		}
 		throw new OperationSignatureException(context, paramType, params);
 	}
@@ -509,8 +507,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */
-	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes)
-			throws TopicMapStoreException;
+	protected abstract IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException;
 
 	/**
 	 * Create a new association role item.
@@ -640,122 +637,122 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		}
 		((TopicMapStoreMetaDataImpl) getMetaData()).setModificationTime();
 		switch (paramType) {
-		case ITEM_IDENTIFIER: {
-			if (params.length == 1 && params[0] instanceof ILocator) {
-				ITopic other = checkMergeConditionOfItemIdentifier(context, (ILocator) params[0]);
-				if (other != null) {
-					doMerge(context, other);
+			case ITEM_IDENTIFIER: {
+				if (params.length == 1 && params[0] instanceof ILocator) {
+					ITopic other = checkMergeConditionOfItemIdentifier(context, (ILocator) params[0]);
+					if (other != null) {
+						doMerge(context, other);
+					}
+					doModifyItemIdentifier(context, (ILocator) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
 				}
-				doModifyItemIdentifier(context, (ILocator) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
 			}
-		}
-			break;
-		case PLAYER: {
-			if (context instanceof IAssociationRole && params.length == 1 && params[0] instanceof ITopic) {
-				doModifyPlayer((IAssociationRole) context, (ITopic) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case REIFICATION: {
-			if (context instanceof IReifiable && params.length == 1 && params[0] instanceof ITopic) {
-				checkReificationConstraintBeforeModification((IReifiable) context, (ITopic) params[0]);
-				doModifyReifier((IReifiable) context, (ITopic) params[0]);
-			} else if (context instanceof IReifiable && params.length == 1 && params[0] == null) {
-				doModifyReifier((IReifiable) context, null);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case SCOPE: {
-			if (context instanceof IScopable && params.length == 1 && params[0] instanceof ITopic) {
-				doModifyScope((IScopable) context, (ITopic) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case SUBJECT_IDENTIFIER: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				ITopic other = checkMergeConditionOfSubjectIdentifier((ITopic) context, (ILocator) params[0]);
-				if (other != null) {
-					doMerge(context, other);
+				break;
+			case PLAYER: {
+				if (context instanceof IAssociationRole && params.length == 1 && params[0] instanceof ITopic) {
+					doModifyPlayer((IAssociationRole) context, (ITopic) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
 				}
-				doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
 			}
-		}
-			break;
-		case SUBJECT_LOCATOR: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				ITopic other = checkMergeConditionOfSubjectLocator((ITopic) context, (ILocator) params[0]);
-				if (other != null) {
-					doMerge(context, other);
+				break;
+			case REIFICATION: {
+				if (context instanceof IReifiable && params.length == 1 && params[0] instanceof ITopic) {
+					checkReificationConstraintBeforeModification((IReifiable) context, (ITopic) params[0]);
+					doModifyReifier((IReifiable) context, (ITopic) params[0]);
+				} else if (context instanceof IReifiable && params.length == 1 && params[0] == null) {
+					doModifyReifier((IReifiable) context, null);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
 				}
-				doModifySubjectLocator((ITopic) context, (ILocator) params[0]);
-			} else {
+			}
+				break;
+			case SCOPE: {
+				if (context instanceof IScopable && params.length == 1 && params[0] instanceof ITopic) {
+					doModifyScope((IScopable) context, (ITopic) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case SUBJECT_IDENTIFIER: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
+					ITopic other = checkMergeConditionOfSubjectIdentifier((ITopic) context, (ILocator) params[0]);
+					if (other != null) {
+						doMerge(context, other);
+					}
+					doModifySubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case SUBJECT_LOCATOR: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
+					ITopic other = checkMergeConditionOfSubjectLocator((ITopic) context, (ILocator) params[0]);
+					if (other != null) {
+						doMerge(context, other);
+					}
+					doModifySubjectLocator((ITopic) context, (ILocator) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case SUPERTYPE: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
+					doModifySupertype((ITopic) context, (ITopic) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case TAG: {
+				if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
+					doModifyTag((ITopicMap) context, (String) params[0]);
+				} else if (context instanceof ITopicMap && params.length == 2 && params[0] instanceof String && params[1] instanceof Calendar) {
+					doModifyTag((ITopicMap) context, (String) params[0], (Calendar) params[1]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case TYPE: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
+					doModifyTopicType((ITopic) context, (ITopic) params[0]);
+				} else if (context instanceof ITypeable && params.length == 1 && params[0] instanceof ITopic) {
+					doModifyType((ITypeable) context, (ITopic) params[0]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case VALUE: {
+				if (context instanceof IName && params.length == 1 && params[0] instanceof String) {
+					doModifyValue((IName) context, (String) params[0]);
+				} else if (context instanceof IDatatypeAware && params.length == 1 && params[0] instanceof String) {
+					doModifyValue((IDatatypeAware) context, (String) params[0]);
+				} else if (context instanceof IDatatypeAware && params.length == 1) {
+					doModifyValue((IDatatypeAware) context, params[0]);
+				} else if (context instanceof IDatatypeAware && params.length == 2 && params[0] instanceof String && params[1] instanceof ILocator) {
+					doModifyValue((IDatatypeAware) context, (String) params[0], (ILocator) params[1]);
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			case META_DATA: {
+				if (context == null && params.length == 3 && params[0] instanceof IRevision && params[1] instanceof String && params[2] instanceof String) {
+					doModifyMetaData((IRevision) params[0], params[1].toString(), params[2].toString());
+				} else {
+					throw new OperationSignatureException(context, paramType, params);
+				}
+			}
+				break;
+			default: {
 				throw new OperationSignatureException(context, paramType, params);
 			}
-		}
-			break;
-		case SUPERTYPE: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				doModifySupertype((ITopic) context, (ITopic) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case TAG: {
-			if (context instanceof ITopicMap && params.length == 1 && params[0] instanceof String) {
-				doModifyTag((ITopicMap) context, (String) params[0]);
-			} else if (context instanceof ITopicMap && params.length == 2 && params[0] instanceof String && params[1] instanceof Calendar) {
-				doModifyTag((ITopicMap) context, (String) params[0], (Calendar) params[1]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case TYPE: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				doModifyTopicType((ITopic) context, (ITopic) params[0]);
-			} else if (context instanceof ITypeable && params.length == 1 && params[0] instanceof ITopic) {
-				doModifyType((ITypeable) context, (ITopic) params[0]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case VALUE: {
-			if (context instanceof IName && params.length == 1 && params[0] instanceof String) {
-				doModifyValue((IName) context, (String) params[0]);
-			} else if (context instanceof IDatatypeAware && params.length == 1 && params[0] instanceof String) {
-				doModifyValue((IDatatypeAware) context, (String) params[0]);
-			} else if (context instanceof IDatatypeAware && params.length == 1) {
-				doModifyValue((IDatatypeAware) context, params[0]);
-			} else if (context instanceof IDatatypeAware && params.length == 2 && params[0] instanceof String && params[1] instanceof ILocator) {
-				doModifyValue((IDatatypeAware) context, (String) params[0], (ILocator) params[1]);
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		case META_DATA: {
-			if (context == null && params.length == 3 && params[0] instanceof IRevision && params[1] instanceof String && params[2] instanceof String) {
-				doModifyMetaData((IRevision) params[0], params[1].toString(), params[2].toString());
-			} else {
-				throw new OperationSignatureException(context, paramType, params);
-			}
-		}
-			break;
-		default: {
-			throw new OperationSignatureException(context, paramType, params);
-		}
 		}
 
 	}
@@ -1265,45 +1262,45 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 		}
 		((TopicMapStoreMetaDataImpl) getMetaData()).setModificationTime();
 		switch (paramType) {
-		case ITEM_IDENTIFIER: {
-			if (context instanceof IConstruct && params.length == 1 && params[0] instanceof ILocator) {
-				doRemoveItemIdentifier(context, (ILocator) params[0]);
+			case ITEM_IDENTIFIER: {
+				if (context instanceof IConstruct && params.length == 1 && params[0] instanceof ILocator) {
+					doRemoveItemIdentifier(context, (ILocator) params[0]);
+				}
 			}
-		}
-			break;
-		case SCOPE: {
-			if (context instanceof IScopable && params.length == 1 && params[0] instanceof ITopic) {
-				doRemoveScope((IScopable) context, (ITopic) params[0]);
+				break;
+			case SCOPE: {
+				if (context instanceof IScopable && params.length == 1 && params[0] instanceof ITopic) {
+					doRemoveScope((IScopable) context, (ITopic) params[0]);
+				}
 			}
-		}
-			break;
-		case SUBJECT_IDENTIFIER: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				doRemoveSubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				break;
+			case SUBJECT_IDENTIFIER: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
+					doRemoveSubjectIdentifier((ITopic) context, (ILocator) params[0]);
+				}
 			}
-		}
-			break;
-		case SUBJECT_LOCATOR: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
-				doRemoveSubjectLocator((ITopic) context, (ILocator) params[0]);
+				break;
+			case SUBJECT_LOCATOR: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ILocator) {
+					doRemoveSubjectLocator((ITopic) context, (ILocator) params[0]);
+				}
 			}
-		}
-			break;
-		case SUPERTYPE: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				doRemoveSupertype((ITopic) context, (ITopic) params[0]);
+				break;
+			case SUPERTYPE: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
+					doRemoveSupertype((ITopic) context, (ITopic) params[0]);
+				}
 			}
-		}
-			break;
-		case TYPE: {
-			if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
-				doRemoveType((ITopic) context, (ITopic) params[0]);
+				break;
+			case TYPE: {
+				if (context instanceof ITopic && params.length == 1 && params[0] instanceof ITopic) {
+					doRemoveType((ITopic) context, (ITopic) params[0]);
+				}
 			}
-		}
-			break;
-		default: {
-			throw new OperationSignatureException(context, paramType, params);
-		}
+				break;
+			default: {
+				throw new OperationSignatureException(context, paramType, params);
+			}
 		}
 	}
 
@@ -1576,7 +1573,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * 
 	 * @param topic
 	 *            the topic
-	 * @return <code>true</code> if the topic is used as reifier and reification is restricted for deletion, <code>false</code> otherwise
+	 * @return <code>true</code> if the topic is used as reifier and reification is restricted for deletion,
+	 *         <code>false</code> otherwise
 	 */
 	protected boolean isTopicUsedAsReifier(final ITopic topic) {
 		/*
@@ -1676,7 +1674,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	// *******************
 
 	/**
-	 * Create the specific association of the topic maps data model representing a type-instance relation between the given topics.
+	 * Create the specific association of the topic maps data model representing a type-instance relation between the
+	 * given topics.
 	 * 
 	 * @param instance
 	 *            the instance
@@ -1690,7 +1689,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	}
 
 	/**
-	 * Create the specific association of the topic maps data model representing a supertype-subtype relation between the given topics.
+	 * Create the specific association of the topic maps data model representing a supertype-subtype relation between
+	 * the given topics.
 	 * 
 	 * @param type
 	 *            the type
@@ -1762,7 +1762,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TYPE_INSTANCE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1778,7 +1778,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1794,7 +1794,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.INSTANCE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1810,7 +1810,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1826,7 +1826,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUPERTYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1842,7 +1842,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public ITopic getTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUBTYPE);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1859,7 +1859,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @since 1.1.2
 	 */
 	public ITopic getTmdmDefaultNameType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		ITopic topic = doReadTopicBySubjectIdentifier(getTopicMap(), loc);
 		if (topic == null) {
 			topic = doCreateTopicBySubjectIdentifier(getTopicMap(), loc);
@@ -1875,7 +1875,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmTypeInstanceAssociationType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_INSTANCE_ASSOCIATION);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TYPE_INSTANCE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1887,7 +1887,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmTypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_TYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1899,7 +1899,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmInstanceRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_INSTANCE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.INSTANCE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1911,7 +1911,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSupertypeSubtypeAssociationType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_SUBTYPE_ASSOCIATION);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUPERTYPE_SUBTYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1923,7 +1923,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSupertypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUPERTYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUPERTYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1935,7 +1935,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 *             thrown if operation fails
 	 */
 	public boolean existsTmdmSubtypeRoleType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_SUBTYPE_ROLE_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.SUBTYPE);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 
@@ -1948,7 +1948,7 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @since 1.1.2
 	 */
 	public boolean existsTmdmDefaultNameType() throws TopicMapStoreException {
-		ILocator loc = doCreateLocator(getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		return doReadTopicBySubjectIdentifier(getTopicMap(), loc) != null;
 	}
 

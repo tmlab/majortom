@@ -279,8 +279,7 @@ public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 	 */
 	public String toString() {
 		Topic type = getType();
-		return "Topic-Name{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Type:" + (type == null ? "null" : type.toString())
-				+ ";Value:" + getValue() + "}";
+		return "Topic-Name{Parent:" + (getParent() == null ? "null" : getParent().toString()) + ";Type:" + (type == null ? "null" : type.toString()) + ";Value:" + getValue() + "}";
 	}
 
 	/**
@@ -304,7 +303,7 @@ public class NameImpl extends ScopeableImpl implements IName, IPagedName {
 		}
 		return index.getVariants(this, offset, limit, comparator);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

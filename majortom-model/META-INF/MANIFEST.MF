@@ -15,17 +15,17 @@ Export-Package: de.topicmapslab.majortom.model.store;uses:="de.topicma
  .transaction",de.topicmapslab.majortom.model.transaction;uses:="de.to
  picmapslab.majortom.model.exception,de.topicmapslab.majortom.model.co
  re,de.topicmapslab.majortom.model.store",de.topicmapslab.majortom.mod
- el.index;uses:="org.tmapi.core,org.tmapi.index,de.topicmapslab.majort
- om.model.core,de.topicmapslab.majortom.model.revision,de.topicmapslab
- .majortom.model.exception"
+ el.namespace,de.topicmapslab.majortom.model.index;uses:="org.tmapi.co
+ re,org.tmapi.index,de.topicmapslab.majortom.model.core,de.topicmapsla
+ b.majortom.model.revision,de.topicmapslab.majortom.model.exception"
 Bundle-ActivationPolicy: lazy
 Tool: Bnd-1.15.0
 Bundle-Name: MajorToM Model
 Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype
-Bundle-Version: 1.2.0.201102071002
-Bnd-LastModified: 1297069417002
+Bundle-Version: 1.2.0.201102071443
+Bnd-LastModified: 1297086302361
 Bundle-ManifestVersion: 2
 Import-Package: org.tmapi.core;version="2.0.3",org.tmapi.index;version
  ="2.0.3"

@@ -71,13 +71,12 @@ import de.topicmapslab.majortom.model.core.ITypeable;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
 import de.topicmapslab.majortom.model.exception.TopicMapStoreException;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.Changeset;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.revision.RevisionImpl;
 import de.topicmapslab.majortom.util.HashUtil;
-import de.topicmapslab.majortom.util.TmdmSubjectIdentifier;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -117,8 +116,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes)
-			throws SQLException {
+	public IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws SQLException {
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateAssociationWithScope();
 		long topicMapId = Long.parseLong(topicMap.getId());
@@ -160,7 +158,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IName doCreateName(ITopic topic, String value) throws SQLException {
-		ILocator loc = doCreateLocator(topic.getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(topic.getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		ITopic type = doReadTopicBySubjectIdentifier(topic.getTopicMap(), loc);
 		if (type == null) {
 			type = doCreateTopicBySubjectIdentifier(topic.getTopicMap(), loc);
@@ -172,7 +170,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IName doCreateName(ITopic topic, String value, Collection<ITopic> themes) throws SQLException {
-		ILocator loc = doCreateLocator(topic.getTopicMap(), TmdmSubjectIdentifier.TMDM_DEFAULT_NAME_TYPE);
+		ILocator loc = doCreateLocator(topic.getTopicMap(), Namespaces.TMDM.TOPIC_NAME);
 		ITopic type = doReadTopicBySubjectIdentifier(topic.getTopicMap(), loc);
 		if (type == null) {
 			type = doCreateTopicBySubjectIdentifier(topic.getTopicMap(), loc);
@@ -214,14 +212,14 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value) throws SQLException {
-		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+		doCreateLocator(topic.getTopicMap(), Namespaces.XSD.STRING);
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topic.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value);
-		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(5, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -229,9 +227,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes)
-			throws SQLException {
-		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), Namespaces.XSD.STRING);
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
@@ -240,7 +237,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value);
 		stmt.setLong(5, Long.parseLong(scope.getId()));
-		stmt.setString(6, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(6, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -249,14 +246,14 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value) throws SQLException {
-		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+		doCreateLocator(topic.getTopicMap(), Namespaces.XSD.ANYURI);
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(topic.getId()));
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value.getReference());
-		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(5, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -264,9 +261,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes)
-			throws SQLException {
-		doCreateLocator(topic.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, ILocator value, Collection<ITopic> themes) throws SQLException {
+		doCreateLocator(topic.getTopicMap(), Namespaces.XSD.ANYURI);
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrenceWithScope();
@@ -275,7 +271,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		stmt.setLong(3, Long.parseLong(type.getId()));
 		stmt.setString(4, value.getReference());
 		stmt.setLong(5, Long.parseLong(scope.getId()));
-		stmt.setString(6, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(6, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toOccurrence(topic, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -283,8 +279,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype)
-			throws SQLException {
+	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype) throws SQLException {
 		doCreateLocator(topic.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = topic.getTopicMap();
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateOccurrence();
@@ -300,8 +295,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype,
-			Collection<ITopic> themes) throws SQLException {
+	public IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws SQLException {
 		doCreateLocator(topic.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = topic.getTopicMap();
 		IScope scope = doCreateScope(topicMap, themes);
@@ -536,7 +530,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IVariant doCreateVariant(IName name, String value, Collection<ITopic> themes) throws SQLException {
-		doCreateLocator(name.getTopicMap(), XmlSchemeDatatypes.XSD_STRING);
+		doCreateLocator(name.getTopicMap(), Namespaces.XSD.STRING);
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
@@ -544,7 +538,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.setString(3, value);
 		stmt.setLong(4, Long.parseLong(scope.getId()));
-		stmt.setString(5, XmlSchemeDatatypes.XSD_STRING);
+		stmt.setString(5, Namespaces.XSD.STRING);
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -553,7 +547,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public IVariant doCreateVariant(IName name, ILocator value, Collection<ITopic> themes) throws SQLException {
-		doCreateLocator(name.getTopicMap(), XmlSchemeDatatypes.XSD_ANYURI);
+		doCreateLocator(name.getTopicMap(), Namespaces.XSD.ANYURI);
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateVariant();
@@ -561,7 +555,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		stmt.setLong(2, Long.parseLong(name.getId()));
 		stmt.setString(3, value.getReference());
 		stmt.setLong(4, Long.parseLong(scope.getId()));
-		stmt.setString(5, XmlSchemeDatatypes.XSD_ANYURI);
+		stmt.setString(5, Namespaces.XSD.ANYURI);
 		stmt.execute();
 		return Jdbc2Construct.toVariant(name, stmt.getGeneratedKeys(), "GENERATED_KEY");
 	}
@@ -569,8 +563,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes)
-			throws SQLException {
+	public IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws SQLException {
 		doCreateLocator(name.getTopicMap(), datatype.getReference());
 		ITopicMap topicMap = name.getTopicMap();
 		IScope scope = doCreateScope(name.getTopicMap(), themes);
@@ -1383,8 +1376,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> doReadRoles(IAssociation association, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociationRole> doReadRoles(IAssociation association, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryReadRoles(offset != -1);
 		stmt.setLong(1, Long.parseLong(association.getId()));
 		if (offset != -1) {
@@ -1630,8 +1622,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveAssociation(IAssociation association, boolean cascade) throws SQLException {
-		doRemoveAssociation(association, cascade,
-				getSession().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
+		doRemoveAssociation(association, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.ASSOCIATION_REMOVED));
 		return true;
 	}
 
@@ -1669,13 +1660,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED,
-				association.getTopicMap(), null, association);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, association.getTopicMap(), null, association);
 		/*
 		 * store history
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED,
-				association.getTopicMap(), null, association);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, association.getTopicMap(), null, association);
 	}
 
 	/**
@@ -1742,16 +1731,14 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * store history
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null,
-				name);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.NAME_REMOVED, name.getParent(), null, name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException {
-		doRemoveOccurrence(occurrence, cascade,
-				getSession().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
+		doRemoveOccurrence(occurrence, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.OCCURRENCE_ADDED));
 		return true;
 	}
 
@@ -1788,13 +1775,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(),
-				null, occurrence);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(), null, occurrence);
 		/*
 		 * store history
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED,
-				occurrence.getParent(), null, occurrence);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, occurrence.getParent(), null, occurrence);
 	}
 
 	/**
@@ -1842,8 +1827,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * store history
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null,
-				role);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.ROLE_REMOVED, role.getParent(), null, role);
 	}
 
 	/**
@@ -2044,13 +2028,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null,
-				topic);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
 		/*
 		 * store revision
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(),
-				null, topic);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, topic.getTopicMap(), null, topic);
 	}
 
 	/**
@@ -2095,8 +2077,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public boolean doRemoveVariant(IVariant variant, boolean cascade) throws SQLException {
-		doRemoveVariant(variant, cascade,
-				getSession().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
+		doRemoveVariant(variant, cascade, getSession().getTopicMapStore().createRevision(TopicMapEventType.VARIANT_REMOVED));
 		return true;
 	}
 
@@ -2121,13 +2102,11 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 		/*
 		 * notify listener
 		 */
-		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null,
-				variant);
+		getSession().getTopicMapStore().notifyListeners(TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null, variant);
 		/*
 		 * store history
 		 */
-		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, variant.getParent(),
-				null, variant);
+		getSession().getTopicMapStore().storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, variant.getParent(), null, variant);
 	}
 
 	// ****************
@@ -2322,8 +2301,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset,
-			long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypes(Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectAssociationsByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
@@ -2343,8 +2321,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByType(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ICharacteristics> getCharacteristicsByType(ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByType(offset != -1);
 		stmt.setLong(1, Long.parseLong(type.getId()));
 		stmt.setLong(2, Long.parseLong(type.getId()));
@@ -2359,8 +2336,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypes(Collection<T> types, long offset,
-			long limit) throws SQLException {
+	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypes(Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByTypes(offset != -1);
 		Long ids[] = new Long[types.size()];
 		int n = 0;
@@ -2396,8 +2372,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit)
-			throws SQLException {
+	public <T extends Topic> Collection<IName> getNamesByTypes(Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectNamesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
@@ -2432,8 +2407,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit)
-			throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypes(Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
@@ -2468,8 +2442,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit)
-			throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypes(Collection<T> types, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectRolesByTypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(getSession().getTopicMapStore().getTopicMap().getId()));
 		Long ids[] = new Long[types.size()];
@@ -2489,8 +2462,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all, long offset,
-			long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypes(Collection<T> types, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsByTypes(types.size(), all, offset != -1);
 		ITopicMap topicMap = null;
 		int n = 2;
@@ -2515,10 +2487,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit)
-			throws SQLException {
-		PreparedStatement stmt = getQueryBuilder()
-				.getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
+	public <T extends Topic> Collection<ITopic> getTopicsByType(ITopicMap topicMap, T type, long offset, long limit) throws SQLException {
+		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsByTypes(type == null ? 0 : 1, true, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		if (type != null) {
 			stmt.setLong(2, Long.parseLong(type.getId()));
@@ -2540,8 +2510,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociation> getAssociationsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create association set and add associations directly typed by the given type
 		 */
@@ -2577,8 +2546,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociation> getAssociationsByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create association set
 		 */
@@ -2614,8 +2582,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ICharacteristics> getCharacteristicsByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create characteristics set and add characteristics directly typed by the given type
 		 */
@@ -2651,8 +2618,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypesTransitive(Collection<T> types,
-			long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ICharacteristics> getCharacteristicsByTypesTransitive(Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create characteristics set
 		 */
@@ -2724,8 +2690,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types,
-			long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IName> getNamesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create name set
 		 */
@@ -2761,8 +2726,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create occurrence set and add occurrences directly typed by the given type
 		 */
@@ -2798,8 +2762,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IOccurrence> getOccurrencesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create occurrences set
 		 */
@@ -2835,8 +2798,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociationRole> getRolesByTypeTransitive(ITopic type, long offset, long limit) throws SQLException {
 		/*
 		 * create role set and add roles directly typed by the given type
 		 */
@@ -2872,8 +2834,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap,
-			Collection<T> types, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<IAssociationRole> getRolesByTypeTransitive(ITopicMap topicMap, Collection<T> types, long offset, long limit) throws SQLException {
 		/*
 		 * create roles set
 		 */
@@ -2945,8 +2906,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types,
-			boolean all, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getTopicsByTypesTransitive(ITopicMap topicMap, Collection<T> types, boolean all, long offset, long limit) throws SQLException {
 		/*
 		 * flag indicates first iteration
 		 */
@@ -2993,8 +2953,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes,
-			boolean all) throws SQLException {
+	public <T extends Topic> Collection<IScope> getScopesByThemes(final ITopicMap topicMap, Collection<T> themes, boolean all) throws SQLException {
 		Collection<IScope> scopes = HashUtil.getHashSet();
 		if (themes.isEmpty()) {
 			PreparedStatement stmt = getQueryBuilder().getQueryReadEmptyScope();
@@ -3061,8 +3020,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociation> getAssociationsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -3077,8 +3035,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset,
-			long limit) throws SQLException {
+	public Collection<IAssociation> getAssociationsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -3104,8 +3061,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit)
-			throws SQLException {
+	public Collection<IAssociation> getAssociationsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		/*
 		 * require empty scope
 		 */
@@ -3131,8 +3087,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all,
-			long offset, long limit) throws SQLException {
+	public Collection<IAssociation> getAssociationsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryAssociationsByThemes(all, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[themes.length];
@@ -3193,8 +3148,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByScope(ITopicMap topicMap, IScope scope, long offset,
-			long limit) throws SQLException {
+	public Collection<ICharacteristics> getCharacteristicsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryCharacteristicsByScope(offset != -1);
 		long scopeId = Long.parseLong(scope.getId());
 		stmt.setLong(1, scopeId);
@@ -3210,8 +3164,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
-			throws SQLException {
+	public Collection<IName> getNamesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryNamesByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -3226,8 +3179,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit)
-			throws SQLException {
+	public Collection<IName> getNamesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -3253,8 +3205,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit)
-			throws SQLException {
+	public Collection<IName> getNamesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		/*
 		 * require empty scope
 		 */
@@ -3280,8 +3231,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit)
-			throws SQLException {
+	public Collection<IName> getNamesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryNamesByThemes(all, offset != -1);
 		Long ids[] = new Long[themes.length];
 		int n = 0;
@@ -3341,8 +3291,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
-			throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -3357,8 +3306,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset,
-			long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -3384,8 +3332,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit)
-			throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		/*
 		 * require empty scope
 		 */
@@ -3410,8 +3357,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset,
-			long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryOccurrencesByThemes(all, offset != -1);
 		Long ids[] = new Long[themes.length];
 		int n = 0;
@@ -3471,8 +3417,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IScopable> getScopables(ITopicMap topicMap, IScope scope, long offset, long limit)
-			throws SQLException {
+	public Collection<IScopable> getScopables(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryScopables(offset != -1);
 		long scopeId = Long.parseLong(scope.getId());
 		stmt.setLong(1, scopeId);
@@ -3489,8 +3434,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit)
-			throws SQLException {
+	public Collection<IVariant> getVariantsByScope(ITopicMap topicMap, IScope scope, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByScope(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setLong(2, Long.parseLong(scope.getId()));
@@ -3505,8 +3449,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset,
-			long limit) throws SQLException {
+	public Collection<IVariant> getVariantsByScopes(ITopicMap topicMap, Collection<IScope> scopes, long offset, long limit) throws SQLException {
 		/*
 		 * if no scope is specified return empty set
 		 */
@@ -3532,8 +3475,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit)
-			throws SQLException {
+	public Collection<IVariant> getVariantsByTheme(ITopicMap topicMap, Topic theme, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByTheme(offset != -1);
 		long themeId = Long.parseLong(theme.getId());
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
@@ -3550,8 +3492,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset,
-			long limit) throws SQLException {
+	public Collection<IVariant> getVariantsByThemes(ITopicMap topicMap, Topic[] themes, boolean all, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryVariantsByThemes(all, offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		Long ids[] = new Long[themes.length];
@@ -3621,9 +3562,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, String reference,
-			long offset, long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrences(topicMap, value, reference, offset, limit));
 			return col;
@@ -3646,8 +3586,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, long offset, long limit)
-			throws SQLException {
+	public Collection<ICharacteristics> getCharacteristics(ITopicMap topicMap, String value, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByValue(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
@@ -3665,9 +3604,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByDatatype(ITopicMap topicMap, String reference, long offset,
-			long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+	public Collection<ICharacteristics> getCharacteristicsByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrencesByDatatype(topicMap, reference, offset, limit));
 			return col;
@@ -3688,8 +3626,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, long offset,
-			long limit) throws SQLException {
+	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectCharacteristicsByPattern(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
@@ -3707,9 +3644,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, String reference,
-			long offset, long limit) throws SQLException {
-		if (!XmlSchemeDatatypes.XSD_STRING.equals(reference)) {
+	public Collection<ICharacteristics> getCharacteristicsByPattern(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
+		if (!Namespaces.XSD.STRING.equals(reference)) {
 			Collection<ICharacteristics> col = HashUtil.getList();
 			col.addAll(getOccurrencesByPattern(topicMap, value, reference));
 			return col;
@@ -3732,8 +3668,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IDatatypeAware> getDatatypeAwaresByDatatype(ITopicMap topicMap, String reference, long offset,
-			long limit) throws SQLException {
+	public Collection<IDatatypeAware> getDatatypeAwaresByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectDatatypeAwaresByDatatype(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		stmt.setLong(1, topicMapId);
@@ -3800,8 +3735,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper, long offset,
-			long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, Calendar lower, Calendar upper, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByDateRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setTimestamp(2, new Timestamp(lower.getTimeInMillis()));
@@ -3816,8 +3750,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance,
-			final String reference, long offset, long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, double value, double deviance, final String reference, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByRange(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
@@ -3844,8 +3777,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference, long offset,
-			long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrences(ITopicMap topicMap, String value, String reference, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByValueAndDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, value);
@@ -3861,8 +3793,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference, long offset,
-			long limit) throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByDatatype(ITopicMap topicMap, String reference, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByDatatype(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, reference);
@@ -3888,8 +3819,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern, String reference)
-			throws SQLException {
+	public Collection<IOccurrence> getOccurrencesByPattern(ITopicMap topicMap, String pattern, String reference) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectOccurrencesByPatternAndDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
@@ -3960,8 +3890,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IVariant> getVariantsByPattern(ITopicMap topicMap, String pattern, String reference)
-			throws SQLException {
+	public Collection<IVariant> getVariantsByPattern(ITopicMap topicMap, String pattern, String reference) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectVariantsByPatternAndDatatype();
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, pattern);
@@ -4015,8 +3944,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
-			throws SQLException {
+	public Collection<IConstruct> getConstructsByIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectConstructsByIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
@@ -4038,8 +3966,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset,
-			long limit) throws SQLException {
+	public Collection<IConstruct> getConstructsByItemIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectConstructsByItemIdentitifer(offset != -1);
 		long topicMapId = Long.parseLong(topicMap.getId());
 		String pattern = "^" + regExp + "$";
@@ -4061,8 +3988,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getTopicsBySubjectIdentitifer(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsBySubjectIdentitifer(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");
@@ -4076,8 +4002,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getTopicsBySubjectLocator(ITopicMap topicMap, String regExp, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectTopicsBySubjectLocator(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
 		stmt.setString(2, "^" + regExp + "$");
@@ -4093,8 +4018,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getDirectSubtypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSubtypes(offset != -1);
@@ -4113,8 +4037,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
@@ -4155,14 +4078,12 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
 				}
 			});
-			result = result.subList((int) offset,
-					(int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
 		}
 		return result;
 	}
 
-	private Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSubtypes)
-			throws SQLException {
+	private Collection<ITopic> getSubtypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSubtypes) throws SQLException {
 		/*
 		 * get sub-types of given topic
 		 */
@@ -4201,8 +4122,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll,
-			long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSubtypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		Collection<ITopic> topics = HashUtil.getHashSet();
 		boolean first = true;
 		for (T type : types) {
@@ -4223,8 +4143,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
 				}
 			});
-			result = result.subList((int) offset,
-					(int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
 		}
 		return result;
 	}
@@ -4232,8 +4151,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit)
-			throws SQLException {
+	public Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
 		if (type == null) {
 			PreparedStatement stmt = null;
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
@@ -4255,8 +4173,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
 				}
 			});
-			result = result.subList((int) offset,
-					(int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
 		}
 		return result;
 
@@ -4275,8 +4192,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * @throws SQLException
 	 *             thrown by JDBC
 	 */
-	private Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSupertypes)
-			throws SQLException {
+	private Collection<ITopic> getSupertypes(ITopicMap topicMap, ITopic type, Collection<ITopic> knownSupertypes) throws SQLException {
 		/*
 		 * get super-types of given topic
 		 */
@@ -4318,8 +4234,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types,
-			boolean matchAll, long offset, long limit) throws SQLException {
+	public <T extends Topic> Collection<ITopic> getSupertypes(ITopicMap topicMap, Collection<T> types, boolean matchAll, long offset, long limit) throws SQLException {
 		Collection<ITopic> topics = HashUtil.getHashSet();
 		boolean first = true;
 		for (T type : types) {
@@ -4340,8 +4255,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 					return (int) (Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
 				}
 			});
-			result = result.subList((int) offset,
-					(int) ((offset + limit < result.size()) ? offset + limit : result.size()));
+			result = result.subList((int) offset, (int) ((offset + limit < result.size()) ? offset + limit : result.size()));
 		}
 		return result;
 	}
@@ -4372,8 +4286,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue,
-			Object oldValue) throws SQLException {
+	public void doCreateChangeSet(IRevision revision, TopicMapEventType type, IConstruct notifier, Object newValue, Object oldValue) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQueryCreateChangeset();
 		stmt.setLong(1, revision.getId());
 		stmt.setString(2, type.name());
@@ -4772,8 +4685,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<TopicMapStoreParameterType, Object> doReadHistory(IConstruct c, TopicMapStoreParameterType... arguments)
-			throws SQLException {
+	public Map<TopicMapStoreParameterType, Object> doReadHistory(IConstruct c, TopicMapStoreParameterType... arguments) throws SQLException {
 		IConstruct c_ = doReadConstruct(c.getTopicMap(), Long.parseLong(c.getId()), false);
 		Map<TopicMapStoreParameterType, Object> results = HashUtil.getHashMap();
 		/*
@@ -4828,8 +4740,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<IName> set = HashUtil.getHashSet();
 							Array a = rs.getArray("names");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyName(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
+								set.add(new JdbcReadOnlyName(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory().newName(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
 						}
@@ -4838,8 +4749,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<IOccurrence> set = HashUtil.getHashSet();
 							Array a = rs.getArray("occurrences");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newOccurrence(new JdbcIdentity(id), (ITopic) c)));
+								set.add(new JdbcReadOnlyOccurrence(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
+										.newOccurrence(new JdbcIdentity(id), (ITopic) c)));
 							}
 							results.put(type, set);
 						}
@@ -4848,8 +4759,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<IVariant> set = HashUtil.getHashSet();
 							Array a = rs.getArray("variants");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyVariant(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
+								set.add(new JdbcReadOnlyVariant(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory().newVariant(new JdbcIdentity(id), (IName) c)));
 							}
 							results.put(type, set);
 						}
@@ -4858,8 +4768,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<IAssociation> set = HashUtil.getHashSet();
 							Array a = rs.getArray("associations");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newAssociation(new JdbcIdentity(id), c.getTopicMap())));
+								set.add(new JdbcReadOnlyAssociation(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
+										.newAssociation(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
 						}
@@ -4868,8 +4778,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("types");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
+										.newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
 						}
@@ -4878,8 +4788,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("supertypes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
+										.newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, set);
 						}
@@ -4888,15 +4798,15 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<IAssociationRole> set = HashUtil.getHashSet();
 							Array a = rs.getArray("roles");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory()
+								set.add(new JdbcReadOnlyAssociationRole(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 										.newAssociationRole(new JdbcIdentity(id), (IAssociation) c)));
 							}
 							results.put(type, set);
 						}
 							break;
 						case PLAYER: {
-							results.put(type,
+							results.put(
+									type,
 									new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
 											.newTopic(new JdbcIdentity(rs.getLong("id_player")), c.getTopicMap())));
 						}
@@ -4917,8 +4827,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 							Collection<ITopic> set = HashUtil.getHashSet();
 							Array a = rs.getArray("themes");
 							for (Long id : (Long[]) a.getArray()) {
-								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore()
-										.getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+								set.add(new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory()
+										.newTopic(new JdbcIdentity(id), c.getTopicMap())));
 							}
 							results.put(type, new ScopeImpl(Long.toString(rs.getLong("id_scope")), set));
 						}
@@ -4938,8 +4848,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 			/*
 			 * check if reification should be cleared
 			 */
-			if (results.containsKey(TopicMapStoreParameterType.REIFICATION)
-					&& results.get(TopicMapStoreParameterType.REIFICATION) != null) {
+			if (results.containsKey(TopicMapStoreParameterType.REIFICATION) && results.get(TopicMapStoreParameterType.REIFICATION) != null) {
 				Long id = (Long) results.get(TopicMapStoreParameterType.REIFICATION);
 				/*
 				 * a topic is calling -> reification value represents the reified construct
@@ -4956,8 +4865,8 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 				 * calling object is not a topic -> reification value represents the reifier topic
 				 */
 				else {
-					results.put(TopicMapStoreParameterType.REIFICATION, new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession()
-							.getTopicMapStore().getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
+					results.put(TopicMapStoreParameterType.REIFICATION,
+							new JdbcReadOnlyTopic(getSession().getConnectionProvider(), getSession().getTopicMapStore().getConstructFactory().newTopic(new JdbcIdentity(id), c.getTopicMap())));
 				}
 			}
 		}

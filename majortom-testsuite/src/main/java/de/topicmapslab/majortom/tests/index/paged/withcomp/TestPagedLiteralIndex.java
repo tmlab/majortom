@@ -41,8 +41,8 @@ import de.topicmapslab.majortom.model.core.IName;
 import de.topicmapslab.majortom.model.core.IOccurrence;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.index.paging.IPagedLiteralIndex;
+import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.tests.MaJorToMTestCase;
-import de.topicmapslab.majortom.util.XmlSchemeDatatypes;
 
 /**
  * @author Sven Krosse
@@ -171,7 +171,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		Locator value = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator value = createLocator(Namespaces.XSD.STRING);
 		ICharacteristics[] characteristics = new ICharacteristics[101];
 		String base = "http://psi.example.org/";
 		int j = 0;
@@ -226,7 +226,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		Locator value = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator value = createLocator(Namespaces.XSD.STRING);
 		ICharacteristics[] characteristics = new ICharacteristics[101];
 		String base = "http://psi.example.org/";
 		int j = 0;
@@ -336,7 +336,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		Locator value = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator value = createLocator(Namespaces.XSD.STRING);
 		ICharacteristics[] characteristics = new ICharacteristics[101];
 		String base = "http://psi.example.org/";
 		int j = 0;
@@ -450,7 +450,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 			index.open();
 		}
 
-		Locator value = createLocator(XmlSchemeDatatypes.XSD_STRING);
+		Locator value = createLocator(Namespaces.XSD.STRING);
 		ICharacteristics[] characteristics = new ICharacteristics[101];
 		String base = "http://psi.example.org/";
 		Pattern regexp = Pattern.compile(base + ".*");
@@ -562,7 +562,7 @@ public class TestPagedLiteralIndex extends MaJorToMTestCase {
 		} catch (Exception e) {
 			index.open();
 		}
-		Locator value = createLocator(XmlSchemeDatatypes.XSD_DOUBLE);
+		Locator value = createLocator(Namespaces.XSD.DOUBLE);
 		IDatatypeAware[] datatypeAwares = new IDatatypeAware[101];
 		String base = "http://psi.example.org/";
 		int j = 0;

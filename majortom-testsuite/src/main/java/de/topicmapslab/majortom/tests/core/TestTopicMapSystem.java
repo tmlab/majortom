@@ -1,7 +1,6 @@
 package de.topicmapslab.majortom.tests.core;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import junit.framework.Assert;
@@ -41,26 +40,26 @@ import de.topicmapslab.majortom.util.HashUtil;
 public class TestTopicMapSystem extends TestCase {
 
 	public void testTopicMapSystemFactory() throws Exception {
-		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();		
+		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
 		Assert.assertTrue(factory instanceof TopicMapSystemFactoryImpl);
 		TopicMapSystem system = factory.newTopicMapSystem();
 		Assert.assertTrue(system instanceof TopicMapSystemImpl);
 		TopicMap topicMap = system.createTopicMap("http://engine.topicmapslab.de/lalel33u/");
-		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));		
+		assertNotNull(factory.getProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS));
 		Assert.assertTrue(topicMap instanceof ITopicMap);
 	}
-	
+
 	public void testConcurrentCollectionFeature() throws Exception {
-		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();	
+		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
 		factory.setFeature(FeatureStrings.CONCURRENT_COLLECTIONS, true);
 		TopicMapSystem system = factory.newTopicMapSystem();
 		system.createTopicMap("http://engine.topicmapslab.de/lalel33u/");
 		assertEquals(CopyOnWriteArraySet.class, HashUtil.getHashSet().getClass());
 		assertEquals(ConcurrentHashMap.class, HashUtil.getHashMap().getClass());
 	}
-	
+
 	public void testConcurrentCollectionPropertyClass() throws Exception {
-		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();	
+		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
 		factory.setProperty(TopicMapStoreProperty.MAP_IMPLEMENTATION_CLASS, ConcurrentHashMap.class);
 		factory.setProperty(TopicMapStoreProperty.SET_IMPLEMENTATION_CLASS, CopyOnWriteArraySet.class);
 		TopicMapSystem system = factory.newTopicMapSystem();
@@ -68,9 +67,9 @@ public class TestTopicMapSystem extends TestCase {
 		assertEquals(CopyOnWriteArraySet.class, HashUtil.getHashSet().getClass());
 		assertEquals(ConcurrentHashMap.class, HashUtil.getHashMap().getClass());
 	}
-	
+
 	public void testConcurrentCollectionPropertyString() throws Exception {
-		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();	
+		TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
 		factory.setProperty(TopicMapStoreProperty.MAP_IMPLEMENTATION_CLASS, ConcurrentHashMap.class.getName());
 		factory.setProperty(TopicMapStoreProperty.SET_IMPLEMENTATION_CLASS, CopyOnWriteArraySet.class.getName());
 		TopicMapSystem system = factory.newTopicMapSystem();
