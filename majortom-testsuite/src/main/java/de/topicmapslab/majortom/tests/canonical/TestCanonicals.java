@@ -183,8 +183,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 		long time = System.currentTimeMillis();
 		topicMap.removeDuplicates();
 		System.out.println(" finised after " + (System.currentTimeMillis() - time) + "ms.");
-		assertEquals(4, topicMap.getAssociations().size());
-		assertEquals("reifier should be merged", size + 1, topicMap.getTopics().size());
+		assertEquals(4, topicMap.getAssociations().size());		
 		for (Association a : topicMap.getAssociations()) {
 			if (a.equals(a1) || a.equals(a2) || a.equals(a3)) {
 				continue;
@@ -193,7 +192,7 @@ public class TestCanonicals extends MaJorToMTestCase {
 			Role r = a.getRoles().iterator().next();
 			assertEquals("Role should have all item-identifiers!", associations.length * 10, r.getItemIdentifiers().size());
 		}
-
+		assertEquals("reifier should be merged", size + 1, topicMap.getTopics().size());
 	}
 
 	/**

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.store;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ import de.topicmapslab.majortom.model.index.ITypeInstanceIndex;
 import de.topicmapslab.majortom.model.namespace.Namespaces;
 import de.topicmapslab.majortom.model.revision.IRevision;
 import de.topicmapslab.majortom.model.store.ITopicMapStore;
+import de.topicmapslab.majortom.model.store.ITopicMapStoreIdentity;
 import de.topicmapslab.majortom.model.store.TopicMapStoreParameterType;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -791,8 +793,23 @@ public class MergeUtils {
 				ITopic newReifier = (ITopic) store.getTopicMap().createTopic();
 				doMerge(store, (ITopic) newReifier, (ITopic) reifier, revision);
 				doMerge(store, (ITopic) newReifier, (ITopic) reifierOfOther, revision);
-				((TopicImpl) reifier).getIdentity().setId(newReifier.longId());
-				((TopicImpl) reifierOfOther).getIdentity().setId(newReifier.longId());
+				ITopicMapStoreIdentity reifierIdent = ((TopicImpl) reifier).getIdentity();
+				ITopicMapStoreIdentity reifierOfOtherIdent = ((TopicImpl) reifierOfOther).getIdentity();
+				try {
+					reifierIdent.setId(newReifier.longId());
+					reifierOfOtherIdent.setId(newReifier.longId());
+				} catch (UnsupportedOperationException e) {
+					try {
+						/*
+						 * try to access a string method
+						 */
+						Method m = reifierIdent.getClass().getMethod("setId", String.class);
+						m.invoke(reifierIdent, newReifier.getId());
+						m.invoke(reifierOfOtherIdent, newReifier.getId());
+					} catch (Exception e2) {
+						throw new TopicMapStoreException("Cannot update topic identity", e);
+					}
+				}
 			}
 		}
 	}

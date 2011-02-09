@@ -69,8 +69,8 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 	 */
 	public TopicMapSystemFactoryImpl() {
 		features = HashUtil.getHashMap();
-		features.put(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, true);
-		features.put(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, true);
+		features.put(FeatureStrings.TOPIC_MAPS_TYPE_INSTANCE_ASSOCIATION, false);
+		features.put(FeatureStrings.TOPIC_MAPS_SUPERTYPE_SUBTYPE_ASSOCIATION, false);
 		features.put(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME, false);
 		features.put(FeatureStrings.AUTOMATIC_MERGING, true);
 		features.put(FeatureStrings.SUPPORT_HISTORY, false);

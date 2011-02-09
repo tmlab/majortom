@@ -29,6 +29,7 @@ import org.tmapi.core.Topic;
 import de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore;
 import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.ITopic;
+import de.topicmapslab.majortom.model.index.ISupertypeSubtypeIndex;
 import de.topicmapslab.majortom.model.index.ITransitiveTypeInstanceIndex;
 import de.topicmapslab.majortom.util.HashUtil;
 
@@ -46,7 +47,93 @@ public class InMemoryTransitiveTypeInstanceIndex extends InMemoryTypeInstanceInd
 	public InMemoryTransitiveTypeInstanceIndex(InMemoryTopicMapStore store) {
 		super(store);
 	}
+	
+	private ISupertypeSubtypeIndex getSupertypeSubtypeIndex(){
+		ISupertypeSubtypeIndex index = getTopicMapStore().getIndex(ISupertypeSubtypeIndex.class);
+		if ( !index.isOpen()){
+			index.open();
+		}
+		return index;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getAssociationTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getAssociationTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getAssociationTypes()));
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getOccurrenceTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getOccurrenceTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getOccurrenceTypes()));
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getNameTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getNameTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getNameTypes()));
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getTopicTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getTopicTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getTopicTypes()));
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getRoleTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getRoleTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getRoleTypes()));
+		return set;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<Topic> getCharacteristicTypes() {
+		if (!isOpen()) {
+			throw new TMAPIRuntimeException("Index is closed!");
+		}
+		Collection<Topic> set = HashUtil.getHashSet();
+		set.addAll(super.getCharacteristicTypes());
+		set.addAll(getSupertypeSubtypeIndex().getSupertypes(super.getCharacteristicTypes()));
+		return set;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
