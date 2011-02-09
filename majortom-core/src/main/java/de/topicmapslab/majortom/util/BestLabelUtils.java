@@ -148,7 +148,7 @@ public class BestLabelUtils {
 		/*
 		 * get all names of the topic
 		 */
-		Set<Name> names = topic.getNames();
+		Set<Name> names = HashUtil.getHashSet(topic.getNames());
 		if (!names.isEmpty()) {
 			return readBestName(topic, theme, names, strict);
 		}

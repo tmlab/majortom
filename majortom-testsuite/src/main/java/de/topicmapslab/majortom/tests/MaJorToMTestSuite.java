@@ -22,9 +22,6 @@ import de.topicmapslab.majortom.tests.canonical.CanonicalTestSuite;
 import de.topicmapslab.majortom.tests.core.CoreTestSuite;
 import de.topicmapslab.majortom.tests.event.EventTestSuite;
 import de.topicmapslab.majortom.tests.index.IndexTestSuite;
-import de.topicmapslab.majortom.tests.merge.MergeTestSuite;
-import de.topicmapslab.majortom.tests.revision.RevisionTestSuite;
-import de.topicmapslab.majortom.tests.transaction.TransactionSuite;
 
 /**
  * @author Sven Krosse
@@ -39,12 +36,12 @@ public class MaJorToMTestSuite {
 		suite.addTest(CoreTestSuite.suite());
 		suite.addTest(EventTestSuite.suite());
 		suite.addTest(IndexTestSuite.suite());
-		suite.addTest(MergeTestSuite.suite());
-		suite.addTest(RevisionTestSuite.suite());
-		suite.addTest(TransactionSuite.suite());
+		// suite.addTest(MergeTestSuite.suite());
+		// suite.addTest(RevisionTestSuite.suite());
+		// suite.addTest(TransactionSuite.suite());
 		suite.addTest(org.tmapi.AllTests.suite());
-//		suite.addTest(org.tmapi.core.AllCoreTests.suite());
-//		suite.addTest(org.tmapi.index.AllIndexTests.suite());
+		// suite.addTest(org.tmapi.core.AllCoreTests.suite());
+		// suite.addTest(org.tmapi.index.AllIndexTests.suite());
 		suite.addTest(CanonicalTestSuite.suite());
 		// $JUnit-END$
 		return suite;

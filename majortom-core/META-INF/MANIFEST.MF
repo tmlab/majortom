@@ -7,8 +7,8 @@ Export-Package: de.topicmapslab.majortom.revision.core;uses:="org.tmap
  "org.tmapi.core,de.topicmapslab.majortom.util,de.topicmapslab.majorto
  m.core,de.topicmapslab.majortom.store,org.tmapi.index,org.apache.comm
  ons.collections.bidimap",de.topicmapslab.majortom.store;uses:="org.tm
- api.index,de.topicmapslab.majortom.util,org.tmapi.core,de.topicmapsla
- b.majortom.core,de.topicmapslab.majortom.cache,de.topicmapslab.majort
+ api.core,de.topicmapslab.majortom.core,org.tmapi.index,de.topicmapsla
+ b.majortom.util,de.topicmapslab.majortom.cache,de.topicmapslab.majort
  om.osgi,cern.jet.random.engine",de.topicmapslab.majortom.core;uses:="
  org.tmapi.index,org.tmapi.core,de.topicmapslab.majortom.util,de.topic
  mapslab.majortom.store",de.topicmapslab.majortom.osgi;uses:="org.osgi
@@ -31,8 +31,8 @@ Bundle-Name: MajorToM Core
 Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.majortom.model,de.topicmapslab.geotype
-Bundle-Version: 1.2.0.201102071443
-Bnd-LastModified: 1297086357236
+Bundle-Version: 1.2.0.201102091344
+Bnd-LastModified: 1297255475470
 Bundle-ManifestVersion: 2
 Bundle-Activator: de.topicmapslab.majortom.osgi.MajorToMActivator
 Import-Package: cern.jet.random.engine,org.apache.commons.collections.
