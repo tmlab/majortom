@@ -118,7 +118,7 @@ The MaJorToM core comes with a set of useful comparator instances which can be u
 |VariantByValueComparator|A variant v1 is smaller than v2 if the value of v1 is lexicographically smaller than the value of v2.
 |==========================================
 
-=== Event Traging ===
+=== Event Tracking ===
 
 The MaJorToM engine provides an event management mechanism which enables the possibility of listening to each event or even special events of the topic map.
 
@@ -143,7 +143,7 @@ MyListener listener = new MyListener();
 topicMap.addTopicMapListener(listener );
 ---------------------------------------
 
-If an application wants to stp listening the listener can be unregistered, too.
+If an application wants to stop listening, the listener can be unregistered, too.
 
 ---------------------------------------
 topicMap.removeTopicMapListener(listener );
