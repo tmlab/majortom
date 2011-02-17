@@ -103,7 +103,7 @@ The set of supported features of each topic map store implementation can be diff
 |http://tmapi.org/features/type-instance-associations|If the feature is set, the topic maps engine creates an type-instance-association if the application calls the addType() method of a topic. The getTypes() method also includes all types specified by the type-instance-association if the feature is set|enabled|yes
 |http://tmapi.org/features/supertype-subtype-associations|If the feature is set, the topic maps engine creates an supertype-subtype-association if the application calls the addSupertype() method of a topic. The getSupertypes() method also includes all types specified by the supertype-subtypes-association if the feature is set|enabled|yes
 |http://tmapi.org/features/readOnly|If the feature is enabled, the topic map store does not support any write access.|depends on topic map store|no
-|de.topicmapslab.majortom.topicmapstore.history|If the feature is set, the topic map store save each modification of the topic map into the internal history.|enabled|yes
+|de.topicmapslab.majortom.topicmapstore.history|If the feature is set, the topic map store save each modification of the topic map into the internal history.|disabled|yes
 |de.topicmapslab.majortom.topicmapstore.transaction|If the feature is set, the topic map store, provides a in-memory transaction access to modify the topic map without effecting changes outside the transaction before commit.|depends on the topic map store|no
 |de.topicmapslab.majortom.constraints.deletion.reification|If the feature is set, the topic map store remove the reified construct if the reifier was removed by the application.|disabled|yes
 |==========================================
