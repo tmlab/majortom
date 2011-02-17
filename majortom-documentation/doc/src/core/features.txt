@@ -163,7 +163,7 @@ The MaJorToM event manager notifies each event to all registered listeners. Ther
 
 === History ===
 
-If the feature is enabled and supported by the topic map store, MaJorToM stores each modification of the underlying topic map in a revision management system. Each revision represents one atomic call of the MaJorToM API and contains at least one change. If the case of merging two topics, e.g. caused by adding a subject-identifier, the revision contains each atomic change caused by the merging process. The next example tries to clarify the meaning of that.
+If the feature is enabled (see 'de.topicmapslab.majortom.topicmapstore.history') and supported by the topic map store, MaJorToM stores each modification of the underlying topic map in a revision management system. Each revision represents one atomic call of the MaJorToM API and contains at least one change. If the case of merging two topics, e.g. caused by adding a subject-identifier, the revision contains each atomic change caused by the merging process. The next example tries to clarify the meaning of that.
 
 ---------------------------------------------
 #szenario definition
