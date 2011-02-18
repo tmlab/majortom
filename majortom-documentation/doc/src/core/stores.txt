@@ -64,7 +64,7 @@ After starting the application the (O)RDBMS topic map store checks if the databa
 
 === Redis Topic Map Store ===
 
-Since version 1.2.0, MaJorToM supports a generic topic map store using a redis backend. The Redis Store is the best combination of performance and persistency. Currently the redis does not supports any features of the API, in example the history management and the transaction are not supported yet.
+Since version 1.2.0, MaJorToM supports a generic topic map store using a redis backend. The Redis Store is the best combination of performance and persistency. Currently the redis does not supports any features of the API, in example the history management and the transaction are not supported yet. The schema of the redis store is documented http://docs.topicmapslab.de/majortom/redis.html[here]. 
 
 Please note, that a topic map store only supports one topic map instance for each topic map system.
 

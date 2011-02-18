@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Service-Component: OSGI-INF/redistopicmapstore.xml
+Export-Package: de.topicmapslab.majortom.redis.store;uses:="de.topicma
+ pslab.majortom.store,de.topicmapslab.majortom.redis.util,de.topicmaps
+ lab.majortom.redis.store.index.paged,org.tmapi.core,de.topicmapslab.m
+ ajortom.redis.store.index,org.tmapi.index",de.topicmapslab.majortom.r
+ edis.store.index.paged;uses:="de.topicmapslab.majortom.redis.store,de
+ .topicmapslab.majortom.redis.store.index",de.topicmapslab.majortom.re
+ dis.util,de.topicmapslab.majortom.redis.store.index;uses:="de.topicma
+ pslab.majortom.redis.store,org.tmapi.core,de.topicmapslab.majortom.re
+ dis.util,org.tmapi.index",de.topicmapslab.majortom.store
+Bundle-ActivationPolicy: lazy
+Tool: Bnd-1.15.0
+Bundle-Name: MajorToM Redis
+Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: de.topicmapslab.geotype;bundle-version="1.2.0",de.topi
+ cmapslab.majortom.core;bundle-version="1.2.0",de.topicmapslab.majorto
+ m.model;bundle-version="1.2.0"
+Bundle-Version: 1.2.0.201102160854
+Bnd-LastModified: 1297842893437
+Bundle-ManifestVersion: 2
+Import-Package: cern.jet.random.engine,javax.xml.parsers,org.apache.co
+ mmons.collections;version="[3.2,4)",org.apache.commons.collections.bi
+ dimap;version="3.2.1",org.osgi.framework;version="1.5.0",org.tmapi.co
+ re;version="2.0.3",org.tmapi.index;version="2.0.3",org.w3c.dom
+Bundle-SymbolicName: de.topicmapslab.majortom.redis
+Originally-Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+
