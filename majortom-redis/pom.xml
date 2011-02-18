@@ -128,7 +128,7 @@
 		<repository>
 			<id>topicmapslab-internal</id>
 			<name>Topic Maps Lab Repositiory</name>
-			<url>scp://atlantis.tm.informatik.uni-leipzig.de/disk/localhome/maven/webdir/maven.topicmapslab.de/public/internal</url>
+			<url>scp://atlantis.tm.informatik.uni-leipzig.de/disk/localhome/maven/webdir/maven.topicmapslab.de/public/public</url>
 		</repository>
 	</distributionManagement>
 </project>
