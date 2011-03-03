@@ -270,7 +270,9 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 			throw new IllegalArgumentException("Value cannot be null.");
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
+		Set<IDatatypeAware> datatypeAwares = HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME)));
+		datatypeAwares.addAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATE)));
+		for (IDatatypeAware datatypeAware : datatypeAwares){
 			try {
 				if (datatypeAware instanceof IOccurrence && datatypeAware.dateTimeValue().equals(value)) {
 					set.add((IOccurrence) datatypeAware);
@@ -300,7 +302,9 @@ public class InMemoryLiteralIndex extends CachedLiteralIndexImpl<InMemoryTopicMa
 				.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
 
 		Set<ICharacteristics> set = HashUtil.getHashSet();
-		for (IDatatypeAware datatypeAware : getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME))) {
+		Set<IDatatypeAware> datatypeAwares = HashUtil.getHashSet(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATETIME)));
+		datatypeAwares.addAll(getTopicMapStore().getCharacteristicsStore().getDatatypeAwares(getTopicMapStore().getIdentityStore().createLocator(Namespaces.XSD.DATE)));
+		for (IDatatypeAware datatypeAware : datatypeAwares){
 			try {
 				if (datatypeAware instanceof IOccurrence && LiteralUtils.inRange(datatypeAware.dateTimeValue(), value, deviance_)) {
 					set.add((IOccurrence) datatypeAware);

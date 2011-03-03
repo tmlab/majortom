@@ -351,6 +351,7 @@ public class JdbcPagedLiteralIndex extends PagedLiteralIndexImpl<JdbcTopicMapSto
 			List<ICharacteristics> list = HashUtil.getList();
 			ISession session = getTopicMapStore().openSession();
 			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATETIME), Namespaces.XSD.DATETIME, offset, limit));
+			list.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATE), Namespaces.XSD.DATE, offset, limit));
 			session.commit();
 			session.close();
 			return list;

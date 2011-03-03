@@ -732,6 +732,7 @@ public class RedisLiteralIndex extends IndexImpl<RedisTopicMapStore> implements 
 		}
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		set.addAll(getOccurrencesInternal(DatatypeAwareUtils.toString(value, Namespaces.XSD.DATETIME), Namespaces.XSD.DATETIME));
+		set.addAll(getOccurrencesInternal(DatatypeAwareUtils.toString(value, Namespaces.XSD.DATE), Namespaces.XSD.DATE));
 		return set;
 	}
 
@@ -748,7 +749,9 @@ public class RedisLiteralIndex extends IndexImpl<RedisTopicMapStore> implements 
 		double deviance_ = ((double) (deviance.get(Calendar.SECOND) + (deviance.get(Calendar.MINUTE) + (deviance.get(Calendar.HOUR) + (deviance
 				.get(Calendar.DAY_OF_MONTH) + (deviance.get(Calendar.MONTH) + deviance.get(Calendar.YEAR) * 12) * 30) * 24) * 60) * 60)) * 1000;
 
-		Collection<IOccurrence> dateTimes = getOccurrencesInternalByDatatype(Namespaces.XSD.DATETIME);
+		Collection<IOccurrence> dateTimes = HashUtil.getHashSet();
+		dateTimes.addAll(getOccurrencesInternalByDatatype(Namespaces.XSD.DATETIME));
+		dateTimes.addAll(getOccurrencesInternalByDatatype(Namespaces.XSD.DATE));
 		Set<ICharacteristics> set = HashUtil.getHashSet();
 		for (IOccurrence c : dateTimes) {
 			try {

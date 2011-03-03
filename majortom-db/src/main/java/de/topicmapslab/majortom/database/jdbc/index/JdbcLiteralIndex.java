@@ -436,6 +436,7 @@ public class JdbcLiteralIndex extends CachedLiteralIndexImpl<JdbcTopicMapStore> 
 			Collection<ICharacteristics> col = HashUtil.getHashSet();
 			ISession session = getTopicMapStore().openSession();
 			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATETIME), Namespaces.XSD.DATETIME, -1, -1));
+			col.addAll(session.getProcessor().getOccurrences(getTopicMapStore().getTopicMap(), DatatypeAwareUtils.toString(value, Namespaces.XSD.DATE), Namespaces.XSD.DATE, -1, -1));
 			session.commit();
 			session.close();
 			return col;

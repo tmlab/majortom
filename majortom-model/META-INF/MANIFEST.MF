@@ -24,8 +24,8 @@ Bundle-Name: MajorToM Model
 Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype
-Bundle-Version: 1.2.0.201102091344
-Bnd-LastModified: 1297255462392
+Bundle-Version: 1.2.0.201103021431
+Bnd-LastModified: 1299072832366
 Bundle-ManifestVersion: 2
 Import-Package: org.tmapi.core;version="2.0.3",org.tmapi.index;version
  ="2.0.3"

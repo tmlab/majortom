@@ -42,8 +42,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype;bundle-version="1.2.0",de.topi
  cmapslab.majortom.core;bundle-version="1.2.0",de.topicmapslab.majorto
  m.model;bundle-version="1.2.0"
-Bundle-Version: 1.2.0.201102170715
-Bnd-LastModified: 1297923353812
+Bundle-Version: 1.2.0.201103031019
+Bnd-LastModified: 1299143992968
 Bundle-ManifestVersion: 2
 Import-Package: cern.jet.random.engine,javax.xml.parsers,org.apache.co
  mmons.collections;version="[3.2,4)",org.apache.commons.collections.bi

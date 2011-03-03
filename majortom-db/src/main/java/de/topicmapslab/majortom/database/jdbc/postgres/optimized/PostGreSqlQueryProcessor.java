@@ -594,10 +594,11 @@ public class PostGreSqlQueryProcessor extends Sql99QueryProcessor {
 	public void doRemoveDuplicateTopicContent(ITopic topic) throws SQLException, UnsupportedOperationException {
 		if (!getSession().getConnectionProvider().existsProcedureRemoveDuplicateTopicContent()) {
 			getSession().getTopicMapStore().removeDuplicates();
+		}else{
+			PreparedStatement stmt = getQueryBuilder().getPerformRemoveDuplicateTopicContent();
+			stmt.setLong(1, getSession().getTopicMapStore().getTopicMapIdentity().longId());
+			stmt.setLong(2, ((JdbcIdentity)((ConstructImpl)topic).getIdentity()).longId());
+			stmt.execute();
 		}
-		PreparedStatement stmt = getQueryBuilder().getPerformRemoveDuplicateTopicContent();
-		stmt.setLong(1, getSession().getTopicMapStore().getTopicMapIdentity().longId());
-		stmt.setLong(2, ((JdbcIdentity)((ConstructImpl)topic).getIdentity()).longId());
-		stmt.execute();
 	}
 }

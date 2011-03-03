@@ -22,6 +22,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIRuntimeException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
+import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.majortom.core.TopicMapImpl;
 import de.topicmapslab.majortom.core.TopicMapSystemFactoryImpl;
@@ -61,6 +62,16 @@ public class JdbcTopicMapSystem extends TopicMapSystemImpl {
 	 */
 	public JdbcTopicMapSystem(TopicMapSystemFactoryImpl factory) {
 		super(factory);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setFactory(TopicMapSystemFactory factory) {		
+		super.setFactory(factory);
+		/*
+		 * load properties from file
+		 */
 	}
 	
 	/**
