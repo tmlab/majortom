@@ -482,7 +482,14 @@ public class TestLiteralIndex extends MaJorToMTestCase {
 		assertEquals(2, index.getDateTime(calendar, deviance).size());
 		assertTrue(index.getDateTime(calendar, deviance).contains(occurrence));
 		assertTrue(index.getDateTime(calendar, deviance).contains(otherOccurrence));
-
+		
+		otherOccurrence.setValue("2000-11-12", topicMap.createLocator(Namespaces.XSD.DATE));
+		assertEquals(1, index.getDateTime(calendar).size());
+		assertTrue(index.getDateTime(calendar).contains(occurrence));
+		assertEquals(2, index.getDateTime(calendar, deviance).size());
+		assertTrue(index.getDateTime(calendar, deviance).contains(occurrence));
+		assertTrue(index.getDateTime(calendar, deviance).contains(otherOccurrence));
+		
 		otherOccurrence.setValue(false);
 		assertEquals(1, index.getDateTime(calendar).size());
 		assertTrue(index.getDateTime(calendar).contains(occurrence));
