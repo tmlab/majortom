@@ -5,34 +5,34 @@ Export-Package: de.topicmapslab.majortom.inmemory.store.internal;uses:
  map",de.topicmapslab.majortom.inmemory.transaction;uses:="de.topicmap
  slab.majortom.inmemory.transaction.internal,de.topicmapslab.majortom.
  inmemory.virtual.internal,org.tmapi.core,de.topicmapslab.majortom.inm
- emory.virtual,de.topicmapslab.majortom.inmemory.store",de.topicmapsla
- b.majortom.inmemory.transaction.internal;uses:="de.topicmapslab.major
- tom.inmemory.transaction,de.topicmapslab.majortom.inmemory.virtual.in
- ternal,de.topicmapslab.majortom.inmemory.virtual,org.tmapi.core,de.to
- picmapslab.majortom.inmemory.store",de.topicmapslab.majortom.inmemory
- .store.revision.readonly;uses:="org.tmapi.core",de.topicmapslab.major
- tom.inmemory.index;uses:="de.topicmapslab.majortom.inmemory.store.int
- ernal,de.topicmapslab.majortom.inmemory.store,org.tmapi.core,org.w3c.
- dom,de.topicmapslab.majortom.inmemory.store.revision,org.tmapi.index"
- ,de.topicmapslab.majortom.inmemory.virtual.internal;uses:="de.topicma
- pslab.majortom.inmemory.store.model,de.topicmapslab.majortom.inmemory
- .store.internal,org.tmapi.core,de.topicmapslab.majortom.inmemory.virt
- ual,org.tmapi.index,de.topicmapslab.majortom.inmemory.store,org.apach
- e.commons.collections,org.apache.commons.collections.bidimap",de.topi
- cmapslab.majortom.inmemory.store.model,de.topicmapslab.majortom.inmem
- ory.virtual;uses:="de.topicmapslab.majortom.inmemory.store.internal,d
- e.topicmapslab.majortom.inmemory.store,de.topicmapslab.majortom.inmem
- ory.virtual.internal,org.tmapi.core",de.topicmapslab.majortom.store,d
- e.topicmapslab.majortom.inmemory.index.paged;uses:="de.topicmapslab.m
- ajortom.inmemory.store",de.topicmapslab.majortom.inmemory.store;uses:
- ="de.topicmapslab.majortom.inmemory.store.internal,org.tmapi.core,de.
- topicmapslab.majortom.store,de.topicmapslab.majortom.inmemory.transac
- tion,de.topicmapslab.majortom.inmemory.index,de.topicmapslab.majortom
- .inmemory.index.paged,de.topicmapslab.majortom.inmemory.store.revisio
- n,org.tmapi.index",de.topicmapslab.majortom.inmemory.store.revision;u
- ses:="de.topicmapslab.majortom.inmemory.store.revision.readonly,org.t
- mapi.core,de.topicmapslab.majortom.inmemory.store.model,javax.xml.par
- sers,org.w3c.dom"
+ emory.store.internal,de.topicmapslab.majortom.inmemory.virtual,de.top
+ icmapslab.majortom.inmemory.store",de.topicmapslab.majortom.inmemory.
+ transaction.internal;uses:="de.topicmapslab.majortom.inmemory.transac
+ tion,de.topicmapslab.majortom.inmemory.virtual.internal,de.topicmapsl
+ ab.majortom.inmemory.virtual,org.tmapi.core,de.topicmapslab.majortom.
+ inmemory.store",de.topicmapslab.majortom.inmemory.store.revision.read
+ only;uses:="org.tmapi.core",de.topicmapslab.majortom.inmemory.index;u
+ ses:="de.topicmapslab.majortom.inmemory.store.internal,de.topicmapsla
+ b.majortom.inmemory.store,org.tmapi.core,org.w3c.dom,de.topicmapslab.
+ majortom.inmemory.store.revision,org.tmapi.index",de.topicmapslab.maj
+ ortom.inmemory.virtual.internal;uses:="de.topicmapslab.majortom.inmem
+ ory.store.model,de.topicmapslab.majortom.inmemory.store.internal,org.
+ tmapi.core,de.topicmapslab.majortom.inmemory.virtual,org.tmapi.index,
+ de.topicmapslab.majortom.inmemory.store,org.apache.commons.collection
+ s,org.apache.commons.collections.bidimap",de.topicmapslab.majortom.in
+ memory.store.model,de.topicmapslab.majortom.inmemory.virtual;uses:="d
+ e.topicmapslab.majortom.inmemory.store.internal,de.topicmapslab.major
+ tom.inmemory.store,de.topicmapslab.majortom.inmemory.virtual.internal
+ ,org.tmapi.core",de.topicmapslab.majortom.store,de.topicmapslab.major
+ tom.inmemory.index.paged;uses:="de.topicmapslab.majortom.inmemory.sto
+ re",de.topicmapslab.majortom.inmemory.store;uses:="de.topicmapslab.ma
+ jortom.inmemory.store.internal,org.tmapi.core,de.topicmapslab.majorto
+ m.store,de.topicmapslab.majortom.inmemory.transaction,de.topicmapslab
+ .majortom.inmemory.index,de.topicmapslab.majortom.inmemory.index.page
+ d,de.topicmapslab.majortom.inmemory.store.revision,org.tmapi.index",d
+ e.topicmapslab.majortom.inmemory.store.revision;uses:="de.topicmapsla
+ b.majortom.inmemory.store.revision.readonly,org.tmapi.core,javax.xml.
+ parsers,de.topicmapslab.majortom.inmemory.store.model,org.w3c.dom"
 Service-Component: OSGI-INF/inmemorytopicmapstore.xml
 Bundle-ActivationPolicy: lazy
 Tool: Bnd-1.15.0
@@ -42,8 +42,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype;bundle-version="1.2.0",de.topi
  cmapslab.majortom.core;bundle-version="1.2.0",de.topicmapslab.majorto
  m.model;bundle-version="1.2.0"
-Bundle-Version: 1.2.0.201103031019
-Bnd-LastModified: 1299143992968
+Bundle-Version: 1.2.0.201103151612
+Bnd-LastModified: 1300202032859
 Bundle-ManifestVersion: 2
 Import-Package: cern.jet.random.engine,javax.xml.parsers,org.apache.co
  mmons.collections;version="[3.2,4)",org.apache.commons.collections.bi
