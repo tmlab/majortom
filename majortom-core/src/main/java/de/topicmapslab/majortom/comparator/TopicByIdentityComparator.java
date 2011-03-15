@@ -129,7 +129,7 @@ public class TopicByIdentityComparator implements Comparator<Topic> {
 		/*
 		 * both topics has subject-identifiers
 		 */
-		else if ( siDiff != 0 || !si1.isEmpty()){
+		else if ( siDiff != 0 && !si1.isEmpty()){
 			Collections.sort(si1, LocatorByReferenceComparator.getInstance(ascending));
 			Collections.sort(si2, LocatorByReferenceComparator.getInstance(ascending));
 			return LocatorByReferenceComparator.getInstance(ascending).compare(si1.get(0), si2.get(0));
@@ -157,7 +157,7 @@ public class TopicByIdentityComparator implements Comparator<Topic> {
 		/*
 		 * both topics has subject-locators
 		 */
-		else if ( slDiff != 0 || !sl1.isEmpty()){
+		else if ( slDiff != 0 && !sl1.isEmpty()){
 			Collections.sort(sl1, LocatorByReferenceComparator.getInstance(ascending));
 			Collections.sort(sl2, LocatorByReferenceComparator.getInstance(ascending));
 			return LocatorByReferenceComparator.getInstance(ascending).compare(sl1.get(0), sl2.get(0));
@@ -185,7 +185,7 @@ public class TopicByIdentityComparator implements Comparator<Topic> {
 		/*
 		 * both topics has item-identifiers
 		 */
-		else if ( iiDiff != 0 || !ii1.isEmpty()){
+		else if ( iiDiff != 0 && !ii1.isEmpty()){
 			Collections.sort(ii1, LocatorByReferenceComparator.getInstance(ascending));
 			Collections.sort(ii2, LocatorByReferenceComparator.getInstance(ascending));
 			return LocatorByReferenceComparator.getInstance(ascending).compare(ii1.get(0), ii2.get(0));
