@@ -75,7 +75,7 @@ public class TopicMapSystemFactoryImpl extends TopicMapSystemFactory {
 		features.put(FeatureStrings.AUTOMATIC_MERGING, true);
 		features.put(FeatureStrings.SUPPORT_HISTORY, false);
 		features.put(FeatureStrings.SUPPORT_TRANSACTION, false);
-		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, true);
+		features.put(FeatureStrings.DELETION_CONSTRAINTS_REIFICATION, false);
 		features.put(FeatureStrings.READ_ONLY_SYSTEM, false);
 		features.put(FeatureStrings.CONCURRENT_COLLECTIONS, false);
 		properties = new Properties();
