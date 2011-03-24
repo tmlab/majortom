@@ -6,9 +6,7 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tmapi.core.Locator;
 import org.tmapi.core.ModelConstraintException;
-import org.tmapi.core.Topic;
 
 import com.semagia.mio.IMapHandler;
 import com.semagia.mio.IRef;
@@ -27,7 +25,6 @@ import de.topicmapslab.majortom.inmemory.store.internal.TopicTypeStore;
 import de.topicmapslab.majortom.inmemory.store.internal.TypedStore;
 import de.topicmapslab.majortom.model.core.IAssociation;
 import de.topicmapslab.majortom.model.core.IAssociationRole;
-import de.topicmapslab.majortom.model.core.ICharacteristics;
 import de.topicmapslab.majortom.model.core.IConstruct;
 import de.topicmapslab.majortom.model.core.IConstructFactory;
 import de.topicmapslab.majortom.model.core.ILocator;
@@ -38,12 +35,11 @@ import de.topicmapslab.majortom.model.core.ITopic;
 import de.topicmapslab.majortom.model.core.ITopicMap;
 import de.topicmapslab.majortom.model.core.IVariant;
 import de.topicmapslab.majortom.model.event.TopicMapEventType;
-import de.topicmapslab.majortom.model.revision.IRevision;
 
 public class MapHandler implements IMapHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MapHandler.class);
-	
+
 	private final InMemoryTopicMapStore store;
 
 	private ITopicMap currentTopicMap;
@@ -51,112 +47,112 @@ public class MapHandler implements IMapHandler {
 	private IAssociation currentAssociation;
 	private IAssociationRole currentRole;
 	private ITopic currentPlayer;
-	
+
 	private IName currentName;
 	private IOccurrence currentOccurrence;
 	private IVariant currentVariant;
 
 	private Set<ITopic> currentScope;
-	
+
 	private IConstructFactory constructFactory;
-	
+
 	private boolean hadEndTopicEvent = false;
-	
+
 	private enum State {
 		SCOPE, NAME, OCCURRENCE, ISA, AKO, ROLE, PLAYER, TOPICMAP, TYPE, TOPIC, ASSOCIATION, THEME, VARIANT, REIFIER
 	}
 
 	private Stack<State> state;
-	
+
 	public MapHandler(InMemoryTopicMapStore store) {
 		this.store = store;
 		this.state = new Stack<MapHandler.State>();
 		this.constructFactory = store.getConstructFactory();
 	}
-	
+
 	@Override
 	public void startAssociation() throws MIOException {
 		logger.debug("startAssociation");
-		
-		if(!this.hadEndTopicEvent)
-			endTopic();
-		
+
+		// if(!this.hadEndTopicEvent)
+		// endTopic();
+
 		state.push(State.ASSOCIATION);
 		long id = this.store.generateId();
-		this.currentAssociation = this.constructFactory.newAssociation(new InMemoryIdentity(id) , this.currentTopicMap);
-		
+		this.currentAssociation = this.constructFactory.newAssociation(new InMemoryIdentity(id), this.currentTopicMap);
+
 		AssociationStore as = this.store.getAssociationStore();
 		as.addAssociation(currentAssociation);
-		
+
 	}
-	
+
 	@Override
 	public void endAssociation() throws MIOException {
 		logger.debug("endAssociation");
-		
+
 		this.store.notifyListeners(TopicMapEventType.ASSOCIATION_ADDED, this.currentTopicMap, this.currentAssociation, null);
-		
+
 		this.state.pop();
 		this.currentAssociation = null;
 	}
-	
+
 	@Override
 	public void startIsa() throws MIOException {
 		logger.debug("startIsa");
-		
+
 		this.state.push(State.ISA);
 	}
-	
+
 	@Override
 	public void endIsa() throws MIOException {
 		logger.debug("endIsa");
-		
+
 		this.state.pop();
 	}
 
 	@Override
 	public void startName() throws MIOException {
 		logger.debug("startName");
-		
+
 		this.state.push(State.NAME);
 		long id = this.store.generateId();
 		this.currentName = this.constructFactory.newName(new InMemoryIdentity(id), this.currentTopic);
 	}
-	
+
 	@Override
 	public void endName() throws MIOException {
 		logger.debug("endName");
 		this.state.pop();
-		
+
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
 		cs.addName(this.currentTopic, this.currentName);
-				
+
 		this.store.notifyListeners(TopicMapEventType.NAME_ADDED, this.currentTopic, this.currentName, null);
-		
+
 		this.currentName = null;
 	}
 
 	@Override
 	public void startOccurrence() throws MIOException {
 		logger.debug("startOccurrence");
-		
+
 		this.state.push(State.OCCURRENCE);
 		long id = this.store.generateId();
 		this.currentOccurrence = this.constructFactory.newOccurrence(new InMemoryIdentity(id), this.currentTopic);
-		
+
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
 		cs.addOccurrence(this.currentTopic, this.currentOccurrence);
-		
+
 	}
-	
+
 	@Override
 	public void endOccurrence() throws MIOException {
 		logger.debug("endOccurrence");
-		
+
 		this.state.pop();
-		
+
 		this.store.notifyListeners(TopicMapEventType.OCCURRENCE_ADDED, this.currentTopic, this.currentOccurrence, null);
-		
+
 		this.currentOccurrence = null;
 	}
 
@@ -165,48 +161,48 @@ public class MapHandler implements IMapHandler {
 		logger.debug("startPlayer");
 		this.state.push(State.PLAYER);
 	}
-	
+
 	@Override
 	public void endPlayer() throws MIOException {
 		logger.debug("endPlayer");
-		
+
 		this.state.pop();
 	}
 
 	@Override
 	public void startReifier() throws MIOException {
 		logger.debug("startReifier");
-		
+
 		this.state.push(State.REIFIER);
 	}
-	
+
 	@Override
 	public void endReifier() throws MIOException {
 		logger.debug("endReifier");
-		
+
 		this.state.pop();
 	}
 
 	@Override
 	public void startRole() throws MIOException {
 		logger.debug("startRole");
-		
+
 		this.state.push(State.ROLE);
 		long id = this.store.generateId();
 		this.currentRole = this.constructFactory.newAssociationRole(new InMemoryIdentity(id), this.currentAssociation);
 	}
-	
+
 	@Override
 	public void endRole() throws MIOException {
 		logger.debug("endRole");
-		
+
 		this.state.pop();
-		
+
 		AssociationStore as = this.store.getAssociationStore();
 		as.addRole(this.currentAssociation, this.currentRole, this.currentPlayer);
-		
+
 		this.store.notifyListeners(TopicMapEventType.ROLE_ADDED, this.currentAssociation, this.currentRole, null);
-		
+
 		this.currentRole = null;
 		this.currentPlayer = null;
 	}
@@ -216,21 +212,21 @@ public class MapHandler implements IMapHandler {
 		logger.debug("startScope");
 		this.state.push(State.SCOPE);
 	}
-	
+
 	@Override
 	public void endScope() throws MIOException {
 		logger.debug("endScope");
-		
+
 		ScopeStore ss = this.store.getScopeStore();
 		IScope scope = ss.getScope(this.currentScope);
-		
-		if(this.currentVariant != null){
+
+		if (this.currentVariant != null) {
 			ss.setScope(this.currentVariant, scope);
-		}else if(this.currentName != null){
+		} else if (this.currentName != null) {
 			ss.setScope(this.currentName, scope);
-		}else if(this.currentOccurrence != null){
+		} else if (this.currentOccurrence != null) {
 			ss.setScope(this.currentOccurrence, scope);
-		}else if(this.currentAssociation != null){
+		} else if (this.currentAssociation != null) {
 			ss.setScope(this.currentAssociation, scope);
 		}
 
@@ -241,10 +237,10 @@ public class MapHandler implements IMapHandler {
 	@Override
 	public void startTheme() throws MIOException {
 		logger.debug("startTheme");
-		
+
 		this.state.push(State.THEME);
 	}
-	
+
 	@Override
 	public void endTheme() throws MIOException {
 		logger.debug("endTheme");
@@ -254,42 +250,50 @@ public class MapHandler implements IMapHandler {
 	@Override
 	public void startTopic(IRef arg0) throws MIOException {
 		logger.debug("startTopic");
-		
-		if(!this.hadEndTopicEvent)
+
+		if (!this.hadEndTopicEvent) {
 			endTopic();
+		}
 
 		this.state.push(State.TOPIC);
 		setCurrentTopic(createTopicByRef(arg0));
-		
+
 		this.hadEndTopicEvent = false;
 	}
-	
+
 	@Override
 	public void endTopic() throws MIOException {
 		logger.debug("endTopic");
-		
-		if(getCurrentTopic() == null)
+
+		if (getCurrentTopic() == null) {
 			return;
+		}
 
 		this.state.pop();
 		clearCurrentTopic();
-		
+
 		this.hadEndTopicEvent = true;
-		
+
 	}
 
 	@Override
 	public void startTopicMap() throws MIOException {
 		logger.debug("startTopicMap");
-		
+
 		this.state.push(State.TOPICMAP);
 		this.currentTopicMap = store.getTopicMap();
 	}
-	
+
 	@Override
 	public void endTopicMap() throws MIOException {
 		logger.debug("endTopicMap");
-		
+		/*
+		 * may be the last topic not finished
+		 */
+		if (!this.hadEndTopicEvent) {
+			endTopic();
+		}
+
 		this.state.pop();
 	}
 
@@ -298,7 +302,7 @@ public class MapHandler implements IMapHandler {
 		logger.debug("startType");
 		this.state.push(State.TYPE);
 	}
-	
+
 	@Override
 	public void endType() throws MIOException {
 		logger.debug("endType");
@@ -308,325 +312,337 @@ public class MapHandler implements IMapHandler {
 	@Override
 	public void startVariant() throws MIOException {
 		logger.debug("startVariant");
-			
+
 		this.state.push(State.VARIANT);
 		long id = this.store.generateId();
 		this.currentVariant = this.constructFactory.newVariant(new InMemoryIdentity(id), this.currentName);
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
 		cs.addVariant(this.currentName, this.currentVariant);
 	}
-	
+
 	@Override
 	public void endVariant() throws MIOException {
 		logger.debug("endVariant");
-		
+
 		this.state.pop();
-		
+
 		this.store.notifyListeners(TopicMapEventType.VARIANT_ADDED, this.currentName, this.currentVariant, null);
-		
+
 		this.currentVariant = null;
 	}
-	
+
 	@Override
 	public void itemIdentifier(String arg0) throws MIOException {
 		logger.debug("itemIdentifier");
-		
+
 		IdentityStore is = this.store.getIdentityStore();
 		ILocator l = new LocatorImpl(arg0);
-				
-		if(this.currentAssociation != null){
-			
-			if(this.currentRole != null){
-				is.addItemIdentifer(this.currentRole,l);
-			}else{
-				is.addItemIdentifer(this.currentAssociation,l);
-			}
-		}else if(this.currentName != null){
-			
-			if(this.currentVariant != null){
-				is.addItemIdentifer(this.currentVariant,l);
-			}else{
-				is.addItemIdentifer(this.currentName,l);
-			}
-		}else if(this.currentOccurrence != null){
-			is.addItemIdentifer(this.currentOccurrence,l);
-		}else if(getCurrentTopic() != null){
-			
-			IConstruct t = is.byItemIdentifier(l);
-			
-			if(t == null)
-				t = is.bySubjectIdentifier(l);
-			
-			if(t instanceof ITopic && !t.equals(getCurrentTopic())){
-				InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
-			}else
-				is.addItemIdentifer(getCurrentTopic(),l);
-			
 
-		}else{
-			is.addItemIdentifer(this.currentTopicMap,l);
+		if (this.currentAssociation != null) {
+
+			if (this.currentRole != null) {
+				is.addItemIdentifer(this.currentRole, l);
+			} else {
+				is.addItemIdentifer(this.currentAssociation, l);
+			}
+		} else if (this.currentName != null) {
+
+			if (this.currentVariant != null) {
+				is.addItemIdentifer(this.currentVariant, l);
+			} else {
+				is.addItemIdentifer(this.currentName, l);
+			}
+		} else if (this.currentOccurrence != null) {
+			is.addItemIdentifer(this.currentOccurrence, l);
+		} else if (getCurrentTopic() != null) {
+
+			IConstruct t = is.byItemIdentifier(l);
+
+			if (t == null) {
+				t = is.bySubjectIdentifier(l);
+			}
+
+			if (t instanceof ITopic && !t.equals(getCurrentTopic())) {
+				InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic) t, null);
+			} else {
+				is.addItemIdentifer(getCurrentTopic(), l);
+			}
+
+		} else {
+			is.addItemIdentifer(this.currentTopicMap, l);
 		}
 	}
-	
+
 	@Override
 	public void subjectIdentifier(String arg0) throws MIOException {
 		logger.debug("subjectIdentifier");
-		
+
 		IdentityStore is = this.store.getIdentityStore();
 		ILocator l = new LocatorImpl(arg0);
-		
+
 		IConstruct t = is.bySubjectIdentifier(l);
-		
-		if(t == null)
+
+		if (t == null) {
 			t = is.byItemIdentifier(l);
-		
-		if(t instanceof ITopic && !t.equals(getCurrentTopic())){
-			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic)t, null);
-		}else
-			is.addSubjectIdentifier(getCurrentTopic(),new LocatorImpl(arg0));
+		}
+
+		if (t instanceof ITopic && !t.equals(getCurrentTopic())) {
+			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), (ITopic) t, null);
+		} else {
+			is.addSubjectIdentifier(getCurrentTopic(), new LocatorImpl(arg0));
+		}
 	}
-	
+
 	@Override
 	public void subjectLocator(String arg0) throws MIOException {
 		logger.debug("subjectLocator");
-		
+
 		IdentityStore is = this.store.getIdentityStore();
 		ILocator l = new LocatorImpl(arg0);
-		
+
 		ITopic t = is.bySubjectLocator(l);
-		
-		if(t != null && !t.equals(getCurrentTopic())){
+
+		if (t != null && !t.equals(getCurrentTopic())) {
 			InMemoryMergeUtils.doMerge(this.store, getCurrentTopic(), t, null);
-		}else
-			is.addSubjectLocator(getCurrentTopic(),new LocatorImpl(arg0));
+		} else {
+			is.addSubjectLocator(getCurrentTopic(), new LocatorImpl(arg0));
+		}
 	}
-	
+
 	@Override
 	public void topicRef(IRef arg0) throws MIOException {
 		logger.debug("topicRef");
-		
-		
+
 		if (this.currentAssociation != null) {
 			switch (this.state.peek()) {
-			case TYPE:
-				
-				ITopic type = createTopicByRef(arg0);
-				TypedStore ts = this.store.getTypedStore();
-				
-				if(this.currentRole != null){
-					ts.setType(this.currentRole, type);
-				}else{
-					ts.setType(this.currentAssociation, type);
-				}
-				
-				break;
-			case PLAYER:
-				
-				this.currentPlayer = createTopicByRef(arg0);
-				this.currentRole.setPlayer(this.currentPlayer);
-				break;
-				
-			case THEME:
-				
-				if(this.currentScope == null)
-					this.currentScope = new HashSet<ITopic>();
-				
-				this.currentScope.add(createTopicByRef(arg0));
-				
-				break;
-			case REIFIER:
-				
-				ITopic reifier = createTopicByRef(arg0);
-				
-				ReificationStore rs = this.store.getReificationStore();
-				
-				try {
-					if(this.currentRole != null){
-						rs.setReifier(this.currentRole, reifier);
-					}else{
-						rs.setReifier(this.currentAssociation, reifier);
+				case TYPE:
+
+					ITopic type = createTopicByRef(arg0);
+					TypedStore ts = this.store.getTypedStore();
+
+					if (this.currentRole != null) {
+						ts.setType(this.currentRole, type);
+					} else {
+						ts.setType(this.currentAssociation, type);
 					}
-				} catch (ModelConstraintException e) {}
-				
-				break;
+
+					break;
+				case PLAYER:
+
+					this.currentPlayer = createTopicByRef(arg0);
+					this.currentRole.setPlayer(this.currentPlayer);
+					break;
+
+				case THEME:
+
+					if (this.currentScope == null) {
+						this.currentScope = new HashSet<ITopic>();
+					}
+
+					this.currentScope.add(createTopicByRef(arg0));
+
+					break;
+				case REIFIER:
+
+					ITopic reifier = createTopicByRef(arg0);
+
+					ReificationStore rs = this.store.getReificationStore();
+
+					try {
+						if (this.currentRole != null) {
+							rs.setReifier(this.currentRole, reifier);
+						} else {
+							rs.setReifier(this.currentAssociation, reifier);
+						}
+					} catch (ModelConstraintException e) {
+					}
+
+					break;
 			}
 			return;
-		}else if ((this.currentName != null)) {
+		} else if ((this.currentName != null)) {
 
 			switch (this.state.peek()) {
-			case TYPE:
-				
-				ITopic type = createTopicByRef(arg0);
-				TypedStore ts = this.store.getTypedStore();
-				ts.setType(this.currentName, type);
-	
-				break;
-			case THEME:
-				
-				if(this.currentScope == null)
-					this.currentScope = new HashSet<ITopic>();
-				
-				this.currentScope.add(createTopicByRef(arg0));
-				
-				break;
-			case REIFIER:
-				
-				try{
-					if(this.currentVariant != null){
-						
-						ReificationStore rs = this.store.getReificationStore();
-						ITopic reifier = createTopicByRef(arg0);
-						rs.setReifier(this.currentVariant, reifier);
-						
-					}else{
-					
-						ReificationStore rs = this.store.getReificationStore();
-						ITopic reifier = createTopicByRef(arg0);
-						rs.setReifier(this.currentName, reifier);
+				case TYPE:
+
+					ITopic type = createTopicByRef(arg0);
+					TypedStore ts = this.store.getTypedStore();
+					ts.setType(this.currentName, type);
+
+					break;
+				case THEME:
+
+					if (this.currentScope == null) {
+						this.currentScope = new HashSet<ITopic>();
 					}
-				
-				} catch (ModelConstraintException e) {}
-				
-				break;
+
+					this.currentScope.add(createTopicByRef(arg0));
+
+					break;
+				case REIFIER:
+
+					try {
+						if (this.currentVariant != null) {
+
+							ReificationStore rs = this.store.getReificationStore();
+							ITopic reifier = createTopicByRef(arg0);
+							rs.setReifier(this.currentVariant, reifier);
+
+						} else {
+
+							ReificationStore rs = this.store.getReificationStore();
+							ITopic reifier = createTopicByRef(arg0);
+							rs.setReifier(this.currentName, reifier);
+						}
+
+					} catch (ModelConstraintException e) {
+					}
+
+					break;
 			}
-		}else if ((this.currentOccurrence != null)) {
+		} else if ((this.currentOccurrence != null)) {
 
 			switch (this.state.peek()) {
-			case TYPE:
-				
-				ITopic type = createTopicByRef(arg0);
-				TypedStore ts = this.store.getTypedStore();
-				ts.setType(this.currentOccurrence, type);
-	
-				break;
-			case THEME:
-				
-				if(this.currentScope == null)
-				this.currentScope = new HashSet<ITopic>();
-			
-				this.currentScope.add(createTopicByRef(arg0));
-				
-				if(this.currentScope == null)
-					this.currentScope = new HashSet<ITopic>();
-				
-				this.currentScope.add(createTopicByRef(arg0));
+				case TYPE:
 
-				
-				break;
-			case REIFIER:
+					ITopic type = createTopicByRef(arg0);
+					TypedStore ts = this.store.getTypedStore();
+					ts.setType(this.currentOccurrence, type);
 
-				try{
-					ReificationStore rs = this.store.getReificationStore();
-					ITopic reifier = createTopicByRef(arg0);
-					rs.setReifier(this.currentOccurrence, reifier);
-				} catch (ModelConstraintException e) {}
+					break;
+				case THEME:
 
-				break;
+					if (this.currentScope == null) {
+						this.currentScope = new HashSet<ITopic>();
+					}
+
+					this.currentScope.add(createTopicByRef(arg0));
+
+					if (this.currentScope == null) {
+						this.currentScope = new HashSet<ITopic>();
+					}
+
+					this.currentScope.add(createTopicByRef(arg0));
+
+					break;
+				case REIFIER:
+
+					try {
+						ReificationStore rs = this.store.getReificationStore();
+						ITopic reifier = createTopicByRef(arg0);
+						rs.setReifier(this.currentOccurrence, reifier);
+					} catch (ModelConstraintException e) {
+					}
+
+					break;
 			}
-			
-		}else {
+
+		} else {
 			switch (state.peek()) {
-			case ISA:
-				
-				TopicTypeStore tts = this.store.getTopicTypeStore();
-				ITopic type = createTopicByRef(arg0);
-				tts.addType(getCurrentTopic(), type);
-				break;
-		
-			case REIFIER:
-			
-				try{
-					ReificationStore rs = this.store.getReificationStore();
-					ITopic reifier = createTopicByRef(arg0);
-					rs.setReifier(this.currentTopicMap, reifier);
-				} catch (ModelConstraintException e) {}
-			
-			break;
-		}
+				case ISA:
+
+					TopicTypeStore tts = this.store.getTopicTypeStore();
+					ITopic type = createTopicByRef(arg0);
+					tts.addType(getCurrentTopic(), type);
+					break;
+
+				case REIFIER:
+
+					try {
+						ReificationStore rs = this.store.getReificationStore();
+						ITopic reifier = createTopicByRef(arg0);
+						rs.setReifier(this.currentTopicMap, reifier);
+					} catch (ModelConstraintException e) {
+					}
+
+					break;
+			}
 		}
 	}
-	
+
 	@Override
 	public void value(String arg0) throws MIOException {
 		logger.debug("value");
 
 		if (this.currentName != null) {
-			this.currentName.setValue(arg0);	
-		}else if (this.currentOccurrence != null) {
-			this.currentOccurrence.setValue(arg0);	
+			this.currentName.setValue(arg0);
+		} else if (this.currentOccurrence != null) {
+			this.currentOccurrence.setValue(arg0);
 		}
 	}
-	
+
 	@Override
 	public void value(String arg0, String arg1) throws MIOException {
 		logger.debug("value2");
-		
+
 		ILocator l = new LocatorImpl(arg1);
-		
+
 		CharacteristicsStore cs = this.store.getCharacteristicsStore();
 
 		if (this.currentOccurrence != null) {
 			this.currentOccurrence.setValue(arg0);
 			cs.setDatatype(this.currentOccurrence, l);
-				
-		}else if(this.currentVariant != null){
+
+		} else if (this.currentVariant != null) {
 			this.currentVariant.setValue(arg0);
 			cs.setDatatype(this.currentVariant, l);
 		}
 	}
 
-	private ITopic createTopicByRef(IRef ref){
-		
+	private ITopic createTopicByRef(IRef ref) {
+
 		IdentityStore is = this.store.getIdentityStore();
 		ILocator l = new LocatorImpl(ref.getIRI());
-		
+
 		ITopic topic = null;
-		
-		if(ref.getType() == IRef.ITEM_IDENTIFIER){
-			topic = (ITopic)is.byItemIdentifier(l);
-			if(topic == null)
+
+		if (ref.getType() == IRef.ITEM_IDENTIFIER) {
+			topic = (ITopic) is.byItemIdentifier(l);
+			if (topic == null) {
 				topic = is.bySubjectIdentifier(l);
-			
-		}else if(ref.getType() == IRef.SUBJECT_IDENTIFIER){
+			}
+
+		} else if (ref.getType() == IRef.SUBJECT_IDENTIFIER) {
 			topic = is.bySubjectIdentifier(l);
-			if(topic == null)
-				topic = (ITopic)is.byItemIdentifier(l);
-			
-		}else if(ref.getType() == IRef.SUBJECT_LOCATOR){
+			if (topic == null) {
+				topic = (ITopic) is.byItemIdentifier(l);
+			}
+
+		} else if (ref.getType() == IRef.SUBJECT_LOCATOR) {
 			topic = is.bySubjectLocator(l);
 		}
-		
-		if(topic != null)
+
+		if (topic != null) {
 			return topic;
-				
+		}
+
 		// create new topic
-		
-		long id = this.store.generateId(); 
+
+		long id = this.store.generateId();
 		topic = this.constructFactory.newTopic(new InMemoryIdentity(id), this.currentTopicMap);
 		is.setId(topic, Long.toString(id));
-		
-		if(ref.getType() == IRef.ITEM_IDENTIFIER){
+
+		if (ref.getType() == IRef.ITEM_IDENTIFIER) {
 			is.addItemIdentifer(topic, l);
-		}else if(ref.getType() == IRef.SUBJECT_IDENTIFIER){
+		} else if (ref.getType() == IRef.SUBJECT_IDENTIFIER) {
 			is.addSubjectIdentifier(topic, l);
-		}else if(ref.getType() == IRef.SUBJECT_LOCATOR){
+		} else if (ref.getType() == IRef.SUBJECT_LOCATOR) {
 			is.addSubjectLocator(topic, l);
 		}
-		
+
 		return topic;
 	}
 
-	private ITopic getCurrentTopic(){
+	private ITopic getCurrentTopic() {
 		return this.currentTopic;
 	}
-	
-	private void setCurrentTopic(ITopic topic){
+
+	private void setCurrentTopic(ITopic topic) {
 		this.currentTopic = topic;
 	}
-	
-	private void clearCurrentTopic(){
+
+	private void clearCurrentTopic() {
 		this.currentTopic = null;
 	}
 
-	
 }
