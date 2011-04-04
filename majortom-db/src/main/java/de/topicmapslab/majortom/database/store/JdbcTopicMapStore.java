@@ -2659,33 +2659,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	protected void doRemoveAssociation(IAssociation association, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			Set<IAssociationRole> roles = HashUtil.getHashSet(session.getProcessor().doReadRoles(association, -1, -1));
-			/*
-			 * remove association
-			 */
-			if (!session.getProcessor().doRemoveAssociation(association, cascade)) {
-				session.commit();
-				for (IAssociationRole role : roles) {
-					/*
-					 * store history
-					 */
-					storeRevision(revision, TopicMapEventType.ROLE_REMOVED, association, null, role);
-					/*
-					 * notify listener
-					 */
-					notifyListeners(TopicMapEventType.ROLE_REMOVED, association, null, role);
-				}
-				/*
-				 * store history
-				 */
-				storeRevision(revision, TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
-				/*
-				 * notify listener
-				 */
-				notifyListeners(TopicMapEventType.ASSOCIATION_REMOVED, getTopicMap(), null, association);
-			} else {
-				session.commit();
-			}
+			session.getProcessor().doRemoveAssociation(association, cascade, revision);
+			session.commit();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {
@@ -2801,34 +2776,8 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			ITopic parent = occurrence.getParent();
-			ITopic reifier = (ITopic) occurrence.getReifier();
-			/*
-			 * remove occurrence
-			 */
-			if (!session.getProcessor().doRemoveOccurrence(occurrence, cascade)) {
-				session.commit();
-				if (reifier != null) {
-					/*
-					 * store history
-					 */
-					storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-					/*
-					 * notify listener
-					 */
-					notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-				}
-				/*
-				 * store history
-				 */
-				storeRevision(revision, TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
-				/*
-				 * notify listener
-				 */
-				notifyListeners(TopicMapEventType.OCCURRENCE_REMOVED, parent, null, occurrence);
-			} else {
-				session.commit();
-			}
+			session.getProcessor().doRemoveOccurrence(occurrence, cascade, revision);
+			session.commit();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {
@@ -2862,34 +2811,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	protected void doRemoveRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			IAssociation parent = role.getParent();
-			ITopic reifier = (ITopic) role.getReifier();
 			/*
 			 * remove role
 			 */
-			if (!session.getProcessor().doRemoveRole(role, cascade)) {
-				session.commit();
-				if (reifier != null) {
-					/*
-					 * store history
-					 */
-					storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-					/*
-					 * notify listener
-					 */
-					notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-				}
-				/*
-				 * store history
-				 */
-				storeRevision(revision, TopicMapEventType.ROLE_REMOVED, parent, null, role);
-				/*
-				 * notify listener
-				 */
-				notifyListeners(TopicMapEventType.ROLE_REMOVED, parent, null, role);
-			} else {
-				session.commit();
-			}
+			session.getProcessor().doRemoveRole(role, cascade, revision);
+			session.commit();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {

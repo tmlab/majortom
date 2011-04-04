@@ -3922,10 +3922,11 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		} else {
 			stmt = getQueryBuilder().getQuerySelectDirectSubtypes(offset != -1);
 			stmt.setLong(1, Long.parseLong(type.getId()));
+			stmt.setLong(2, Long.parseLong(type.getId()));
 		}
 		if (offset != -1) {
-			stmt.setLong(2, offset);
-			stmt.setLong(3, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
@@ -3934,17 +3935,19 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
+		int i = 0;
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);
-			stmt.setLong(1, Long.parseLong(topicMap.getId()));
+			stmt.setLong(i++, Long.parseLong(topicMap.getId()));
 		} else {
 			stmt = getQueryBuilder().getQuerySelectDirectSupertypes(offset != -1);
-			stmt.setLong(1, Long.parseLong(type.getId()));
+			stmt.setLong(i++, Long.parseLong(type.getId()));
+			stmt.setLong(i++, Long.parseLong(type.getId()));
 		}
 		if (offset != -1) {
-			stmt.setLong(2, offset);
-			stmt.setLong(3, limit);
+			stmt.setLong(i++, offset);
+			stmt.setLong(i++, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}
@@ -3986,6 +3989,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		PreparedStatement stmt = null;
 		stmt = getQueryBuilder().getQuerySelectSubtypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		for (ITopic topic : topics) {
@@ -4008,9 +4012,10 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	public Collection<ITopic> getSubtypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSubtypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
-			stmt.setLong(2, offset);
-			stmt.setLong(3, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id_subtype");
 	}
@@ -4095,6 +4100,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 		PreparedStatement stmt = null;
 		stmt = getQueryBuilder().getQuerySelectSupertypesOfTopic(false);
 		stmt.setLong(1, Long.parseLong(type.getId()));
+		stmt.setLong(2, Long.parseLong(type.getId()));
 		Collection<ITopic> types = HashUtil.getHashSet();
 		Collection<ITopic> topics = Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 		/*
@@ -4120,9 +4126,10 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	public Collection<ITopic> getSupertypes(ITopicMap topicMap, long offset, long limit) throws SQLException {
 		PreparedStatement stmt = getQueryBuilder().getQuerySelectSupertypes(offset != -1);
 		stmt.setLong(1, Long.parseLong(topicMap.getId()));
+		stmt.setLong(2, Long.parseLong(topicMap.getId()));
 		if (offset != -1) {
-			stmt.setLong(2, offset);
-			stmt.setLong(3, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, limit);
 		}
 		return Jdbc2Construct.toTopics(topicMap, stmt.executeQuery(), "id");
 	}

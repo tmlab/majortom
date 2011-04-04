@@ -28,12 +28,12 @@ public class RevisionTestSuite {
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests.revision");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(TestRevisions.class);
-		// suite.addTestSuite(TestTopicRevisions.class);
-		// suite.addTestSuite(TestVariantRevisions.class);
-		// suite.addTestSuite(TestNameRevivions.class);
-		// suite.addTestSuite(TestOccurrenceRevisions.class);
-		// suite.addTestSuite(TestAssociationRevisions.class);
-		// suite.addTestSuite(TestRoleRevisions.class);
+		suite.addTestSuite(TestTopicRevisions.class);
+		suite.addTestSuite(TestVariantRevisions.class);
+		suite.addTestSuite(TestNameRevivions.class);
+		suite.addTestSuite(TestOccurrenceRevisions.class);
+		suite.addTestSuite(TestAssociationRevisions.class);
+		suite.addTestSuite(TestRoleRevisions.class);
 		// $JUnit-END$
 		return suite;
 	}

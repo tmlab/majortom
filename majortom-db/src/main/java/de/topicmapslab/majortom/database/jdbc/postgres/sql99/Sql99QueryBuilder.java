@@ -2915,7 +2915,7 @@ public class Sql99QueryBuilder extends RDBMSQueryBuilder {
 	public PreparedStatement getQuerySelectSubtypesOfTopic(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexSubtypesOfTopic == null) {
 			this.preparedStatementIndexSubtypesOfTopic = getConnection().prepareStatement(
-					ISql99IndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES_OF_TOPIC);
+					ISql99IndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_DIRECT_SUBTYPES);
 		}
 		return this.preparedStatementIndexSubtypesOfTopic;
 	}
@@ -2933,7 +2933,7 @@ public class Sql99QueryBuilder extends RDBMSQueryBuilder {
 	public PreparedStatement getQuerySelectSupertypesOfTopic(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexSupertypesOfTopic == null) {
 			this.preparedStatementIndexSupertypesOfTopic = getConnection().prepareStatement(
-					ISql99IndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUPERTYPES_OF_TOPIC);
+					ISql99IndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_DIRECT_SUBTYPES);
 		}
 		return this.preparedStatementIndexSupertypesOfTopic;
 	}

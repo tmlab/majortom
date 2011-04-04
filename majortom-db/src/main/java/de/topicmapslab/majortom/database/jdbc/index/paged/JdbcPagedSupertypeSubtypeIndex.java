@@ -174,22 +174,22 @@ public class JdbcPagedSupertypeSubtypeIndex extends PagedSupertypeSubtypeIndexIm
 		return super.doGetSubtypes(type, offset, limit, comparator);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected List<Topic> doGetSubtypes(Topic type, int offset, int limit) {
-		try {
-			List<Topic> topics = HashUtil.getList();
-			ISession session = getTopicMapStore().openSession();
-			topics.addAll(session.getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset,
-					limit));
-			session.commit();
-			session.close();
-			return topics;
-		} catch (SQLException e) {
-			throw new TopicMapStoreException("Internal database error!", e);
-		}
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	protected List<Topic> doGetSubtypes(Topic type, int offset, int limit) {
+//		try {
+//			List<Topic> topics = HashUtil.getList();
+//			ISession session = getTopicMapStore().openSession();
+//			topics.addAll(session.getProcessor().getSubtypes(getTopicMapStore().getTopicMap(), (ITopic) type, offset,
+//					limit));
+//			session.commit();
+//			session.close();
+//			return topics;
+//		} catch (SQLException e) {
+//			throw new TopicMapStoreException("Internal database error!", e);
+//		}
+//	}
 
 	/**
 	 * {@inheritDoc}

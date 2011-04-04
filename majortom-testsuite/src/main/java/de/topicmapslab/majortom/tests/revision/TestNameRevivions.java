@@ -42,16 +42,19 @@ public class TestNameRevivions extends MaJorToMTestCase {
 		Name n = topic.createName(type, "Value", theme);
 
 		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
-		index.open();
-		IRevision revision = index.getLastRevision();
-		assertEquals(4, revision.getChangeset().size());
+		index.open();		
 
+
+		IRevision revision = index.getLastRevision();		
+		assertEquals(4, revision.getChangeset().size());
+		
 		Variant v = n.createVariant("Var", createTopic());
 		Variant other = n.createVariant("Var2", createTopic());
 		n.setReifier(reifier);
 		n.remove();
 		topicMap.getStore().commit();
 
+		revision = index.getLastRevision();		
 		assertEquals(4, revision.getChangeset().size());
 		assertEquals(n, revision.getChangeset().get(3).getOldValue());
 		assertTrue(revision.getChangeset().get(3).getOldValue() instanceof ReadOnlyName);

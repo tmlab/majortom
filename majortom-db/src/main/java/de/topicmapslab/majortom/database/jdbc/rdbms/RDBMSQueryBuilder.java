@@ -3257,7 +3257,7 @@ public class RDBMSQueryBuilder implements IQueryBuilder {
 	 */
 	public PreparedStatement getQuerySelectSubtypesOfTopic(boolean paged) throws SQLException {
 		if (this.preparedStatementIndexSubtypesOfTopic == null) {
-			this.preparedStatementIndexSubtypesOfTopic = getConnection().prepareStatement(IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_SUBTYPES_OF_TOPIC);
+			this.preparedStatementIndexSubtypesOfTopic = getConnection().prepareStatement(IIndexQueries.QuerySupertypeSubtypeIndex.NonPaged.QUERY_SELECT_DIRECT_SUBTYPES);
 		}
 		return this.preparedStatementIndexSubtypesOfTopic;
 	}
