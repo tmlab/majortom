@@ -2193,7 +2193,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if JDBC command fails
 	 */
-	protected void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException {
 		/*
 		 * dump name
 		 */
@@ -2256,7 +2256,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if JDBC command fails
 	 */
-	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws SQLException {
 		/*
 		 * dump occurrence
 		 */
@@ -2418,7 +2418,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if the JDBC command fails
 	 */
-	protected void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
 		doRemoveTopicDepth++;
 		if (doRemoveTopicDepth > 999) {
 			// catch cycles and throw an error
@@ -6154,4 +6154,7 @@ public class RDBMSQueryProcessor implements IQueryProcessor {
 	public void doRemoveDuplicates() throws SQLException, UnsupportedOperationException {
 		throw new UnsupportedOperationException("The function 'remove_dupliates' is not provided by the underlying database!");
 	}
+	
+	
+	
 }

@@ -369,10 +369,16 @@ public interface IQueryProcessor {
 	public void doRemoveTopicMap(ITopicMap topicMap, boolean cascade) throws SQLException;
 
 	public boolean doRemoveTopic(ITopic topic, boolean cascade) throws SQLException;
+	
+	public void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException;
 
 	public boolean doRemoveName(IName name, boolean cascade) throws SQLException;
 
+	public void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException;
+
 	public boolean doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws SQLException;
+
+	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws SQLException;
 
 	public void doClearTopicMap(ITopicMap topicMap) throws SQLException;
 
@@ -394,7 +400,11 @@ public interface IQueryProcessor {
 
 	public boolean doRemoveRole(IAssociationRole role, boolean cascade) throws SQLException;
 
+	public void doRemoveRole(IAssociationRole role, boolean cascade, IRevision revision) throws SQLException;
+
 	public boolean doRemoveVariant(IVariant variant, boolean cascade) throws SQLException;
+	
+	public void doRemoveVariant(IVariant variant, boolean cascade, IRevision revision) throws SQLException;
 
 	// ****************
 	// * INDEX METHOD *

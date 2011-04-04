@@ -2641,6 +2641,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveAssociation(IAssociation association, boolean cascade) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.ASSOCIATION_REMOVED);
+		doRemoveAssociation(association, cascade, revision);
+	}
+
+	/**
+	 * Remove the association.
+	 * 
+	 * @param association
+	 *            the association
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 */
+	protected void doRemoveAssociation(IAssociation association, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			Set<IAssociationRole> roles = HashUtil.getHashSet(session.getProcessor().doReadRoles(association, -1, -1));
@@ -2649,7 +2665,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveAssociation(association, cascade)) {
 				session.commit();
-				IRevision revision = createRevision(TopicMapEventType.ASSOCIATION_REMOVED);
 				for (IAssociationRole role : roles) {
 					/*
 					 * store history
@@ -2686,6 +2701,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.ITEM_IDENTIFIER_REMOVED);
+		doRemoveItemIdentifier(c, itemIdentifier, revision);
+	}
+
+	/**
+	 * Remove the given item identifier from the given construct.
+	 * 
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier to remove
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doRemoveItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doRemoveItemIdentifier(c, itemIdentifier);
@@ -2693,7 +2725,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null, itemIdentifier);
+			storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_REMOVED, c, null, itemIdentifier);
 			/*
 			 * notify listener
 			 */
@@ -2713,51 +2745,29 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveName(IName name, boolean cascade) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.NAME_REMOVED);
+		doRemoveName(name, cascade, revision);
+	}
+
+	/**
+	 * Remove the name.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 */
+	protected void doRemoveName(IName name, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
-			ITopic parent = name.getParent();
-			ITopic reifier = (ITopic) name.getReifier();
-			Set<IVariant> variants = HashUtil.getHashSet(session.getProcessor().doReadVariants(name, -1, -1));
 			/*
 			 * remove name and variants
 			 */
-			if (!session.getProcessor().doRemoveName(name, cascade)) {
-				session.commit();
-				IRevision revision = createRevision(TopicMapEventType.NAME_REMOVED);
-				/*
-				 * notify listener
-				 */
-				for (IVariant variant : variants) {
-					/*
-					 * store history
-					 */
-					storeRevision(revision, TopicMapEventType.VARIANT_REMOVED, name, null, variant);
-					/*
-					 * notify listener
-					 */
-					notifyListeners(TopicMapEventType.VARIANT_REMOVED, name, null, variant);
-				}
-				if (reifier != null) {
-					/*
-					 * store history
-					 */
-					storeRevision(revision, TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-					/*
-					 * notify listener
-					 */
-					notifyListeners(TopicMapEventType.TOPIC_REMOVED, getTopicMap(), null, reifier);
-				}
-				/*
-				 * store history
-				 */
-				storeRevision(revision, TopicMapEventType.NAME_REMOVED, parent, null, name);
-				/*
-				 * notify listener
-				 */
-				notifyListeners(TopicMapEventType.NAME_REMOVED, parent, null, name);
-			} else {
-				session.commit();
-			}
+			session.getProcessor().doRemoveName(name, cascade, revision);
+			session.commit();
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
 		} finally {
@@ -2773,6 +2783,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.OCCURRENCE_REMOVED);
+		doRemoveOccurrence(occurrence, cascade, revision);
+	}
+
+	/**
+	 * Remove the occurrence.
+	 * 
+	 * @param occurrence
+	 *            the occurrence
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 */
+	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic parent = occurrence.getParent();
@@ -2782,7 +2808,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveOccurrence(occurrence, cascade)) {
 				session.commit();
-				IRevision revision = createRevision(TopicMapEventType.OCCURRENCE_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
@@ -2819,6 +2844,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveRole(IAssociationRole role, boolean cascade) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.ROLE_REMOVED);
+		doRemoveRole(role, cascade, revision);
+	}
+
+	/**
+	 * Remove the association role.
+	 * 
+	 * @param role
+	 *            the role
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 */
+	protected void doRemoveRole(IAssociationRole role, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IAssociation parent = role.getParent();
@@ -2828,7 +2869,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveRole(role, cascade)) {
 				session.commit();
-				IRevision revision = createRevision(TopicMapEventType.ROLE_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
@@ -3054,6 +3094,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doRemoveVariant(IVariant variant, boolean cascade) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.VARIANT_REMOVED);
+		doRemoveVariant(variant, cascade, revision);
+	}
+
+	/**
+	 * Remove the variant.
+	 * 
+	 * @param variant
+	 *            the variant
+	 * @param cascade
+	 *            flag indicates if the dependent construct should removed too
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 */
+	protected void doRemoveVariant(IVariant variant, boolean cascade, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IName parent = variant.getParent();
@@ -3063,7 +3119,6 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 */
 			if (!session.getProcessor().doRemoveVariant(variant, cascade)) {
 				session.commit();
-				IRevision revision = createRevision(TopicMapEventType.VARIANT_REMOVED);
 				if (reifier != null) {
 					/*
 					 * store history
