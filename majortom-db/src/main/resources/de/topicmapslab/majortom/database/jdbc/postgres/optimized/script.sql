@@ -969,7 +969,7 @@ CREATE FUNCTION transitive_subtypes("typeId" bigint) RETURNS bigint[]
 	result bigint[];	
 	knownTypes bigint[];
 BEGIN		
-	FOR rec IN SELECT id_subtype FROM rel_kind_of WHERE id_supertype = $1 LOOP		
+	FOR rec IN SELECT id_subtype FROM rel_kind_of WHERE id_supertype = $1  UNION SELECT DISTINCT id_player AS id_subtype FROM roles WHERE id_parent IN ( SELECT id FROM associations AS a WHERE a.id_type IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/supertype-subtype' ) AND a.id IN ( SELECT id_parent FROM roles WHERE id_player = $1 AND id_type IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE  l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/supertype' )))	AND id_type  IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE  l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/subtype' ) LOOP		
 		knownTypes := knownTypes || rec.id_subtype;
 		result := result || rec.id_subtype;			
 		FOR rec2 IN SELECT DISTINCT unnest(transitive_subtypes(rec.id_subtype,knownTypes)) AS a LOOP				
@@ -1083,7 +1083,7 @@ CREATE FUNCTION transitive_supertypes("typeId" bigint) RETURNS bigint[]
 	result bigint[];
 	knownTypes bigint[];
 BEGIN	
-	FOR rec IN SELECT id_supertype FROM rel_kind_of WHERE id_subtype = $1 LOOP	
+	FOR rec IN SELECT id_supertype FROM rel_kind_of WHERE id_subtype = $1  UNION SELECT DISTINCT id_player AS id_subtype FROM roles WHERE id_parent IN ( SELECT id FROM associations AS a WHERE a.id_type IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/supertype-subtype' ) AND a.id IN ( SELECT id_parent FROM roles WHERE id_player = $1 AND id_type IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE  l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/subtype' )))	AND id_type  IN ( SELECT id_topic FROM rel_subject_identifiers AS r, locators AS l WHERE  l.id = r.id_locator AND l.reference = 'http://psi.topicmaps.org/iso13250/model/supertype' ) LOOP	
 		result := result || rec.id_supertype;
 		knownTypes := knownTypes || rec.id_supertype;
 		FOR rec2 IN SELECT DISTINCT unnest(transitive_supertypes(rec.id_supertype, knownTypes)) AS a LOOP			
