@@ -1307,8 +1307,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	/**
 	 * Remove the given item identifier from the given construct.
 	 * 
-	 * @param c
-	 * @param itemIdentifier
+	 * @param c the construct
+	 * @param itemIdentifier the item identifier to remove
 	 * @throws TopicMapStoreException
 	 *             thrown if operation fails
 	 */

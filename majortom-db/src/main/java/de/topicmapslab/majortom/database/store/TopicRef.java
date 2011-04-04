@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.topicmapslab.majortom.database.store;
 
-import de.topicmapslab.majortom.model.core.ILocator;
 
 /**
  * Topic Reference container

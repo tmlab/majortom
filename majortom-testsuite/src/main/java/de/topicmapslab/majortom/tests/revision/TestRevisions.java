@@ -427,4 +427,29 @@ public class TestRevisions extends MaJorToMTestCase {
 		assertNotNull(oIRevision);
 		assertNull(oIRevision.getFuture());		
 	}
+	
+	public void testRemoveDuplicatesRevision() throws Exception{
+		Topic t = createTopic();
+		for ( int i = 0 ; i < 10 ; i++ ){
+			t.createName("Name").createVariant("Variant", createTopic());
+		}
+		assertEquals(10, t.getNames().size());
+		for ( Name n : t.getNames()){
+			assertEquals(1, n.getVariants().size());
+		}
+		
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		
+		IRevision r = index.getLastRevision();
+		assertNotNull(r);
+		assertNull(r.getFuture());
+		topicMap.removeDuplicates();		
+		r = r.getFuture();
+		assertNotNull(r);
+		assertNull(r.getFuture());
+		assertEquals(TopicMapEventType.REMOVE_DUPLICATES, r.getChangesetType());
+		assertEquals(1, t.getNames().size());
+		assertEquals(10, t.getNames().iterator().next().getVariants().size());
+	}
 }

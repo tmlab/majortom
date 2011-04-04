@@ -16,7 +16,6 @@
 package de.topicmapslab.majortom.database.store;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +102,7 @@ public class JdbcMergeUtils {
 			/*
 			 * no references given check topic map
 			 */
-			if (references == null ) {
+			if (references == null) {
 				ILocator loc = store.doCreateLocator(store.getTopicMap(), locator.getReference());
 				IConstruct duplette = store.doReadConstruct(store.getTopicMap(), loc);
 				if (duplette != null) {
@@ -133,7 +132,7 @@ public class JdbcMergeUtils {
 			/*
 			 * no references given check topic map
 			 */
-			if (references == null ) {
+			if (references == null) {
 				ILocator loc = store.doCreateLocator(store.getTopicMap(), locator.getReference());
 				IConstruct duplette = store.doReadConstruct(store.getTopicMap(), loc);
 				if (duplette != null) {
@@ -163,7 +162,7 @@ public class JdbcMergeUtils {
 			/*
 			 * no references given check topic map
 			 */
-			if (references == null ) {
+			if (references == null) {
 				ILocator loc = store.doCreateLocator(store.getTopicMap(), locator.getReference());
 				ITopic duplette = store.doReadTopicBySubjectLocator(store.getTopicMap(), loc);
 				if (duplette != null) {
@@ -834,14 +833,14 @@ public class JdbcMergeUtils {
 				/*
 				 * move reifier
 				 */
-				store.doModifyReifier(other, null);
-				store.doModifyReifier(reifiable, reifierOfOther);
+				store.doModifyReifier(other, null, revision);
+				store.doModifyReifier(reifiable, reifierOfOther, revision);
 			}
 			/*
 			 * both constructs are reified
 			 */
 			else {
-				store.doModifyReifier(other, null);
+				store.doModifyReifier(other, null, revision);
 				/*
 				 * merge both topics
 				 */
@@ -1417,6 +1416,8 @@ public class JdbcMergeUtils {
 	 */
 	public static void removeDuplicates(final JdbcTopicMapStore store, final ITopicMap topicMap) throws TopicMapStoreException {
 
+		IRevision revision = store.createRevision(TopicMapEventType.REMOVE_DUPLICATES);
+
 		for (ITopic topic : store.doReadTopics(store.getTopicMap())) {
 			Set<Construct> removed = HashUtil.getHashSet();
 			Collection<IName> names = HashUtil.getHashSet(store.doReadNames(topic));
@@ -1440,8 +1441,8 @@ public class JdbcMergeUtils {
 						 * copy item-identifier
 						 */
 						for (ILocator ii : store.doReadItemIdentifiers(duplicate)) {
-							store.doRemoveItemIdentifier(duplicate, ii);
-							store.doModifyItemIdentifier(name, ii);
+							store.doRemoveItemIdentifier(duplicate, ii, revision);
+							store.doModifyItemIdentifier(name, ii, revision);
 						}
 						/*
 						 * copy variants
@@ -1450,31 +1451,34 @@ public class JdbcMergeUtils {
 							String value = store.doReadValue(v).toString();
 							ILocator datatype = store.doReadDataType(v);
 							IScope scope = store.doReadScope(v);
+							boolean isNew = false;
 							IVariant copy = getDuplette(store, name, value, datatype, scope.getThemes());
 							if (copy == null) {
-								copy = store.doCreateVariant(name, value, datatype, scope.getThemes());
+								isNew = true;
+								copy = store.doCreateVariant(name, value, datatype, scope.getThemes(), revision);
 							}
 							/*
 							 * copy item-identifier
 							 */
 							for (ILocator ii : store.doReadItemIdentifiers(v)) {
-								store.doRemoveItemIdentifier(v, ii);
-								store.doModifyItemIdentifier(copy, ii);
+								if (!isNew) {
+									store.doRemoveItemIdentifier(v, ii, revision);
+								}
+								store.doModifyItemIdentifier(copy, ii, revision);
 							}
 							/*
 							 * check reification
 							 */
-
-							doMergeReifiable(store, copy, v, null);
+							doMergeReifiable(store, copy, v, revision);
 						}
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, name, duplicate, null);
+						doMergeReifiable(store, name, duplicate, revision);
 						/*
 						 * remove duplicate
 						 */
-						store.doRemove(duplicate, false);
+						store.doRemoveName(duplicate, false, revision);
 						removed.add(duplicate);
 					}
 				}
@@ -1493,18 +1497,18 @@ public class JdbcMergeUtils {
 						 * copy item-identifier
 						 */
 						for (ILocator ii : store.doReadItemIdentifiers(dup)) {
-							store.doRemoveItemIdentifier(dup, ii);
-							store.doModifyItemIdentifier(v, ii);
+							store.doRemoveItemIdentifier(dup, ii, revision);
+							store.doModifyItemIdentifier(v, ii, revision);
 						}
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, v, dup, null);
+						doMergeReifiable(store, v, dup, revision);
 						/*
 						 * remove duplicate
 						 */
 						removed.add(dup);
-						store.doRemove(dup, false);
+						store.doRemoveVariant(dup, false, revision);
 					}
 				}
 			}
@@ -1530,17 +1534,17 @@ public class JdbcMergeUtils {
 						 * copy item-identifier
 						 */
 						for (ILocator ii : store.doReadItemIdentifiers(duplicate)) {
-							store.doRemoveItemIdentifier(duplicate, ii);
-							store.doModifyItemIdentifier(occurrence, ii);
+							store.doRemoveItemIdentifier(duplicate, ii, revision);
+							store.doModifyItemIdentifier(occurrence, ii, revision);
 						}
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, occurrence, duplicate, null);
+						doMergeReifiable(store, occurrence, duplicate, revision);
 						/*
 						 * remove duplicate
 						 */
-						store.doRemove(duplicate, false);
+						store.doRemoveOccurrence(duplicate, false, revision);
 						removed.add(duplicate);
 					}
 				}
@@ -1564,8 +1568,8 @@ public class JdbcMergeUtils {
 				 * copy item-identifier
 				 */
 				for (ILocator ii : store.doReadItemIdentifiers(duplicate)) {
-					store.doRemoveItemIdentifier(duplicate, ii);
-					store.doModifyItemIdentifier(association, ii);
+					store.doRemoveItemIdentifier(duplicate, ii, revision);
+					store.doModifyItemIdentifier(association, ii, revision);
 				}
 				/*
 				 * check roles
@@ -1579,13 +1583,13 @@ public class JdbcMergeUtils {
 						 * copy item-identifier
 						 */
 						for (ILocator ii : store.doReadItemIdentifiers(dup)) {
-							store.doRemoveItemIdentifier(dup, ii);
-							store.doModifyItemIdentifier(r, ii);
+							store.doRemoveItemIdentifier(dup, ii, revision);
+							store.doModifyItemIdentifier(r, ii, revision);
 						}
 						/*
 						 * check reification
 						 */
-						doMergeReifiable(store, r, dup, null);
+						doMergeReifiable(store, r, dup, revision);
 						/*
 						 * store removed
 						 */
@@ -1595,11 +1599,11 @@ public class JdbcMergeUtils {
 				/*
 				 * check reification
 				 */
-				doMergeReifiable(store, association, duplicate, null);
+				doMergeReifiable(store, association, duplicate, revision);
 				/*
 				 * remove duplicate
 				 */
-				store.doRemove(duplicate, false);
+				store.doRemoveAssociation(duplicate, false, revision);
 				removed.add(duplicate);
 			}
 			/*
@@ -1617,17 +1621,17 @@ public class JdbcMergeUtils {
 					 * copy item-identifier
 					 */
 					for (ILocator ii : store.doReadItemIdentifiers(dup)) {
-						store.doRemoveItemIdentifier(dup, ii);
-						store.doModifyItemIdentifier(r, ii);
+						store.doRemoveItemIdentifier(dup, ii, revision);
+						store.doModifyItemIdentifier(r, ii, revision);
 					}
 					/*
 					 * check reification
 					 */
-					doMergeReifiable(store, r, dup, null);
+					doMergeReifiable(store, r, dup, revision);
 					/*
 					 * remove duplicate
 					 */
-					store.doRemove(dup, false);
+					store.doRemoveRole(dup, false, revision);
 					removed.add(dup);
 				}
 			}

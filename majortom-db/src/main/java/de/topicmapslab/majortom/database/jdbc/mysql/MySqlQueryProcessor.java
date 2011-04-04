@@ -1697,7 +1697,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if JDBC command fails
 	 */
-	protected void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveName(IName name, boolean cascade, IRevision revision) throws SQLException {
 		/*
 		 * dump name
 		 */
@@ -1754,7 +1754,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if JDBC command fails
 	 */
-	protected void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveOccurrence(IOccurrence occurrence, boolean cascade, IRevision revision) throws SQLException {
 		/*
 		 * dump occurrence
 		 */
@@ -1904,7 +1904,7 @@ public class MySqlQueryProcessor extends RDBMSQueryProcessor {
 	 * @throws SQLException
 	 *             thrown if the JDBC command fails
 	 */
-	protected void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
+	public void doRemoveTopic(ITopic topic, boolean cascade, IRevision revision) throws SQLException {
 		/*
 		 * dump topic
 		 */
