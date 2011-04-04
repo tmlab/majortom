@@ -24,6 +24,7 @@ import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
+import org.tmapi.core.TopicMap;
 import org.tmapi.core.Variant;
 
 import de.topicmapslab.majortom.model.core.IAssociation;
@@ -400,5 +401,30 @@ public class TestRevisions extends MaJorToMTestCase {
 				assertNull(diff.getOldValue());
 			}
 		}
+	}
+	
+	public void testMergeInRevision() throws Exception{
+		createTopicBySI("http://psi.example.org/mySi1").createName("Name");
+		createTopicBySI("http://psi.example.org/mySi2").createName("Name");
+		createTopic().createName("Name");
+		createTopic().createName("Name");
+		
+		TopicMap other = topicMapSystem.createTopicMap("http://psi.example.org/newTopicMap");
+		other.createTopicBySubjectIdentifier(other.createLocator("http://psi.example.org/mySi3")).createName("Name");
+		other.createTopic().createName("Name");
+		other.createTopic().createName("Name");
+		other.createTopic().createName("Name");
+		
+		IRevisionIndex index = topicMap.getIndex(IRevisionIndex.class);
+		index.open();
+		
+		IRevision r = index.getLastRevision();
+		assertNotNull(r);
+		assertNull(r.getFuture());
+		topicMap.mergeIn(other);
+		
+		IRevision oIRevision =r.getFuture();
+		assertNotNull(oIRevision);
+		assertNull(oIRevision.getFuture());		
 	}
 }

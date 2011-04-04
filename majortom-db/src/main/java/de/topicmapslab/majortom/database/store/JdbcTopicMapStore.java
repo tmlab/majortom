@@ -192,6 +192,26 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.ASSOCIATION_ADDED);
+		return doCreateAssociation(topicMap, type, themes, r);
+	}
+
+	/**
+	 * Create a new association item.
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @param type
+	 *            the type
+	 * @param themes
+	 *            the scoping themes
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected IAssociation doCreateAssociation(ITopicMap topicMap, ITopic type, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IAssociation a = session.getProcessor().doCreateAssociation(topicMap, type, themes);
@@ -199,10 +219,9 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision(TopicMapEventType.ASSOCIATION_ADDED);
-			storeRevision(r, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
-			storeRevision(r, TopicMapEventType.TYPE_SET, a, type, null);
-			storeRevision(r, TopicMapEventType.SCOPE_MODIFIED, a, doCreateScope(getTopicMap(), themes), null);
+			storeRevision(revision, TopicMapEventType.ASSOCIATION_ADDED, topicMap, a, null);
+			storeRevision(revision, TopicMapEventType.TYPE_SET, a, type, null);
+			storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, a, doCreateScope(getTopicMap(), themes), null);
 			/*
 			 * notify listener
 			 */
@@ -299,6 +318,28 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.NAME_ADDED);
+		return doCreateName(topic, type, value, themes, r);
+	}
+
+	/**
+	 * Create a new name characteristics item.
+	 * 
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param themes
+	 *            the scoping themes
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected IName doCreateName(ITopic topic, ITopic type, String value, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IName n = session.getProcessor().doCreateName(topic, type, value, themes);
@@ -306,11 +347,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision(TopicMapEventType.NAME_ADDED);
-			storeRevision(r, TopicMapEventType.NAME_ADDED, topic, n, null);
-			storeRevision(r, TopicMapEventType.TYPE_SET, n, type, null);
-			storeRevision(r, TopicMapEventType.VALUE_MODIFIED, n, value, null);
-			storeRevision(r, TopicMapEventType.SCOPE_MODIFIED, n, doCreateScope(getTopicMap(), themes), null);
+			storeRevision(revision, TopicMapEventType.NAME_ADDED, topic, n, null);
+			storeRevision(revision, TopicMapEventType.TYPE_SET, n, type, null);
+			storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, n, value, null);
+			storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, n, doCreateScope(getTopicMap(), themes), null);
 			/*
 			 * notify listener
 			 */
@@ -373,11 +413,34 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.OCCURRENCE_ADDED);
+		return doCreateOccurrence(topic, type, value, datatype, themes, r);
+	}
+
+	/**
+	 * Create a new occurrence characteristics item.
+	 * 
+	 * @param topic
+	 *            the parent topic
+	 * @param type
+	 *            the type
+	 * @param value
+	 *            the characteristics value
+	 * @param datatype
+	 *            the data type
+	 * @param themes
+	 *            the scoping themes
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected IOccurrence doCreateOccurrence(ITopic topic, ITopic type, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IOccurrence o = session.getProcessor().doCreateOccurrence(topic, type, value, datatype, themes);
 			session.commit();
-
 			/*
 			 * notify listener
 			 */
@@ -385,12 +448,11 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision(TopicMapEventType.OCCURRENCE_ADDED);
-			storeRevision(r, TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
-			storeRevision(r, TopicMapEventType.TYPE_SET, o, type, null);
-			storeRevision(r, TopicMapEventType.VALUE_MODIFIED, o, value, null);
-			storeRevision(r, TopicMapEventType.DATATYPE_SET, o, datatype, null);
-			storeRevision(r, TopicMapEventType.SCOPE_MODIFIED, o, doCreateScope(getTopicMap(), themes), null);
+			storeRevision(revision, TopicMapEventType.OCCURRENCE_ADDED, topic, o, null);
+			storeRevision(revision, TopicMapEventType.TYPE_SET, o, type, null);
+			storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, o, value, null);
+			storeRevision(revision, TopicMapEventType.DATATYPE_SET, o, datatype, null);
+			storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, o, doCreateScope(getTopicMap(), themes), null);
 			return o;
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -407,6 +469,26 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player) throws TopicMapStoreException {
+		IRevision rev = createRevision(TopicMapEventType.ROLE_ADDED);
+		return doCreateRole(association, type, player, rev);
+	}
+
+	/**
+	 * Create a new association role item.
+	 * 
+	 * @param association
+	 *            the parent association
+	 * @param type
+	 *            the type
+	 * @param player
+	 *            the role player
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected IAssociationRole doCreateRole(IAssociation association, ITopic type, ITopic player, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IAssociationRole r = session.getProcessor().doCreateRole(association, type, player);
@@ -414,10 +496,9 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision rev = createRevision(TopicMapEventType.ROLE_ADDED);
-			storeRevision(rev, TopicMapEventType.ROLE_ADDED, association, r, null);
-			storeRevision(rev, TopicMapEventType.TYPE_SET, r, type, null);
-			storeRevision(rev, TopicMapEventType.PLAYER_MODIFIED, r, player, null);
+			storeRevision(revision, TopicMapEventType.ROLE_ADDED, association, r, null);
+			storeRevision(revision, TopicMapEventType.TYPE_SET, r, type, null);
+			storeRevision(revision, TopicMapEventType.PLAYER_MODIFIED, r, player, null);
 			/*
 			 * notify listener
 			 */
@@ -458,6 +539,21 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap) throws TopicMapStoreException {
+		return doCreateTopicWithoutIdentifier(topicMap, createRevision(TopicMapEventType.TOPIC_ADDED));
+	}
+
+	/**
+	 * Create a new topic item without any identifier.
+	 * 
+	 * @param topicMap
+	 *            the topic map
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created construct
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected ITopic doCreateTopicWithoutIdentifier(ITopicMap topicMap, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic t = session.getProcessor().doCreateTopicWithoutIdentifier(topicMap);
@@ -465,7 +561,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			storeRevision(TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
+			storeRevision(revision, TopicMapEventType.TOPIC_ADDED, topicMap, t, null);
 			/*
 			 * notify listener
 			 */
@@ -592,6 +688,28 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.VARIANT_ADDED);
+		return doCreateVariant(name, value, datatype, themes, r);
+	}
+
+	/**
+	 * Create a new variant for the given name.
+	 * 
+	 * @param name
+	 *            the parent name
+	 * @param value
+	 *            the value
+	 * @param datatype
+	 *            the data type
+	 * @param themes
+	 *            the scoping themes
+	 * @param revision
+	 *            the revision to store to
+	 * @return the created variant
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected IVariant doCreateVariant(IName name, String value, ILocator datatype, Collection<ITopic> themes, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			IVariant v = session.getProcessor().doCreateVariant(name, value, datatype, themes);
@@ -599,11 +717,10 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * create revision
 			 */
-			IRevision r = createRevision(TopicMapEventType.VARIANT_ADDED);
-			storeRevision(r, TopicMapEventType.VARIANT_ADDED, name, v, null);
-			storeRevision(r, TopicMapEventType.VALUE_MODIFIED, v, value, null);
-			storeRevision(r, TopicMapEventType.DATATYPE_SET, v, datatype, null);
-			storeRevision(r, TopicMapEventType.SCOPE_MODIFIED, v, doCreateScope(getTopicMap(), themes), null);
+			storeRevision(revision, TopicMapEventType.VARIANT_ADDED, name, v, null);
+			storeRevision(revision, TopicMapEventType.VALUE_MODIFIED, v, value, null);
+			storeRevision(revision, TopicMapEventType.DATATYPE_SET, v, datatype, null);
+			storeRevision(revision, TopicMapEventType.SCOPE_MODIFIED, v, doCreateScope(getTopicMap(), themes), null);
 			/*
 			 * notify listener
 			 */
@@ -680,6 +797,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier) throws TopicMapStoreException {
+		doModifyItemIdentifier(c, itemIdentifier, createRevision(TopicMapEventType.ITEM_IDENTIFIER_ADDED));
+	}
+
+	/**
+	 * Add a new item-identifier to the given construct
+	 * 
+	 * @param c
+	 *            the construct
+	 * @param itemIdentifier
+	 *            the item identifier
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifyItemIdentifier(IConstruct c, ILocator itemIdentifier, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doModifyItemIdentifier(c, itemIdentifier);
@@ -687,7 +820,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
+			storeRevision(revision, TopicMapEventType.ITEM_IDENTIFIER_ADDED, c, itemIdentifier, null);
 			/*
 			 * notify listener
 			 */
@@ -735,6 +868,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyReifier(IReifiable r, ITopic reifier) throws TopicMapStoreException {
+		IRevision revision = createRevision(TopicMapEventType.REIFIER_SET);
+		doModifyReifier(r, reifier, revision);
+	}
+
+	/**
+	 * Modify the reifier of the given reified item.
+	 * 
+	 * @param r
+	 *            the reified item
+	 * @param reifier
+	 *            the reifier
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifyReifier(IReifiable r, ITopic reifier, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			ITopic oldReifier = session.getProcessor().doReadReification(r);
@@ -743,7 +893,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.REIFIER_SET, r, reifier, oldReifier);
+			storeRevision(revision, TopicMapEventType.REIFIER_SET, r, reifier, oldReifier);
 			/*
 			 * notify listener
 			 */
@@ -792,6 +942,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier) throws TopicMapStoreException {
+		doModifySubjectIdentifier(t, subjectIdentifier, createRevision(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED));
+	}
+
+	/**
+	 * Add a new subject-identifier to the given topic
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param subjectIdentifier
+	 *            the subject-identifier
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifySubjectIdentifier(ITopic t, ILocator subjectIdentifier, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doModifySubjectIdentifier(t, subjectIdentifier);
@@ -799,7 +965,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
+			storeRevision(revision, TopicMapEventType.SUBJECT_IDENTIFIER_ADDED, t, subjectIdentifier, null);
 			/*
 			 * notify listener
 			 */
@@ -819,6 +985,22 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator) throws TopicMapStoreException {
+		doModifySubjectLocator(t, subjectLocator, createRevision(TopicMapEventType.SUBJECT_LOCATOR_ADDED));
+	}
+
+	/**
+	 * Add a new subject-locator to the given topic
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param subjectLocator
+	 *            the subject-locator
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifySubjectLocator(ITopic t, ILocator subjectLocator, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doModifySubjectLocator(t, subjectLocator);
@@ -826,7 +1008,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			storeRevision(TopicMapEventType.SUBJECT_LOCATOR_ADDED, t, subjectLocator, null);
+			storeRevision(revision, TopicMapEventType.SUBJECT_LOCATOR_ADDED, t, subjectLocator, null);
 			/*
 			 * notify listener
 			 */
@@ -846,6 +1028,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifySupertype(ITopic t, ITopic type) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.SUPERTYPE_ADDED);
+		doModifySupertype(t, type, r);
+	}
+
+	/**
+	 * Add a new super type to the given topic
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the super type
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifySupertype(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doModifySupertype(t, type);
@@ -853,8 +1052,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision(TopicMapEventType.SUPERTYPE_ADDED);
-			storeRevision(r, TopicMapEventType.SUPERTYPE_ADDED, t, type, null);
+			storeRevision(revision, TopicMapEventType.SUPERTYPE_ADDED, t, type, null);
 			/*
 			 * notify listener
 			 */
@@ -863,7 +1061,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 * create type-hierarchy as association if necessary
 			 */
 			if (recognizingSupertypeSubtypeAssociation()) {
-				createSupertypeSubtypeAssociation(t, type, r);
+				createSupertypeSubtypeAssociation(t, type, revision);
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
@@ -945,6 +1143,23 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 	 * {@inheritDoc}
 	 */
 	protected void doModifyTopicType(ITopic t, ITopic type) throws TopicMapStoreException {
+		IRevision r = createRevision(TopicMapEventType.TYPE_ADDED);
+		doModifyTopicType(t, type, r);
+	}
+
+	/**
+	 * Add a new type to the given topic.
+	 * 
+	 * @param t
+	 *            the topic
+	 * @param type
+	 *            the type to add
+	 * @param revision
+	 *            the revision to store to
+	 * @throws TopicMapStoreException
+	 *             thrown if operation fails
+	 */
+	protected void doModifyTopicType(ITopic t, ITopic type, IRevision revision) throws TopicMapStoreException {
 		ISession session = provider.openSession();
 		try {
 			session.getProcessor().doModifyType(t, type);
@@ -952,8 +1167,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			/*
 			 * store history
 			 */
-			IRevision r = createRevision(TopicMapEventType.TYPE_ADDED);
-			storeRevision(r, TopicMapEventType.TYPE_ADDED, t, type, null);
+			storeRevision(revision, TopicMapEventType.TYPE_ADDED, t, type, null);
 			/*
 			 * notify listener
 			 */
@@ -962,7 +1176,7 @@ public class JdbcTopicMapStore extends ModifableTopicMapStoreImpl {
 			 * create association if necessary
 			 */
 			if (recognizingTypeInstanceAssociation()) {
-				createTypeInstanceAssociation(t, type, r);
+				createTypeInstanceAssociation(t, type, revision);
 			}
 		} catch (SQLException e) {
 			throw new TopicMapStoreException("Internal database error!", e);
