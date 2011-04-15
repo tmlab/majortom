@@ -1576,11 +1576,8 @@ public abstract class ModifableTopicMapStoreImpl extends ReadOnlyTopicMapStoreIm
 	 * @return <code>true</code> if the topic is used as reifier and reification is restricted for deletion,
 	 *         <code>false</code> otherwise
 	 */
-	protected boolean isTopicUsedAsReifier(final ITopic topic) {
-		/*
-		 * check if deletion constraints are defined and topic is used as reifier
-		 */
-		if (isReificationDeletionRestricted() && doReadReification(topic) != null) {
+	protected boolean isTopicUsedAsReifier(final ITopic topic) {		
+		if ( doReadReification(topic) != null){
 			return true;
 		}
 		return false;
