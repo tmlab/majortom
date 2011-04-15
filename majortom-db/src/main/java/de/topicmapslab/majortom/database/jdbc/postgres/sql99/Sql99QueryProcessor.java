@@ -3935,7 +3935,7 @@ public class Sql99QueryProcessor extends RDBMSQueryProcessor {
 	 * {@inheritDoc}
 	 */
 	public Collection<ITopic> getDirectSupertypes(ITopicMap topicMap, ITopic type, long offset, long limit) throws SQLException {
-		int i = 0;
+		int i = 1;
 		PreparedStatement stmt = null;
 		if (type == null) {
 			stmt = getQueryBuilder().getQuerySelectTopicsWithoutSupertypes(offset != -1);

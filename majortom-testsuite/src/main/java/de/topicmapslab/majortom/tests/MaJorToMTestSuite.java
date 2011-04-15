@@ -36,13 +36,13 @@ public class MaJorToMTestSuite {
 		System.setProperty("org.tmapi.core.TopicMapSystemFactory", TopicMapSystemFactoryImpl.class.getName());
 		TestSuite suite = new TestSuite("Test for de.topicmapslab.engine.tests");
 		// $JUnit-BEGIN$
-		suite.addTest(CoreTestSuite.suite());
-		suite.addTest(EventTestSuite.suite());
-		suite.addTest(IndexTestSuite.suite());
-		suite.addTest(MergeTestSuite.suite());
-		suite.addTest(RevisionTestSuite.suite());
-		suite.addTest(TransactionSuite.suite());
-		suite.addTest(org.tmapi.AllTests.suite());
+//		suite.addTest(CoreTestSuite.suite());
+//		suite.addTest(EventTestSuite.suite());
+//		suite.addTest(IndexTestSuite.suite());
+//		suite.addTest(MergeTestSuite.suite());
+//		suite.addTest(RevisionTestSuite.suite());
+//		suite.addTest(TransactionSuite.suite());
+//		suite.addTest(org.tmapi.AllTests.suite());
 		// // suite.addTest(org.tmapi.core.AllCoreTests.suite());
 		// // suite.addTest(org.tmapi.index.AllIndexTests.suite());
 		suite.addTest(CanonicalTestSuite.suite());

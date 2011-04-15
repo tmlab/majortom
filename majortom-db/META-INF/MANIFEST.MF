@@ -74,8 +74,8 @@ Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype,de.topicmapslab.majortom.core,
  de.topicmapslab.majortom.model
-Bundle-Version: 1.2.0.201103241519
-Bnd-LastModified: 1300976461843
+Bundle-Version: 1.2.0.201104151053
+Bnd-LastModified: 1302857719265
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.commons.collections;version="[3.2,4)",org.a
  pache.commons.collections.bidimap;version="3.2.1",org.apache.commons.
