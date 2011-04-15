@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 Service-Component: OSGI-INF/redistopicmapstore.xml
 Export-Package: de.topicmapslab.majortom.redis.store;uses:="de.topicma
- pslab.majortom.store,de.topicmapslab.majortom.redis.util,de.topicmaps
- lab.majortom.redis.store.index.paged,org.tmapi.core,de.topicmapslab.m
- ajortom.redis.store.index,org.tmapi.index",de.topicmapslab.majortom.r
- edis.store.index.paged;uses:="de.topicmapslab.majortom.redis.store,de
- .topicmapslab.majortom.redis.store.index",de.topicmapslab.majortom.re
- dis.util,de.topicmapslab.majortom.redis.store.index;uses:="de.topicma
- pslab.majortom.redis.store,org.tmapi.core,de.topicmapslab.majortom.re
- dis.util,org.tmapi.index",de.topicmapslab.majortom.store
+ pslab.majortom.redis.util,de.topicmapslab.majortom.redis.store.index.
+ paged,org.tmapi.core,de.topicmapslab.majortom.redis.store.index,org.t
+ mapi.index",de.topicmapslab.majortom.redis.store.index.paged;uses:="d
+ e.topicmapslab.majortom.redis.store,de.topicmapslab.majortom.redis.st
+ ore.index",de.topicmapslab.majortom.redis.util,de.topicmapslab.majort
+ om.redis.store.index;uses:="de.topicmapslab.majortom.redis.store,org.
+ tmapi.core,de.topicmapslab.majortom.redis.util,org.tmapi.index"
 Bundle-ActivationPolicy: lazy
 Tool: Bnd-1.15.0
 Bundle-Name: MajorToM Redis
@@ -17,8 +16,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.geotype;bundle-version="1.2.0",de.topi
  cmapslab.majortom.core;bundle-version="1.2.0",de.topicmapslab.majorto
  m.model;bundle-version="1.2.0"
-Bundle-Version: 1.3.0.201104151117
-Bnd-LastModified: 1302859062812
+Bundle-Version: 1.3.0.201104151118
+Bnd-LastModified: 1302859309109
 Bundle-ManifestVersion: 2
 Import-Package: cern.jet.random.engine,javax.xml.parsers,org.apache.co
  mmons.collections;version="[3.2,4)",org.apache.commons.collections.bi

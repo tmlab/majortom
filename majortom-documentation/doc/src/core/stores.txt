@@ -55,12 +55,36 @@ To use the (O)RDBMS topic map store, the majortom-db.jar should be located in th
       <dependency>
           <groupId>de.topicmapslab.majortom</groupId>
           <artifactId>majortom-db</artifactId>
-          <version>1.2.0-SNAPSHOT</version>
+          <version>1.2.0</version>
       </dependency>
   </dependencies>
 ------------------------------------
 
 After starting the application the (O)RDBMS topic map store checks if the database exists and the contained schema is valid for usage with MaJorToM. If the database is empty the schema will automatically created by MaJorToM.
+
+=== Queued Topic Map Store ===
+
+The Queued topic map store is a combination of the In-Memory and the RDBMS topic map store. All information are stored in the underlying database handled by the RDBMS topic map store. To speed up the write access, each modification is handled as process of an event queue. Until this process is finished, the information created or modified by this process are stored in a virtual in-memory layer. After finishing the process the information are removed from virtual layer and can be directly accessed by the RDBMS store. Additionaly the queued store also supports the 'commit' functionality which stops the process called until all tasks of the event queue are finished.
+
+Because of that the queued store is the best combination of the fast read and write access of memory backends and the persistence of RDBMS backends.
+
+The current version of this topic map store supports all features of a MaJorToM engine, like transaction support and revision management and also caching.
+
+==== Usage ====
+
+To use the queued topic map store, the majortom-queued.jar should be located in the class path. If the Maven dependecy management is used, the following line should be added to the POM file.
+
+------------------------------------
+<dependencies>
+      <dependency>
+          <groupId>de.topicmapslab.majortom</groupId>
+          <artifactId>majortom-queued</artifactId>
+          <version>1.2.0</version>
+      </dependency>
+  </dependencies>
+------------------------------------
+
+*Please note:* Because of the fact that the queued store combines the memory and the RDBMS store, all properties of both are needed.
 
 === Redis Topic Map Store ===
 
@@ -88,7 +112,7 @@ To use the redis topic map store, the majortom-redis.jar should be located in th
       <dependency>
           <groupId>de.topicmapslab.majortom</groupId>
           <artifactId>majortom-redis</artifactId>
-          <version>1.2.0-SNAPSHOT</version>
+          <version>1.2.0</version>
       </dependency>
   </dependencies>
 ------------------------------------
