@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.tmapi.core.ModelConstraintException;
+import org.tmapi.core.Name;
 import org.tmapi.core.TopicInUseException;
 import org.tmapi.core.TopicMap;
 import org.tmapi.index.Index;
@@ -2222,8 +2223,10 @@ public class InMemoryTopicMapStore extends ModifableTopicMapStoreImpl {
 		/*
 		 * filter by scoping themes
 		 */
-		List<IScope> scopes = HashUtil.getList(getScopeStore().getNameScopes());
-		scopes.add(getScopeStore().getEmptyScope());
+		List<IScope> scopes = HashUtil.getList();
+		for ( Name n : names ){
+			scopes.add(getScopeStore().getScope((IName)n));
+		}
 		if (!scopes.isEmpty()) {
 			/*
 			 * sort scopes by number of themes

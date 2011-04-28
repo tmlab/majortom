@@ -31,8 +31,8 @@ Bundle-Name: MajorToM Core
 Created-By: 1.6.0_20 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: de.topicmapslab.majortom.model,de.topicmapslab.geotype
-Bundle-Version: 1.3.0.201104151118
-Bnd-LastModified: 1302859133953
+Bundle-Version: 1.3.0.201104280957
+Bnd-LastModified: 1303977471564
 Bundle-ManifestVersion: 2
 Bundle-Activator: de.topicmapslab.majortom.osgi.MajorToMActivator
 Import-Package: cern.jet.random.engine,org.apache.commons.collections.
